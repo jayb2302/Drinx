@@ -1,0 +1,1 @@
+# Represents the Badge entity (e.g., id, badge name, description)
