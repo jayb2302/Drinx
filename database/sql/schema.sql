@@ -1,0 +1,2 @@
+-- This file contains the SQL statements to define the initial database schema.
+-- It includes the creation of tables, indexes, and relationships between tables.

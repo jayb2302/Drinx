@@ -1,0 +1,2 @@
+-- This file contains SQL statements to insert initial test data into the database.
+-- It populates the database with sample users, cocktails, badges, and other entities for testing purposes.
