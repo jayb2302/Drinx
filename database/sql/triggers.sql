@@ -1,0 +1,2 @@
+-- This file contains SQL statements to create database triggers.
+-- Triggers are used to automate actions, such as awarding badges when certain conditions are met.

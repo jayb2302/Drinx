@@ -1,0 +1,1 @@
+# Represents the User entity (e.g., id, email, password, profile info)

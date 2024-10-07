@@ -1,0 +1,1 @@
+# Represents the Cocktail entity (e.g., id, title, ingredients)
