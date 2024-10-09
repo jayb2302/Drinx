@@ -5,8 +5,19 @@
 $isEditing = isset($cocktail);  // Check if we're editing an existing cocktail.
 ?>
 
-<form action="<?php echo $isEditing ? '/cocktails/update.php' : '/cocktails/store.php'; ?>" method="post">
-    <input type="text" name="title" value="<?php echo $isEditing ? $cocktail['title'] : ''; ?>" placeholder="Cocktail Title">
-    <!-- Add other form fields like ingredients, instructions, etc. -->
-    <button type="submit"><?php echo $isEditing ? 'Update Cocktail' : 'Add Cocktail'; ?></button>
+<h1><?= $isEditing ? 'Edit' : 'Add' ?> Cocktail</h1>
+<form action="/cocktails/<?= $isEditing ? 'update.php?id=' . $cocktail['cocktail_id'] : 'store.php' ?>" method="post">
+    <label for="title">Title</label>
+    <input type="text" name="title" id="title" value="<?= $isEditing ? $cocktail['title'] : '' ?>" required>
+
+    <label for="description">Description</label>
+    <textarea name="description" id="description" required><?= $isEditing ? $cocktail['description'] : '' ?></textarea>
+
+    <label for="image">Image URL</label>
+    <input type="text" name="image" id="image" value="<?= $isEditing ? $cocktail['image'] : '' ?>">
+
+    <label for="category_id">Category</label>
+    <input type="text" name="category_id" id="category_id" value="<?= $isEditing ? $cocktail['category_id'] : '' ?>" required>
+
+    <button type="submit">Submit</button>
 </form>
