@@ -68,7 +68,7 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,  -- Storing hashed passwords
   `account_status_id` int NOT NULL,
   `join_date` timestamp DEFAULT CURRENT_TIMESTAMP,
-  `last_login` timestamp DEFAULT NULL,
+  `last_login` timestamp NULL,
   `is_admin` BOOLEAN DEFAULT 0,
   FOREIGN KEY (`account_status_id`) REFERENCES `account_status`(`account_status_id`)
 );
