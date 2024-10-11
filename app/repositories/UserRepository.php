@@ -22,13 +22,15 @@ class UserRepository {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
-    public function create($userData) {
+    public function create(User $user) {
         $stmt = $this->db->prepare('INSERT INTO users (username, email, password, account_status_id) VALUES (:username, :email, :password, :account_status_id)');
-        $stmt->bindParam(':username', $userData['username']);
-        $stmt->bindParam(':email', $userData['email']);
-        $stmt->bindParam(':password', $userData['password']);
-        $stmt->bindParam(':account_status_id', $userData['account_status_id']);
+        
+        // Use the User object's properties directly
+        $stmt->bindParam(':username', $user->username);
+        $stmt->bindParam(':email', $user->email);
+        $stmt->bindParam(':password', $user->password);
+        $stmt->bindParam(':account_status_id', $user->account_status_id);
+        
         return $stmt->execute();
     }
 
