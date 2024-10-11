@@ -1,4 +1,4 @@
-<form method="POST" action="/user/register">
+<form method="POST" action="/user/store">
     <label for="username">Username:</label>
     <input type="text" name="username" required>
 
