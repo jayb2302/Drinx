@@ -1,11 +1,32 @@
 <?php
+require_once __DIR__ . '/../config/database.php'; // Ensure DB connection
+require_once __DIR__ . '/../repositories/CocktailRepository.php';
+require_once __DIR__ . '/../repositories/CategoryRepository.php';
+require_once __DIR__ . '/../repositories/IngredientRepository.php';
+require_once __DIR__ . '/../repositories/StepRepository.php';
 require_once __DIR__ . '/../services/CocktailService.php';
+
 
 class HomeController {
     private $cocktailService;
 
     public function __construct() {
-        $this->cocktailService = new CocktailService();
+        // Get the database connection
+        $db = Database::getConnection();
+
+        // Instantiate the repositories
+        $cocktailRepository = new CocktailRepository($db);
+        $categoryRepository = new CategoryRepository($db);
+        $ingredientRepository = new IngredientRepository($db);
+        $stepRepository = new StepRepository($db);
+
+        // Pass the repository instances to the CocktailService constructor
+        $this->cocktailService = new CocktailService(
+            $cocktailRepository,
+            $categoryRepository,
+            $ingredientRepository,
+            $stepRepository
+        );
     }
 
     public function index() {
@@ -20,12 +41,3 @@ class HomeController {
         require_once __DIR__ . '/../views/home.php'; // Load the home view
     }
 }
-// class HomeController {
-//     // Method to load the homepage
-//     public function index() {
-//         // You can include any logic here for loading data, etc.
-//         require_once __DIR__ . '/../views/layout/header.php'; // Include header
-//         require_once __DIR__ . '/../views/home.php'; // Load the home view
-//         require_once __DIR__ . '/../views/layout/footer.php'; // Include footer
-//     }
-// }

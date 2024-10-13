@@ -21,7 +21,7 @@ function isLoggedIn() {
 }
 
 // Example: Function to redirect to a given path
-function redirect($path) {
-    header("Location: " . url($path));
-    exit();
+function redirect($url) {
+    header("Location: $url");
+    exit(); // Make sure to exit after redirecting
 }
