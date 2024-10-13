@@ -15,7 +15,7 @@ $router->add('GET', '#^/$#', [HomeController::class, 'index']); // Home page
 $router->add('GET', '#^/login$#', [UserController::class, 'login']); // Login page
 $router->add('POST', '#^/login$#', [UserController::class, 'authenticate']); // Handle login
 $router->add('GET', '#^/register$#', [UserController::class, 'register']); // Registration page
-$router->add('POST', '#^/register$#', [UserController::class, 'store']); // Handle registration
+$router->add('POST', '#^/user/store$#', [UserController::class, 'store']); // Handle registration
 
 // CRUD Routes for Cocktails
 
