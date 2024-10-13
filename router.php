@@ -9,8 +9,10 @@ class Router {
 
     public function resolve($uri) {
         foreach ($this->routes as $route) {
-            if ($_SERVER['REQUEST_METHOD'] === $route['method'] && preg_match($route['path'], $uri)) {
-                return $route['action']; // Return matched action
+            if ($_SERVER['REQUEST_METHOD'] === $route['method'] && preg_match($route['path'], $uri, $matches)) {
+                // Remove the first element as it is the full match
+                array_shift($matches);
+                return [$route['action'], $matches]; // Return the action and the extracted parameters
             }
         }
         return null; // No matching route found

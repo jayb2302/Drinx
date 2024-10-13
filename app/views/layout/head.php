@@ -10,6 +10,8 @@
     <!-- Include CSS -->
     <link rel="stylesheet" href="<?= asset('assets/css/style.css'); ?>">
     <link rel="stylesheet" href="<?= asset('assets/css/cocktails.css'); ?>">
+    
+
 </head>
 <?php
 echo "Page Title: " . (isset($pageTitle) ? $pageTitle : 'Not Set') . "<br>";

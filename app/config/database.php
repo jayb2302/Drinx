@@ -1,7 +1,6 @@
 <?php
 class Database {
     private static $connection = null;
-
     // Get the database connection
     public static function getConnection() {
         if (self::$connection === null) {
@@ -17,7 +16,6 @@ class Database {
                 die("Connection failed: " . $e->getMessage());
             }
         }
-
         return self::$connection;
     }
 }

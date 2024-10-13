@@ -119,26 +119,46 @@ VALUES
     (21, 'admin_user', 'admin@example.com', '$2y$10$abcdefg1234567890hijklmnopqrstuvwxyzabcdefg1234567890', '2023-12-01', 1, 1);  -- is_admin set to 1 for true
 INSERT INTO user_profile (user_id, first_name, last_name, profile_picture, bio)
 VALUES
-    (1, 'John', 'Doe', '/uploads/users/john_doe.jpg', 'Loves classic cocktails and experimenting with flavors. A whiskey lover at heart.'),
-    (2, 'Jane', 'Smith', '/uploads/users/jane_smith.jpg', 'A mixologist in training with a passion for tequila.'),
-    (3, 'Emily', 'Clark', '/uploads/users/emily_clark.jpg', 'I enjoy crafting cocktails with fresh ingredients and unique twists.'),
-    (4, 'William', 'Jones', '/uploads/users/william_jones.jpg', 'Whiskey enthusiast and cocktail purist. Fan of Old Fashioned.'),
-    (5, 'Mary', 'Johnson', '/uploads/users/mary_johnson.jpg', 'Amateur bartender, always experimenting with new recipes.'),
-    (6, 'Alex', 'Brown', '/uploads/users/alex_brown.jpg', 'Cocktail lover and part-time bartender.'),
-    (7, 'Sarah', 'White', '/uploads/users/sarah_white.jpg', 'Passionate about all things tropical and fruity.'),
-    (8, 'Michael', 'Smith', '/uploads/users/michael_smith.jpg', 'Crafting signature cocktails and exploring new recipes.'),
-    (9, 'Linda', 'Garcia', '/uploads/users/linda_garcia.jpg', 'Home bartender sharing fun and easy cocktail recipes.'),
-    (10, 'David', 'Miller', '/uploads/users/david_miller.jpg', 'Experimenting with strong, bitter cocktails.'),
-    (11, 'Laura', 'Davis', '/uploads/users/laura_davis.jpg', 'Loves making easy cocktails for home parties.'),
-    (12, 'James', 'Wilson', '/uploads/users/james_wilson.jpg', 'I create cocktails with a focus on balance and flavor.'),
-    (13, 'Karen', 'Taylor', '/uploads/users/karen_taylor.jpg', 'Tequila and margarita enthusiast.'),
-    (14, 'Daniel', 'Moore', '/uploads/users/daniel_moore.jpg', 'Exploring craft cocktails and unique mixers.'),
-    (15, 'Patricia', 'Anderson', '/uploads/users/patricia_anderson.jpg', 'Creating cocktails inspired by global flavors.'),
-    (16, 'Robert', 'Thomas', '/uploads/users/robert_thomas.jpg', 'Gin and tonic master, experimenting with different botanicals.'),
-    (17, 'Barbara', 'Jackson', '/uploads/users/barbara_jackson.jpg', 'Creating fun, party-friendly cocktails.'),
-    (18, 'Charles', 'Martin', '/uploads/users/charles_martin.jpg', 'Making cocktails that are simple and delicious.'),
-    (19, 'Susan', 'Lee', '/uploads/users/susan_lee.jpg', 'Enthusiastic about fruity, tropical cocktails.'),
-    (20, 'Paul', 'Walker', '/uploads/users/paul_walker.jpg', 'Always searching for the perfect rum cocktail.');
+    (1, 'John', 'Doe', '/uploads/users/john_doe.jpeg
+    ', 'Loves classic cocktails and experimenting with flavors. A whiskey lover at heart.'),
+    (2, 'Jane', 'Smith', '/uploads/users/jane_smith.jpeg
+    ', 'A mixologist in training with a passion for tequila.'),
+    (3, 'Emily', 'Clark', '/uploads/users/emily_clark.jpeg
+    ', 'I enjoy crafting cocktails with fresh ingredients and unique twists.'),
+    (4, 'William', 'Jones', '/uploads/users/william_jones.jpeg
+    ', 'Whiskey enthusiast and cocktail purist. Fan of Old Fashioned.'),
+    (5, 'Mary', 'Johnson', '/uploads/users/mary_johnson.jpeg
+    ', 'Amateur bartender, always experimenting with new recipes.'),
+    (6, 'Alex', 'Brown', '/uploads/users/alex_brown.jpeg
+    ', 'Cocktail lover and part-time bartender.'),
+    (7, 'Sarah', 'White', '/uploads/users/sarah_white.jpeg
+    ', 'Passionate about all things tropical and fruity.'),
+    (8, 'Michael', 'Smith', '/uploads/users/michael_smith.jpeg
+    ', 'Crafting signature cocktails and exploring new recipes.'),
+    (9, 'Linda', 'Garcia', '/uploads/users/linda_garcia.jpeg
+    ', 'Home bartender sharing fun and easy cocktail recipes.'),
+    (10, 'David', 'Miller', '/uploads/users/david_miller.jpeg
+    ', 'Experimenting with strong, bitter cocktails.'),
+    (11, 'Laura', 'Davis', '/uploads/users/laura_davis.jpeg
+    ', 'Loves making easy cocktails for home parties.'),
+    (12, 'James', 'Wilson', '/uploads/users/james_wilson.jpeg
+    ', 'I create cocktails with a focus on balance and flavor.'),
+    (13, 'Karen', 'Taylor', '/uploads/users/karen_taylor.jpeg
+    ', 'Tequila and margarita enthusiast.'),
+    (14, 'Daniel', 'Moore', '/uploads/users/daniel_moore.jpeg
+    ', 'Exploring craft cocktails and unique mixers.'),
+    (15, 'Patricia', 'Anderson', '/uploads/users/patricia_anderson.jpeg
+    ', 'Creating cocktails inspired by global flavors.'),
+    (16, 'Robert', 'Thomas', '/uploads/users/robert_thomas.jpeg
+    ', 'Gin and tonic master, experimenting with different botanicals.'),
+    (17, 'Barbara', 'Jackson', '/uploads/users/barbara_jackson.jpeg
+    ', 'Creating fun, party-friendly cocktails.'),
+    (18, 'Charles', 'Martin', '/uploads/users/charles_martin.jpeg
+    ', 'Making cocktails that are simple and delicious.'),
+    (19, 'Susan', 'Lee', '/uploads/users/susan_lee.jpeg
+    ', 'Enthusiastic about fruity, tropical cocktails.'),
+    (20, 'Paul', 'Walker', '/uploads/users/paul_walker.jpeg
+    ', 'Always searching for the perfect rum cocktail.');
 
 -- 11. Insert data into `user_activity`
 INSERT INTO user_activity (user_id, rank_id, points, cocktails_uploaded, likes_received)
@@ -191,36 +211,66 @@ VALUES
 -- 13. Insert data into `cocktails`
 INSERT INTO cocktails (user_id, title, description, image, category_id, created_at)
 VALUES
-    (1, 'Mojito', 'A refreshing mint cocktail with lime and rum.', '/uploads/cocktails/mojito.jpg', 2, '2023-06-15'),
-    (2, 'Old Fashioned', 'A whiskey-based cocktail with a hint of citrus.', '/uploads/cocktails/old_fashioned.jpg', 1, '2023-07-20'),
-    (3, 'Margarita', 'A classic tequila cocktail with lime juice and salt.', '/uploads/cocktails/margarita.jpg', 2, '2023-08-05'),
-    (4, 'Negroni', 'A bittersweet cocktail made with gin, Campari, and sweet vermouth.', '/uploads/cocktails/negroni.jpg', 1, '2023-06-25'),
-    (5, 'Pina Colada', 'A tropical cocktail made with rum, coconut cream, and pineapple juice.', '/uploads/cocktails/pina_colada.jpg', 2, '2023-07-30'),
-    (6, 'Daiquiri', 'A rum cocktail with lime and sugar syrup.', '/uploads/cocktails/daiquiri.jpg', 2, '2023-08-10'),
-    (7, 'Cosmopolitan', 'A vodka cocktail with cranberry juice and triple sec.', '/uploads/cocktails/cosmopolitan.jpg', 2, '2023-06-18'),
-    (8, 'Whiskey Sour', 'A classic cocktail made with whiskey and lemon juice.', '/uploads/cocktails/whiskey_sour.jpg', 1, '2023-08-22'),
-    (9, 'Manhattan', 'A whiskey cocktail with sweet vermouth and bitters.', '/uploads/cocktails/manhattan.jpg', 1, '2023-09-12'),
-    (10, 'Mai Tai', 'A tropical rum cocktail with orange and lime juices.', '/uploads/cocktails/mai_tai.jpg', 2, '2023-06-15'),
-    (11, 'Gin and Tonic', 'A simple cocktail with gin and tonic water.', '/uploads/cocktails/gin_and_tonic.jpg', 1, '2023-08-20'),
-    (12, 'Tequila Sunrise', 'A tequila cocktail with orange juice and grenadine.', '/uploads/cocktails/tequila_sunrise.jpg', 2, '2023-07-01'),
-    (13, 'Bloody Mary', 'A vodka cocktail with tomato juice and spices.', '/uploads/cocktails/bloody_mary.jpg', 3, '2023-09-15'),
-    (14, 'Screwdriver', 'A simple vodka cocktail with orange juice.', '/uploads/cocktails/screwdriver.jpg', 3, '2023-07-25'),
-    (15, 'Cuba Libre', 'A rum cocktail with cola and lime juice.', '/uploads/cocktails/cuba_libre.jpg', 3, '2023-08-05'),
-    (1, 'Long Island Iced Tea', 'A strong cocktail with vodka, rum, tequila, gin, and triple sec.', '/uploads/cocktails/long_island_iced_tea.jpg', 2, '2023-09-08'),
-    (2, 'Tom Collins', 'A gin cocktail with lemon juice and soda water.', '/uploads/cocktails/tom_collins.jpg', 1, '2023-07-28'),
-    (3, 'French 75', 'A gin cocktail with lemon juice and champagne.', '/uploads/cocktails/french_75.jpg', 1, '2023-08-15'),
-    (4, 'Caipirinha', 'A Brazilian cocktail made with cachaça, lime, and sugar.', '/uploads/cocktails/caipirinha.jpg', 3, '2023-09-05'),
-    (5, 'Martini', 'A classic gin cocktail with vermouth.', '/uploads/cocktails/martini.jpg', 1, '2023-06-22'),
-    (6, 'Paloma', 'A tequila cocktail with grapefruit soda and lime.', '/uploads/cocktails/paloma.jpg', 2, '2023-09-18'),
-    (7, 'Aperol Spritz', 'A refreshing cocktail with Aperol, Prosecco, and soda water.', '/uploads/cocktails/aperol_spritz.jpg', 2, '2023-08-20'),
-    (8, 'Sazerac', 'A whiskey cocktail with bitters and sugar.', '/uploads/cocktails/sazerac.jpg', 1, '2023-07-12'),
-    (9, 'Moscow Mule', 'A vodka cocktail with ginger beer and lime.', '/uploads/cocktails/moscow_mule.jpg', 2, '2023-06-30'),
-    (10, 'Sidecar', 'A brandy cocktail with triple sec and lemon juice.', '/uploads/cocktails/sidecar.jpg', 1, '2023-08-03'),
-    (11, 'Mint Julep', 'A bourbon cocktail with mint and sugar syrup.', '/uploads/cocktails/mint_julep.jpg', 1, '2023-09-22'),
-    (12, 'Pisco Sour', 'A South American cocktail with pisco, lime juice, and egg white.', '/uploads/cocktails/pisco_sour.jpg', 2, '2023-07-19'),
-    (13, 'Brandy Alexander', 'A creamy cocktail with brandy and cream.', '/uploads/cocktails/brandy_alexander.jpg', 3, '2023-09-25'),
-    (14, 'Rum Punch', 'A rum cocktail with pineapple juice and grenadine.', '/uploads/cocktails/rum_punch.jpg', 2, '2023-08-02'),
-    (15, 'Gin Fizz', 'A gin cocktail with lemon juice and soda water.', '/uploads/cocktails/gin_fizz.jpg', 1, '2023-06-17');
+    (1, 'Mojito', 'A refreshing mint cocktail with lime and rum.', '/uploads/cocktails/mojito.jpeg
+    ', 2, '2023-06-15'),
+    (2, 'Old Fashioned', 'A whiskey-based cocktail with a hint of citrus.', '/uploads/cocktails/old_fashioned.jpeg
+    ', 1, '2023-07-20'),
+    (3, 'Margarita', 'A classic tequila cocktail with lime juice and salt.', '/uploads/cocktails/margarita.jpeg
+    ', 2, '2023-08-05'),
+    (4, 'Negroni', 'A bittersweet cocktail made with gin, Campari, and sweet vermouth.', '/uploads/cocktails/negroni.jpeg
+    ', 1, '2023-06-25'),
+    (5, 'Pina Colada', 'A tropical cocktail made with rum, coconut cream, and pineapple juice.', '/uploads/cocktails/pina_colada.jpeg
+    ', 2, '2023-07-30'),
+    (6, 'Daiquiri', 'A rum cocktail with lime and sugar syrup.', '/uploads/cocktails/daiquiri.jpeg
+    ', 2, '2023-08-10'),
+    (7, 'Cosmopolitan', 'A vodka cocktail with cranberry juice and triple sec.', '/uploads/cocktails/cosmopolitan.jpeg
+    ', 2, '2023-06-18'),
+    (8, 'Whiskey Sour', 'A classic cocktail made with whiskey and lemon juice.', '/uploads/cocktails/whiskey_sour.jpeg
+    ', 1, '2023-08-22'),
+    (9, 'Manhattan', 'A whiskey cocktail with sweet vermouth and bitters.', '/uploads/cocktails/manhattan.jpeg
+    ', 1, '2023-09-12'),
+    (10, 'Mai Tai', 'A tropical rum cocktail with orange and lime juices.', '/uploads/cocktails/mai_tai.jpeg
+    ', 2, '2023-06-15'),
+    (11, 'Gin and Tonic', 'A simple cocktail with gin and tonic water.', '/uploads/cocktails/gin_and_tonic.jpeg
+    ', 1, '2023-08-20'),
+    (12, 'Tequila Sunrise', 'A tequila cocktail with orange juice and grenadine.', '/uploads/cocktails/tequila_sunrise.jpeg
+    ', 2, '2023-07-01'),
+    (13, 'Bloody Mary', 'A vodka cocktail with tomato juice and spices.', '/uploads/cocktails/bloody_mary.jpeg
+    ', 3, '2023-09-15'),
+    (14, 'Screwdriver', 'A simple vodka cocktail with orange juice.', '/uploads/cocktails/screwdriver.jpeg
+    ', 3, '2023-07-25'),
+    (15, 'Cuba Libre', 'A rum cocktail with cola and lime juice.', '/uploads/cocktails/cuba_libre.jpeg
+    ', 3, '2023-08-05'),
+    (1, 'Long Island Iced Tea', 'A strong cocktail with vodka, rum, tequila, gin, and triple sec.', '/uploads/cocktails/long_island_iced_tea.jpeg
+    ', 2, '2023-09-08'),
+    (2, 'Tom Collins', 'A gin cocktail with lemon juice and soda water.', '/uploads/cocktails/tom_collins.jpeg
+    ', 1, '2023-07-28'),
+    (3, 'French 75', 'A gin cocktail with lemon juice and champagne.', '/uploads/cocktails/french_75.jpeg
+    ', 1, '2023-08-15'),
+    (4, 'Caipirinha', 'A Brazilian cocktail made with cachaça, lime, and sugar.', '/uploads/cocktails/caipirinha.jpeg
+    ', 3, '2023-09-05'),
+    (5, 'Martini', 'A classic gin cocktail with vermouth.', '/uploads/cocktails/martini.jpeg
+    ', 1, '2023-06-22'),
+    (6, 'Paloma', 'A tequila cocktail with grapefruit soda and lime.', '/uploads/cocktails/paloma.jpeg
+    ', 2, '2023-09-18'),
+    (7, 'Aperol Spritz', 'A refreshing cocktail with Aperol, Prosecco, and soda water.', '/uploads/cocktails/aperol_spritz.jpeg
+    ', 2, '2023-08-20'),
+    (8, 'Sazerac', 'A whiskey cocktail with bitters and sugar.', '/uploads/cocktails/sazerac.jpeg
+    ', 1, '2023-07-12'),
+    (9, 'Moscow Mule', 'A vodka cocktail with ginger beer and lime.', '/uploads/cocktails/moscow_mule.jpeg
+    ', 2, '2023-06-30'),
+    (10, 'Sidecar', 'A brandy cocktail with triple sec and lemon juice.', '/uploads/cocktails/sidecar.jpeg
+    ', 1, '2023-08-03'),
+    (11, 'Mint Julep', 'A bourbon cocktail with mint and sugar syrup.', '/uploads/cocktails/mint_julep.jpeg
+    ', 1, '2023-09-22'),
+    (12, 'Pisco Sour', 'A South American cocktail with pisco, lime juice, and egg white.', '/uploads/cocktails/pisco_sour.jpeg
+    ', 2, '2023-07-19'),
+    (13, 'Brandy Alexander', 'A creamy cocktail with brandy and cream.', '/uploads/cocktails/brandy_alexander.jpeg
+    ', 3, '2023-09-25'),
+    (14, 'Rum Punch', 'A rum cocktail with pineapple juice and grenadine.', '/uploads/cocktails/rum_punch.jpeg
+    ', 2, '2023-08-02'),
+    (15, 'Gin Fizz', 'A gin cocktail with lemon juice and soda water.', '/uploads/cocktails/gin_fizz.jpeg
+    ', 1, '2023-06-17');
 
 -- 14. Seed Data for `cocktail_ingredients`
 INSERT INTO cocktail_ingredients (cocktail_id, ingredient_id, quantity, unit_id)
