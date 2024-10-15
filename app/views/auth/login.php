@@ -1,6 +1,5 @@
-<?php
-// Include the header
-include_once __DIR__ . '/../layout/header.php';
+<?php 
+
 ?>
 
 <div class="container">
@@ -14,7 +13,7 @@ include_once __DIR__ . '/../layout/header.php';
     }
     ?>
 
-<form action="<?php echo url('login'); ?>" method="POST">
+    <form id="ajaxLoginForm" method="POST"> <!-- Added ID here -->
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" class="form-control" id="email" name="email" required>
@@ -26,7 +25,7 @@ include_once __DIR__ . '/../layout/header.php';
         </div>
 
         <button type="submit" class="btn btn-primary">Login</button>
-        <a href="<?php echo url('register'); ?>" class="btn btn-link">Register</a>
     </form>
+    
+    <div id="loginMessage"></div> <!-- For displaying error/success messages -->
 </div>
-

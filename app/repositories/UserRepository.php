@@ -22,6 +22,23 @@ class UserRepository {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    // Check if username exists
+    public function usernameExists($username) {
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM users WHERE username = :username');
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0; // Returns true if exists
+    }
+
+    // Check if email exists
+    public function emailExists($email) {
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM users WHERE email = :email');
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0; // Returns true if exists
+    }
+
     public function create(User $user) {
         $stmt = $this->db->prepare('INSERT INTO users (username, email, password, account_status_id) VALUES (:username, :email, :password, :account_status_id)');
         

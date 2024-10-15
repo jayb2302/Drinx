@@ -4,17 +4,20 @@ use App\Routing\Router;
 require_once __DIR__ . '/router.php'; // Make sure this is correct
 require_once __DIR__ . '/app/controllers/HomeController.php';
 require_once __DIR__ . '/app/controllers/UserController.php';
+require_once __DIR__ . '/app/controllers/AuthController.php';
 require_once __DIR__ . '/app/controllers/CocktailController.php';
+
 
 $router = new Router(); // Instantiate the Router class
 
 // Define your routes
 
 $router->add('GET', '#^/$#', [HomeController::class, 'index']); // Home page
-$router->add('GET', '#^/login$#', [UserController::class, 'login']); // Login page
-$router->add('POST', '#^/login$#', [UserController::class, 'authenticate']); // Handle login
-$router->add('GET', '#^/register$#', [UserController::class, 'register']); // Registration page
-$router->add('POST', '#^/user/store$#', [UserController::class, 'store']); // Handle registration
+$router->add('GET', '#^/login$#', [AuthController::class, 'login']); // Login page
+$router->add('POST', '#^/login$#', [AuthController::class, 'authenticate']); // Handle login
+$router->add('GET', '#^/register$#', [AuthController::class, 'register']); // Registration page
+$router->add('POST', '#^/register$#', [AuthController::class, 'register']); // Handle registration
+$router->add('GET', '#^/logout$#', [AuthController::class, 'logout']); // Logout route
 
 
 // router.php
