@@ -1,109 +1,128 @@
 <?php
-
 require_once __DIR__ . '/../services/UserService.php';
-require_once __DIR__ . '/../helpers/helpers.php'; // Include your helpers file for global utility functions
 
-
-class AuthController {
+class AuthController
+{
     private $userService;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->userService = new UserService();
-
-        // Check if session has already started, if not, start it
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-    }
-
-    // Login page display
-    public function login() {
-        // If the user is already logged in, return an error message or redirect logic can be handled in the JS
-        if ($this->isLoggedIn()) {
-            echo json_encode(['success' => false, 'message' => 'User is already logged in.']);
-            return;
-        }
-        
-        // Display the login form
-        include __DIR__ . '/../views/auth/login.php';
     }
 
     // Handle user authentication
-    public function authenticate() {
-
+    public function authenticate()
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            error_log("Authenticate method called"); // Add this line for debugging
-
             $email = sanitize($_POST['email']);
             $password = $_POST['password'];
 
-            // Authenticate user through the UserService
             $user = $this->userService->authenticateUser($email, $password);
 
             if ($user) {
-                // Set session data for the logged-in user
-                $_SESSION['user_id'] = $user['user_id'];
-                $_SESSION['user_name'] = $user['username'];
-                $_SESSION['login_time'] = time(); // Store login time for session expiration checks
-                $_SESSION['sessionDate'] = date('Y-m-d H:i:s'); // Store login date/time
-                session_regenerate_id(true); // Prevent session fixation attacks
+                // Create session for the user
+                $_SESSION['user'] = [
+                    'id' => $user->getId(),
+                    'username' => $user->getUsername(),
+                    'is_admin' => $user->isAdmin(),
+                ];
 
-                echo json_encode(['success' => true, 'message' => 'Login successful.']); // Return success message
-            } 
-            else {
-                // This will help identify if the method is not being called
-                error_log("Invalid request method: " . $_SERVER['REQUEST_METHOD']);
+                // Redirect to the home page after successful login
+                header("Location: /"); 
+                exit(); 
+            } else {
+                // Handle invalid credentials
+                $_SESSION['error'] = "Invalid email or password.";
+                header("Location: /?action=login");  // Redirect back to the login form
+                exit();
             }
-            exit; // Ensure the script ends after handling the request
         }
     }
 
+    // Show the registration form
+    public function register()
+    {
+        include __DIR__ . '/../views/auth/register.php';
+    }
 
-    // Display the registration page
-    public function register() {
+    // Handle user registration
+    public function store()
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            return $this->handleRegistration(); // Handle registration form submission
-        } else {
-            unset($_SESSION['error']); // Clear previous error messages, if any
-            include __DIR__ . '/../views/auth/register.php'; // Include the registration form view
+            $username = sanitize($_POST['username']);
+            $email = sanitize($_POST['email']);
+            $password = $_POST['password'];
+
+            try {
+                if ($this->userService->registerUser($username, $email, $password, 1)) {
+                    // Set success message in session
+                    $_SESSION['success'] = "Welcome $username! Please log in.";
+                    header("Location: /?action=login");
+                    exit();
+                }
+            } catch (PDOException $e) {
+                // Check if the error is a duplicate entry for username or email
+                if ($e->getCode() == 23000) { // Integrity constraint violation (duplicate entry)
+                    // Check which field is causing the issue
+                    if (strpos($e->getMessage(), 'username') !== false) {
+                        $_SESSION['error'] = "The username '$username' is already taken. Please choose another one.";
+                    } elseif (strpos($e->getMessage(), 'email') !== false) {
+                        $_SESSION['error'] = "The email '$email' is already registered. Please use a different email.";
+                    } else {
+                        $_SESSION['error'] = "Username or email already exists. Please try a different one.";
+                    }
+                } else {
+                    $_SESSION['error'] = "Something went wrong. Please try again.";
+                }
+                header("Location: /?action=register");
+                exit();
+            }
         }
     }
 
-    // Handle user registration (via AJAX or form submission)
-    private function handleRegistration() {
-        header('Content-Type: application/json');
+    public function logout()
+    {
+        // Store the success message temporarily in a session variable
+        setcookie('logout_success', 'You have been logged out successfully.', time() + 10, "/");
 
-        $username = sanitize($_POST['username']);
-        $email = sanitize($_POST['email']);
-        $password = $_POST['password'];
-        $account_status_id = 1; // Default account status to "active"
-
-        // Validate form inputs
-        if (empty($username) || empty($email) || empty($password)) {
-            echo json_encode(['success' => false, 'message' => 'All fields are required.']);
-            return;
-        }
-
-        // Call UserService to register the user
-        $result = $this->userService->registerUser($username, $email, $password, $account_status_id);
-
-        if (!$result['success']) {
-            echo json_encode(['success' => false, 'message' => $result['message']]);
-        } else {
-            echo json_encode(['success' => true, 'message' => 'Registration successful!']);
-        }
-    }
-
-    // Log the user out and destroy the session
-    public function logout() {
-        // Destroy the session and redirect to the homepage
-        $_SESSION = [];
+        // Destroy the current session
         session_destroy();
-        redirect('/');
+
+        // Ensure the session cookie is cleared
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+
+        // Start a new session to display the success message
+        session_start();
+
+        // Move the temp_success message to a new success message
+        $_SESSION['success'] = $_SESSION['temp_success'];
+        unset($_SESSION['temp_success']); // Remove the temporary session
+
+        // Redirect to the home 
+        header("Location: /");
+        exit();
     }
 
     // Check if the user is logged in
-    public function isLoggedIn() {
-        return isset($_SESSION['user_id']);
+    public static function isLoggedIn()
+    {
+        return isset($_SESSION['user']);
+    }
+
+    // Check if the current user is an admin
+    public static function isAdmin()
+    {
+        return isset($_SESSION['user']) && $_SESSION['user']['is_admin'];
     }
 }
