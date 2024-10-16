@@ -1,0 +1,142 @@
+@import '../css/components/cards.css';
+/* General container styles */
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start; /* Ensures that items align at the top */
+  justify-content: center; /* Center the cards */
+  margin: 0 auto;
+  background-color: var(--background-primary);
+  gap: 20px; /* Space between cards */
+}
+.container {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto; /* Center the container */
+  padding: 20px; 
+  background-color: var( --button-primary-transparent); 
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  position: relative;
+}
+.formcontainer {
+  display: flex;
+  width: 60%;
+  margin: 0 auto; /* Center the container */
+  padding: 20px; 
+  background-color: var( --button-primary-transparent); 
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  position: relative;
+}
+.title {
+  background-color: var(--button-primary-transparent);
+  border-radius: 8px;
+  position: absolute;
+}
+.cocktailImage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+/* Title styles */
+h1 {
+  font-family: var(--font-display); /* Use display font for the title */
+  font-size: 2.5rem; /* Larger font size for the title */
+  color: var(--text-primary); /* Primary text color */
+  margin-bottom: 20px; /* Space below the title */
+}
+
+/* Recipe section styles */
+.recipe {
+  margin-bottom: 20px;
+  background-color: var(--button-primary-transparent);
+  display: flex;
+  flex-direction: column;
+}
+.recipeContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  position: relative;
+}
+.recipeContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.recipeHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.orderby {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position:absolute;
+  bottom: 0;
+  right: 0;
+}
+
+
+
+/* Ingredient and step lists */
+ul, ol {
+  padding-left: 20px; /* Indentation for lists */
+  margin-bottom: 20px; /* Space below the lists */
+}
+
+
+
+/* Link styles */
+a {
+  color: var(--text-link); /* Link color */
+  text-decoration: none; /* Remove underline */
+}
+
+a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+.cocktailImage {
+  height: auto;
+  border-radius: 8px;
+  display: flex;
+ 
+}
+
+.cocktailImage img {
+  width: 20em;
+  height: auto;
+  border-radius: 8px;
+}
+
+.tag {
+  background-color: var(--accent-secondary); 
+  color: var(--text-secondary); 
+  padding: 5px 5px; 
+  width: auto;
+  border-radius: 5px; 
+  margin-right: 5px; 
+  
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .container {
+      padding: 15px; /* Reduce padding on small screens */
+  }
+
+  h1 {
+      font-size: 2rem; /* Smaller font size for titles on mobile */
+  }
+}
