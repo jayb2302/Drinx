@@ -161,7 +161,12 @@ class CocktailRepository {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    
+    public function findByUserId($userId) {
+        $stmt = $this->db->prepare("SELECT * FROM cocktails WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);  // Return as an array of objects
+    }
 
 }
 ?>

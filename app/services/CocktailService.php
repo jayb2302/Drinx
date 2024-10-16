@@ -3,23 +3,26 @@ require_once __DIR__ . '/../repositories/CocktailRepository.php';
 require_once __DIR__ . '/../repositories/CategoryRepository.php';
 require_once __DIR__ . '/../repositories/IngredientRepository.php';
 require_once __DIR__ . '/../repositories/StepRepository.php';
-
+require_once __DIR__ . '/../repositories/TagRepository.php'; 
 class CocktailService {
     private $cocktailRepository;
     private $categoryRepository;
     private $ingredientRepository;
     private $stepRepository;
+    private $tagRepository; 
 
     public function __construct(
         CocktailRepository $cocktailRepository,
         CategoryRepository $categoryRepository,
         IngredientRepository $ingredientRepository,
-        StepRepository $stepRepository
+        StepRepository $stepRepository,
+        TagRepository $tagRepository 
     ) {
-        $this->cocktailRepository = $cocktailRepository;
+        $this->cocktailRepository = new CocktailRepository();
         $this->categoryRepository = $categoryRepository;
         $this->ingredientRepository = $ingredientRepository;
         $this->stepRepository = $stepRepository;
+        $this->tagRepository = $tagRepository; // Initialize the tag repository
     }
 
     // Cocktail CRUD operations
@@ -79,6 +82,7 @@ class CocktailService {
         }
     }
 
+  
     public function deleteCocktailStep($stepId) {
         return $this->stepRepository->deleteStep($stepId);
     }
@@ -91,7 +95,28 @@ class CocktailService {
     public function getCategoryByCocktailId($cocktailId) {
         return $this->categoryRepository->getCategoryByCocktailId($cocktailId);
     }
+    
+    public function getUserRecipes($userId) {
+        return $this->cocktailRepository->findByUserId($userId);
+    }
 
-   
+    
+
+    // Tag-related operations
+    public function getCocktailTags($cocktailId) {
+        return $this->tagRepository->getTagsByCocktailId($cocktailId);
+    }
+
+    public function addTagToCocktail($cocktailId, $tagId) {
+        return $this->tagRepository->addTagToCocktail($cocktailId, $tagId);
+    }
+
+    public function removeTagFromCocktail($cocktailId, $tagId) {
+        return $this->tagRepository->removeTagFromCocktail($cocktailId, $tagId);
+    }
+
+    public function getAllTags() {
+        return $this->tagRepository->getAllTags();
+    }
 }
 ?>

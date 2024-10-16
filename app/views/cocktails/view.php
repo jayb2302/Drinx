@@ -1,78 +1,78 @@
-<?php 
-require_once __DIR__ . '/../../config/database.php'; // Ensure this is included for DB connection
-require_once __DIR__ . '/../../repositories/CocktailRepository.php'; 
-require_once __DIR__ . '/../../repositories/CategoryRepository.php';
-require_once __DIR__ . '/../../repositories/IngredientRepository.php';
-require_once __DIR__ . '/../../repositories/StepRepository.php';
-require_once __DIR__ . '/../../services/CocktailService.php';
+<?php
+include __DIR__ . '/../layout/header.php'; // Include header
 
-// Get the database connection
-$db = Database::getConnection();
+// Ensure all variables ($cocktail, $ingredients, $steps, $category, $tags) are passed correctly
+$categoryName = $category ? htmlspecialchars($category['category_name']) : 'Unknown';
+$tagsArray = is_array($tags) ? array_column($tags, 'name') : [];
+error_log("In view.php: Is Editing? " . ($isEditing ? 'true' : 'false'));
 
-// Instantiate repositories
-$cocktailRepository = new CocktailRepository($db);
-$categoryRepository = new CategoryRepository($db);
-$ingredientRepository = new IngredientRepository($db);
-$stepRepository = new StepRepository($db);
-
-// Instantiate CocktailService with required repositories
-$cocktailService = new CocktailService(
-    $cocktailRepository,
-    $categoryRepository,
-    $ingredientRepository,
-    $stepRepository
-);
-
-// Here, $cocktailId is provided directly from the route, not through $_GET
-$cocktailId = intval($cocktailId); // Make sure to sanitize
-
-error_log("Viewing cocktail ID: " . $cocktailId); // Log the cocktail ID
-
-$cocktail = $cocktailService->getCocktailById($cocktailId);
-
-// Check if cocktail exists
-if ($cocktail) {
-    ?>
-    <h1><?= htmlspecialchars($cocktail->getTitle()) ?></h1> <!-- Using getter -->
-    <p><?= htmlspecialchars($cocktail->getDescription()) ?></p> <!-- Using getter -->
-    <img src="<?= htmlspecialchars($cocktail->getImage()) ?>" alt="<?= htmlspecialchars($cocktail->getTitle()) ?>"> <!-- Using getter -->
-    
-
-    <h2>Ingredients</h2>
-    <ul>
-    <?php
-    // Fetch and display ingredients
-    $ingredients = $cocktailService->getCocktailIngredients($cocktailId);
-    if (!empty($ingredients)) {
-        foreach ($ingredients as $ingredient) {
-            echo '<li>' . htmlspecialchars($ingredient['ingredient_name']) . ': ' . htmlspecialchars($ingredient['quantity']) . ' ' . htmlspecialchars($ingredient['unit_name']) . '</li>';
-        }
-    } else {
-        echo '<li>No ingredients found for this cocktail.</li>';
-    }
-    ?>
-</ul>
-
-    <h2>Preparation Steps</h2>
-    <ol>
-        <?php
-        // Fetch and display steps
-        $steps = $cocktailService->getCocktailSteps($cocktailId);
-        if (!empty($steps)) {
-            foreach ($steps as $step) {
-                echo '<li>' . htmlspecialchars($step['instruction']) . '</li>';
-            }
-        } else {
-            echo '<li>No preparation steps found for this cocktail.</li>';
-        }
-        ?>
-    </ol>
-
-    <a href="/cocktails/edit/<?= $cocktail->getCocktailId() ?>">Edit Cocktail</a> <!-- Using getter -->
-    <a href="/cocktails">Back to Cocktails</a>
-    <?php
+// Check if we are in edit mode
+if ($isEditing) {
+    // Load the form for editing the cocktail
+    include __DIR__ . '/form.php';
 } else {
-    // If cocktail not found
-    echo "<p>Cocktail not found.</p>";
-}
+    ?>
+   
+    <div class="cocktailGrid">
+        <div class="cocktail-actions">
+            <button>
+                <a href="/cocktails" class="">Back to Cocktails</a>
+            </button>
+        </div>
+
+        <!-- Debugging: Check if we are in edit mode -->
+        <?php
+        echo $isEditing ? 'Editing Mode' : 'View Mode'; // Display the mode for debugging
+        ?>
+
+        <!-- Viewing Mode: Show the cocktail details -->
+        <div class="recipeContainer">
+            <!-- Category and Tags -->
+            <div class="orderby">
+                <p class="tag font-semibold"><?= $categoryName ?></p>
+                <p class="tag text-lg font-semibold"><?= htmlspecialchars(implode(', ', $tagsArray)) ?></p>
+            </div>
+
+            <!-- Display the cocktail image -->
+            <div class="cocktailImage">
+                <?php $imageSrc = $cocktail->getImage(); ?>
+                <?php if ($imageSrc): ?>
+                    <img src="<?= htmlspecialchars($imageSrc) ?>" alt="<?= htmlspecialchars($cocktail->getTitle()) ?>" class="mb-4">
+                <?php else: ?>
+                    <p>No image available for this cocktail.</p>
+                <?php endif; ?>
+            </div>
+
+            <!-- Display the cocktail title -->
+            <h1 class="title"><?= htmlspecialchars($cocktail->getTitle()) ?></h1>
+        </div>
+
+        <div class="recipeHeader">
+            <!-- Display the cocktail description -->
+            <p><?= htmlspecialchars($cocktail->getDescription()) ?></p>
+
+            <!-- Ingredients section -->
+            <h2 class="text-2xl font-semibold mt-6 mb-2">Ingredients</h2>
+            <ul class="list-disc ml-5">
+                <?php foreach ($ingredients as $ingredient): ?>
+                    <li><?= htmlspecialchars($ingredient['ingredient_name']) ?>: <?= htmlspecialchars($ingredient['quantity']) ?> <?= htmlspecialchars($ingredient['unit_name']) ?></li>
+                <?php endforeach; ?>
+            </ul>
+
+            <!-- Steps section -->
+            <h2 class="text-2xl font-semibold mt-6 mb-2">Preparation Steps</h2>
+            <ol class="list-decimal ml-5">
+                <?php foreach ($steps as $step): ?>
+                    <li><?= htmlspecialchars($step['instruction']) ?></li>
+                <?php endforeach; ?>
+            </ol>
+
+        </div> <!-- End recipeHeader -->
+    </div> <!-- End cocktailGrid -->
+
+    <button>
+        <a href="/cocktails/<?= $cocktail->getCocktailId() ?>-<?= urlencode($cocktail->getTitle()) ?>/edit" class="text-blue-500 hover:underline">Edit Cocktail</a>
+    </button>
+<?php
+} // End of if-else for edit mode
 ?>
