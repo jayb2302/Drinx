@@ -9,11 +9,10 @@
     
     <!-- Include CSS -->
     <link rel="stylesheet" href="<?= asset('assets/css/style.css'); ?>">
-    <link rel="stylesheet" href="<?= asset('assets/css/cocktails.css'); ?>">
-    
+    <link rel="stylesheet" href="https://use.typekit.net/qcq3ahl.css">
 
 </head>
 <?php
-echo "Page Title: " . (isset($pageTitle) ? $pageTitle : 'Not Set') . "<br>";
-echo "Meta Title: " . (isset($metaTitle) ? $metaTitle : 'Not Set') . "<br>";
+// echo "Page Title: " . (isset($pageTitle) ? $pageTitle : 'Not Set') . "<br>";
+// echo "Meta Title: " . (isset($metaTitle) ? $metaTitle : 'Not Set') . "<br>";
 ?>
