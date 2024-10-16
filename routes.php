@@ -7,30 +7,27 @@ require_once __DIR__ . '/app/controllers/UserController.php';
 require_once __DIR__ . '/app/controllers/AuthController.php';
 require_once __DIR__ . '/app/controllers/CocktailController.php';
 
-$router = new Router(); 
 
-//Routes
+$router = new Router(); // Instantiate the Router class
+
+// Define your routes
+
 $router->add('GET', '#^/$#', [HomeController::class, 'index']); // Home page
+$router->add('GET', '#^/login$#', [AuthController::class, 'login']); // Login page
+$router->add('POST', '#^/login$#', [AuthController::class, 'authenticate']); // Handle login
+$router->add('GET', '#^/register$#', [AuthController::class, 'register']); // Registration page
+$router->add('POST', '#^/register$#', [AuthController::class, 'register']); // Handle registration
+$router->add('GET', '#^/logout$#', [AuthController::class, 'logout']); // Logout route
 
-// Authentication routes
 
-$router->add('GET', '#^/login$#', [UserController::class, 'login']); // Login page
-$router->add('POST', '#^/login$#', [UserController::class, 'authenticate']); // Handle login
-$router->add('GET', '#^/register$#', [UserController::class, 'register']); // Registration page
-$router->add('POST', '#^/user/store$#', [UserController::class, 'store']); // Handle registration
+// router.php
 
-// User routes
-$router->add('GET', '#^/profile$#', [UserController::class, 'profile']); // Show profile
-$router->add('POST', '#^/profile/update$#', [UserController::class, 'updateProfile']); // Handle profile update
-// CRUD Routes for Cocktails
+// $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']);
+// $router->add('GET', '#^/cocktails/add$#', [CocktailController::class, 'add']);
 
-$router->add('GET', '#^/cocktails/add$#', [CocktailController::class, 'add']); // Show form to add a new cocktail
-$router->add('POST', '#^/cocktails$#', [CocktailController::class, 'store']); // Handle cocktail submission
-$router->add('GET', '#^/cocktails/edit/([0-9]+)$#', [CocktailController::class, 'edit']); // Show edit form for a cocktail
-$router->add('POST', '#^/cocktails/update/(\d+)$#', [CocktailController::class, 'update']); // Update cocktail
-$router->add('POST', '#^/cocktails/delete/([0-9]+)$#', [CocktailController::class, 'delete']); // Delete a cocktail
-$router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // List all cocktails
-$router->add('GET', '#^/cocktails/([0-9]+)-(.+)$#', [CocktailController::class, 'view']); // View specific cocktail
+// require_once __DIR__ . '/router.php'; // Include the router first
+
+// // Show the login page
 // get('login', function() {
 //     require_once __DIR__ . '/../app/controllers/UserController.php'; 
 //     $controller = new UserController();
