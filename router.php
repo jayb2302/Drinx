@@ -17,6 +17,9 @@ class Router {
         }
         return null; // No matching route found
     }
+    public function get($path, $action) {
+        $this->add('GET', $path, $action);
+    }
 }
 // function get($route, $path_to_include)
 // {

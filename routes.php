@@ -1,9 +1,10 @@
 <?php
 use App\Routing\Router;
-// Include files
-require_once __DIR__ . '/router.php'; 
+// routes.php
+require_once __DIR__ . '/router.php'; // Make sure this is correct
 require_once __DIR__ . '/app/controllers/HomeController.php';
 require_once __DIR__ . '/app/controllers/UserController.php';
+require_once __DIR__ . '/app/controllers/AuthController.php';
 require_once __DIR__ . '/app/controllers/CocktailController.php';
 
 $router = new Router(); 
@@ -12,14 +13,16 @@ $router = new Router();
 $router->add('GET', '#^/$#', [HomeController::class, 'index']); // Home page
 
 // Authentication routes
+
 $router->add('GET', '#^/login$#', [UserController::class, 'login']); // Login page
 $router->add('POST', '#^/login$#', [UserController::class, 'authenticate']); // Handle login
 $router->add('GET', '#^/register$#', [UserController::class, 'register']); // Registration page
 $router->add('POST', '#^/user/store$#', [UserController::class, 'store']); // Handle registration
 
+// User routes
+$router->add('GET', '#^/profile$#', [UserController::class, 'profile']); // Show profile
+$router->add('POST', '#^/profile/update$#', [UserController::class, 'updateProfile']); // Handle profile update
 // CRUD Routes for Cocktails
-
-
 
 $router->add('GET', '#^/cocktails/add$#', [CocktailController::class, 'add']); // Show form to add a new cocktail
 $router->add('POST', '#^/cocktails$#', [CocktailController::class, 'store']); // Handle cocktail submission
