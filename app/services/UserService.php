@@ -71,6 +71,9 @@ class UserService {
      public function updateUserProfile($userId, $firstName, $lastName, $bio, $profilePicture = null) {
         return $this->userRepository->updateProfile($userId, $firstName, $lastName, $bio, $profilePicture);
     }
+    public function getUserByUsername($username) {
+        return $this->userRepository->findByUsername($username);
+    }
     public function getUserStats($userId) {
         return $this->userRepository->getUserStats($userId);
     }

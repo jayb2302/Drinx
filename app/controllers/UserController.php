@@ -123,4 +123,27 @@ class UserController {
             redirect('settings');  // Redirect back to settings page
         }
     }
+    public function profileByUsername($username) {
+        if (!AuthController::isLoggedIn()) {
+            redirect('login');
+        }
+    
+        // Fetch user profile by username
+        $profile = $this->userService->getUserByUsername($username);
+    
+        if (!$profile) {
+            // If no profile is found, you can redirect to a 404 page or show a message
+            echo "User not found.";
+            return;
+        }
+    
+        $userId = $profile->getId();
+        $userRecipes = $this->cocktailService->getUserRecipes($userId);
+        $userBadges = $this->badgeService->getUserBadges($userId);
+        $profileStats = $this->userService->getUserStats($userId);
+    
+        // Pass the profile data to the view
+        require_once __DIR__ . '/../views/user/profile.php';
+    }
+
 }

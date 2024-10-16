@@ -56,29 +56,31 @@ class UserRepository
     }
 
     // Save a new user to the database
-    public function save(User $user) {
+    public function save(User $user)
+    {
         $username = $user->getUsername();
         $email = $user->getEmail();
         $password = $user->getPassword();
-        $accountStatusId = $user->getAccountStatusId();  
+        $accountStatusId = $user->getAccountStatusId();
         $isAdmin = $user->isAdmin();
-    
+
         $stmt = $this->db->prepare("
             INSERT INTO users (username, email, password, account_status_id, join_date, is_admin) 
             VALUES (:username, :email, :password, :account_status_id, CURRENT_TIMESTAMP, :is_admin)
         ");
-        
+
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
         $stmt->bindParam(':account_status_id', $accountStatusId);
         $stmt->bindParam(':is_admin', $isAdmin, PDO::PARAM_BOOL);
-    
+
         return $stmt->execute();
     }
 
     // Update an existing user
-    public function update(User $user) {
+    public function update(User $user)
+    {
         $stmt = $this->db->prepare("
             UPDATE users SET 
                 username = :username, 
@@ -98,8 +100,9 @@ class UserRepository
         return $stmt->execute();
     }
 
-      // Update profile information
-      public function updateProfile($userId, $firstName, $lastName, $bio, $profilePicture) {
+    // Update profile information
+    public function updateProfile($userId, $firstName, $lastName, $bio, $profilePicture)
+    {
         $stmt = $this->db->prepare("
             UPDATE user_profile 
             SET first_name = :first_name, last_name = :last_name, bio = :bio, profile_picture = :profile_picture 
@@ -113,8 +116,9 @@ class UserRepository
         return $stmt->execute();
     }
 
-     // Helper function to map DB result to User object (with profile data)
-     private function mapToUserWithProfile($result) {
+    // Helper function to map DB result to User object (with profile data)
+    private function mapToUserWithProfile($result)
+    {
         $user = $this->mapToUser($result); // Reuse mapToUser for core fields
         $user->setFirstName($result['first_name'] ?? null);
         $user->setLastName($result['last_name'] ?? null);
@@ -137,7 +141,8 @@ class UserRepository
         $user->setIsAdmin($result['is_admin']);
         return $user;
     }
-    public function getUserStats($userId) {
+    public function getUserStats($userId)
+    {
         $stmt = $this->db->prepare("
             SELECT 
                 COUNT(DISTINCT l.like_id) AS likes_received, 
@@ -150,5 +155,18 @@ class UserRepository
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);  // Return as an array
+    }
+    // Find a user by username
+    public function findByUsername($username)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            return $this->mapToUser($result);
+        }
+        return null;
     }
 }

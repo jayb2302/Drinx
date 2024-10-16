@@ -7,7 +7,7 @@
         unset($_SESSION['error']); // Clear the error after displaying
     }
     ?>
-    <form method="POST" action="/user/store">
+    <form method="POST" action="/register">
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" name="username" required>

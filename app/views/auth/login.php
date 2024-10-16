@@ -17,7 +17,7 @@ include_once __DIR__ . '/../layout/header.php';
     }
     ?>
 
-    <form action="/authenticate" method="POST">
+    <form action="/login" method="POST">
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" class="form-control" id="email" name="email" required>
