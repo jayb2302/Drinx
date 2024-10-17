@@ -1,56 +1,149 @@
 <?php
 require_once __DIR__ . '/../services/UserService.php';
+require_once __DIR__ . '/../services/CocktailService.php';
+require_once __DIR__ . '/../services/BadgeService.php';
+require_once __DIR__ . '/../repositories/CocktailRepository.php';
+require_once __DIR__ . '/../repositories/CategoryRepository.php';
+require_once __DIR__ . '/../repositories/IngredientRepository.php';
+require_once __DIR__ . '/../repositories/StepRepository.php';
+require_once __DIR__ . '/../repositories/TagRepository.php';
 
 class UserController {
     private $userService;
+    private $cocktailService;
+    private $badgeService;
 
     public function __construct() {
+        $dbConnection = Database::getConnection(); // Assuming you have a method to get DB connection
+
+        // Initialize repositories
+        $cocktailRepository = new CocktailRepository($dbConnection);
+        $categoryRepository = new CategoryRepository($dbConnection);
+        $ingredientRepository = new IngredientRepository($dbConnection);
+        $stepRepository = new StepRepository($dbConnection);
+        $tagRepository = new TagRepository($dbConnection);
+
+        // Pass repositories into CocktailService
+        $this->cocktailService = new CocktailService(
+            $cocktailRepository,
+            $categoryRepository,
+            $ingredientRepository,
+            $stepRepository,
+            $tagRepository
+        );
         $this->userService = new UserService();
+        $this->badgeService = new BadgeService(); 
     }
 
-    public function login() {
-        include __DIR__ . '/../views/auth/login.php'; // Ensure this path is correct
+    // 1. Show the user profile
+    public function profile() {
+        if (!AuthController::isLoggedIn()) {
+            redirect('login');
+        }
+        // Fetch user profile information
+        $userId = $_SESSION['user']['id'];
+        // Fetch user profile data with user ID
+        $profile = $this->userService->getUserWithProfile($_SESSION['user']['id']);
+        $userRecipes = $this->cocktailService->getUserRecipes($userId);
+        $userBadges = $this->badgeService->getUserBadges($userId);
+        $profileStats = $this->userService->getUserStats($userId);
+
+        // Pass the profile data to the view
+        require_once __DIR__ . '/../views/user/profile.php';
     }
 
-    public function authenticate() {
+    // 2. Show user settings
+    public function settings() {
+        if (!AuthController::isLoggedIn()) {
+            redirect('login');  // Redirect to login if not logged in
+        }
+
+        $user = $this->userService->getUserById($_SESSION['user']['id']);  // Fetch user data
+        require_once __DIR__ . '/../views/user/settings.php';  // Show settings view
+    }
+
+    // 3. Update user profile (username, email)
+    public function updateProfile() {
+        if (!AuthController::isLoggedIn()) {
+            redirect('login');
+        }
+    
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = sanitize($_POST['email']);
-            $password = $_POST['password'];
-
-            $user = $this->userService->authenticateUser($email, $password);
-            if ($user) {
-                $_SESSION['user_id'] = $user['user_id']; // Make sure this key matches your user array
-                $_SESSION['user_name'] = $user['username'];
-                redirect('/'); // Redirect to home after successful login
-            } else {
-                $_SESSION['error'] = "Invalid email or password.";
-                redirect('login'); // Redirect back to login on failure
+            $firstName = sanitize($_POST['first_name']);
+            $lastName = sanitize($_POST['last_name']);
+            $bio = sanitize($_POST['bio']);
+    
+            // Handle file upload if a new profile picture is uploaded
+            $profilePicture = null;
+            if (!empty($_FILES['profile_picture']['name'])) {
+                $profilePicture = $this->uploadProfilePicture($_FILES['profile_picture']);
             }
+    
+            // Call the service to update the profile
+            if ($this->userService->updateUserProfile($_SESSION['user']['id'], $firstName, $lastName, $bio, $profilePicture)) {
+                $_SESSION['success'] = "Profile updated successfully.";
+            } else {
+                $_SESSION['error'] = "Failed to update profile.";
+            }
+    
+            redirect('profile');
         }
     }
 
-    public function register() {
-        include __DIR__ . '/../views/auth/register.php'; // Ensure this path is correct
+    private function uploadProfilePicture($file) {
+        $targetDir = __DIR__ . '/../../public/uploads/profile_pictures/';
+        $fileName = basename($file['name']);
+        $targetFile = $targetDir . $fileName;
+    
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+            return $fileName; // Return the file name for storage
+        }
+    
+        return null; // Return null if upload failed
     }
 
-    public function store() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $username = sanitize($_POST['username']);
-            $email = sanitize($_POST['email']);
-            $password = $_POST['password'];
-            $account_status_id = 1; // Default to active status
+    // 4. Change user password
+    public function changePassword() {
+        if (!AuthController::isLoggedIn()) {
+            redirect('login');  // Redirect to login if not logged in
+        }
 
-            if ($this->userService->registerUser($username, $email, $password, $account_status_id)) {
-                redirect('login'); // Redirect to login after successful registration
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $currentPassword = $_POST['current_password'];
+            $newPassword = $_POST['new_password'];
+
+            // Attempt to change password using the service
+            if ($this->userService->changeUserPassword($_SESSION['user']['id'], $currentPassword, $newPassword)) {
+                $_SESSION['success'] = "Password changed successfully.";  // Success message
             } else {
-                $_SESSION['error'] = "Registration failed. Please try again.";
-                redirect('register'); // Redirect back to register on failure
+                $_SESSION['error'] = "Failed to change password. Please try again.";  // Error message
             }
+
+            redirect('settings');  // Redirect back to settings page
         }
     }
-
-    public function logout() {
-        session_destroy();
-        redirect('/'); // Redirect to home after logout
+    public function profileByUsername($username) {
+        if (!AuthController::isLoggedIn()) {
+            redirect('login');
+        }
+    
+        // Fetch user profile by username
+        $profile = $this->userService->getUserByUsername($username);
+    
+        if (!$profile) {
+            // If no profile is found, you can redirect to a 404 page or show a message
+            echo "User not found.";
+            return;
+        }
+    
+        $userId = $profile->getId();
+        $userRecipes = $this->cocktailService->getUserRecipes($userId);
+        $userBadges = $this->badgeService->getUserBadges($userId);
+        $profileStats = $this->userService->getUserStats($userId);
+    
+        // Pass the profile data to the view
+        require_once __DIR__ . '/../views/user/profile.php';
     }
+
 }

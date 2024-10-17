@@ -1,23 +1,53 @@
 <?php
-require_once __DIR__ . '/../../services/CocktailService.php';
-require_once __DIR__ . '/../layout/header.php'; // Correct the path by adding a leading slash
-$cocktailService = new CocktailService();
-$cocktails = $cocktailService->getAllCocktails();
+// Include the header
+include_once __DIR__ . '/../layout/header.php';
+$metaTitle = "Cocktails";
+$pageTitle = "Cocktails";
 ?>
 
-<h1>Cocktails</h1>
-<a href="/cocktails/add.php">Add New Cocktail</a>
-
 <?php if (!empty($cocktails)): ?>
-    <ul>
-        <?php foreach ($cocktails as $cocktail): ?>
-            <li>
-                <a href="/cocktails/view.php?id=<?= htmlspecialchars($cocktail['cocktail_id']) ?>">
-                    <?= htmlspecialchars($cocktail['title']) ?>
-                </a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
+    <?php foreach ($cocktails as $cocktail): ?>
+        <?php
+        $imageSrc = $cocktail->getImage();
+
+        // Ensure correct path construction
+        if (!empty($imageSrc)) {
+            // If the imageSrc already contains '/uploads/cocktails/', use it directly, else prepend it
+            $imagePath = strpos($imageSrc, '/uploads/cocktails/') === false ? "/uploads/cocktails/$imageSrc" : $imageSrc;
+        } else {
+            // Default image if none exists
+            $imagePath = '/uploads/cocktails/default-image.webp';
+        }
+
+        // Prevent htmlspecialchars from receiving null
+        $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
+        ?>
+
+        <!-- Individual cocktail card -->
+
+ <div class="cocktailGrid">
+
+     <article class="cocktailCard">
+         <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
+             <img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= $cocktailTitle ?>" class="cocktailImage">
+            </a>
+            <div class="cocktailInfo">
+                <h3><?= $cocktailTitle ?></h3>
+            </div>
+            <button>
+                <a href="/cocktails/<?= $cocktail->getCocktailId() ?>-<?= urlencode($cocktail->getTitle()) ?>/edit" class="text-blue-500 hover:underline">Edit Cocktail</a>
+            </button>
+        </article>
+    </div>
+
+
+    <?php endforeach; ?>
+
 <?php else: ?>
     <p>No cocktails available.</p>
 <?php endif; ?>
+
+
+
+<!-- Include footer -->
+<?php require_once __DIR__ . '/../layout/footer.php'; ?>

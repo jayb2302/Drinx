@@ -1,15 +1,20 @@
 <?php 
 //header 
-require_once __DIR__ . '/layout/header.php';
-?>
+include __DIR__ . '/layout/header.php';
 
+// Check if the logout_success cookie is set and display it
+if (isset($_COOKIE['logout_success'])) {
+    echo '<div class="alert alert-success">' . htmlspecialchars($_COOKIE['logout_success']) . '</div>';
+    // Clear the cookie after displaying the message
+    setcookie('logout_success', '', time() - 3600, "/"); // Expire the cookie immediately
+}
+?>
 
 <!-- home.php -->
 <h1>Welcome to Drinx</h1>
 
-<!-- Links to show forms -->
-<a href="?action=login">Login</a>
-<a href="?action=register">Register</a>
+
+<a href="/cocktails/add">Add New Cocktail</a>
 <!-- Logic to Include Forms -->
 <?php 
 if (isset($_GET['action'])) {
@@ -22,19 +27,8 @@ if (isset($_GET['action'])) {
 ?>
 <!-- Display Cocktails -->
 <h2>All Cocktails</h2>
-<?php if (!empty($cocktails)): ?>
-    <ul>
-        <?php foreach ($cocktails as $cocktail): ?>
-            <li>
-                <a href="/cocktails/view.php?id=<?= htmlspecialchars($cocktail['cocktail_id']) ?>">
-                    <?= htmlspecialchars($cocktail['title']) ?>
-                </a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-<?php else: ?>
-    <p>No cocktails available.</p>
-<?php endif; ?>
-
+<div class="wrapper">
+    <?php include __DIR__ . '/cocktails/index.php'; ?>
+</div>
 
 

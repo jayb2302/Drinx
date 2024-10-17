@@ -1,0 +1,40 @@
+/* buttons.css */
+
+button {
+    padding: 10px 15px;
+    display: inline-block;
+    justify-content: end;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    background-color: var(--button-secondary);
+}
+
+button.primary {
+    background-color: var(--button-primary);
+    color: var(--text-secondary);
+}
+
+button.primary:hover {
+    background-color: var(--button-hover);
+}
+
+button.secondary {
+    background-color: var(--button-secondary);
+    color: var(--text-secondary);
+}
+
+button.secondary:hover {
+    background-color: var(--accent-hover);
+}
+.button {
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    background-color: var(--button-primary);
+}
