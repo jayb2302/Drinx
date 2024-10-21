@@ -3,26 +3,31 @@ require_once __DIR__ . '/../repositories/CocktailRepository.php';
 require_once __DIR__ . '/../repositories/CategoryRepository.php';
 require_once __DIR__ . '/../repositories/IngredientRepository.php';
 require_once __DIR__ . '/../repositories/StepRepository.php';
-require_once __DIR__ . '/../repositories/TagRepository.php'; 
+require_once __DIR__ . '/../repositories/TagRepository.php';
+require_once __DIR__ . '/../repositories/DifficultyRepository.php'; 
+
 class CocktailService {
     private $cocktailRepository;
     private $categoryRepository;
-    private $ingredientRepository;
-    private $stepRepository;
-    private $tagRepository; 
+    private $ingredientService;
+    private $stepService;
+    private $tagRepository;
+    private $difficultyRepository;
 
     public function __construct(
         CocktailRepository $cocktailRepository,
         CategoryRepository $categoryRepository,
-        IngredientRepository $ingredientRepository,
-        StepRepository $stepRepository,
-        TagRepository $tagRepository 
+        IngredientService $ingredientService,   
+        StepService $stepService,              
+        TagRepository $tagRepository,
+        DifficultyRepository $difficultyRepository
     ) {
-        $this->cocktailRepository = new CocktailRepository();
+        $this->cocktailRepository = $cocktailRepository;
         $this->categoryRepository = $categoryRepository;
-        $this->ingredientRepository = $ingredientRepository;
-        $this->stepRepository = $stepRepository;
-        $this->tagRepository = $tagRepository; // Initialize the tag repository
+        $this->ingredientService = $ingredientService;
+        $this->stepService = $stepService;
+        $this->tagRepository = $tagRepository;
+        $this->difficultyRepository = $difficultyRepository;
     }
 
     // Cocktail CRUD operations
@@ -35,7 +40,7 @@ class CocktailService {
     }
 
     public function getAllCocktails() {
-        return $this->cocktailRepository->getAll(); 
+        return $this->cocktailRepository->getAll();
     }
 
     public function createCocktail($cocktailData) {
@@ -50,41 +55,24 @@ class CocktailService {
         return $this->cocktailRepository->delete($cocktailId);
     }
 
-    // Ingredient-related operations
-    public function addIngredient($cocktailId, $ingredientId, $quantity, $unitId) {
-        return $this->ingredientRepository->addIngredient($cocktailId, $ingredientId, $quantity, $unitId);
+    // Delegate ingredient operations to IngredientService
+   public function getCocktailIngredients($cocktailId) {
+        return $this->ingredientService->getIngredientsByCocktailId($cocktailId);  // Call the service
     }
 
-    public function getCocktailIngredients($cocktailId) {
-        return $this->ingredientRepository->getIngredientsByCocktailId($cocktailId);
+    public function handleCocktailIngredients($cocktailId, $ingredients, $quantities, $units) {
+        // Delegate ingredient handling to IngredientService
+        $this->ingredientService->updateIngredients($cocktailId, $ingredients, $quantities, $units);
     }
 
-    // Step-related operations
-    public function addStep($cocktailId, $instruction) {
-        return $this->stepRepository->addStep($cocktailId, $instruction);
-    }
-
-    public function clearSteps($cocktailId) {
-        return $this->stepRepository->deleteStepsByCocktailId($cocktailId);
-    }
-
+    // Delegate step operations to StepService
     public function getCocktailSteps($cocktailId) {
-        return $this->stepRepository->getStepsByCocktailId($cocktailId);
+        return $this->stepService->getStepsByCocktailId($cocktailId);  // Call the service
     }
 
-    public function updateCocktailSteps($cocktailId, $steps) {
-        // First, clear existing steps
-        $this->clearSteps($cocktailId);
-
-        // Then add new steps
-        foreach ($steps as $step) {
-            $this->addStep($cocktailId, $step);
-        }
-    }
-
-  
-    public function deleteCocktailStep($stepId) {
-        return $this->stepRepository->deleteStep($stepId);
+    public function handleCocktailSteps($cocktailId, $steps) {
+        // Delegate step handling to StepService
+        $this->stepService->updateSteps($cocktailId, $steps);
     }
 
     // Category-related operations
@@ -95,12 +83,10 @@ class CocktailService {
     public function getCategoryByCocktailId($cocktailId) {
         return $this->categoryRepository->getCategoryByCocktailId($cocktailId);
     }
-    
+
     public function getUserRecipes($userId) {
         return $this->cocktailRepository->findByUserId($userId);
     }
-
-    
 
     // Tag-related operations
     public function getCocktailTags($cocktailId) {
@@ -118,5 +104,12 @@ class CocktailService {
     public function getAllTags() {
         return $this->tagRepository->getAllTags();
     }
+
+    // Delegate ingredient clearing to IngredientService
+    public function clearIngredients($cocktailId) {
+        return $this->ingredientService->clearIngredientsByCocktailId($cocktailId);  // Use the service
+    }
+    public function getAllUnits() {
+        return $this->ingredientService->getAllUnits();
+    }
 }
-?>
