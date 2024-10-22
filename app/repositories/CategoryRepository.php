@@ -9,9 +9,11 @@ class CategoryRepository {
     }
 
     public function getAllCategories() {
-        $stmt = $this->db->query('SELECT * FROM categories');
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->db->prepare("SELECT * FROM categories");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); 
     }
+    
 
     public function getCategoryByCocktailId($cocktailId) {
         $stmt = $this->db->prepare('

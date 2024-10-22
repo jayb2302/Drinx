@@ -27,3 +27,7 @@ function redirect($path) {
 function setErrorMessage($message) {
     $_SESSION['error'] = $message;
 }
+function generateCocktailSlug($title) {
+    // Replace spaces with hyphens, and convert the title to lowercase
+    return strtolower(str_replace(' ', '-', $title));
+}

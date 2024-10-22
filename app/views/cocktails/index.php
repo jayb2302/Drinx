@@ -3,11 +3,21 @@
 include_once __DIR__ . '/../layout/header.php';
 $metaTitle = "Cocktails";
 $pageTitle = "Cocktails";
+// Start the session (if not already started)
+$loggedInUserId = $_SESSION['user']['id'] ?? null;
+?>
+<!-- admin password not working, so I am using the password_hash() function 
+     to generate a new password hash, then update admin password in database -->
+<?php
+// echo password_hash('12345678', PASSWORD_BCRYPT); 
 ?>
 
 <?php if (!empty($cocktails)): ?>
     <?php foreach ($cocktails as $cocktail): ?>
         <?php
+        // Get the cocktail's user ID
+        $cocktailUserId = $cocktail->getUserId();
+        // Get the cocktail's image
         $imageSrc = $cocktail->getImage();
 
         // Ensure correct path construction
@@ -24,21 +34,23 @@ $pageTitle = "Cocktails";
         ?>
 
         <!-- Individual cocktail card -->
-
- <div class="cocktailGrid">
-
-     <article class="cocktailCard">
-         <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
-             <img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= $cocktailTitle ?>" class="cocktailImage">
-            </a>
-            <div class="cocktailInfo">
-                <h3><?= $cocktailTitle ?></h3>
-            </div>
-            <button>
-                <a href="/cocktails/<?= $cocktail->getCocktailId() ?>-<?= urlencode($cocktail->getTitle()) ?>/edit" class="text-blue-500 hover:underline">Edit Cocktail</a>
-            </button>
-        </article>
-    </div>
+        <div class="container">
+            <article class="cocktailCard">
+                <?php if (isset($loggedInUserId) && $loggedInUserId === $cocktail->getUserId()): ?>
+                    <button>
+                        <a href="/?action=edit&cocktail_id=<?= $cocktail->getCocktailId() ?>" class="text-blue-500 hover:underline">Edit Cocktail</a>
+                    </button>
+                <?php endif; ?>
+                <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
+                    <img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= $cocktailTitle ?>" class="cocktailImage">
+                </a>
+                <div class="cocktailInfo">
+                    <h3><?= $cocktailTitle ?></h3>
+                </div>
+                <!-- Show the Edit button only if the logged-in user is the owner of the cocktail -->
+                <!-- Edit Button (only if the user owns the cocktail) -->
+            </article>
+        </div>
 
 
     <?php endforeach; ?>
@@ -46,8 +58,3 @@ $pageTitle = "Cocktails";
 <?php else: ?>
     <p>No cocktails available.</p>
 <?php endif; ?>
-
-
-
-<!-- Include footer -->
-<?php require_once __DIR__ . '/../layout/footer.php'; ?>

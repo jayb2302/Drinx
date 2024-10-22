@@ -1,65 +1,66 @@
 <?php
 use App\Routing\Router;
 
-require_once __DIR__ . '/router.php'; // Make sure this is correct
+require_once __DIR__ . '/router.php';
 require_once __DIR__ . '/app/controllers/HomeController.php';
 require_once __DIR__ . '/app/controllers/UserController.php';
-require_once __DIR__ . '/app/controllers/AuthController.php';
 require_once __DIR__ . '/app/controllers/AuthController.php';
 require_once __DIR__ . '/app/controllers/CocktailController.php';
 
 $router = new Router(); // Instantiate the Router class
 
-// Define your routes
+// Home Routes
 $router->add('GET', '#^/$#', [HomeController::class, 'index']); // Home page
+
+// Authentication routes
 $router->add('POST', '#^/login$#', [AuthController::class, 'authenticate']); // Handle login
 $router->add('POST', '#^/register$#', [AuthController::class, 'store']); // Handle registration
 $router->add('GET', '#^/logout$#', [AuthController::class, 'logout']); // Logout route
 
 // User routes
 $router->add('GET', '#^/profile$#', [UserController::class, 'profile']); // Show profile
-// User profile route with dynamic username
-$router->add('GET', '#^/profile/([a-zA-Z0-9_-]+)$#', [UserController::class, 'profileByUsername']);
+$router->add('GET', '#^/profile/([a-zA-Z0-9_-]+)$#', [UserController::class, 'profileByUsername']); // Show profile by username
 $router->add('POST', '#^/profile/update$#', [UserController::class, 'updateProfile']); // Handle profile update
 
-// CRUD Routes for Cocktails
-$router->add('GET', '#^/cocktails/add$#', [CocktailController::class, 'add']); // Show form to add a new cocktail
-$router->add('POST', '#^/cocktails$#', [CocktailController::class, 'store']); // Handle cocktail submission
-$router->add('GET', '#^/cocktails/edit/([0-9]+)$#', [CocktailController::class, 'edit']); // Show edit form for a cocktail
+// Cocktails routes
+$router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // Show all cocktails
+// Update the router to use HomeController for add action
+$router->add('GET', '#^/cocktails/add$#', [HomeController::class, 'index']); // Keep using index for adding// CRUD Routes for Cocktails
+$router->add('POST', '#^/cocktails/store$#', [CocktailController::class, 'store']); // Handle cocktail submission
+$router->add('GET', '#^/cocktails/(\d+)-[^\/]+/edit$#', [CocktailController::class, 'edit']);
 $router->add('POST', '#^/cocktails/update/(\d+)$#', [CocktailController::class, 'update']); // Update cocktail
-$router->add('POST', '#^/cocktails/delete/([0-9]+)$#', [CocktailController::class, 'delete']); // Delete a cocktail
+$router->add('POST', '#^/cocktails/delete/(\d+)$#', [CocktailController::class, 'delete']); // Delete a cocktail
+$router->add('POST', '#^/cocktails/(\d+)/delete-step$#', [CocktailController::class, 'deleteStep']);
+// View cocktails
 $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // List all cocktails
-$router->add('GET', '#^/cocktails/([0-9]+)-(.+)$#', [CocktailController::class, 'view']); // View specific cocktail
-// get('login', function() {
-//     require_once __DIR__ . '/../app/controllers/UserController.php'; 
-//     $controller = new UserController();
-//     $controller->showLoginForm();
-// });
+$router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'view']); // View specific cocktail
 
-// // Handle login form submission
-// post('login', function() {
-//     require_once __DIR__ . '/../app/controllers/UserController.php'; 
-//     $controller = new UserController();
-//     $controller->login();
-// });
+// Now handle the incoming request
+$uri = $_SERVER['REQUEST_URI'];
+$route = $router->resolve($uri);
 
-// // Show the registration page
-// get('register', function() {
-//     require_once __DIR__ . '/../app/controllers/UserController.php'; 
-//     $controller = new UserController();
-//     $controller->showRegisterForm();
-// });
+// Execute the route if matched
+// Execute the route if matched
+if ($route) {
+    [$action, $params] = $route;
 
-// // Handle registration form submission
-// post('register', function() {
-//     require_once __DIR__ . '/../app/controllers/UserController.php'; 
-//     $controller = new UserController();
-//     $controller->register();
-// });
+    // $action is an array like [Controller::class, 'method']
+    if (is_array($action)) {
+        // Instantiate the controller before calling the method
+        $controllerClass = $action[0];
+        $method = $action[1];
 
-// // Define a route for logging out
-// get('logout', function() {
-//     require_once __DIR__ . '/../app/controllers/UserController.php'; 
-//     $controller = new UserController();
-//     $controller->logout();
-// });
+        // Create an instance of the controller
+        $controller = new $controllerClass();
+
+        // Call the method dynamically with parameters
+        call_user_func_array([$controller, $method], $params);
+    } else {
+        // If the action is a closure or callable, execute it
+        call_user_func_array($action, $params);
+    }
+} else {
+    // If no route matches, handle the 404 error
+    http_response_code(404);
+    echo "404 - Page Not Found";
+}

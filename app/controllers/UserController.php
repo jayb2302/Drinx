@@ -7,6 +7,10 @@ require_once __DIR__ . '/../repositories/CategoryRepository.php';
 require_once __DIR__ . '/../repositories/IngredientRepository.php';
 require_once __DIR__ . '/../repositories/StepRepository.php';
 require_once __DIR__ . '/../repositories/TagRepository.php';
+require_once __DIR__ . '/../repositories/DifficultyRepository.php'; 
+require_once __DIR__ . '/../repositories/UnitRepository.php';  // Add this
+require_once __DIR__ . '/../services/IngredientService.php';   // Add this
+require_once __DIR__ . '/../services/StepService.php';         // Add this
 
 class UserController {
     private $userService;
@@ -22,17 +26,25 @@ class UserController {
         $ingredientRepository = new IngredientRepository($dbConnection);
         $stepRepository = new StepRepository($dbConnection);
         $tagRepository = new TagRepository($dbConnection);
+        $difficultyRepository = new DifficultyRepository($dbConnection);
+        $unitRepository = new UnitRepository($dbConnection);  // Instantiate UnitRepository
 
-        // Pass repositories into CocktailService
+        // Initialize services
+        $ingredientService = new IngredientService($ingredientRepository, $unitRepository);  // Use service instead of repository
+        $stepService = new StepService($stepRepository);  // Use service instead of repository
+
+        // Pass repositories and services into CocktailService
         $this->cocktailService = new CocktailService(
             $cocktailRepository,
             $categoryRepository,
-            $ingredientRepository,
-            $stepRepository,
-            $tagRepository
+            $ingredientService,   // Pass IngredientService
+            $stepService,         // Pass StepService
+            $tagRepository,
+            $difficultyRepository
         );
+
         $this->userService = new UserService();
-        $this->badgeService = new BadgeService(); 
+        $this->badgeService = new BadgeService();
     }
 
     // 1. Show the user profile
@@ -40,10 +52,10 @@ class UserController {
         if (!AuthController::isLoggedIn()) {
             redirect('login');
         }
-        // Fetch user profile information
+
         $userId = $_SESSION['user']['id'];
         // Fetch user profile data with user ID
-        $profile = $this->userService->getUserWithProfile($_SESSION['user']['id']);
+        $profile = $this->userService->getUserWithProfile($userId);
         $userRecipes = $this->cocktailService->getUserRecipes($userId);
         $userBadges = $this->badgeService->getUserBadges($userId);
         $profileStats = $this->userService->getUserStats($userId);
@@ -123,6 +135,7 @@ class UserController {
             redirect('settings');  // Redirect back to settings page
         }
     }
+
     public function profileByUsername($username) {
         if (!AuthController::isLoggedIn()) {
             redirect('login');
@@ -145,5 +158,4 @@ class UserController {
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
     }
-
 }

@@ -1,6 +1,7 @@
 <?php
 class IngredientRepository {
     private $db;
+    private $unit_name;
 
     public function __construct($db) {
         $this->db = $db;
@@ -8,39 +9,82 @@ class IngredientRepository {
 
     public function getIngredientsByCocktailId($cocktailId) {
         $stmt = $this->db->prepare('
-            SELECT 
-                ci.quantity, 
-                i.name AS ingredient_name, 
-                u.unit_name AS unit_name,
-                ci.unit_id AS unit_id  -- Include the unit_id
-            FROM 
-                cocktail_ingredients ci
-            JOIN 
-                ingredients i ON ci.ingredient_id = i.ingredient_id
-            JOIN 
-                ingredient_unit u ON ci.unit_id = u.unit_id
-            WHERE 
-                ci.cocktail_id = :cocktail_id
+            SELECT i.ingredient_id, i.name, ci.cocktail_id, ci.quantity, ci.unit_id, u.unit_name
+            FROM cocktail_ingredients ci
+            JOIN ingredients i ON ci.ingredient_id = i.ingredient_id
+            JOIN ingredient_unit u ON ci.unit_id = u.unit_id
+            WHERE ci.cocktail_id = :cocktail_id
         ');
-        $stmt->bindParam(':cocktail_id', $cocktailId);
+        $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        return $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Ingredient'); 
     }
 
-    public function addIngredient($cocktail_id, $ingredient_id, $quantity, $unit_id) {
-        $stmt = $this->db->prepare('INSERT INTO cocktail_ingredients (cocktail_id, ingredient_id, quantity, unit_id) VALUES (:cocktail_id, :ingredient_id, :quantity, :unit_id)');
-        $stmt->bindParam(':cocktail_id', $cocktail_id);
-        $stmt->bindParam(':ingredient_id', $ingredient_id);
-        $stmt->bindParam(':quantity', $quantity);
-        $stmt->bindParam(':unit_id', $unit_id);
+    public function setUnitName($unit_name) {
+        $this->unit_name = $unit_name;
+    }
+
+    public function fetchIngredientsForCocktail($cocktailId) {
+        return $this->getIngredientsByCocktailId($cocktailId);
+    }
+
+    public function addIngredient($cocktailId, $ingredientId, $quantity, $unitId) {
+        // Prepare the SQL statement to insert into the cocktail_ingredients table
+        $stmt = $this->db->prepare('
+            INSERT INTO cocktail_ingredients (cocktail_id, ingredient_id, quantity, unit_id) 
+            VALUES (:cocktail_id, :ingredient_id, :quantity, :unit_id)
+        ');
+    
+        // Bind parameters
+        $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
+        $stmt->bindParam(':ingredient_id', $ingredientId, PDO::PARAM_INT); // Using ingredient ID
+        $stmt->bindParam(':quantity', $quantity, PDO::PARAM_STR);
+        $stmt->bindParam(':unit_id', $unitId, PDO::PARAM_INT);
+    
+        // Execute the statement and return the result
         return $stmt->execute();
     }
 
-    // Add this method to get all units
-    public function getAllUnits() {
+    // Method to fetch ingredient_id by name
+public function getIngredientIdByName($ingredientName) {
+    $stmt = $this->db->prepare('SELECT ingredient_id FROM ingredients WHERE name = :ingredient_name');
+    $stmt->bindParam(':ingredient_name', $ingredientName, PDO::PARAM_STR);
+    $stmt->execute();
+    
+    // Fetch the ingredient ID
+    return $stmt->fetchColumn();
+}
+
+
+public function createIngredient($ingredientName)
+{
+    $stmt = $this->db->prepare('INSERT INTO ingredients (name) VALUES (:name)');
+    $stmt->bindParam(':name', $ingredientName, PDO::PARAM_STR);
+    $stmt->execute();
+
+    return $this->db->lastInsertId(); // Return the ID of the newly created ingredient
+}
+      // Get all available units
+      public function getAllUnits() {
         $stmt = $this->db->prepare("SELECT unit_id, unit_name FROM ingredient_unit");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Clear all ingredients for a cocktail
+    public function clearIngredientsByCocktailId($cocktailId) {
+        $stmt = $this->db->prepare('DELETE FROM cocktail_ingredients WHERE cocktail_id = :cocktail_id');
+        $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    // Delete an ingredient
+    public function deleteIngredient($ingredientId) {
+        $stmt = $this->db->prepare('DELETE FROM ingredients WHERE ingredient_id = :ingredient_id');
+        $stmt->bindParam(':ingredient_id', $ingredientId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 include_once __DIR__ . '/../layout/header.php';
 ?>
-<div class="container">
+<div class="form-container">
     <h2>Login</h2>
 
     <?php

@@ -1,4 +1,8 @@
-<?php include __DIR__ . '/head.php'; ?>
+<?php include __DIR__ . '/head.php'; 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <nav class="navbar">
     <a class="navbar-brand" href="<?php echo url('/'); ?>">
         <img src="<?= asset('assets/brand/DrinxLogo.svg'); ?>" alt="Drinx Logo" width="" height="50" class="d-inline-block align-top">

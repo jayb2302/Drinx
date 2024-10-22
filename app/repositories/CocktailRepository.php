@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Cocktail.php'; 
+require_once __DIR__ . '/../models/Ingredient.php';
+require_once __DIR__ . '/../models/Step.php';
 
 class CocktailRepository {
     private $db;
@@ -9,48 +11,83 @@ class CocktailRepository {
         $database = new Database();
         $this->db = $database->getConnection();
     }
-    
 
-    public function getById($cocktail_id) {
+    // Fetch cocktail by ID
+    public function getById($cocktail_id)
+    {
         $stmt = $this->db->prepare('SELECT * FROM cocktails WHERE cocktail_id = :id');
-        $stmt->bindParam(':id', $cocktail_id);
+        $stmt->bindParam(':id', $cocktail_id, PDO::PARAM_INT);
         $stmt->execute();
         
-        // Fetch the result
+        // Fetch the cocktail data
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
         if ($result) {
+            // Fetch ingredients, steps, and tags
+            $ingredients = $this->getIngredientsByCocktailId($cocktail_id); // Ensure this returns an array
+            $steps = $this->getStepsByCocktailId($cocktail_id); // Ensure this returns an array
+            // $tags = $this->getTagsByCocktailId($cocktail_id); // Ensure this returns an array
+    
+            // Create a Cocktail object with the fetched data
             return new Cocktail(
                 $result['cocktail_id'],
                 $result['title'],
                 $result['description'],
                 $result['image'],
                 $result['category_id'],
-                $result['created_at'],
-                $result['updated_at']
+                $result['user_id'],
+                $ingredients, // Pass ingredients array
+                $steps, // Pass steps array
+                // $tags // Pass tags array
             );
         }
-        
+    
         return null; // Return null if no cocktail found
     }
 
+    // Fetch all cocktails
     public function getAll() {
-        $sql = "SELECT * FROM cocktails";
-        $stmt = $this->db->query($sql);
-        $cocktails = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+        $query = $this->db->query("SELECT * FROM cocktails");
+        $cocktailsData = $query->fetchAll(PDO::FETCH_ASSOC);
+    
         return array_map(function($cocktailData) {
+            // Fetch ingredients and steps related to the cocktail
+            $ingredients = $this->getIngredientsByCocktailId($cocktailData['cocktail_id']); // Returns an array of Ingredient objects
+            $steps = $this->getStepsByCocktailId($cocktailData['cocktail_id']); // Returns an array of Step objects
+            $tags = []; // You can populate tags similarly
+    
+            // Create and return a Cocktail object
             return new Cocktail(
                 $cocktailData['cocktail_id'],
                 $cocktailData['title'],
                 $cocktailData['description'],
                 $cocktailData['image'],
                 $cocktailData['category_id'],
-                $cocktailData['created_at'],
-                $cocktailData['updated_at']
+                $cocktailData['user_id'],
+                $ingredients, // Pass ingredients array
+                $steps, // Pass steps array
+                $tags // Pass tags array
             );
-        }, $cocktails);
+        }, $cocktailsData);
     }
-  
+    
+    private function getIngredientsByCocktailId($cocktailId) {
+        // Query the cocktail_ingredients table
+        $stmt = $this->db->prepare('SELECT * FROM cocktail_ingredients WHERE cocktail_id = :cocktail_id');
+        $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_CLASS, 'Ingredient');
+    }
+
+    private function getStepsByCocktailId($cocktailId) {
+        // Query the cocktail_steps table
+        $stmt = $this->db->prepare('SELECT * FROM cocktail_steps WHERE cocktail_id = :cocktail_id');
+        $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_CLASS, 'Step');
+    }
+
+    // Fetch cocktail by name
     public function getByName($name) {
         $stmt = $this->db->prepare('SELECT * FROM cocktails WHERE title = :name');
         $stmt->bindParam(':name', $name);
@@ -65,6 +102,7 @@ class CocktailRepository {
                 $result['description'],
                 $result['image'],
                 $result['category_id'],
+                $result['user_id'],
                 $result['created_at'],
                 $result['updated_at']
             );
@@ -72,83 +110,61 @@ class CocktailRepository {
         
         return null; // Return null if no cocktail found
     }
+
+    // Create a new cocktail
     public function create($cocktailData) {
-        $stmt = $this->db->prepare('INSERT INTO cocktails (title, description, image, category_id, created_at) VALUES (:title, :description, :image, :category_id, NOW())');
+        $stmt = $this->db->prepare("
+            INSERT INTO cocktails (user_id, title, description, image, category_id, difficulty_id, created_at) 
+            VALUES (:user_id, :title, :description, :image, :category_id, :difficulty_id, NOW())
+        ");
+        
+        $stmt->bindParam(':user_id', $cocktailData['user_id'], PDO::PARAM_INT);
         $stmt->bindParam(':title', $cocktailData['title']);
         $stmt->bindParam(':description', $cocktailData['description']);
         $stmt->bindParam(':image', $cocktailData['image']);
-        $stmt->bindParam(':category_id', $cocktailData['category_id']);
-        return $stmt->execute();
+        $stmt->bindParam(':category_id', $cocktailData['category_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':difficulty_id', $cocktailData['difficulty_id'], PDO::PARAM_INT);
+        
+        if ($stmt->execute()) {
+            // Return the ID of the newly created cocktail
+            return $this->db->lastInsertId();
+        }
+    
+        // If execution fails, you can throw an exception or return false
+        throw new Exception("Failed to create cocktail."); // or return false;
     }
 
+    // Update an existing cocktail
     public function update($cocktail_id, $cocktailData) {
         $stmt = $this->db->prepare('UPDATE cocktails SET title = :title, description = :description, image = :image, category_id = :category_id, updated_at = NOW() WHERE cocktail_id = :id');
-        $stmt->bindParam(':id', $cocktail_id);
+        $stmt->bindParam(':id', $cocktail_id, PDO::PARAM_INT);
         $stmt->bindParam(':title', $cocktailData['title']);
         $stmt->bindParam(':description', $cocktailData['description']);
         $stmt->bindParam(':image', $cocktailData['image']);
         $stmt->bindParam(':category_id', $cocktailData['category_id']);
-        return $stmt->execute();
-    }
-
-    public function delete($cocktail_id) {
-        $stmt = $this->db->prepare('DELETE FROM cocktails WHERE cocktail_id = :id');
-        $stmt->bindParam(':id', $cocktail_id);
-        return $stmt->execute();
-    }
-
-    public function addStep($cocktail_id, $instruction) {
-        $stmt = $this->db->prepare('INSERT INTO cocktail_steps (cocktail_id, instruction) VALUES (:cocktail_id, :instruction)');
-        $stmt->bindParam(':cocktail_id', $cocktail_id);
-        $stmt->bindParam(':instruction', $instruction);
-        return $stmt->execute();
-    }
-
-    public function addIngredient($cocktail_id, $ingredient_id, $quantity, $unit_id) {
-        $stmt = $this->db->prepare('INSERT INTO cocktail_ingredients (cocktail_id, ingredient_id, quantity, unit_id) VALUES (:cocktail_id, :ingredient_id, :quantity, :unit_id)');
-        $stmt->bindParam(':cocktail_id', $cocktail_id);
-        $stmt->bindParam(':ingredient_id', $ingredient_id);
-        $stmt->bindParam(':quantity', $quantity);
-        $stmt->bindParam(':unit_id', $unit_id);
-        return $stmt->execute();
-    }
-
-    public function deleteStep($step_id) {
-        $stmt = $this->db->prepare('DELETE FROM cocktail_steps WHERE step_id = :id');
-        $stmt->bindParam(':id', $step_id);
-        return $stmt->execute();
-    }
-
-    public function getCocktailIngredients($cocktailId) {
-        $stmt = $this->db->prepare('
-            SELECT 
-                ci.quantity, 
-                i.name AS ingredient_name, 
-                u.unit_name AS unit_name 
-            FROM 
-                cocktail_ingredients ci
-            JOIN 
-                ingredients i ON ci.ingredient_id = i.ingredient_id
-            JOIN 
-                ingredient_unit u ON ci.unit_id = u.unit_id
-            WHERE 
-                ci.cocktail_id = :cocktail_id
-        ');
-        $stmt->bindParam(':cocktail_id', $cocktailId);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if ($stmt->execute()) {
+            return true; // Successfully updated
+        }
+        return false; // Update failed
     }
     
-    public function getCocktailSteps($cocktailId) {
-        $stmt = $this->db->prepare('SELECT * FROM cocktail_steps WHERE cocktail_id = :cocktail_id');
-        $stmt->bindParam(':cocktail_id', $cocktailId);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Delete a cocktail
+    public function delete($cocktailId)
+    {
+        $stmt = $this->db->prepare("DELETE FROM cocktails WHERE cocktail_id = :cocktailId");
+        $stmt->bindParam(':cocktailId', $cocktailId, PDO::PARAM_INT);
+        return $stmt->execute(); // Returns true on success
     }
+
+    // Fetch all categories
     public function getCategories() {
-        $stmt = $this->db->query('SELECT * FROM categories'); // Fetch all categories
+        $stmt = $this->db->query('SELECT * FROM categories');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Fetch category by cocktail ID
     public function getCategoryByCocktailId($cocktailId) {
         $stmt = $this->db->prepare('
             SELECT c.category_id, cat.name AS category_name 
@@ -156,17 +172,16 @@ class CocktailRepository {
             JOIN categories cat ON c.category_id = cat.category_id
             WHERE c.cocktail_id = :cocktail_id
         ');
-        $stmt->bindParam(':cocktail_id', $cocktailId);
+        $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Fetch cocktails by user ID
     public function findByUserId($userId) {
         $stmt = $this->db->prepare("SELECT * FROM cocktails WHERE user_id = :user_id");
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);  // Return as an array of objects
     }
-
 }
-?>
