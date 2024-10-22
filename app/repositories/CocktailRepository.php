@@ -151,10 +151,11 @@ class CocktailRepository {
     
 
     // Delete a cocktail
-    public function delete($cocktail_id) {
-        $stmt = $this->db->prepare('DELETE FROM cocktails WHERE cocktail_id = :id');
-        $stmt->bindParam(':id', $cocktail_id, PDO::PARAM_INT);
-        return $stmt->execute();
+    public function delete($cocktailId)
+    {
+        $stmt = $this->db->prepare("DELETE FROM cocktails WHERE cocktail_id = :cocktailId");
+        $stmt->bindParam(':cocktailId', $cocktailId, PDO::PARAM_INT);
+        return $stmt->execute(); // Returns true on success
     }
 
     // Fetch all categories

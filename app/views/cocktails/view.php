@@ -79,6 +79,10 @@ $units = $units ?? [];
         <button id="editCocktailButton" class="text-blue-500 hover:underline">
             Edit Cocktail
         </button>
+         <!-- Delete Button -->
+         <form action="/cocktails/delete/<?= $cocktail->getCocktailId() ?>" method="post" onsubmit="return confirm('Are you sure you want to delete this cocktail?');">
+            <button type="submit" class="text-red-500 hover:underline">Delete Cocktail</button>
+        </form>
     <?php endif; ?>
 
     <!-- Hidden Form (inline editing) -->

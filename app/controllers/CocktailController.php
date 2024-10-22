@@ -377,6 +377,6 @@ class CocktailController
 
         // Delete the cocktail
         $this->cocktailService->deleteCocktail($cocktailId);
-        $this->redirect('/cocktails'); // Redirect to the cocktail list
+        $this->redirect('/'); // Redirect to the cocktail list
     }
 }
