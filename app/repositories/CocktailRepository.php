@@ -125,7 +125,13 @@ class CocktailRepository {
         $stmt->bindParam(':category_id', $cocktailData['category_id'], PDO::PARAM_INT);
         $stmt->bindParam(':difficulty_id', $cocktailData['difficulty_id'], PDO::PARAM_INT);
         
-        return $stmt->execute();
+        if ($stmt->execute()) {
+            // Return the ID of the newly created cocktail
+            return $this->db->lastInsertId();
+        }
+    
+        // If execution fails, you can throw an exception or return false
+        throw new Exception("Failed to create cocktail."); // or return false;
     }
 
     // Update an existing cocktail

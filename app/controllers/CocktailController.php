@@ -19,6 +19,10 @@ class CocktailController
 
     public function __construct()
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start(); // Start session if not already started
+        }
+
         $db = Database::getConnection();  // Get the database connection
 
         // Initialize repositories
@@ -45,6 +49,12 @@ class CocktailController
         );
     }
 
+    private function redirect($url)
+    {
+        header("Location: $url");
+        exit();
+    }
+
     // List all cocktails (public access)
     public function index()
     {
@@ -54,48 +64,33 @@ class CocktailController
 
         require_once __DIR__ . '/../views/cocktails/index.php'; // Load the view to display cocktails
     }
-    private function redirect($url)
-    {
-        header("Location: $url");
-        exit();
-    }
 
     // Show the form to add a new cocktail (only for logged-in users)
-    public function add() {
-        if (!AuthController::isLoggedIn()) {
-            redirect('login'); // Redirect to login if the user is not logged in
-        }
-    
-        $cocktail = null; // Initialize as null for the add scenario
-    
+    public function add()
+    {
+        $this->ensureLoggedIn(); // Use the ensureLoggedIn method
+
         // Fetch necessary data for the form
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits(); // Fetch units for ingredients
-    
+
         $isEditing = false; // Set this flag to indicate that we are adding a new cocktail
-    
-        require_once __DIR__ . '/../views/cocktails/form.php'; // Load the form for adding a cocktail
+
+        // Include the form for adding a cocktail
+        require_once __DIR__ . '/../views/cocktails/form.php';
     }
 
     // Store a new cocktail in the database (only for logged-in users)
     public function store()
     {
-        if (!AuthController::isLoggedIn()) {
-            redirect('login');
-        }
-
+        $this->ensureLoggedIn();
+    
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = $this->validateCocktailInput($_POST);
-
-            // Handle image upload
             $image = $this->handleImageUpload($_FILES['image'], $errors);
-
-            if (!empty($errors)) {
-                $_SESSION['errors'] = $errors;
-                $this->redirect('/cocktails/add'); // Redirect back to the form with errors
-            }
-
-            // Prepare the cocktail data array
+    
+            if ($this->handleValidationErrors($errors, '/cocktails/add')) return;
+    
             $cocktailData = [
                 'user_id' => $_SESSION['user']['id'],
                 'title' => $_POST['title'],
@@ -104,32 +99,36 @@ class CocktailController
                 'category_id' => $_POST['category_id'],
                 'difficulty_id' => $_POST['difficulty_id']
             ];
-
-            // Save the cocktail and get the new cocktail ID
+    
             try {
+                // Create the cocktail and get the ID
                 $cocktailId = $this->cocktailService->createCocktail($cocktailData);
+                error_log("Cocktail created with ID: " . $cocktailId); // Check if correct ID is returned
+    
+                // Make sure the ID is correct before adding steps and ingredients
                 $this->handleCocktailSteps($cocktailId, $_POST['steps']);
                 $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
-                $this->redirect('/cocktails/' . $cocktailId); // Redirect to the cocktail view after successful save
+    
+                $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
             } catch (Exception $e) {
                 $_SESSION['errors'] = ["Failed to create cocktail: " . $e->getMessage()];
                 $this->redirect('/cocktails/add');
             }
         }
+    
+        $this->redirect('/cocktails');
     }
 
     // Show the form to edit an existing cocktail (only for the owner or admin)
     public function edit($cocktailId)
     {
-        if (!AuthController::isLoggedIn()) {
-            redirect('login'); // Redirect to login if the user is not logged in
-        }
+        $this->ensureLoggedIn(); // Ensure user is logged in
 
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
         // Only allow the owner or an admin to edit the cocktail
         if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
-            redirect('/cocktails'); // Redirect if the user doesn't have permission
+            $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
         }
 
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
@@ -137,7 +136,6 @@ class CocktailController
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits(); // Fetch units from IngredientService
 
-        // Set the $isEditing flag to true
         $isEditing = true;
 
         require_once __DIR__ . '/../views/cocktails/form.php'; // Load the edit form
@@ -145,27 +143,20 @@ class CocktailController
 
     public function update($cocktailId)
     {
-        // Ensure user is logged in and has permission
-        if (!AuthController::isLoggedIn()) {
-            redirect('login');
-        }
+        $this->ensureLoggedIn(); // Ensure user is logged in
 
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
         // Only allow the owner or an admin to update
         if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
-            redirect('/cocktails');
+            $this->redirect('/cocktails');
         }
 
         // Validate input
         $errors = $this->validateCocktailInput($_POST);
         $image = $this->handleImageUpdate($_FILES['image'], $cocktail, $errors);
 
-        if (!empty($errors)) {
-            $_SESSION['errors'] = $errors;
-            header('Location: /cocktails/' . $cocktailId . '/edit');
-            exit();
-        }
+        if ($this->handleValidationErrors($errors, '/cocktails/' . $cocktailId . '/edit')) return;
 
         $cocktailData = [
             'title' => $_POST['title'],
@@ -177,64 +168,52 @@ class CocktailController
 
         try {
             $this->clearSteps($cocktailId);
-            // Update the cocktail
             $this->cocktailService->updateCocktail($cocktailId, $cocktailData);
-            
-            // Handle new steps
             $this->handleCocktailSteps($cocktailId, $_POST['steps']);
+            
             // Check for deletions of steps
             if (!empty($_POST['delete_steps'])) {
                 foreach ($_POST['delete_steps'] as $stepId) {
                     $this->stepService->deleteStep($cocktailId, $stepId); // Call to delete the step
                 }
             }
-          
-
 
             // Handle ingredients
             $this->ingredientService->updateIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
-
-            // Handle new ingredients
             $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
 
             $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
         } catch (Exception $e) {
             $_SESSION['errors'] = ["Failed to update cocktail: " . $e->getMessage()];
-            header('Location: /cocktails/' . $cocktailId . '/edit');
-            exit();
+            $this->redirect('/cocktails/' . $cocktailId . '/edit');
         }
     }
 
-  // Delete steps
-public function deleteStep($cocktailId)
-{
-    // Ensure the user is logged in
-    if (!AuthController::isLoggedIn()) {
-        redirect('login'); // Redirect to login if the user is not logged in
-    }
+    // Delete steps
+    public function deleteStep($cocktailId)
+    {
+        $this->ensureLoggedIn(); // Ensure the user is logged in
 
-    // Fetch the cocktail to verify ownership
-    $cocktail = $this->cocktailService->getCocktailById($cocktailId);
-    
-    // Only allow the owner or an admin to delete the step
-    if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
-        redirect('/cocktails/' . $cocktailId); // Redirect if the user doesn't have permission
-    }
+        // Fetch the cocktail to verify ownership
+        $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
-    // Check if there are steps to delete
-    if (isset($_POST['delete_steps']) && is_array($_POST['delete_steps'])) {
-        // Loop through each step ID provided for deletion
-        foreach ($_POST['delete_steps'] as $stepId) {
-            // Ensure the step ID is valid and delete it
-            if (is_numeric($stepId)) {
-                $this->stepService->deleteStep($cocktailId, $stepId); // Call the service to delete each step
+        // Only allow the owner or an admin to delete the step
+        if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
+            $this->redirect('/cocktails/' . $cocktailId); // Redirect if the user doesn't have permission
+        }
+
+        // Check if there are steps to delete
+        if (isset($_POST['delete_steps']) && is_array($_POST['delete_steps'])) {
+            foreach ($_POST['delete_steps'] as $stepId) {
+                if (is_numeric($stepId)) {
+                    $this->stepService->deleteStep($cocktailId, $stepId); // Call the service to delete each step
+                }
             }
         }
+
+        // Redirect back to the cocktail edit page after deletion
+        $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktail->getTitle()));
     }
-    
-    // Redirect back to the cocktail edit page after deletion
-    redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktail->getTitle())); 
-}
 
     // Clear existing steps
     private function clearSteps($cocktailId)
@@ -270,6 +249,7 @@ public function deleteStep($cocktailId)
             $image = $file['name'];
             $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
             $target_file = $target_dir . basename($image);
+
             // Validate file type
             $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
             $fileType = mime_content_type($file['tmp_name']);
@@ -293,12 +273,36 @@ public function deleteStep($cocktailId)
         return $cocktail->getImage(); // Retain existing image if no new one is provided
     }
 
+    // Ensure user is logged in
+    private function ensureLoggedIn()
+    {
+        if (!AuthController::isLoggedIn()) {
+            $this->redirect('login');
+        }
+    }
+
+    // Ensure user has permission to edit or delete
+    private function ensureUserHasPermission($cocktailUserId)
+    {
+        if ($cocktailUserId !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
+            $this->redirect('/cocktails');
+        }
+    }
+
+    // Handle validation errors
+    private function handleValidationErrors($errors, $redirectUrl)
+    {
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            $this->redirect($redirectUrl);
+            return true; // Indicate that there were errors
+        }
+        return false; // No errors
+    }
+
     // View cocktail details (public access)
     public function view($cocktailId, $action = 'view')
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
         $isEditing = ($action === 'edit');
 
@@ -315,6 +319,8 @@ public function deleteStep($cocktailId)
             require_once __DIR__ . '/../views/cocktails/view.php'; // Load the view page
         }
     }
+
+    // Handle cocktail steps
     public function handleCocktailSteps($cocktailId, $steps)
     {
         // Clear existing steps for this cocktail first
@@ -327,6 +333,8 @@ public function deleteStep($cocktailId)
             }
         }
     }
+
+    // Handle cocktail ingredients
     private function handleCocktailIngredients($cocktailId, $ingredients, $quantities, $units)
     {
         // Clear existing ingredients for the cocktail
@@ -354,22 +362,21 @@ public function deleteStep($cocktailId)
             }
         }
     }
+
     // Delete a cocktail (only for the owner or admin)
     public function delete($cocktailId)
     {
-        if (!AuthController::isLoggedIn()) {
-            redirect('login'); // Redirect to login if the user is not logged in
-        }
+        $this->ensureLoggedIn(); // Ensure the user is logged in
 
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
         // Only allow the owner or an admin to delete the cocktail
         if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
-            redirect('/cocktails'); // Redirect if the user doesn't have permission
+            $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
         }
 
         // Delete the cocktail
         $this->cocktailService->deleteCocktail($cocktailId);
-        redirect('/cocktails'); // Redirect to the cocktail list
+        $this->redirect('/cocktails'); // Redirect to the cocktail list
     }
 }

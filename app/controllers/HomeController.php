@@ -4,20 +4,20 @@ require_once __DIR__ . '/../repositories/CategoryRepository.php';
 require_once __DIR__ . '/../repositories/IngredientRepository.php';
 require_once __DIR__ . '/../repositories/StepRepository.php';
 require_once __DIR__ . '/../repositories/TagRepository.php';
-require_once __DIR__ . '/../repositories/DifficultyRepository.php'; 
+require_once __DIR__ . '/../repositories/DifficultyRepository.php';
 require_once __DIR__ . '/../services/CocktailService.php';
-require_once __DIR__ . '/../services/IngredientService.php';  // Add this
-require_once __DIR__ . '/../services/StepService.php';        // Add this
-require_once __DIR__ . '/../repositories/UnitRepository.php'; // Add this
+require_once __DIR__ . '/../services/IngredientService.php';
+require_once __DIR__ . '/../services/StepService.php';
+require_once __DIR__ . '/../repositories/UnitRepository.php';
 
 class HomeController
 {
     private $cocktailService;
-    private $ingredientService;
+    private $ingredientService; // Define as a class property
 
     public function __construct()
     {
-        $db = Database::getConnection(); 
+        $db = Database::getConnection();
 
         // Instantiate the repositories
         $cocktailRepository = new CocktailRepository($db);
@@ -26,18 +26,18 @@ class HomeController
         $stepRepository = new StepRepository($db);
         $tagRepository = new TagRepository($db);
         $difficultyRepository = new DifficultyRepository($db);
-        $unitRepository = new UnitRepository($db);  // Instantiate UnitRepository for IngredientService
+        $unitRepository = new UnitRepository($db);
 
         // Instantiate the services
-        $ingredientService = new IngredientService($ingredientRepository, $unitRepository);  // Use service instead of repository
-        $stepService = new StepService($stepRepository);  // Use service instead of repository
+        $this->ingredientService = new IngredientService($ingredientRepository, $unitRepository);  // Use class property
+        $stepService = new StepService($stepRepository);
 
         // Pass the service instances to the CocktailService constructor
         $this->cocktailService = new CocktailService(
             $cocktailRepository,
             $categoryRepository,
-            $ingredientService,  // Pass the service instead of repository
-            $stepService,        // Pass the service instead of repository
+            $this->ingredientService, // Use class property
+            $stepService,
             $tagRepository,
             $difficultyRepository
         );
@@ -50,32 +50,14 @@ class HomeController
         // Fetch all cocktails
         $cocktails = $this->cocktailService->getAllCocktails();
 
-        // Fetch categories and units for the form (if needed)
-        $categories = $this->cocktailService->getCategories();
-        $units = $this->cocktailService->getAllUnits();  // Fetch units from the service
+        // Determine if we should show the add form
+        $isAdding = isset($_GET['action']) && $_GET['action'] === 'add';
 
-        // Check if an edit action is requested
-        $isEditing = false;
-        $cocktail = null;
-        $steps = [];
-        $ingredients = [];
-
-        if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
-            $cocktailId = $_GET['id'];
-            $cocktail = $this->cocktailService->getCocktailById($cocktailId);
-
-            if ($cocktail && ($cocktail->getUserId() === $loggedInUserId || AuthController::isAdmin())) {
-                // Fetch steps and ingredients for the cocktail being edited
-                $steps = $this->cocktailService->getCocktailSteps($cocktailId);
-                $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
-                $isEditing = true;
-            } else {
-                // Redirect if the user doesn't have permission to edit the cocktail
-                redirect('/cocktails');
-            }
-        }
+        // Fetch categories and units if we are adding a cocktail
+    $categories = $this->cocktailService->getCategories(); // Get categories from service
+    $units = $this->ingredientService->getAllUnits(); // Get units from service Now this will work
 
         // Pass the necessary data to the view
-        require_once __DIR__ . '/../views/home.php'; // Load the home view
+        require_once __DIR__ . '/../views/home.php';
     }
 }

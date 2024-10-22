@@ -22,13 +22,12 @@ $router->add('GET', '#^/profile$#', [UserController::class, 'profile']); // Show
 $router->add('GET', '#^/profile/([a-zA-Z0-9_-]+)$#', [UserController::class, 'profileByUsername']); // Show profile by username
 $router->add('POST', '#^/profile/update$#', [UserController::class, 'updateProfile']); // Handle profile update
 
-// CRUD Routes for Cocktails
-$router->add('GET', '#^/cocktails/add$#', [CocktailController::class, 'add']); // Show form to add a cocktail
+// Cocktails routes
+$router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // Show all cocktails
+// Update the router to use HomeController for add action
+$router->add('GET', '#^/cocktails/add$#', [HomeController::class, 'index']); // Keep using index for adding// CRUD Routes for Cocktails
 $router->add('POST', '#^/cocktails/store$#', [CocktailController::class, 'store']); // Handle cocktail submission
-
-// Edit route (using a consistent approach with $router->add)
 $router->add('GET', '#^/cocktails/(\d+)-[^\/]+/edit$#', [CocktailController::class, 'edit']);
-// Update and delete routes
 $router->add('POST', '#^/cocktails/update/(\d+)$#', [CocktailController::class, 'update']); // Update cocktail
 $router->add('POST', '#^/cocktails/delete/(\d+)$#', [CocktailController::class, 'delete']); // Delete a cocktail
 $router->add('POST', '#^/cocktails/(\d+)/delete-step$#', [CocktailController::class, 'deleteStep']);
@@ -40,6 +39,7 @@ $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'vi
 $uri = $_SERVER['REQUEST_URI'];
 $route = $router->resolve($uri);
 
+// Execute the route if matched
 // Execute the route if matched
 if ($route) {
     [$action, $params] = $route;

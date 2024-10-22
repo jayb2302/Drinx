@@ -19,7 +19,7 @@ $units = $units ?? [];
             <p><?= htmlspecialchars($error) ?></p>
         <?php endforeach; ?>
     </div>
-    <?php unset($_SESSION['errors']); // Clear errors after displaying 
+    <?php unset($_SESSION['errors']); 
     ?>
 <?php endif; ?>
 
@@ -73,9 +73,7 @@ $units = $units ?? [];
             <?php endif; ?>
         </ol>
     </div>
-    <?php
-var_dump($cocktailId); // Check the value of cocktailId
-?>
+
     <!-- Edit Button -->
     <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $cocktail->getUserId() || AuthController::isAdmin())): ?>
         <button id="editCocktailButton" class="text-blue-500 hover:underline">

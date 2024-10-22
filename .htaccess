@@ -2,7 +2,7 @@
     RewriteEngine On
     RewriteBase /
     RewriteRule ^index\.php$ - [L]
-    RewriteRule ^(add|login|register)$ index.php?action=$1 [L,QSA]
+    RewriteRule ^(add|login|register|edit)/?$ index.php?action=$1 [L,QSA]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule . /index.php [L]

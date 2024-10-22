@@ -1,6 +1,6 @@
 <div class="form-container">
     <h1><?= $isEditing ? 'Edit' : 'Add' ?> Cocktail Recipe</h1>
-    <form action="/cocktails/<?= $isEditing ? 'update/' . $cocktail->getCocktailId() : 'add' ?>" method="post" enctype="multipart/form-data">
+    <form action="/cocktails/<?= $isEditing ? 'update/' . $cocktail->getCocktailId() : 'store' ?>" method="post" enctype="multipart/form-data">
         <div class="recipeHeader">
             <div class="form-group">
                 <label for="title">Title</label>
@@ -51,8 +51,34 @@
                         </select>
                     </div>
                 <?php endforeach; ?>
+            <?php else: ?>
+                <div class="ingredient-input">
+                    <label for="ingredient1">Ingredient 1:</label>
+                    <input type="text" name="ingredients[]" id="ingredient1" required>
+
+                    <label for="quantity1">Quantity:</label>
+                    <input type="number" name="quantities[]" id="quantity1" required>
+
+                    <label for="unit1">Unit:</label>
+                    <select name="units[]" id="unit1" required>
+                        <?php foreach ($units as $unit): ?>
+                            <option value="<?= $unit['unit_id'] ?>"><?= htmlspecialchars($unit['unit_name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             <?php endif; ?>
         </div>
+
+        <input type="hidden" id="unitOptions" value='<?php
+            $options = [];
+            foreach ($units as $unit) {
+                $options[] = [
+                    'id' => $unit['unit_id'],
+                    'name' => htmlspecialchars($unit['unit_name'])
+                ];
+            }
+            echo json_encode($options);
+        ?>'>
 
         <button type="button" id="addIngredientButton">Add New Ingredient</button>
 
@@ -65,14 +91,21 @@
                             <label for="step<?= $i + 1 ?>">Step <?= $i + 1 ?>:</label>
                             <textarea name="steps[]" id="step<?= $i + 1 ?>" required><?= htmlspecialchars($step->getInstruction()) ?></textarea>
                         </div>
-                        <!-- Trash icon button to delete this step -->
                         <button class="delete-step-button" data-step-id="<?= htmlspecialchars($step->getStepId()) ?>">
                             <i class="fa fa-trash"></i> Delete
                         </button>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <p>No preparation steps available for this cocktail.</p>
+                <div class="step-input">
+                    <div class="form-group">
+                        <label for="step1">Step 1:</label>
+                        <textarea name="steps[]" id="step1" required></textarea>
+                    </div>
+                    <button class="delete-step-button" data-step-id="1">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                </div>
             <?php endif; ?>
         </div>
 

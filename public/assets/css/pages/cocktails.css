@@ -9,7 +9,6 @@
   margin: 0 auto;
   background-color: var(--background-primary);
   gap: 20px; /* Space between cards */
-  height: 80vh;
   
 }
 .container {
@@ -22,6 +21,7 @@
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   position: relative;
+  bottom: 0;
 }
 .formContainer {
   display: flex;
@@ -90,7 +90,7 @@ h1 {
 .orderby {
   width: 100%;
   display: flex;
-  flex-direction: column;
+  color: var(--text-primary);
 }
 
 
@@ -113,7 +113,7 @@ a:hover {
 
 .tag {
   background-color: var(--accent-secondary); 
-  color: var(--text-secondary); 
+  color: var(--text-primary); 
   padding: 5px 5px; 
   width: auto;
   border-radius: 5px; 
