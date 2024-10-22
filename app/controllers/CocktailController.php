@@ -9,6 +9,8 @@ require_once __DIR__ . '/../repositories/UnitRepository.php';
 require_once __DIR__ . '/../services/CocktailService.php';
 require_once __DIR__ . '/../services/IngredientService.php';
 require_once __DIR__ . '/../services/StepService.php';
+require_once __DIR__ . '/../services/CommentService.php';
+require_once __DIR__ . '/../repositories/CommentRepository.php';
 
 class CocktailController
 {
@@ -16,6 +18,7 @@ class CocktailController
     private $ingredientService;
     private $stepService;
     private $difficultyRepository;
+    private $commentService;
 
     public function __construct()
     {
@@ -32,11 +35,13 @@ class CocktailController
         $stepRepository = new StepRepository($db);
         $tagRepository = new TagRepository($db);
         $this->difficultyRepository = new DifficultyRepository($db);
-        $unitRepository = new UnitRepository($db);  // Add UnitRepository for units
+        $unitRepository = new UnitRepository($db);  
+        $commentRepository = new CommentRepository($db);
 
         // Initialize services
         $this->ingredientService = new IngredientService($ingredientRepository, $unitRepository);
         $this->stepService = new StepService($stepRepository);
+        $this->commentService = new CommentService($commentRepository); 
 
         // Initialize the CocktailService with services and repositories
         $this->cocktailService = new CocktailService(
@@ -309,6 +314,8 @@ class CocktailController
         $tags = $this->cocktailService->getCocktailTags($cocktailId);
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
+
+        $comments = $this->commentService->getCommentsWithReplies($cocktailId);
 
         if ($isEditing) {
             require_once __DIR__ . '/../views/cocktails/form.php'; // Load the edit form

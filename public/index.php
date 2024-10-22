@@ -10,7 +10,11 @@ require_once __DIR__ . '/../routes.php';
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $action = $router->resolve($requestUri);
 
-// Call the appropriate controller action based on the resolved action
+// Dependency injection (manual for now)
+$db = Database::getConnection(); // Assuming you have a Database connection class
+$commentRepository = new CommentRepository($db);
+$commentService = new CommentService($commentRepository);
+
 if ($action) {
     // Unpack the action array
     $controllerAction = $action[0]; // This should be the controller
@@ -20,7 +24,13 @@ if ($action) {
         [$controllerClass, $method] = $controllerAction; // Unpack controller class and method
 
         if (class_exists($controllerClass) && method_exists($controllerClass, $method)) {
-            $controller = new $controllerClass();
+            // Inject the dependencies manually
+            if ($controllerClass === 'CommentController') {
+                $controller = new CommentController($commentService); // Pass the CommentService here
+            } else {
+                $controller = new $controllerClass(); // For other controllers that don't need dependencies
+            }
+
             call_user_func_array([$controller, $method], $params); // Call method with params
         } else {
             http_response_code(404);
