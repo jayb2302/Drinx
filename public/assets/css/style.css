@@ -3,6 +3,7 @@
 @import '../css/components/forms.css';
 @import '../css/pages/cocktails.css';
 @import '../css/pages/footer.css';
+@import '../css/components/comments.css';
 :root {
     /* Colors for Light Mode */
     --background: #f2f2f2;
