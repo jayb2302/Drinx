@@ -11,6 +11,8 @@ $router = new Router(); // Instantiate the Router class
 
 // Home Routes
 $router->add('GET', '#^/$#', [HomeController::class, 'index']); // Home page
+$router->add('GET', '#^/login$#', [HomeController::class, 'index']); // Show login form within home page
+$router->add('GET', '#^/register$#', [HomeController::class, 'index']); // Show register form within home page
 
 // Authentication routes
 $router->add('POST', '#^/login$#', [AuthController::class, 'authenticate']); // Handle login
@@ -25,7 +27,7 @@ $router->add('POST', '#^/profile/update$#', [UserController::class, 'updateProfi
 // Cocktails routes
 $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // Show all cocktails
 // Update the router to use HomeController for add action
-$router->add('GET', '#^/cocktails/add$#', [HomeController::class, 'index']); // Keep using index for adding// CRUD Routes for Cocktails
+$router->add('GET', '#^/cocktails/add$#', [HomeController::class, 'index']); // Show add form
 $router->add('POST', '#^/cocktails/store$#', [CocktailController::class, 'store']); // Handle cocktail submission
 $router->add('GET', '#^/cocktails/(\d+)-[^\/]+/edit$#', [CocktailController::class, 'edit']);
 $router->add('POST', '#^/cocktails/update/(\d+)$#', [CocktailController::class, 'update']); // Update cocktail
@@ -35,32 +37,3 @@ $router->add('POST', '#^/cocktails/(\d+)/delete-step$#', [CocktailController::cl
 $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // List all cocktails
 $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'view']); // View specific cocktail
 
-// Now handle the incoming request
-$uri = $_SERVER['REQUEST_URI'];
-$route = $router->resolve($uri);
-
-// Execute the route if matched
-// Execute the route if matched
-if ($route) {
-    [$action, $params] = $route;
-
-    // $action is an array like [Controller::class, 'method']
-    if (is_array($action)) {
-        // Instantiate the controller before calling the method
-        $controllerClass = $action[0];
-        $method = $action[1];
-
-        // Create an instance of the controller
-        $controller = new $controllerClass();
-
-        // Call the method dynamically with parameters
-        call_user_func_array([$controller, $method], $params);
-    } else {
-        // If the action is a closure or callable, execute it
-        call_user_func_array($action, $params);
-    }
-} else {
-    // If no route matches, handle the 404 error
-    http_response_code(404);
-    echo "404 - Page Not Found";
-}

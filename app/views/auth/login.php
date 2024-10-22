@@ -1,6 +1,3 @@
-<?php
-include_once __DIR__ . '/../layout/header.php';
-?>
 <div class="form-container">
     <h2>Login</h2>
 
@@ -24,13 +21,12 @@ include_once __DIR__ . '/../layout/header.php';
         </div>
 
         <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+            <label for="login-password">Password:</label>
+            <input type="password" class="form-control" id="login-password" name="password" required>
         </div>
 
-        <button type="submit" class="">Login</button>
-        <button>
-            <a href="?action=register" class="btn btn-link">Register</a>
-        </button>
+        <button type="submit" class="btn btn-primary">Login</button>
     </form>
+    
+    <a href="/register" class="btn btn-link">Register</a>
 </div>

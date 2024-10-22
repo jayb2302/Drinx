@@ -12,8 +12,8 @@ if (session_status() === PHP_SESSION_NONE) {
     </button> -->
     <!-- Links to show forms -->
     <?php if (!isset($_SESSION['user'])): ?>
-        <a href="?action=login">Login</a>
-        <a href="?action=register">Register</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
     <?php else: ?>
         <!-- Check if first_name and last_name exist, otherwise use the username -->
         <?php

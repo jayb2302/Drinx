@@ -8,6 +8,7 @@
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     position: relative;
+
   }
 .form-group {
     display: flex;

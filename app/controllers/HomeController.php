@@ -52,10 +52,12 @@ class HomeController
 
         // Determine if we should show the add form
         $isAdding = isset($_GET['action']) && $_GET['action'] === 'add';
+        $isLoggingIn = isset($_GET['action']) && $_GET['action'] === 'login';
+        $isRegistering = isset($_GET['action']) && $_GET['action'] === 'register';
 
         // Fetch categories and units if we are adding a cocktail
-    $categories = $this->cocktailService->getCategories(); // Get categories from service
-    $units = $this->ingredientService->getAllUnits(); // Get units from service Now this will work
+        $categories = $this->cocktailService->getCategories(); // Get categories from service
+        $units = $this->ingredientService->getAllUnits(); // Get units from service Now this will work
 
         // Pass the necessary data to the view
         require_once __DIR__ . '/../views/home.php';

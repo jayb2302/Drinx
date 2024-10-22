@@ -33,17 +33,24 @@ class AuthController
             } else {
                 // Handle invalid credentials
                 $_SESSION['error'] = "Invalid email or password.";
-                header("Location: /?action=login");  // Redirect back to the login form
+                header("Location: /login");  // Redirect back to the login form
                 exit();
             }
         }
     }
 
-    // Show the registration form
-    public function register()
+    // Show the login form
+    public function showLogin()
     {
-        include __DIR__ . '/../views/auth/register.php';
+        return require_once __DIR__ . '/../views/auth/login.php';
+
     }
+    // Show the registration form
+    public function showRegister()
+    {
+        return require_once __DIR__ . '/../views/auth/register.php';
+    }
+
 
     // Handle user registration
     public function store()
@@ -57,7 +64,7 @@ class AuthController
                 if ($this->userService->registerUser($username, $email, $password, 1)) {
                     // Set success message in session
                     $_SESSION['success'] = "Welcome $username! Please log in.";
-                    header("Location: /?action=login");
+                    header("Location: /login");
                     exit();
                 }
             } catch (PDOException $e) {
@@ -74,7 +81,7 @@ class AuthController
                 } else {
                     $_SESSION['error'] = "Something went wrong. Please try again.";
                 }
-                header("Location: /?action=register");
+                header("Location: /register");
                 exit();
             }
         }

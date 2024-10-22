@@ -10,15 +10,15 @@
     <form method="POST" action="/register">
         <div class="form-group">
             <label for="username">Username:</label>
-            <input type="text" name="username" required>
+            <input type="text" name="username" id="username" required>
         </div>
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" name="email" required>
+            <input type="email" name="email" id="email" required>
         </div>
         <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" name="password" required>
+            <label for="register-password">Password:</label>
+            <input type="password" name="password" id="password" required>
         </div>
         <button type="submit">Register</button>
     </form>

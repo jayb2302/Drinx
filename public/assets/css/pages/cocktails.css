@@ -6,16 +6,15 @@
   flex-wrap: wrap;
   align-items: flex-start; /* Ensures that items align at the top */
   justify-content: center; /* Center the cards */
-  margin: 0 auto;
   background-color: var(--background-primary);
   gap: 20px; /* Space between cards */
   
 }
+
 .container {
   width: auto;
   display: flex;
   flex-direction: column;
-  margin: 0 auto; /* Center the container */
   padding: 20px; 
   background-color: var( --button-primary-transparent); 
   border-radius: 8px; /* Rounded corners */
@@ -23,6 +22,7 @@
   position: relative;
   bottom: 0;
 }
+
 .formContainer {
   display: flex;
   width: 60%;

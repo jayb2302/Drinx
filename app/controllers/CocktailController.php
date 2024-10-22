@@ -68,16 +68,13 @@ class CocktailController
     // Show the form to add a new cocktail (only for logged-in users)
     public function add()
     {
-        $this->ensureLoggedIn(); // Use the ensureLoggedIn method
-
-        // Fetch necessary data for the form
+        // Fetch necessary data for the form (categories, units)
         $categories = $this->cocktailService->getCategories();
-        $units = $this->ingredientService->getAllUnits(); // Fetch units for ingredients
-
-        $isEditing = false; // Set this flag to indicate that we are adding a new cocktail
-
-        // Include the form for adding a cocktail
-        require_once __DIR__ . '/../views/cocktails/form.php';
+        $units = $this->ingredientService->getAllUnits();
+        
+        $isEditing = false;
+        // Pass the necessary data to the view
+        require_once __DIR__ . '/../views/cocktails/form.php'; // Include the form view
     }
 
     // Store a new cocktail in the database (only for logged-in users)
