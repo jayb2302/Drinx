@@ -1,0 +1,39 @@
+/* Dots Menu Styling */
+.dots-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.dots-button {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.menu {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 5px;
+    display: none;
+    z-index: 10;
+}
+
+.menu.active {
+    display: block;
+}
+
+.menu-item {
+    display: block;
+    padding: 5px 10px;
+    color: #333;
+    text-decoration: none;
+}
+
+.menu-item:hover {
+    background-color: #f1f1f1;
+}
