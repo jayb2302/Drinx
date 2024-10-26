@@ -63,6 +63,7 @@ class UserController {
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
     }
+    
 
     // 2. Show user settings
     public function settings() {
@@ -74,7 +75,36 @@ class UserController {
         require_once __DIR__ . '/../views/user/settings.php';  // Show settings view
     }
 
-    // 3. Update user profile (username, email)
+    // 3. Delete user account
+    public function deleteAccount() {
+        if (!AuthController::isLoggedIn()) {
+            redirect('login');
+        }
+    
+        $userId = $_SESSION['user']['id'];
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $password = sanitize($_POST['password']);
+    
+            // Verify the user's password before proceeding
+            if ($this->userService->verifyPassword($userId, $password)) {
+                // Delete the user and associated data
+                if ($this->userService->deleteUser($userId)) {
+                    session_destroy();  // End session after deletion
+                    redirect('/');
+                } else {
+                    $_SESSION['error'] = 'Failed to delete the account.';
+                }
+            } else {
+                $_SESSION['error'] = 'Incorrect password. Please try again.';
+            }
+        }
+    
+        // Redirect back to profile if deletion failed or password was incorrect
+        redirect('profile');
+    }
+
+    // 4. Update user profile (username, email)
     public function updateProfile() {
         if (!AuthController::isLoggedIn()) {
             redirect('login');
@@ -115,7 +145,7 @@ class UserController {
         return null; // Return null if upload failed
     }
 
-    // 4. Change user password
+    // 5. Change user password
     public function changePassword() {
         if (!AuthController::isLoggedIn()) {
             redirect('login');  // Redirect to login if not logged in
