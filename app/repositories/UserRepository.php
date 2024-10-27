@@ -10,6 +10,30 @@ class UserRepository
         $this->db = $dbConnection;
     }
 
+     // Delete a user and associated cocktails
+     public function deleteUser($userId)
+     {
+         try {
+             $this->db->beginTransaction();
+             
+             // Delete the user's cocktails
+             $stmt = $this->db->prepare("DELETE FROM cocktails WHERE user_id = :user_id");
+             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+             $stmt->execute();
+ 
+             // Delete the user
+             $stmt = $this->db->prepare("DELETE FROM users WHERE user_id = :user_id");
+             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+             $stmt->execute();
+ 
+             $this->db->commit();
+             return true;
+         } catch (Exception $e) {
+             $this->db->rollBack();
+             return false;
+         }
+     }
+
     // Create a new user profile after registration
     public function createUserProfile($userId) {
         $stmt = $this->db->prepare("

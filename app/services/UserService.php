@@ -23,6 +23,17 @@ class UserService {
         return null;
     }
 
+    // Verify password
+    public function verifyPassword($userId, $password) {
+        $user = $this->userRepository->findById($userId);
+        return $user && password_verify($password, $user->getPassword());
+    }
+
+    // Delete a user by ID and their associated data (cocktails)
+    public function deleteUser($userId) {
+        return $this->userRepository->deleteUser($userId);
+    }
+
     // Register a new user
     public function registerUser($username, $email, $password, $accountStatusId) {
         // Hash the password before storing

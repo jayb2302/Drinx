@@ -105,10 +105,34 @@ if (isset($_SESSION['success'])) {
         <li>Comments Received: <?= $profileStats['comments_received'] ?? 0; ?></li>
     </ul>
 </div>
+<!-- Delete Account Button -->
+<div class="delete-account-section">
+    <button onclick="toggleDeleteSection()">Delete Account</button>
+
+    <div id="deleteConfirmSection" style="display: none;">
+        <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
+        
+        <form action="/profile/delete" method="POST">
+            <label for="password">Confirm Password:</label>
+            <input type="password" name="password" required>
+            <button type="submit" class="confirm-delete">Confirm Deletion</button>
+        </form>
+
+        <!-- Display any error messages related to deletion -->
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); ?></div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </div>
+</div>
 
 <script>
     function toggleEditMode() {
         const form = document.getElementById('edit-profile-form');
         form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+    function toggleDeleteSection() {
+        const section = document.getElementById('deleteConfirmSection');
+        section.style.display = section.style.display === 'none' ? 'block' : 'none';
     }
 </script>
