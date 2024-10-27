@@ -15,7 +15,7 @@ class AuthController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = sanitize($_POST['email']);
-            $password = $_POST['password'];
+            $password = trim($_POST['password']); // Trim password
 
             $user = $this->userService->authenticateUser($email, $password);
 
@@ -58,7 +58,7 @@ class AuthController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = sanitize($_POST['username']);
             $email = sanitize($_POST['email']);
-            $password = $_POST['password'];
+            $password = trim($_POST['password']); // Trim password
 
             try {
                 if ($this->userService->registerUser($username, $email, $password, 1)) {

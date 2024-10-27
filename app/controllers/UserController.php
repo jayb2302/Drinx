@@ -122,8 +122,8 @@ class UserController {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $currentPassword = $_POST['current_password'];
-            $newPassword = $_POST['new_password'];
+            $currentPassword = sanitize($_POST['current_password']);
+            $newPassword = sanitize($_POST['new_password']);
 
             // Attempt to change password using the service
             if ($this->userService->changeUserPassword($_SESSION['user']['id'], $currentPassword, $newPassword)) {
@@ -140,7 +140,7 @@ class UserController {
         if (!AuthController::isLoggedIn()) {
             redirect('login');
         }
-    
+        $username = sanitize($username);
         // Fetch user profile by username
         $profile = $this->userService->getUserByUsername($username);
     
