@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/User.php';
+
 class UserRepository
 {
     private $db;
@@ -7,6 +8,15 @@ class UserRepository
     public function __construct($dbConnection)
     {
         $this->db = $dbConnection;
+    }
+
+    // Create a new user profile after registration
+    public function createUserProfile($userId) {
+        $stmt = $this->db->prepare("
+            INSERT INTO user_profile (user_id) VALUES (:user_id)
+        ");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 
     // Find a user by email
@@ -36,6 +46,7 @@ class UserRepository
         }
         return null;
     }
+
     // Fetch user and profile by user ID
     public function findByIdWithProfile($userId)
     {
@@ -55,7 +66,7 @@ class UserRepository
         return null;
     }
 
-    // Save a new user to the database
+    // Save a new user to the database and return the user ID
     public function save(User $user)
     {
         $username = $user->getUsername();
@@ -75,7 +86,13 @@ class UserRepository
         $stmt->bindParam(':account_status_id', $accountStatusId);
         $stmt->bindParam(':is_admin', $isAdmin, PDO::PARAM_BOOL);
 
-        return $stmt->execute();
+        if ($stmt->execute()) {
+            // Fetch the last inserted ID and set it to the user object
+            $user->setId($this->db->lastInsertId());
+            return true;
+        }
+
+        return false;
     }
 
     // Update an existing user
@@ -141,6 +158,7 @@ class UserRepository
         $user->setIsAdmin($result['is_admin']);
         return $user;
     }
+
     public function getUserStats($userId)
     {
         $stmt = $this->db->prepare("
@@ -156,6 +174,7 @@ class UserRepository
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);  // Return as an array
     }
+
     // Find a user by username
     public function findByUsername($username)
     {

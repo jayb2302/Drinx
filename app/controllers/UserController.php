@@ -103,7 +103,7 @@ class UserController {
     }
 
     private function uploadProfilePicture($file) {
-        $targetDir = __DIR__ . '/../../public/uploads/profile_pictures/';
+        $targetDir = __DIR__ . '/../../public/uploads/users/';
         $fileName = basename($file['name']);
         $targetFile = $targetDir . $fileName;
     

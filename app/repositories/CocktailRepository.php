@@ -182,6 +182,24 @@ class CocktailRepository {
         $stmt = $this->db->prepare("SELECT * FROM cocktails WHERE user_id = :user_id");
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ);  // Return as an array of objects
+        
+        $cocktailsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Map the results to Cocktail objects
+        return array_map(function($cocktailData) {
+            $ingredients = $this->getIngredientsByCocktailId($cocktailData['cocktail_id']);
+            $steps = $this->getStepsByCocktailId($cocktailData['cocktail_id']);
+    
+            return new Cocktail(
+                $cocktailData['cocktail_id'],
+                $cocktailData['title'],
+                $cocktailData['description'],
+                $cocktailData['image'],
+                $cocktailData['category_id'],
+                $cocktailData['user_id'],
+                $ingredients,
+                $steps
+            );
+        }, $cocktailsData);
     }
 }
