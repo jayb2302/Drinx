@@ -23,7 +23,7 @@
              <label for="profile_picture">Profile Picture</label>
              <input type="file" name="profile_picture" id="profile_picture">
              <?php if ($profile->getProfilePicture()): ?>
-                <img src="<?= asset('uploads/profile_pictures/' . htmlspecialchars($profile->getProfilePicture())); ?>" alt="Profile Picture" width="100">
+                <img src="<?= asset('uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>" alt="Profile Picture" width="100">
                 <?php endif; ?>
             </div>
 

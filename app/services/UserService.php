@@ -23,6 +23,17 @@ class UserService {
         return null;
     }
 
+    // Verify password
+    public function verifyPassword($userId, $password) {
+        $user = $this->userRepository->findById($userId);
+        return $user && password_verify($password, $user->getPassword());
+    }
+
+    // Delete a user by ID and their associated data (cocktails)
+    public function deleteUser($userId) {
+        return $this->userRepository->deleteUser($userId);
+    }
+
     // Register a new user
     public function registerUser($username, $email, $password, $accountStatusId) {
         // Hash the password before storing
@@ -36,17 +47,25 @@ class UserService {
         $user->setAccountStatusId($accountStatusId);  // Ensure account_status_id is set
         $user->setIsAdmin(false); // Default to a regular user
     
-        return $this->userRepository->save($user);
+        if ($this->userRepository->save($user)) {
+            // After saving the user, create an entry in the user_profile table
+            $userId = $user->getId();
+            return $this->userRepository->createUserProfile($userId); // Create user profile with user_id
+        }
+
+        return false;
     }
 
     // Fetch a user by ID
     public function getUserById($userId) {
         return $this->userRepository->findById($userId);
     }
+
     // Fetch user and profile by user ID
     public function getUserWithProfile($userId) {
         return $this->userRepository->findByIdWithProfile($userId);
     }
+
     // Update user details (e.g., profile)
     public function updateUser($userId, $username, $email) {
         $user = $this->userRepository->findById($userId);
@@ -67,13 +86,16 @@ class UserService {
         }
         return false;
     }
-     // Update user profile (first name, last name, bio, profile picture)
-     public function updateUserProfile($userId, $firstName, $lastName, $bio, $profilePicture = null) {
+
+    // Update user profile (first name, last name, bio, profile picture)
+    public function updateUserProfile($userId, $firstName, $lastName, $bio, $profilePicture = null) {
         return $this->userRepository->updateProfile($userId, $firstName, $lastName, $bio, $profilePicture);
     }
+
     public function getUserByUsername($username) {
         return $this->userRepository->findByUsername($username);
     }
+
     public function getUserStats($userId) {
         return $this->userRepository->getUserStats($userId);
     }
