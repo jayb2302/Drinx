@@ -148,7 +148,7 @@ CREATE TABLE `comments` (
   `comment_id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int,
   `cocktail_id` int,
-  `parent_comment_id` int,
+  `parent_comment_id` int DEFAULT NULL, -- Allow NULL for top-level comments
   `comment` text NOT NULL,
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE,

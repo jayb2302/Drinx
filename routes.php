@@ -6,6 +6,7 @@ require_once __DIR__ . '/app/controllers/HomeController.php';
 require_once __DIR__ . '/app/controllers/UserController.php';
 require_once __DIR__ . '/app/controllers/AuthController.php';
 require_once __DIR__ . '/app/controllers/CocktailController.php';
+require_once __DIR__ . '/app/controllers/CommentController.php';
 
 $router = new Router(); // Instantiate the Router class
 
@@ -37,3 +38,7 @@ $router->add('POST', '#^/cocktails/(\d+)/delete-step$#', [CocktailController::cl
 $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // List all cocktails
 $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'view']); // View specific cocktail
 
+// Comment interactions
+$router->add('POST', '#^/cocktails/(\d+)-[^/]+/comments$#', [CommentController::class, 'addComment']);
+$router->add('GET', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
+$router->add('POST', '#^/comments/(\d+)/delete$#', [CommentController::class, 'delete']); // Delete comment
