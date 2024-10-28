@@ -22,8 +22,8 @@ class CommentController
         }
 
         // Get comment data from POST
-        $commentText = trim($_POST['comment'] ?? '');
-        $parentCommentId = $_POST['parent_comment_id'] ?? null;
+        $commentText = sanitize($_POST['comment'] ?? '');
+        $parentCommentId = sanitize($_POST['parent_comment_id']) ?? null;
 
         if (empty($commentText)) {
             $_SESSION['error'] = 'Comment cannot be empty.';
@@ -39,7 +39,7 @@ class CommentController
         $this->commentService->addComment($userId, $cocktailId, $commentText, $parentCommentId);
 
         // Redirect back to the cocktail view
-        $cocktailTitle = urlencode($_POST['cocktailTitle']);
+        $cocktailTitle = isset($_POST['cocktailTitle']) ? sanitize(urlencode($_POST['cocktailTitle'])) : '';
         header("Location: /cocktails/{$cocktailId}-{$cocktailTitle}");
         exit();
     }

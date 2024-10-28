@@ -103,11 +103,11 @@ class CocktailController
 
             $cocktailData = [
                 'user_id' => $_SESSION['user']['id'],
-                'title' => trim($_POST['title']),
-                'description' => trim($_POST['description']),
+                'title' => sanitize($_POST['title']),
+                'description' => sanitize($_POST['description']),
                 'image' => $image,
-                'category_id' => $_POST['category_id'],
-                'difficulty_id' => $_POST['difficulty_id']
+                'category_id' => intval($_POST['category_id']),
+                'difficulty_id' => intval($_POST['difficulty_id'])
             ];
 
             try {
@@ -121,7 +121,7 @@ class CocktailController
 
                 $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
             } catch (Exception $e) {
-                $_SESSION['errors'] = ["Failed to create cocktail: " . $e->getMessage()];
+                $_SESSION['errors'] = ["Failed to create cocktail: " . sanitize($e->getMessage())];
                 $this->redirect('/cocktails/add');
             }
         }
@@ -169,10 +169,10 @@ class CocktailController
         if ($this->handleValidationErrors($errors, '/cocktails/' . $cocktailId . '/edit')) return;
 
         $cocktailData = [
-            'title' => trim($_POST['title']),
-            'description' => trim($_POST['description']),
-            'category_id' => $_POST['category_id'],
-            'difficulty_id' => $_POST['difficulty_id'],
+            'title' => sanitize($_POST['title']),
+            'description' => sanitize($_POST['description']),
+            'category_id' => intval($_POST['category_id']),
+            'difficulty_id' => intval($_POST['difficulty_id']),
             'image' => $image
         ];
 
@@ -192,9 +192,9 @@ class CocktailController
             $this->ingredientService->updateIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
             $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
 
-            $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
+            $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode(sanitize($cocktailData['title'])));
         } catch (Exception $e) {
-            $_SESSION['errors'] = ["Failed to update cocktail: " . $e->getMessage()];
+            $_SESSION['errors'] = ["Failed to update cocktail: " . sanitize($e->getMessage())];
             $this->redirect('/cocktails/' . $cocktailId . '/edit');
         }
     }
@@ -252,27 +252,39 @@ class CocktailController
         return $errors;
     }
 
-    // Handle image upload for new cocktails
-    private function handleImageUpload($file, &$errors)
-    {
-        if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
-            $image = $file['name'];
-            $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
-            $target_file = $target_dir . basename($image);
+// Handle image upload for new cocktails
+private function handleImageUpload($file, &$errors)
+{
+    if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
+        // Step 1: Sanitize and validate the original filename
+        $image = sanitize($file['name']);
+        $fileExtension = strtolower(pathinfo($image, PATHINFO_EXTENSION));
 
-            // Validate file type
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-            $fileType = mime_content_type($file['tmp_name']);
-            if (!in_array($fileType, $allowedTypes)) {
-                $errors[] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
-            }
-            if (!move_uploaded_file($file['tmp_name'], $target_file)) {
-                $errors[] = "There was an error uploading the image.";
-            }
-            return $image;
+        // Step 2: Check the file extension
+        $allowedTypes = ['jpeg', 'jpg', 'png', 'webp'];
+        if (!in_array($fileExtension, $allowedTypes)) {
+            $errors[] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
+            return null; // Exit if file type is not allowed
         }
-        return null; // Return null if no image was uploaded
+
+        // Step 3: Generate a unique filename to avoid conflicts
+        $image = bin2hex(random_bytes(8)) . '.' . $fileExtension;
+        $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
+        $target_file = $target_dir . $image;
+
+        // Step 4: Move the uploaded file to the target directory
+        if (!move_uploaded_file($file['tmp_name'], $target_file)) {
+            $errors[] = "There was an error uploading the image.";
+            return null;
+        }
+
+        // Return the unique filename for storing in the database
+        return $image;
     }
+
+    return null; // Return null if no image was uploaded
+}
+
 
     // Handle image update for editing cocktails
     private function handleImageUpdate($file, $cocktail, &$errors)
@@ -314,9 +326,12 @@ class CocktailController
     public function view($cocktailId, $action = 'view')
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+        $cocktailId = intval($cocktailId); // Sanitize ID
+        $action = sanitize($action); // Sanitize action
+    
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
         $isEditing = ($action === 'edit');
-        $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;
+        $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;    
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
         $category = $this->cocktailService->getCategoryByCocktailId($cocktailId);
@@ -341,10 +356,12 @@ class CocktailController
     // Handle cocktail steps
     public function handleCocktailSteps($cocktailId, $steps)
     {
+        $cocktailId = intval($cocktailId); // Sanitize ID
         // Clear existing steps for this cocktail first
         $this->stepService->clearStepsByCocktailId($cocktailId);
 
         foreach ($steps as $stepNumber => $instruction) {
+            $instruction = sanitize($instruction); // Sanitize each instruction
             if (!empty($instruction)) {
                 // Create a new step in the repository
                 $this->stepService->addStep($cocktailId, $instruction, $stepNumber + 1);
@@ -355,13 +372,14 @@ class CocktailController
     // Handle cocktail ingredients
     private function handleCocktailIngredients($cocktailId, $ingredients, $quantities, $units)
     {
+        $cocktailId = intval($cocktailId); // Sanitize ID
         // Clear existing ingredients for the cocktail
         $this->ingredientService->clearIngredientsByCocktailId($cocktailId);
 
         foreach ($ingredients as $index => $ingredientName) {
-            $ingredientName = trim($ingredientName);
-            $quantity = trim($quantities[$index] ?? null);
-            $unitId = $units[$index] ?? null;
+            $ingredientName = sanitize($ingredientName); 
+            $quantity = sanitize($quantities[$index] ?? ''); 
+            $unitId = intval($units[$index] ?? null); 
 
             // Ensure ingredient name is not empty
             if (empty($ingredientName) || empty($quantity) || empty($unitId)) {
@@ -385,6 +403,7 @@ class CocktailController
     // Delete a cocktail (only for the owner or admin)
     public function delete($cocktailId)
     {
+        $cocktailId = intval($cocktailId); // Sanitize ID
         $this->ensureLoggedIn(); // Ensure the user is logged in
 
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
