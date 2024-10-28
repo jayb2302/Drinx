@@ -23,7 +23,7 @@ class CommentController
 
         // Get comment data from POST
         $commentText = sanitize($_POST['comment'] ?? '');
-        $parentCommentId = $_POST['parent_comment_id'] ?? null;
+        $parentCommentId = sanitize($_POST['parent_comment_id']) ?? null;
 
         if (empty($commentText)) {
             $_SESSION['error'] = 'Comment cannot be empty.';

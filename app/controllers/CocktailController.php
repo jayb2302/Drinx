@@ -324,13 +324,13 @@ private function handleImageUpload($file, &$errors)
     // View cocktail details (public access)
     public function view($cocktailId, $action = 'view')
     {
+        $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $cocktailId = intval($cocktailId); // Sanitize ID
         $action = sanitize($action); // Sanitize action
     
-        $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
         $isEditing = ($action === 'edit');
-        $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;
+        $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;    
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
         $category = $this->cocktailService->getCategoryByCocktailId($cocktailId);
@@ -376,9 +376,9 @@ private function handleImageUpload($file, &$errors)
         $this->ingredientService->clearIngredientsByCocktailId($cocktailId);
 
         foreach ($ingredients as $index => $ingredientName) {
-            $ingredientName = sanitize($ingredientName); // Sanitize ingredient name
-            $quantity = sanitize($quantities[$index] ?? ''); // Sanitize quantity
-            $unitId = intval($units[$index] ?? null); // Ensure unitId is an integer
+            $ingredientName = sanitize($ingredientName); 
+            $quantity = sanitize($quantities[$index] ?? ''); 
+            $unitId = intval($units[$index] ?? null); 
 
             // Ensure ingredient name is not empty
             if (empty($ingredientName) || empty($quantity) || empty($unitId)) {

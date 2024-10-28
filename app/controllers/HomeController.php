@@ -63,6 +63,12 @@ class HomeController
         $isLoggingIn = $action === 'login';
         $isRegistering = $action === 'register';
 
+        // Add 'hasLiked' status to each cocktail
+        foreach ($cocktails as $cocktail) {
+            // Set the hasLiked flag for each cocktail
+            $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktail->getCocktailId()) : false;
+        }
+
         // Fetch categories and units if we are adding a cocktail
         $categories = $this->cocktailService->getCategories(); // Get categories from service
         $units = $this->ingredientService->getAllUnits(); // Get units from service Now this will work
