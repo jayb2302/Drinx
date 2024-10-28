@@ -244,27 +244,39 @@ class CocktailController
         return $errors;
     }
 
-    // Handle image upload for new cocktails
-    private function handleImageUpload($file, &$errors)
-    {
-        if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
-            $image = $file['name'];
-            $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
-            $target_file = $target_dir . basename($image);
+// Handle image upload for new cocktails
+private function handleImageUpload($file, &$errors)
+{
+    if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
+        // Step 1: Sanitize and validate the original filename
+        $image = sanitize($file['name']);
+        $fileExtension = strtolower(pathinfo($image, PATHINFO_EXTENSION));
 
-            // Validate file type
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-            $fileType = mime_content_type($file['tmp_name']);
-            if (!in_array($fileType, $allowedTypes)) {
-                $errors[] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
-            }
-            if (!move_uploaded_file($file['tmp_name'], $target_file)) {
-                $errors[] = "There was an error uploading the image.";
-            }
-            return $image;
+        // Step 2: Check the file extension
+        $allowedTypes = ['jpeg', 'jpg', 'png', 'webp'];
+        if (!in_array($fileExtension, $allowedTypes)) {
+            $errors[] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
+            return null; // Exit if file type is not allowed
         }
-        return null; // Return null if no image was uploaded
+
+        // Step 3: Generate a unique filename to avoid conflicts
+        $image = bin2hex(random_bytes(8)) . '.' . $fileExtension;
+        $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
+        $target_file = $target_dir . $image;
+
+        // Step 4: Move the uploaded file to the target directory
+        if (!move_uploaded_file($file['tmp_name'], $target_file)) {
+            $errors[] = "There was an error uploading the image.";
+            return null;
+        }
+
+        // Return the unique filename for storing in the database
+        return $image;
     }
+
+    return null; // Return null if no image was uploaded
+}
+
 
     // Handle image update for editing cocktails
     private function handleImageUpdate($file, $cocktail, &$errors)

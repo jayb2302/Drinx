@@ -7,17 +7,19 @@ require_once __DIR__ . '/../repositories/CategoryRepository.php';
 require_once __DIR__ . '/../repositories/IngredientRepository.php';
 require_once __DIR__ . '/../repositories/StepRepository.php';
 require_once __DIR__ . '/../repositories/TagRepository.php';
-require_once __DIR__ . '/../repositories/DifficultyRepository.php'; 
+require_once __DIR__ . '/../repositories/DifficultyRepository.php';
 require_once __DIR__ . '/../repositories/UnitRepository.php';  // Add this
 require_once __DIR__ . '/../services/IngredientService.php';   // Add this
 require_once __DIR__ . '/../services/StepService.php';         // Add this
 
-class UserController {
+class UserController
+{
     private $userService;
     private $cocktailService;
     private $badgeService;
 
-    public function __construct() {
+    public function __construct()
+    {
         $dbConnection = Database::getConnection(); // Assuming you have a method to get DB connection
 
         // Initialize repositories
@@ -48,7 +50,8 @@ class UserController {
     }
 
     // 1. Show the user profile
-    public function profile() {
+    public function profile()
+    {
         if (!AuthController::isLoggedIn()) {
             redirect('login');
         }
@@ -63,10 +66,11 @@ class UserController {
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
     }
-    
+
 
     // 2. Show user settings
-    public function settings() {
+    public function settings()
+    {
         if (!AuthController::isLoggedIn()) {
             redirect('login');  // Redirect to login if not logged in
         }
@@ -76,16 +80,17 @@ class UserController {
     }
 
     // 3. Delete user account
-    public function deleteAccount() {
+    public function deleteAccount()
+    {
         if (!AuthController::isLoggedIn()) {
             redirect('login');
         }
-    
+
         $userId = $_SESSION['user']['id'];
-    
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $password = sanitize($_POST['password']);
-    
+
             // Verify the user's password before proceeding
             if ($this->userService->verifyPassword($userId, $password)) {
                 // Delete the user and associated data
@@ -99,54 +104,72 @@ class UserController {
                 $_SESSION['error'] = 'Incorrect password. Please try again.';
             }
         }
-    
+
         // Redirect back to profile if deletion failed or password was incorrect
         redirect('profile');
     }
 
     // 4. Update user profile (username, email)
-    public function updateProfile() {
+    public function updateProfile()
+    {
         if (!AuthController::isLoggedIn()) {
             redirect('login');
         }
-    
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $firstName = sanitize($_POST['first_name']);
             $lastName = sanitize($_POST['last_name']);
             $bio = sanitize($_POST['bio']);
-    
+
             // Handle file upload if a new profile picture is uploaded
             $profilePicture = null;
             if (!empty($_FILES['profile_picture']['name'])) {
                 $profilePicture = $this->uploadProfilePicture($_FILES['profile_picture']);
             }
-    
+
             // Call the service to update the profile
             if ($this->userService->updateUserProfile($_SESSION['user']['id'], $firstName, $lastName, $bio, $profilePicture)) {
                 $_SESSION['success'] = "Profile updated successfully.";
             } else {
                 $_SESSION['error'] = "Failed to update profile.";
             }
-    
+
             redirect('profile');
         }
     }
 
-    private function uploadProfilePicture($file) {
+    private function uploadProfilePicture($file)
+    {
         $targetDir = __DIR__ . '/../../public/uploads/users/';
-        $fileName = basename($file['name']);
-        $targetFile = $targetDir . $fileName;
-    
-        // Move the uploaded file to the target directory
-        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-            return $fileName; // Return the file name for storage
+
+        // Step 1: Sanitize and validate the original filename
+        $fileName = sanitize($file['name']);
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        // Step 2: Check if the file extension is allowed
+        $allowedTypes = ['jpeg', 'jpg', 'png', 'webp'];
+        if (!in_array($fileExtension, $allowedTypes)) {
+            $_SESSION['error'] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
+            return null; // Exit if the file type is not allowed
         }
-    
-        return null; // Return null if upload failed
+
+        // Step 3: Generate a unique filename to avoid conflicts
+        $uniqueFileName = bin2hex(random_bytes(8)) . '.' . $fileExtension;
+        $targetFile = $targetDir . $uniqueFileName;
+
+        // Step 4: Move the uploaded file to the target directory
+        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+            return $uniqueFileName; // Return the unique filename for storage in the database
+        }
+
+        // Return null if the upload failed
+        $_SESSION['error'] = "Failed to upload profile picture.";
+        return null;
     }
 
     // 5. Change user password
-    public function changePassword() {
+    public function changePassword()
+    {
         if (!AuthController::isLoggedIn()) {
             redirect('login');  // Redirect to login if not logged in
         }
@@ -166,25 +189,26 @@ class UserController {
         }
     }
 
-    public function profileByUsername($username) {
+    public function profileByUsername($username)
+    {
         if (!AuthController::isLoggedIn()) {
             redirect('login');
         }
         $username = sanitize($username);
         // Fetch user profile by username
         $profile = $this->userService->getUserByUsername($username);
-    
+
         if (!$profile) {
             // If no profile is found, you can redirect to a 404 page or show a message
             echo "User not found.";
             return;
         }
-    
+
         $userId = $profile->getId();
         $userRecipes = $this->cocktailService->getUserRecipes($userId);
         $userBadges = $this->badgeService->getUserBadges($userId);
         $profileStats = $this->userService->getUserStats($userId);
-    
+
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
     }
