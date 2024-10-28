@@ -18,7 +18,10 @@ $(document).ready(function() {
                 if (response.success) {
                     // Update the button state based on the action
                     likeButton.data('liked', response.action === 'like'); // Toggle the liked status based on the response
-                    likeButton.find('.like-icon').html(response.action === 'like' ? '♥️' : '🤍'); // Change icon based on the action
+                    likeButton.find('.like-icon').html(response.action === 'like' ? '❤️' : '🤍'); // Change icon based on the action
+                    
+                   // Update the like count displayed for this specific cocktail
+                   likeButton.closest('.like-section').find('.like-count').text(`${response.likeCount}`);
                 } else {
                     alert(response.error || 'An error occurred while updating like status.');
                 }

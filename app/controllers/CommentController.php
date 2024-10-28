@@ -39,7 +39,7 @@ class CommentController
         $this->commentService->addComment($userId, $cocktailId, $commentText, $parentCommentId);
 
         // Redirect back to the cocktail view
-        $cocktailTitle = isset($_POST['cocktailTitle']) ? sanitize(urlencode($_POST['cocktailTitle'])) : '';
+        $cocktailTitle = urlencode($_POST['cocktailTitle']);
         header("Location: /cocktails/{$cocktailId}-{$cocktailTitle}");
         exit();
     }

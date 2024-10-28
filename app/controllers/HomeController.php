@@ -45,7 +45,8 @@ class HomeController
             $this->ingredientService, // Use class property
             $stepService,
             $tagRepository,
-            $difficultyRepository
+            $difficultyRepository,
+            $likeRepository
         );
     }
 

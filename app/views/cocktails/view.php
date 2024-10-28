@@ -12,6 +12,8 @@ $ingredients = $ingredients ?? [];
 $categories = $categories ?? [];
 $units = $units ?? [];
 
+$totalLikes = $this->cocktailService->getLikeCount($cocktailId);
+
 ?>
 <?php if (isset($_SESSION['errors'])): ?>
     <div class="error-messages">
@@ -39,24 +41,28 @@ $units = $units ?? [];
         <div class="cocktailImage">
             <?php if ($cocktail->getImage()): ?>
                 <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>" alt="<?= htmlspecialchars($cocktail->getTitle()) ?>" class="mb-4 cocktailImage">
+                <?php else: ?>
+                    <p>No image available for this cocktail.</p>
+                    <?php endif; ?>
+                </div>
+                
+                <!-- Like/Unlike Button -->
+                <div class="like-section">
+                    <?php if ($loggedInUserId): ?>
+                        <button class="like-button"
+                        data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
+                        data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
+                        <span class="like-icon">
+                            <?= $cocktail->hasLiked ? '❤️' : '🤍' ?>
+                        </span>
+                    </button>
+                    <span class="like-count"><?= $totalLikes ?>  </span>
+                
             <?php else: ?>
-                <p>No image available for this cocktail.</p>
+                <p><a href="/login">Log in to like</a></p>
             <?php endif; ?>
+            <!-- Display the like count -->
         </div>
-
-        <!-- Like/Unlike Button -->
-        <?php if ($loggedInUserId): ?>
-            <button class="like-button"
-                data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
-                data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
-                <span class="like-icon">
-                    <?= $cocktail->hasLiked ? '♥️' : '🤍' ?>
-                </span>
-            </button>
-        <?php else: ?>
-            <!-- Prompt to log in if user is not logged in -->
-            <p><a href="/login">Log in to like</a></p>
-        <?php endif; ?>
         <h1 class="title"><?= htmlspecialchars($cocktail->getTitle() ?? 'Untitled') ?></h1>
 
         <p><?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?></p>
