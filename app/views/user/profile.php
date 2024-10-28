@@ -100,11 +100,14 @@ if (isset($_SESSION['success'])) {
 <div class="profile-stats">
     <h3>Statistics</h3>
     <ul>
-        <li>Total Recipes: <?= count($userRecipes); ?></li>
+        <li>Total Recipes: <?= $profileStats['total_recipes'] ?? 0; ?></li>
         <li>Likes Received: <?= $profileStats['likes_received'] ?? 0; ?></li>
         <li>Comments Received: <?= $profileStats['comments_received'] ?? 0; ?></li>
+        <li>Points: <?= $profileStats['points'] ?? 0; ?></li>
+        <li>Rank: <?= $profileStats['rank_name'] ?? 'N/A'; ?></li>
     </ul>
 </div>
+
 <!-- Delete Account Button -->
 <div class="delete-account-section">
     <button onclick="toggleDeleteSection()">Delete Account</button>
@@ -125,14 +128,4 @@ if (isset($_SESSION['success'])) {
         <?php endif; ?>
     </div>
 </div>
-
-<script>
-    function toggleEditMode() {
-        const form = document.getElementById('edit-profile-form');
-        form.style.display = form.style.display === "none" ? "block" : "none";
-    }
-    function toggleDeleteSection() {
-        const section = document.getElementById('deleteConfirmSection');
-        section.style.display = section.style.display === 'none' ? 'block' : 'none';
-    }
-</script>
+<?php include_once __DIR__ . '/../layout/footer.php'; ?>
