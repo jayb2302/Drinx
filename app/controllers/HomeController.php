@@ -56,17 +56,12 @@ class HomeController
 
         // Fetch all cocktails
         $cocktails = $this->cocktailService->getAllCocktails();
-        
-        // Determine if we should show the add form
-        $isAdding = isset($_GET['action']) &&  trim($_GET['action']) === 'add';
-        $isLoggingIn = isset($_GET['action']) && trim($_GET['action']) === 'login';
-        $isRegistering = isset($_GET['action']) && trim($_GET['action']) === 'register';
 
-        // Add 'hasLiked' status to each cocktail
-        foreach ($cocktails as $cocktail) {
-            // Set the hasLiked flag for each cocktail
-            $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktail->getCocktailId()) : false;
-        }
+        // Sanitize and determine if we should show the add form
+        $action = isset($_GET['action']) ? sanitize($_GET['action']) : null;
+        $isAdding = $action === 'add';
+        $isLoggingIn = $action === 'login';
+        $isRegistering = $action === 'register';
 
         // Fetch categories and units if we are adding a cocktail
         $categories = $this->cocktailService->getCategories(); // Get categories from service
