@@ -17,6 +17,7 @@ function sanitize($input) {
     return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
 
+
 // Function to redirect to a given path
 function redirect($path) {
     header("Location: " . url($path));

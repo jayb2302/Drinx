@@ -14,7 +14,7 @@ class StepController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cocktail_id = intval($_POST['cocktail_id']);
             $step_number = intval($_POST['step_number']);
-            $instruction = $_POST['step_instruction'];
+            $instruction = sanitize($_POST['step_instruction']); // Sanitize instruction input
 
             $this->stepRepository->addStep($cocktail_id, $step_number, $instruction);
 
