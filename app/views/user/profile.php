@@ -18,7 +18,8 @@ if (isset($_SESSION['success'])) {
     <!-- Profile Picture -->
     <div class="profile-picture">
         <?php if ($profile->getProfilePicture()): ?>
-            <img src="<?= asset('uploads/profile_pictures/' . htmlspecialchars($profile->getProfilePicture())); ?>" alt="Profile Picture" class="profile-img">
+            <img class="" src="<?= asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>"
+                alt="Profile Picture" class="profile-img">
         <?php else: ?>
             <img src="<?= asset('/../uploads/cocktails/kian.jpg'); ?>" alt="Default Profile Picture" class="profile-img">
         <?php endif; ?>
@@ -26,7 +27,8 @@ if (isset($_SESSION['success'])) {
 
     <!-- User Info -->
     <div class="profile-info">
-    <h2><?= htmlspecialchars($profile->getFirstName() ?? 'No First Name') . ' ' . htmlspecialchars($profile->getLastName() ?? 'No Last Name'); ?></h2>
+        <h2><?= htmlspecialchars($profile->getFirstName() ?? 'No First Name') . ' ' . htmlspecialchars($profile->getLastName() ?? 'No Last Name'); ?>
+        </h2>
         <p>Username: <?= htmlspecialchars($profile->getUsername() ?? 'Unknown'); ?></p>
         <p class="bio"><?= htmlspecialchars($profile->getBio() ?? 'This user has not set a bio yet.'); ?></p>
     </div>
@@ -41,22 +43,39 @@ if (isset($_SESSION['success'])) {
 </div>
 
 <!-- User's Recipes Section -->
-<div class="profile-recipes">
-    <h3>Uploaded Recipes</h3>
-    <?php if (!empty($userRecipes)): ?>
-        <div class="recipe-grid">
-            <?php foreach ($userRecipes as $recipe): ?>
-                <div class="recipe-card">
-                    <a href="/cocktails/<?= $recipe->getCocktailId(); ?>-<?= urlencode($recipe->getTitle()); ?>">
-                        <img src="<?= asset('uploads/cocktails/' . htmlspecialchars($recipe->getImage())); ?>" alt="<?= htmlspecialchars($recipe->getTitle()); ?>" class="recipe-img">
-                        <h4><?= htmlspecialchars($recipe->getTitle()); ?></h4>
-                    </a>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php else: ?>
-        <p>No recipes uploaded yet.</p>
-    <?php endif; ?>
+<h3>Uploaded Recipes</h3>
+<div class="wrapper">
+    <div class="profile-recipes">
+        <?php if (!empty($userRecipes)): ?>
+            <div class="container">
+                <?php foreach ($userRecipes as $recipe): ?>
+                    <article class="cocktailCard">
+                        <!-- Show the Edit button if the logged-in user is the owner of the recipe -->
+                        <?php if (isset($loggedInUserId) && $loggedInUserId === $recipe->getUserId()): ?>
+                            <button>
+                                <a href="/?action=edit&cocktail_id=<?= $recipe->getCocktailId() ?>"
+                                    class="text-blue-500 hover:underline">Edit Cocktail</a>
+                            </button>
+                        <?php endif; ?>
+
+                        <!-- Cocktail Link -->
+                        <a
+                            href="/cocktails/<?= htmlspecialchars($recipe->getCocktailId()) ?>-<?= urlencode($recipe->getTitle()) ?>">
+                            <img src="<?= asset('/../uploads/cocktails/' . htmlspecialchars($recipe->getImage())); ?>"
+                                alt="<?= htmlspecialchars($recipe->getTitle()); ?>" class="cocktailImage">
+                        </a>
+
+                        <!-- Cocktail Info -->
+                        <div class="cocktailInfo">
+                            <h3><?= htmlspecialchars($recipe->getTitle()); ?></h3>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <p>No recipes uploaded yet.</p>
+        <?php endif; ?>
+    </div>
 </div>
 
 <!-- User's Badges Section -->
@@ -66,7 +85,8 @@ if (isset($_SESSION['success'])) {
         <div class="badge-grid">
             <?php foreach ($userBadges as $badge): ?>
                 <div class="badge-card">
-                    <img src="<?= asset('uploads/badges/' . htmlspecialchars($badge['badge_image'])); ?>" alt="<?= htmlspecialchars($badge['badge_name']); ?>" class="badge-img">
+                    <img src="<?= asset('uploads/badges/' . htmlspecialchars($badge['badge_image'])); ?>"
+                        alt="<?= htmlspecialchars($badge['badge_name']); ?>" class="badge-img">
                     <p><?= htmlspecialchars($badge['badge_name']); ?></p>
                 </div>
             <?php endforeach; ?>
@@ -85,10 +105,34 @@ if (isset($_SESSION['success'])) {
         <li>Comments Received: <?= $profileStats['comments_received'] ?? 0; ?></li>
     </ul>
 </div>
+<!-- Delete Account Button -->
+<div class="delete-account-section">
+    <button onclick="toggleDeleteSection()">Delete Account</button>
+
+    <div id="deleteConfirmSection" style="display: none;">
+        <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
+        
+        <form action="/profile/delete" method="POST">
+            <label for="password">Confirm Password:</label>
+            <input type="password" name="password" required>
+            <button type="submit" class="confirm-delete">Confirm Deletion</button>
+        </form>
+
+        <!-- Display any error messages related to deletion -->
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); ?></div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </div>
+</div>
 
 <script>
     function toggleEditMode() {
         const form = document.getElementById('edit-profile-form');
         form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+    function toggleDeleteSection() {
+        const section = document.getElementById('deleteConfirmSection');
+        section.style.display = section.style.display === 'none' ? 'block' : 'none';
     }
 </script>

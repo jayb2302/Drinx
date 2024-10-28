@@ -26,6 +26,10 @@ $router->add('GET', '#^/profile$#', [UserController::class, 'profile']); // Show
 $router->add('GET', '#^/profile/([a-zA-Z0-9_-]+)$#', [UserController::class, 'profileByUsername']); // Show profile by username
 $router->add('POST', '#^/profile/update$#', [UserController::class, 'updateProfile']); // Handle profile update
 
+// Account deletion routes
+$router->add('POST', '#^/profile/delete$#', [UserController::class, 'deleteAccount']); // Handle account deletion directly from profile
+
+
 // Cocktails routes
 $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // Show all cocktails
 // Update the router to use HomeController for add action
