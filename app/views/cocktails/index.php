@@ -33,7 +33,8 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
         // Prevent htmlspecialchars from receiving null
         $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
 
-        ?>
+        // Get the total likes for the cocktail
+        $totalLikes = $this->cocktailService->getLikesForCocktail($cocktail->getCocktailId());        ?>
 
         <!-- Individual cocktail card -->
         <div class="container">
@@ -54,6 +55,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                             <span class="like-icon">
                                 <?= $cocktail->hasLiked ? '♥️' : '🤍' ?>
                             </span>
+                            <span class="like-count"><?= $totalLikes ?> </span> 
                         </button>
                     <?php else: ?>
                         <p><a href="/login">Log in to like</a></p>

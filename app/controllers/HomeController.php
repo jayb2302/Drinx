@@ -45,7 +45,8 @@ class HomeController
             $this->ingredientService, // Use class property
             $stepService,
             $tagRepository,
-            $difficultyRepository
+            $difficultyRepository,
+            $likeRepository
         );
     }
 
@@ -55,7 +56,7 @@ class HomeController
 
         // Fetch all cocktails
         $cocktails = $this->cocktailService->getAllCocktails();
-
+        
         // Determine if we should show the add form
         $isAdding = isset($_GET['action']) &&  trim($_GET['action']) === 'add';
         $isLoggingIn = isset($_GET['action']) && trim($_GET['action']) === 'login';

@@ -24,9 +24,10 @@ class CocktailRepository {
         
         if ($result) {
             // Fetch ingredients, steps, and tags
-            $ingredients = $this->getIngredientsByCocktailId($cocktail_id); // Ensure this returns an array
-            $steps = $this->getStepsByCocktailId($cocktail_id); // Ensure this returns an array
-            // $tags = $this->getTagsByCocktailId($cocktail_id); // Ensure this returns an array
+            $ingredients = $this->getIngredientsByCocktailId($cocktail_id); 
+            $steps = $this->getStepsByCocktailId($cocktail_id); 
+            // $tags = $this->getTagsByCocktailId($cocktail_id); 
+
     
             // Create a Cocktail object with the fetched data
             return new Cocktail(

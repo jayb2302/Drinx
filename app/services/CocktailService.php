@@ -5,6 +5,7 @@ require_once __DIR__ . '/../repositories/IngredientRepository.php';
 require_once __DIR__ . '/../repositories/StepRepository.php';
 require_once __DIR__ . '/../repositories/TagRepository.php';
 require_once __DIR__ . '/../repositories/DifficultyRepository.php'; 
+require_once __DIR__ . '/../repositories/LikeRepository.php';
 
 class CocktailService {
     private $cocktailRepository;
@@ -13,6 +14,7 @@ class CocktailService {
     private $stepService;
     private $tagRepository;
     private $difficultyRepository;
+    private $likeRepository;
 
     public function __construct(
         CocktailRepository $cocktailRepository,
@@ -20,7 +22,8 @@ class CocktailService {
         IngredientService $ingredientService,   
         StepService $stepService,              
         TagRepository $tagRepository,
-        DifficultyRepository $difficultyRepository
+        DifficultyRepository $difficultyRepository,
+        LikeRepository $likeRepository
     ) {
         $this->cocktailRepository = $cocktailRepository;
         $this->categoryRepository = $categoryRepository;
@@ -28,6 +31,7 @@ class CocktailService {
         $this->stepService = $stepService;
         $this->tagRepository = $tagRepository;
         $this->difficultyRepository = $difficultyRepository;
+        $this->likeRepository = $likeRepository;
     }
 
     // Cocktail CRUD operations
@@ -111,5 +115,12 @@ class CocktailService {
     }
     public function getAllUnits() {
         return $this->ingredientService->getAllUnits();
+    }
+
+    public function getLikesForCocktail($cocktailId) {
+        return $this->likeRepository->getLikesForCocktail($cocktailId);
+    }
+    public function getLikeCount($cocktailId) {
+        return $this->likeRepository->getLikesForCocktail($cocktailId);
     }
 }

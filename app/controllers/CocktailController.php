@@ -7,8 +7,6 @@ require_once __DIR__ . '/../repositories/TagRepository.php';
 require_once __DIR__ . '/../repositories/DifficultyRepository.php';
 require_once __DIR__ . '/../repositories/UnitRepository.php';
 require_once __DIR__ . '/../services/CocktailService.php';
-
-
 require_once __DIR__ . '/../services/CommentService.php';
 require_once __DIR__ . '/../repositories/CommentRepository.php';
 require_once __DIR__ . '/../services/LikeService.php';
@@ -39,7 +37,7 @@ class CocktailController
         $this->difficultyRepository = new DifficultyRepository($db);
         $commentRepository = new CommentRepository($db);
         $likeRepository = new LikeRepository($db); 
-        $this->likeService = new LikeService($likeRepository); 
+        $this->likeService = new LikeService(new LikeRepository($db)); 
         $commentRepository = new CommentRepository($db);
 
         // Initialize services
@@ -55,7 +53,8 @@ class CocktailController
             $this->ingredientService,
             $this->stepService,
             $tagRepository,
-            $this->difficultyRepository
+            $this->difficultyRepository,
+            $likeRepository
         );
     }
 
