@@ -187,12 +187,13 @@ class UserRepository
     {
         $stmt = $this->db->prepare("
             SELECT 
-                COUNT(DISTINCT l.like_id) AS likes_received, 
-                COUNT(DISTINCT c.comment_id) AS comments_received
-            FROM users u
-            LEFT JOIN likes l ON l.user_id = u.user_id
-            LEFT JOIN comments c ON c.user_id = u.user_id
-            WHERE u.user_id = :user_id
+                total_recipes,
+                likes_received,
+                comments_received,
+                points,
+                rank_name
+            FROM user_stats
+            WHERE user_id = :user_id
         ");
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();

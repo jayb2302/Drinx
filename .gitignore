@@ -2,3 +2,4 @@ app/views/.DS_Store
 public/uploads/.DS_Store
 app/controllers/.DS_Store
 .env
+env
