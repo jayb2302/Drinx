@@ -3,6 +3,7 @@
 include_once __DIR__ . '/../layout/header.php';
 $metaTitle = "Cocktails";
 $pageTitle = "Cocktails";
+
 // Start the session (if not already started)
 $loggedInUserId = $_SESSION['user']['id'] ?? null;
 ?>
@@ -31,28 +32,43 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
 
         // Prevent htmlspecialchars from receiving null
         $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
+
         ?>
 
         <!-- Individual cocktail card -->
         <div class="container">
             <article class="cocktailCard">
-                <?php if (isset($loggedInUserId) && $loggedInUserId === $cocktail->getUserId()): ?>
+
+                <?php if (isset($loggedInUserId) && $loggedInUserId === $cocktailUserId): ?>
                     <button>
                         <a href="/?action=edit&cocktail_id=<?= $cocktail->getCocktailId() ?>" class="text-blue-500 hover:underline">Edit Cocktail</a>
                     </button>
                 <?php endif; ?>
+
+                <!-- Like/Unlike Button -->
+                <div class="like-section">
+                    <?php if ($loggedInUserId): ?>
+                        <button class="like-button"
+                            data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
+                            data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
+                            <span class="like-icon">
+                                <?= $cocktail->hasLiked ? '♥️' : '🤍' ?>
+                            </span>
+                        </button>
+                    <?php else: ?>
+                        <p><a href="/login">Log in to like</a></p>
+                    <?php endif; ?>
+                </div>
+
                 <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
                     <img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= $cocktailTitle ?>" class="cocktailImage">
                 </a>
                 <div class="cocktailInfo">
                     <h3><?= $cocktailTitle ?></h3>
                 </div>
-                <!-- Show the Edit button only if the logged-in user is the owner of the cocktail -->
-                <!-- Edit Button (only if the user owns the cocktail) -->
+
             </article>
         </div>
-
-
     <?php endforeach; ?>
 
 <?php else: ?>

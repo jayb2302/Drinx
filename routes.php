@@ -7,6 +7,7 @@ require_once __DIR__ . '/app/controllers/UserController.php';
 require_once __DIR__ . '/app/controllers/AuthController.php';
 require_once __DIR__ . '/app/controllers/CocktailController.php';
 require_once __DIR__ . '/app/controllers/CommentController.php';
+require_once __DIR__ . '/app/controllers/LikeController.php';
 
 $router = new Router(); // Instantiate the Router class
 
@@ -46,3 +47,6 @@ $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'vi
 $router->add('POST', '#^/cocktails/(\d+)-[^/]+/comments$#', [CommentController::class, 'addComment']);
 $router->add('GET', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
 $router->add('POST', '#^/comments/(\d+)/delete$#', [CommentController::class, 'delete']); // Delete comment
+
+// Toggle like route
+$router->add('POST', '#^/cocktails/(\d+)/toggle-like$#', [LikeController::class, 'toggleLike']);

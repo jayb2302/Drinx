@@ -81,7 +81,7 @@ class AuthController
                 } else {
                     $_SESSION['error'] = "Something went wrong. Please try again.";
                 }
-                header("Location: /register");
+                header("Location: /egister");
                 exit();
             }
         }

@@ -21,9 +21,9 @@ class CommentController
             exit();
         }
 
-        // Sanitize comment data from POST
-        $commentText = isset($_POST['comment']) ? sanitize($_POST['comment']) : '';
-        $parentCommentId = isset($_POST['parent_comment_id']) ? sanitize($_POST['parent_comment_id']) : null;
+        // Get comment data from POST
+        $commentText = sanitize($_POST['comment'] ?? '');
+        $parentCommentId = sanitize($_POST['parent_comment_id']) ?? null;
 
         if (empty($commentText)) {
             $_SESSION['error'] = 'Comment cannot be empty.';

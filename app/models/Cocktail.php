@@ -2,6 +2,7 @@
         class Cocktail
         {
             private $cocktail_id;
+            public $hasLiked = false;
             private $title;
             private $description;
             private $image;

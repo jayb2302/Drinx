@@ -11,9 +11,14 @@ $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $action = $router->resolve($requestUri);
 
 // Dependency injection (manual for now)
-$db = Database::getConnection(); // Assuming you have a Database connection class
+$db = Database::getConnection(); 
 $commentRepository = new CommentRepository($db);
 $commentService = new CommentService($commentRepository);
+
+// Dependency for Like functionality
+$likeRepository = new LikeRepository($db);
+$likeService = new LikeService($likeRepository);
+$likeController = new LikeController($likeService);
 
 if ($action) {
     // Unpack the action array
@@ -27,6 +32,8 @@ if ($action) {
             // Inject the dependencies manually
             if ($controllerClass === 'CommentController') {
                 $controller = new CommentController($commentService); // Pass the CommentService here
+            } elseif ($controllerClass === 'LikeController') {
+                $controller = $likeController; // Use the instantiated LikeController
             } else {
                 $controller = new $controllerClass(); // For other controllers that don't need dependencies
             }

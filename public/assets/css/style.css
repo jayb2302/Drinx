@@ -5,6 +5,7 @@
 @import '../css/pages/footer.css';
 @import '../css/pages/profile.css'; 
 @import '../css/components/comments.css';
+@import '../css/components/likes.css';
 
 :root {
     /* Colors for Light Mode */

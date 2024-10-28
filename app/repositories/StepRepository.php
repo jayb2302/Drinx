@@ -1,5 +1,4 @@
 <?php
-
 class StepRepository
 {
     private $db;

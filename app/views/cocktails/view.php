@@ -43,6 +43,20 @@ $units = $units ?? [];
                 <p>No image available for this cocktail.</p>
             <?php endif; ?>
         </div>
+
+        <!-- Like/Unlike Button -->
+        <?php if ($loggedInUserId): ?>
+            <button class="like-button"
+                data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
+                data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
+                <span class="like-icon">
+                    <?= $cocktail->hasLiked ? '♥️' : '🤍' ?>
+                </span>
+            </button>
+        <?php else: ?>
+            <!-- Prompt to log in if user is not logged in -->
+            <p><a href="/login">Log in to like</a></p>
+        <?php endif; ?>
         <h1 class="title"><?= htmlspecialchars($cocktail->getTitle() ?? 'Untitled') ?></h1>
 
         <p><?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?></p>
@@ -91,7 +105,7 @@ $units = $units ?? [];
         include __DIR__ . '/form.php';
         ?>
     </div>
-  
+
     <!-- Display Comments Section -->
     <h2 class="text-2xl font-semibold mt-6 mb-2">Comments</h2>
     <div class="comments-section">
@@ -148,7 +162,7 @@ $units = $units ?? [];
     <h3>Add a New Comment</h3>
     <form action="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>/comments" method="POST">
         <textarea name="comment" placeholder="Write your comment here..." required></textarea>
-        <input type="hidden" name="parent_comment_id" value=""> 
+        <input type="hidden" name="parent_comment_id" value="">
         <input type="hidden" name="cocktailTitle" value="<?= htmlspecialchars($cocktail->getTitle()) ?>">
         <button type="submit">Submit</button>
     </form>
