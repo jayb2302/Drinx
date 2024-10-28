@@ -18,7 +18,9 @@ $router->add('GET', '#^/register$#', [HomeController::class, 'index']); // Show 
 
 // Authentication routes
 $router->add('POST', '#^/login$#', [AuthController::class, 'authenticate']); // Handle login
+$router->add('GET', '#^/login$#', [AuthController::class, 'showLoginForm']); // Show login form
 $router->add('POST', '#^/register$#', [AuthController::class, 'store']); // Handle registration
+$router->add('GET', '#^/register$#', [AuthController::class, 'showRegisterForm']); // Show registration form
 $router->add('GET', '#^/logout$#', [AuthController::class, 'logout']); // Logout route
 
 // User routes
