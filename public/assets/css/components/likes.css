@@ -1,0 +1,31 @@
+.like-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+.unlike-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.like-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+.like-section form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.like-icon {
+    font-size: 24px; 
+    color: red; 
+}

@@ -7,10 +7,11 @@ require_once __DIR__ . '/../repositories/TagRepository.php';
 require_once __DIR__ . '/../repositories/DifficultyRepository.php';
 require_once __DIR__ . '/../repositories/UnitRepository.php';
 require_once __DIR__ . '/../services/CocktailService.php';
-require_once __DIR__ . '/../services/IngredientService.php';
-require_once __DIR__ . '/../services/StepService.php';
+
+
 require_once __DIR__ . '/../services/CommentService.php';
 require_once __DIR__ . '/../repositories/CommentRepository.php';
+require_once __DIR__ . '/../services/LikeService.php';
 
 class CocktailController
 {
@@ -19,6 +20,7 @@ class CocktailController
     private $stepService;
     private $difficultyRepository;
     private $commentService;
+    private $likeService;
 
     public function __construct()
     {
@@ -35,13 +37,16 @@ class CocktailController
         $stepRepository = new StepRepository($db);
         $tagRepository = new TagRepository($db);
         $this->difficultyRepository = new DifficultyRepository($db);
-        $unitRepository = new UnitRepository($db);  
+        $commentRepository = new CommentRepository($db);
+        $likeRepository = new LikeRepository($db); 
+        $this->likeService = new LikeService($likeRepository); 
         $commentRepository = new CommentRepository($db);
 
         // Initialize services
+        $unitRepository = new UnitRepository($db);
         $this->ingredientService = new IngredientService($ingredientRepository, $unitRepository);
         $this->stepService = new StepService($stepRepository);
-        $this->commentService = new CommentService($commentRepository); 
+        $this->commentService = new CommentService($commentRepository);
 
         // Initialize the CocktailService with services and repositories
         $this->cocktailService = new CocktailService(
@@ -66,7 +71,10 @@ class CocktailController
         $cocktails = $this->cocktailService->getAllCocktails();
         $categories = $this->cocktailService->getCategories();
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
-
+        // Pass `hasLiked` status to the view for each cocktail
+        foreach ($cocktails as $cocktail) {
+            $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktail->getCocktailId()) : false;
+        }
         require_once __DIR__ . '/../views/cocktails/index.php'; // Load the view to display cocktails
     }
 
@@ -76,7 +84,7 @@ class CocktailController
         // Fetch necessary data for the form (categories, units)
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
-        
+
         $isEditing = false;
         // Pass the necessary data to the view
         require_once __DIR__ . '/../views/cocktails/form.php'; // Include the form view
@@ -86,38 +94,38 @@ class CocktailController
     public function store()
     {
         $this->ensureLoggedIn();
-    
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = $this->validateCocktailInput($_POST);
             $image = $this->handleImageUpload($_FILES['image'], $errors);
-    
+
             if ($this->handleValidationErrors($errors, '/cocktails/add')) return;
-    
+
             $cocktailData = [
                 'user_id' => $_SESSION['user']['id'],
-                'title' => $_POST['title'],
-                'description' => $_POST['description'],
+                'title' => trim($_POST['title']),
+                'description' => trim($_POST['description']),
                 'image' => $image,
                 'category_id' => $_POST['category_id'],
                 'difficulty_id' => $_POST['difficulty_id']
             ];
-    
+
             try {
                 // Create the cocktail and get the ID
                 $cocktailId = $this->cocktailService->createCocktail($cocktailData);
                 error_log("Cocktail created with ID: " . $cocktailId); // Check if correct ID is returned
-    
+
                 // Make sure the ID is correct before adding steps and ingredients
                 $this->handleCocktailSteps($cocktailId, $_POST['steps']);
                 $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
-    
+
                 $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
             } catch (Exception $e) {
                 $_SESSION['errors'] = ["Failed to create cocktail: " . $e->getMessage()];
                 $this->redirect('/cocktails/add');
             }
         }
-    
+
         $this->redirect('/cocktails');
     }
 
@@ -161,8 +169,8 @@ class CocktailController
         if ($this->handleValidationErrors($errors, '/cocktails/' . $cocktailId . '/edit')) return;
 
         $cocktailData = [
-            'title' => $_POST['title'],
-            'description' => $_POST['description'],
+            'title' => trim($_POST['title']),
+            'description' => trim($_POST['description']),
             'category_id' => $_POST['category_id'],
             'difficulty_id' => $_POST['difficulty_id'],
             'image' => $image
@@ -172,7 +180,7 @@ class CocktailController
             $this->clearSteps($cocktailId);
             $this->cocktailService->updateCocktail($cocktailId, $cocktailData);
             $this->handleCocktailSteps($cocktailId, $_POST['steps']);
-            
+
             // Check for deletions of steps
             if (!empty($_POST['delete_steps'])) {
                 foreach ($_POST['delete_steps'] as $stepId) {
@@ -305,15 +313,21 @@ class CocktailController
     // View cocktail details (public access)
     public function view($cocktailId, $action = 'view')
     {
+        $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
         $isEditing = ($action === 'edit');
-
+        $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
         $category = $this->cocktailService->getCategoryByCocktailId($cocktailId);
         $tags = $this->cocktailService->getCocktailTags($cocktailId);
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
+        // Check if the user has liked this cocktail
+        $hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;
+
+        // Fetch total likes for the cocktail (if you need to display total likes)
+        $totalLikes = $this->likeService->getLikesForCocktail($cocktailId);
 
         $comments = $this->commentService->getCommentsWithReplies($cocktailId);
 
@@ -345,7 +359,8 @@ class CocktailController
         $this->ingredientService->clearIngredientsByCocktailId($cocktailId);
 
         foreach ($ingredients as $index => $ingredientName) {
-            $quantity = $quantities[$index] ?? null;
+            $ingredientName = trim($ingredientName);
+            $quantity = trim($quantities[$index] ?? null);
             $unitId = $units[$index] ?? null;
 
             // Ensure ingredient name is not empty

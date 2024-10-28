@@ -211,65 +211,65 @@ VALUES
 -- 13. Insert data into `cocktails`
 INSERT INTO cocktails (user_id, title, description, image, category_id, created_at)
 VALUES
-    (1, 'Mojito', 'A refreshing mint cocktail with lime and rum.', '/uploads/cocktails/mojito.jpeg
+    (1, 'Mojito', 'A refreshing mint cocktail with lime and rum.', 'mojito.jpeg
     ', 2, '2023-06-15'),
-    (2, 'Old Fashioned', 'A whiskey-based cocktail with a hint of citrus.', '/uploads/cocktails/old_fashioned.jpeg
+    (2, 'Old Fashioned', 'A whiskey-based cocktail with a hint of citrus.', 'old_fashioned.jpeg
     ', 1, '2023-07-20'),
-    (3, 'Margarita', 'A classic tequila cocktail with lime juice and salt.', '/uploads/cocktails/margarita.jpeg
+    (3, 'Margarita', 'A classic tequila cocktail with lime juice and salt.', 'margarita.jpeg
     ', 2, '2023-08-05'),
-    (4, 'Negroni', 'A bittersweet cocktail made with gin, Campari, and sweet vermouth.', '/uploads/cocktails/negroni.jpeg
+    (4, 'Negroni', 'A bittersweet cocktail made with gin, Campari, and sweet vermouth.', 'negroni.jpeg
     ', 1, '2023-06-25'),
-    (5, 'Pina Colada', 'A tropical cocktail made with rum, coconut cream, and pineapple juice.', '/uploads/cocktails/pina_colada.jpeg
+    (5, 'Pina Colada', 'A tropical cocktail made with rum, coconut cream, and pineapple juice.', 'pina_colada.jpeg
     ', 2, '2023-07-30'),
-    (6, 'Daiquiri', 'A rum cocktail with lime and sugar syrup.', '/uploads/cocktails/daiquiri.jpeg
+    (6, 'Daiquiri', 'A rum cocktail with lime and sugar syrup.', 'daiquiri.jpeg
     ', 2, '2023-08-10'),
-    (7, 'Cosmopolitan', 'A vodka cocktail with cranberry juice and triple sec.', '/uploads/cocktails/cosmopolitan.jpeg
+    (7, 'Cosmopolitan', 'A vodka cocktail with cranberry juice and triple sec.', 'cosmopolitan.jpeg
     ', 2, '2023-06-18'),
-    (8, 'Whiskey Sour', 'A classic cocktail made with whiskey and lemon juice.', '/uploads/cocktails/whiskey_sour.jpeg
+    (8, 'Whiskey Sour', 'A classic cocktail made with whiskey and lemon juice.', 'whiskey_sour.jpeg
     ', 1, '2023-08-22'),
-    (9, 'Manhattan', 'A whiskey cocktail with sweet vermouth and bitters.', '/uploads/cocktails/manhattan.jpeg
+    (9, 'Manhattan', 'A whiskey cocktail with sweet vermouth and bitters.', 'manhattan.jpeg
     ', 1, '2023-09-12'),
-    (10, 'Mai Tai', 'A tropical rum cocktail with orange and lime juices.', '/uploads/cocktails/mai_tai.jpeg
+    (10, 'Mai Tai', 'A tropical rum cocktail with orange and lime juices.', 'mai_tai.jpeg
     ', 2, '2023-06-15'),
-    (11, 'Gin and Tonic', 'A simple cocktail with gin and tonic water.', '/uploads/cocktails/gin_and_tonic.jpeg
+    (11, 'Gin and Tonic', 'A simple cocktail with gin and tonic water.', 'gin_and_tonic.jpeg
     ', 1, '2023-08-20'),
-    (12, 'Tequila Sunrise', 'A tequila cocktail with orange juice and grenadine.', '/uploads/cocktails/tequila_sunrise.jpeg
+    (12, 'Tequila Sunrise', 'A tequila cocktail with orange juice and grenadine.', 'tequila_sunrise.jpeg
     ', 2, '2023-07-01'),
-    (13, 'Bloody Mary', 'A vodka cocktail with tomato juice and spices.', '/uploads/cocktails/bloody_mary.jpeg
+    (13, 'Bloody Mary', 'A vodka cocktail with tomato juice and spices.', 'bloody_mary.jpeg
     ', 3, '2023-09-15'),
-    (14, 'Screwdriver', 'A simple vodka cocktail with orange juice.', '/uploads/cocktails/screwdriver.jpeg
+    (14, 'Screwdriver', 'A simple vodka cocktail with orange juice.', 'screwdriver.jpeg
     ', 3, '2023-07-25'),
-    (15, 'Cuba Libre', 'A rum cocktail with cola and lime juice.', '/uploads/cocktails/cuba_libre.jpeg
+    (15, 'Cuba Libre', 'A rum cocktail with cola and lime juice.', 'cuba_libre.jpeg
     ', 3, '2023-08-05'),
-    (1, 'Long Island Iced Tea', 'A strong cocktail with vodka, rum, tequila, gin, and triple sec.', '/uploads/cocktails/long_island_iced_tea.jpeg
+    (1, 'Long Island Iced Tea', 'A strong cocktail with vodka, rum, tequila, gin, and triple sec.', 'long_island_iced_tea.jpeg
     ', 2, '2023-09-08'),
-    (2, 'Tom Collins', 'A gin cocktail with lemon juice and soda water.', '/uploads/cocktails/tom_collins.jpeg
+    (2, 'Tom Collins', 'A gin cocktail with lemon juice and soda water.', 'tom_collins.jpeg
     ', 1, '2023-07-28'),
-    (3, 'French 75', 'A gin cocktail with lemon juice and champagne.', '/uploads/cocktails/french_75.jpeg
+    (3, 'French 75', 'A gin cocktail with lemon juice and champagne.', 'french_75.jpeg
     ', 1, '2023-08-15'),
-    (4, 'Caipirinha', 'A Brazilian cocktail made with cachaça, lime, and sugar.', '/uploads/cocktails/caipirinha.jpeg
+    (4, 'Caipirinha', 'A Brazilian cocktail made with cachaça, lime, and sugar.', 'caipirinha.jpeg
     ', 3, '2023-09-05'),
-    (5, 'Martini', 'A classic gin cocktail with vermouth.', '/uploads/cocktails/martini.jpeg
+    (5, 'Martini', 'A classic gin cocktail with vermouth.', 'martini.jpeg
     ', 1, '2023-06-22'),
-    (6, 'Paloma', 'A tequila cocktail with grapefruit soda and lime.', '/uploads/cocktails/paloma.jpeg
+    (6, 'Paloma', 'A tequila cocktail with grapefruit soda and lime.', 'paloma.jpeg
     ', 2, '2023-09-18'),
-    (7, 'Aperol Spritz', 'A refreshing cocktail with Aperol, Prosecco, and soda water.', '/uploads/cocktails/aperol_spritz.jpeg
+    (7, 'Aperol Spritz', 'A refreshing cocktail with Aperol, Prosecco, and soda water.', 'aperol_spritz.jpeg
     ', 2, '2023-08-20'),
-    (8, 'Sazerac', 'A whiskey cocktail with bitters and sugar.', '/uploads/cocktails/sazerac.jpeg
+    (8, 'Sazerac', 'A whiskey cocktail with bitters and sugar.', 'sazerac.jpeg
     ', 1, '2023-07-12'),
-    (9, 'Moscow Mule', 'A vodka cocktail with ginger beer and lime.', '/uploads/cocktails/moscow_mule.jpeg
+    (9, 'Moscow Mule', 'A vodka cocktail with ginger beer and lime.', 'moscow_mule.jpeg
     ', 2, '2023-06-30'),
-    (10, 'Sidecar', 'A brandy cocktail with triple sec and lemon juice.', '/uploads/cocktails/sidecar.jpeg
+    (10, 'Sidecar', 'A brandy cocktail with triple sec and lemon juice.', 'sidecar.jpeg
     ', 1, '2023-08-03'),
-    (11, 'Mint Julep', 'A bourbon cocktail with mint and sugar syrup.', '/uploads/cocktails/mint_julep.jpeg
+    (11, 'Mint Julep', 'A bourbon cocktail with mint and sugar syrup.', 'mint_julep.jpeg
     ', 1, '2023-09-22'),
-    (12, 'Pisco Sour', 'A South American cocktail with pisco, lime juice, and egg white.', '/uploads/cocktails/pisco_sour.jpeg
+    (12, 'Pisco Sour', 'A South American cocktail with pisco, lime juice, and egg white.', 'pisco_sour.jpeg
     ', 2, '2023-07-19'),
-    (13, 'Brandy Alexander', 'A creamy cocktail with brandy and cream.', '/uploads/cocktails/brandy_alexander.jpeg
+    (13, 'Brandy Alexander', 'A creamy cocktail with brandy and cream.', 'brandy_alexander.jpeg
     ', 3, '2023-09-25'),
-    (14, 'Rum Punch', 'A rum cocktail with pineapple juice and grenadine.', '/uploads/cocktails/rum_punch.jpeg
+    (14, 'Rum Punch', 'A rum cocktail with pineapple juice and grenadine.', 'rum_punch.jpeg
     ', 2, '2023-08-02'),
-    (15, 'Gin Fizz', 'A gin cocktail with lemon juice and soda water.', '/uploads/cocktails/gin_fizz.jpeg
+    (15, 'Gin Fizz', 'A gin cocktail with lemon juice and soda water.', 'gin_fizz.jpeg
     ', 1, '2023-06-17');
 
 -- 14. Seed Data for `cocktail_ingredients`

@@ -22,7 +22,7 @@ class CommentController
         }
 
         // Get comment data from POST
-        $commentText = $_POST['comment'] ?? '';
+        $commentText = trim($_POST['comment'] ?? '');
         $parentCommentId = $_POST['parent_comment_id'] ?? null;
 
         if (empty($commentText)) {

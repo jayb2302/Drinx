@@ -58,6 +58,15 @@ class UserService {
         return false;
     }
 
+    public function getLoggedInUser()
+    {
+        $userId = $_SESSION['user']['id'] ?? null;
+        if ($userId) {
+            return $this->getUserById($userId);
+        }
+        return null; // No user is logged in
+    }
+
     // Change user password
     public function changeUserPassword($userId, $currentPassword, $newPassword) {
         $user = $this->userRepository->findById($userId);
