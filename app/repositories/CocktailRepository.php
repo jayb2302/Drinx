@@ -203,4 +203,44 @@ class CocktailRepository {
             );
         }, $cocktailsData);
     }
+
+    // Fetch cocktails sorted by creation date
+public function getAllSortedByDate() {
+    $stmt = $this->db->query("
+    SELECT * 
+    FROM cocktails 
+    ORDER BY created_at DESC");
+    return $this->mapCocktails($stmt->fetchAll(PDO::FETCH_ASSOC));
+}
+
+// Fetch cocktails sorted by like count
+public function getAllSortedByLikes() {
+    $stmt = $this->db->query("
+        SELECT c.*, COUNT(l.like_id) AS like_count
+        FROM cocktails c
+        LEFT JOIN likes l ON c.cocktail_id = l.cocktail_id
+        GROUP BY c.cocktail_id
+        ORDER BY like_count DESC
+    ");
+    return $this->mapCocktails($stmt->fetchAll(PDO::FETCH_ASSOC));
+}
+
+// Helper function to map raw cocktail data to Cocktail objects
+private function mapCocktails($cocktailsData) {
+    return array_map(function ($cocktailData) {
+        $ingredients = $this->getIngredientsByCocktailId($cocktailData['cocktail_id']);
+        $steps = $this->getStepsByCocktailId($cocktailData['cocktail_id']);
+        return new Cocktail(
+            $cocktailData['cocktail_id'],
+            $cocktailData['title'],
+            $cocktailData['description'],
+            $cocktailData['image'],
+            $cocktailData['category_id'],
+            $cocktailData['user_id'],
+            $ingredients,
+            $steps
+        );
+    }, $cocktailsData);
+}
+
 }

@@ -123,4 +123,14 @@ class CocktailService {
     public function getLikeCount($cocktailId) {
         return $this->likeRepository->getLikesForCocktail($cocktailId);
     }
+    public function getCocktailsSortedByDate() {
+        return $this->cocktailRepository->getAllSortedByDate();
+    }
+    
+    public function getCocktailsSortedByLikes() {
+        return $this->cocktailRepository->getAllSortedByLikes();
+    }
+    
+    
+    
 }
