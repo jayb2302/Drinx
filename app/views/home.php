@@ -46,6 +46,12 @@ if ($currentPath === '/login') {
 } else {
     // Show all cocktails if no specific action is requested
     echo "<h2>All Cocktails</h2>";
+        // Add sorting options here
+        echo '<div class="sort-options">';
+        echo '<a href="/?sort=recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Sort by Recent</a>';
+        echo ' | ';
+        echo '<a href="/?sort=popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Sort by Popular</a>';
+        echo '</div>';
     echo '<div class="wrapper">';
     include __DIR__ . '/cocktails/index.php';
     echo '</div>';

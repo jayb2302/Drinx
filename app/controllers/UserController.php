@@ -30,6 +30,8 @@ class UserController
         $tagRepository = new TagRepository($dbConnection);
         $difficultyRepository = new DifficultyRepository($dbConnection);
         $unitRepository = new UnitRepository($dbConnection);  // Instantiate UnitRepository
+        $likeRepository = new LikeRepository($dbConnection);  // Add this line if it was missing
+
 
         // Initialize services
         $ingredientService = new IngredientService($ingredientRepository, $unitRepository);  // Use service instead of repository
@@ -42,7 +44,8 @@ class UserController
             $ingredientService,   // Pass IngredientService
             $stepService,         // Pass StepService
             $tagRepository,
-            $difficultyRepository
+            $difficultyRepository,
+            $likeRepository
         );
 
         $this->userService = new UserService();
