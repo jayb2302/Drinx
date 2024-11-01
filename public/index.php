@@ -43,6 +43,18 @@ $homeController = new HomeController($cocktailService, $ingredientService, $like
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $action = $router->resolve($requestUri);
 
+// Dependency injection (manual for now)
+$db = Database::getConnection(); 
+$commentRepository = new CommentRepository($db);
+$commentService = new CommentService($commentRepository);
+
+// Dependency for Like functionality
+$likeRepository = new LikeRepository($db);
+$likeService = new LikeService($likeRepository);
+$likeController = new LikeController($likeService);
+// public/index.php
+// $userId = $_GET['user_id'] ?? $_SESSION['user']['id']; // Assuming user_id comes from GET or defaults to the logged-in user
+// (new UserController())->profile($userId);
 
 if ($action) {
     // Unpack the action array
