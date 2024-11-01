@@ -43,6 +43,7 @@ $homeController = new HomeController($cocktailService, $ingredientService, $like
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $action = $router->resolve($requestUri);
 
+
 if ($action) {
     // Unpack the action array
     $controllerAction = $action[0]; // This should be the controller

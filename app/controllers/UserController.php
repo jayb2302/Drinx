@@ -53,7 +53,7 @@ class UserController
     }
 
     // 1. Show the user profile
-    public function profile()
+    public function profile($profileUserId)
     {
         if (!AuthController::isLoggedIn()) {
             redirect('login');
@@ -61,15 +61,16 @@ class UserController
 
         $userId = $_SESSION['user']['id'];
         // Fetch user profile data with user ID
-        $profile = $this->userService->getUserWithProfile($userId);
+        $profile = $this->userService->getUserWithProfile($profileUserId);
         $userRecipes = $this->cocktailService->getUserRecipes($userId);
         $userBadges = $this->badgeService->getUserBadges($userId);
         $profileStats = $this->userService->getUserStats($userId);
+        $isFollowing = $this->userService->isFollowing($userId, $profileUserId); // Check if current user is following the profile user
+
 
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
     }
-
 
     // 2. Show user settings
     public function settings()
@@ -215,5 +216,48 @@ class UserController
 
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
+    }
+
+    // Follow a user
+    public function follow($followedUserId) {
+        if (!AuthController::isLoggedIn()) {
+            redirect('login');
+        }
+    
+        $userId = $_SESSION['user']['id'];
+    
+        // Debugging output
+        echo "Attempting to follow: UserID = $userId, FollowedUserID = $followedUserId";
+        if ($userId === $followedUserId) {
+            echo "Self-follow detected!";
+            $_SESSION['error'] = "You cannot follow yourself.";
+            redirect("profile/$userId");
+            return;
+        }
+    
+        if ($this->userService->followUser($userId, $followedUserId)) {
+            $_SESSION['success'] = "User followed successfully.";
+        } else {
+            $_SESSION['error'] = "Failed to follow user or already following.";
+        }
+    
+        redirect("profile/$followedUserId");
+    }
+
+    // Unfollow a user
+    public function unfollow($followedUserId)
+    {
+        if (!AuthController::isLoggedIn()) {
+            redirect('login');
+        }
+
+        $userId = $_SESSION['user']['id'];
+        if ($this->userService->unfollowUser($userId, $followedUserId)) {
+            $_SESSION['success'] = "User unfollowed successfully.";
+        } else {
+            $_SESSION['error'] = "Failed to unfollow user or not currently following.";
+        }
+
+        redirect("profile/$followedUserId");
     }
 }

@@ -218,4 +218,29 @@ class UserRepository
         $stmt->execute(['query' => '%' . $query . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return users as an associative array
     }
+
+    // Method to follow a user
+    public function followUser($userId, $followedUserId) {
+        $stmt = $this->db->prepare("INSERT INTO follows (user_id, followed_user_id) VALUES (:user_id, :followed_user_id)");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':followed_user_id', $followedUserId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    // Method to unfollow a user
+    public function unfollowUser($userId, $followedUserId) {
+        $stmt = $this->db->prepare("DELETE FROM follows WHERE user_id = :user_id AND followed_user_id = :followed_user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':followed_user_id', $followedUserId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    // Check if a user is following another user
+    public function isFollowing($userId, $followedUserId) {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM follows WHERE user_id = :user_id AND followed_user_id = :followed_user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':followed_user_id', $followedUserId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
 }

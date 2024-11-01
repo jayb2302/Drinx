@@ -29,7 +29,7 @@ if (session_status() === PHP_SESSION_NONE) {
         }
         ?>
         <div class="nav-links">
-            <a href="/profile">Profile</a>
+            <a href="/profile/<?php echo htmlspecialchars($_SESSION['user']['id']); ?>">Profile</a>
             <a href="/logout">Logout</a>
         </div>
 

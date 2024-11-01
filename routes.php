@@ -27,13 +27,16 @@ $router->add('GET', '#^/register$#', [AuthController::class, 'showRegisterForm']
 $router->add('GET', '#^/logout$#', [AuthController::class, 'logout']); // Logout route
 
 // User routes
-$router->add('GET', '#^/profile$#', [UserController::class, 'profile']); // Show profile
+$router->add('GET', '#^/profile/(\d+)$#', [UserController::class, 'profile']);
 $router->add('GET', '#^/profile/([a-zA-Z0-9_-]+)$#', [UserController::class, 'profileByUsername']); // Show profile by username
 $router->add('POST', '#^/profile/update$#', [UserController::class, 'updateProfile']); // Handle profile update
 
 // Account deletion routes
 $router->add('POST', '#^/profile/delete$#', [UserController::class, 'deleteAccount']); // Handle account deletion directly from profile
 
+// Follow and Unfollow Routes
+$router->add('POST', '#^/user/follow/(\d+)$#', [UserController::class, 'follow']);
+$router->add('POST', '#^/user/unfollow/(\d+)$#', [UserController::class, 'unfollow']); // Unfollow user
 
 // Cocktails routes
 $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // Show all cocktails
