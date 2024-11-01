@@ -8,6 +8,7 @@ require_once __DIR__ . '/app/controllers/AuthController.php';
 require_once __DIR__ . '/app/controllers/CocktailController.php';
 require_once __DIR__ . '/app/controllers/CommentController.php';
 require_once __DIR__ . '/app/controllers/LikeController.php';
+require_once __DIR__ . '/app/controllers/SearchController.php';
 
 $router = new Router(); // Instantiate the Router class
 
@@ -15,6 +16,8 @@ $router = new Router(); // Instantiate the Router class
 $router->add('GET', '#^/$#', [HomeController::class, 'index']); // Home page
 $router->add('GET', '#^/login$#', [HomeController::class, 'index']); // Show login form within home page
 $router->add('GET', '#^/register$#', [HomeController::class, 'index']); // Show register form within home page
+// Search route
+$router->add('GET', '#^/search$#', [SearchController::class, 'search']);
 
 // Authentication routes
 $router->add('POST', '#^/login$#', [AuthController::class, 'authenticate']); // Handle login

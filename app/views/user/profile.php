@@ -53,16 +53,15 @@ if (isset($_SESSION['success'])) {
                         <!-- Show the Edit button if the logged-in user is the owner of the recipe -->
                         <?php if (isset($loggedInUserId) && $loggedInUserId === $recipe->getUserId()): ?>
                             <button>
-                                <a href="/?action=edit&cocktail_id=<?= $recipe->getCocktailId() ?>"
+                                <a href="/?action=edit&cocktail_id=<?= htmlspecialchars($recipe->getCocktailId()) ?>"
                                     class="text-blue-500 hover:underline">Edit Cocktail</a>
                             </button>
                         <?php endif; ?>
 
-                        <!-- Cocktail Link -->
-                        <a
-                            href="/cocktails/<?= htmlspecialchars($recipe->getCocktailId()) ?>-<?= urlencode($recipe->getTitle()) ?>">
-                            <img src="<?= asset('/../uploads/cocktails/' . htmlspecialchars($recipe->getImage())); ?>"
-                                alt="<?= htmlspecialchars($recipe->getTitle()); ?>" class="cocktailImage">
+
+                        <a href="/cocktails/<?= htmlspecialchars($recipe->getCocktailId() ?? '0') ?>-<?= urlencode($recipe->getTitle() ?? 'Untitled Cocktail') ?>">
+                            <img src="<?= asset('/../uploads/cocktails/' . htmlspecialchars($recipe->getImage() ?? 'default-image.svg')); ?>"
+                                alt="<?= htmlspecialchars($recipe->getTitle() ?? 'Cocktail Image') ?>" class="cocktailImage">
                         </a>
 
                         <!-- Cocktail Info -->
@@ -111,7 +110,7 @@ if (isset($_SESSION['success'])) {
 
     <div id="deleteConfirmSection" style="display: none;">
         <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
-        
+
         <form action="/profile/delete" method="POST">
             <label for="password">Confirm Password:</label>
             <input type="password" name="password" required>
@@ -125,12 +124,13 @@ if (isset($_SESSION['success'])) {
         <?php endif; ?>
     </div>
 </div>
-
+<?php include_once __DIR__ . '/../layout/footer.php'; ?>
 <script>
     function toggleEditMode() {
         const form = document.getElementById('edit-profile-form');
         form.style.display = form.style.display === "none" ? "block" : "none";
     }
+
     function toggleDeleteSection() {
         const section = document.getElementById('deleteConfirmSection');
         section.style.display = section.style.display === 'none' ? 'block' : 'none';

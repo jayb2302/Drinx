@@ -131,6 +131,8 @@ class CocktailService {
         return $this->cocktailRepository->getAllSortedByLikes();
     }
     
-    
+    public function searchCocktails($query) {
+        return $this->cocktailRepository->searchCocktails($query);
+    }
     
 }

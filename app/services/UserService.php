@@ -108,4 +108,8 @@ class UserService {
     public function getUserStats($userId) {
         return $this->userRepository->getUserStats($userId);
     }
+
+    public function searchUsers($query) {
+        return $this->userRepository->searchUsers($query);
+    }
 }

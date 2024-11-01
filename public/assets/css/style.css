@@ -6,6 +6,7 @@
 @import '../css/pages/profile.css'; 
 @import '../css/components/comments.css';
 @import '../css/components/likes.css';
+@import '../css/components/search.css';
 
 :root {
     /* Colors for Light Mode */
