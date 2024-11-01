@@ -19,6 +19,9 @@ $commentService = new CommentService($commentRepository);
 $likeRepository = new LikeRepository($db);
 $likeService = new LikeService($likeRepository);
 $likeController = new LikeController($likeService);
+// public/index.php
+// $userId = $_GET['user_id'] ?? $_SESSION['user']['id']; // Assuming user_id comes from GET or defaults to the logged-in user
+// (new UserController())->profile($userId);
 
 if ($action) {
     // Unpack the action array
