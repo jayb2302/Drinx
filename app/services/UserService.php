@@ -108,4 +108,30 @@ class UserService {
     public function getUserStats($userId) {
         return $this->userRepository->getUserStats($userId);
     }
+
+    public function followUser($userId, $followedUserId) {
+        // Print debugging info
+        echo "UserService: UserID = $userId, FollowedUserID = $followedUserId";
+    
+        if ($userId === $followedUserId) {
+            echo "Self-follow attempt in UserService";
+            return false; // Prevent self-following
+        }
+    
+        if (!$this->userRepository->isFollowing($userId, $followedUserId)) {
+            return $this->userRepository->followUser($userId, $followedUserId);
+        }
+    
+        return false; // Already following
+    }
+
+    public function unfollowUser($userId, $followedUserId) {
+        if ($this->userRepository->isFollowing($userId, $followedUserId)) {
+            return $this->userRepository->unfollowUser($userId, $followedUserId);
+        }
+        return false; // Not following
+    }
+    public function isFollowing($userId, $followedUserId) {
+        return $this->userRepository->isFollowing($userId, $followedUserId);
+    }
 }
