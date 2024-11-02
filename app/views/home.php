@@ -44,14 +44,28 @@ if ($currentPath === '/login') {
     include __DIR__ . '/cocktails/form.php'; // Show edit cocktail form
 
 } else {
-    // Show all cocktails if no specific action is requested
     echo "<h2>All Cocktails</h2>";
-        // Add sorting options here
-        echo '<div class="sort-options">';
-        echo '<a href="/?sort=recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Sort by Recent</a>';
-        echo ' | ';
-        echo '<a href="/?sort=popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Sort by Popular</a>';
-        echo '</div>';
+
+    // Define available sorting options
+    $sortingOptions = [
+        'recent' => 'Sort by Recent',
+        'popular' => 'Sort by Popular',
+        'hot' => 'Sort by Hot'
+    ];
+    
+    // Get the current sort option from the query parameter, defaulting to "recent"
+    $currentSort = $_GET['sort'] ?? 'recent';
+    
+    // Display sorting options
+    echo '<div class="sort-options">';
+    foreach ($sortingOptions as $sortKey => $sortLabel) {
+        $isActive = $currentSort === $sortKey ? 'active' : '';
+        echo "<a href=\"/?sort={$sortKey}\" class=\"{$isActive}\">{$sortLabel}</a>";
+        if (next($sortingOptions)) echo ' | '; // Add separator if there are more options
+    }
+    echo '</div>';
+    
+    // Include cocktails display
     echo '<div class="wrapper">';
     include __DIR__ . '/cocktails/index.php';
     echo '</div>';

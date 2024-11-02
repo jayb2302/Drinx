@@ -58,10 +58,15 @@ class HomeController
         $sortOption = $_GET['sort'] ?? 'recent';
         
         // Fetch cocktails based on the sort option
-        if ($sortOption === 'popular') {
-            $cocktails = $this->cocktailService->getCocktailsSortedByLikes();
-        } else {
-            $cocktails = $this->cocktailService->getCocktailsSortedByDate();
+        switch ($sortOption) {
+            case 'popular':
+                $cocktails = $this->cocktailService->getCocktailsSortedByLikes();
+                break;
+            case 'hot':
+                $cocktails = $this->cocktailService->getHotCocktails();
+                break;
+            default:
+                $cocktails = $this->cocktailService->getCocktailsSortedByDate();
         }
     
         // Sanitize and determine if we should show a specific form

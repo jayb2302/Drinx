@@ -130,6 +130,11 @@ class CocktailService {
     public function getCocktailsSortedByLikes() {
         return $this->cocktailRepository->getAllSortedByLikes();
     }
+
+    public function getHotCocktails() {
+        return $this->cocktailRepository->getAllHotCocktails();
+    }
+    
     
     
     
