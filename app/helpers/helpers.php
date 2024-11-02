@@ -14,9 +14,9 @@ function asset($path) {
 
 // Function to sanitize input
 function sanitize($input) {
-    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+    // Trim the input, but do not apply htmlspecialchars yet.
+    return trim($input);
 }
-
 
 // Function to redirect to a given path
 function redirect($path) {
