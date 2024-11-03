@@ -15,6 +15,15 @@ if (isset($_SESSION['success'])) {
 
 <!-- User Profile Header -->
 <div class="profile-header">
+<?php if ($isFollowing): ?>
+    <form action="/user/unfollow/<?= htmlspecialchars($profileUserId); ?>" method="POST">
+        <button type="submit" class="btn btn-danger">Unfollow</button>
+    </form>
+<?php else: ?>
+    <form action="/user/follow/<?= htmlspecialchars($profileUserId); ?>" method="POST">
+        <button type="submit" class="btn btn-primary">Follow</button>
+    </form>
+<?php endif; ?>
     <!-- Profile Picture -->
     <div class="profile-picture">
         <?php if ($profile->getProfilePicture()): ?>
@@ -114,7 +123,7 @@ if (isset($_SESSION['success'])) {
 
     <div id="deleteConfirmSection" style="display: none;">
         <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
-        
+
         <form action="/profile/delete" method="POST">
             <label for="password">Confirm Password:</label>
             <input type="password" name="password" required>

@@ -1,4 +1,4 @@
-<?php include __DIR__ . '/head.php'; 
+<?php include __DIR__ . '/head.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -28,7 +28,7 @@ if (session_status() === PHP_SESSION_NONE) {
         }
         ?>
         <div class="nav-links">
-            <a href="/profile">Profile</a>
+            <a href="/profile/<?php echo htmlspecialchars($_SESSION['user']['id']); ?>">Profile</a>
             <a href="/logout">Logout</a>
         </div>
         <span>Hello, <?= $displayName; ?></span>
