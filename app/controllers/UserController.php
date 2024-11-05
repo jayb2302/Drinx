@@ -11,7 +11,6 @@ require_once __DIR__ . '/../repositories/DifficultyRepository.php';
 require_once __DIR__ . '/../repositories/UnitRepository.php';  // Add this
 require_once __DIR__ . '/../services/IngredientService.php';   // Add this
 require_once __DIR__ . '/../services/StepService.php';         // Add this
-require_once __DIR__ . '/../repositories/LikeRepository.php';   // Add this
 
 class UserController
 {
@@ -37,7 +36,8 @@ class UserController
         // Initialize services
         $ingredientService = new IngredientService($ingredientRepository, $unitRepository);  // Use service instead of repository
         $stepService = new StepService($stepRepository);  // Use service instead of repository
-        $unitRepository = new UnitRepository($dbConnection);        // Pass repositories and services into CocktailService
+
+        // Pass repositories and services into CocktailService
         $this->cocktailService = new CocktailService(
             $cocktailRepository,
             $categoryRepository,
