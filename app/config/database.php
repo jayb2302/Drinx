@@ -24,7 +24,7 @@ class Database {
                     $username = $env['DB_USERNAME'];
                     $password = $env['DB_PASSWORD'];
                 }
-                echo "Database Name: " . $dbname;
+                
                 // PDO connection
                 self::$connection = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
                 self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
