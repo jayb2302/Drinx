@@ -5,7 +5,7 @@ function url($path = '') {
 }
 
 function base_url() {
-    return 'http://' . $_SERVER['HTTP_HOST']; // No need to include '/Drinx' if that's not the path to the application
+    return 'http://' . $_SERVER['HTTP_HOST']; 
 }
 
 function asset($path) {
