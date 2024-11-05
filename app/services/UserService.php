@@ -109,6 +109,10 @@ class UserService {
         return $this->userRepository->getUserStats($userId);
     }
 
+    public function searchUsers($query) {
+        return $this->userRepository->searchUsers($query);
+    }
+
     public function followUser($userId, $followedUserId) {
         // Print debugging info
         echo "UserService: UserID = $userId, FollowedUserID = $followedUserId";

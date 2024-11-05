@@ -7,10 +7,11 @@ if (session_status() === PHP_SESSION_NONE) {
     <a class="navbar-brand" href="<?php echo url('/'); ?>">
         <img src="<?= asset('assets/brand/DrinxLogo.svg'); ?>" alt="Drinx Logo" width="" height="50" class="d-inline-block align-top">
     </a>
-    <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button> -->
-    <!-- Links to show forms -->
+     <!-- Search Bar -->
+     <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for cocktails or users..." autocomplete="off" />
+            <div id="searchResults" class="search-results" style="display: none;"></div>
+        </div>
     <?php if (!isset($_SESSION['user'])): ?>
         <a href="/login">Login</a>
         <a href="/register">Register</a>
@@ -31,6 +32,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <a href="/profile/<?php echo htmlspecialchars($_SESSION['user']['id']); ?>">Profile</a>
             <a href="/logout">Logout</a>
         </div>
+
         <span>Hello, <?= $displayName; ?></span>
     <?php endif; ?>
 </nav>

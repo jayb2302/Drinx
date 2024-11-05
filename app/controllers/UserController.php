@@ -204,7 +204,8 @@ class UserController
 
         if (!$profile) {
             // If no profile is found, you can redirect to a 404 page or show a message
-            echo "User not found.";
+            http_response_code(404);
+            include '../app/views/404.php'; // Load a 404 error page
             return;
         }
 

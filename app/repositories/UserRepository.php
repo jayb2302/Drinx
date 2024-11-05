@@ -213,6 +213,12 @@ class UserRepository
         return null;
     }
 
+    public function searchUsers($query) {
+        $stmt = $this->db->prepare("SELECT user_id, username FROM users WHERE username LIKE :query LIMIT 5");
+        $stmt->execute(['query' => '%' . $query . '%']);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return users as an associative array
+    }
+
     // Method to follow a user
     public function followUser($userId, $followedUserId) {
         $stmt = $this->db->prepare("INSERT INTO follows (user_id, followed_user_id) VALUES (:user_id, :followed_user_id)");

@@ -1,5 +1,13 @@
 nav {
     display: flex;
     justify-content: space-between;
-    margin: 0 5%;
+    align-items: center; 
+    position: relative; 
+    background-color: var(--background); 
+    padding: 10px;
+}
+
+.nav-links {
+    display: flex; 
+    gap: 15px; 
 }
