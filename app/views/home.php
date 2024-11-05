@@ -18,6 +18,15 @@ $isEditing = preg_match('#^/cocktails/(\d+)/edit$#', $currentPath, $matches);
 $cocktailId = $matches[1] ?? null;
 ?>
 <h1>Welcome to Drinx</h1>
+<?php
+// Admin toggle for user management
+if ($_SESSION['user']['is_admin'] ?? false): ?>
+    <button onclick="toggleUserManagement()">Toggle User Management</button>
+    <div id="userManagement" style="display: none;">
+        <?php include __DIR__ . '/admin/manage_users.php'; ?>
+    </div>
+<?php endif; ?>
+
 <!-- Link to Add New Cocktail (only for logged-in users) -->
 <?php if (AuthController::isLoggedIn()): ?>
     <a href="/cocktails/add" class="btn btn-primary">Add New Cocktail</a>

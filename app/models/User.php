@@ -5,6 +5,7 @@ class User {
     private $email;
     private $password;
     private $accountStatusId;
+    private $accountStatusName;
     private $joinDate;
     private $lastLogin;
     private $isAdmin;
@@ -59,6 +60,17 @@ class User {
     public function setAccountStatusId($accountStatusId) {
         $this->accountStatusId = $accountStatusId;
     }
+
+    public function setAccountStatusName($statusName)
+    {
+        $this->accountStatusName = $statusName;
+    }
+
+    public function getAccountStatusName()
+    {
+        return $this->accountStatusName;
+    }
+
 
     // Join Date
     public function getJoinDate() {

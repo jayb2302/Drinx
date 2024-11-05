@@ -10,29 +10,29 @@ class UserRepository
         $this->db = $dbConnection;
     }
 
-     // Delete a user and associated cocktails
-     public function deleteUser($userId)
-     {
-         try {
-             $this->db->beginTransaction();
-             
-             // Delete the user's cocktails
-             $stmt = $this->db->prepare("DELETE FROM cocktails WHERE user_id = :user_id");
-             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-             $stmt->execute();
- 
-             // Delete the user
-             $stmt = $this->db->prepare("DELETE FROM users WHERE user_id = :user_id");
-             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-             $stmt->execute();
- 
-             $this->db->commit();
-             return true;
-         } catch (Exception $e) {
-             $this->db->rollBack();
-             return false;
-         }
-     }
+    // Delete a user and associated cocktails
+    public function deleteUser($userId)
+    {
+        try {
+            $this->db->beginTransaction();
+
+            // Delete the user's cocktails
+            $stmt = $this->db->prepare("DELETE FROM cocktails WHERE user_id = :user_id");
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Delete the user
+            $stmt = $this->db->prepare("DELETE FROM users WHERE user_id = :user_id");
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
+    }
 
     // Create a new user profile after registration
     public function createUserProfile($userId) {
@@ -243,4 +243,51 @@ class UserRepository
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
+
+    // Update a user's account status
+    public function updateAccountStatus($userId, $statusId)
+    {
+        $stmt = $this->db->prepare("UPDATE users SET account_status_id = :status_id WHERE user_id = :user_id");
+        $stmt->bindParam(':status_id', $statusId, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+
+        $result = $stmt->execute();
+        if (!$result) {
+            error_log("Failed to update account status: user_id = $userId, status_id = $statusId");
+        }
+        return $result;
+    }
+
+
+
+    public function findAllWithStatus()
+    {
+        $stmt = $this->db->prepare("
+            SELECT u.user_id, u.username, u.email, u.account_status_id, a.status_name AS account_status
+            FROM users u
+            JOIN account_status a ON u.account_status_id = a.account_status_id
+        ");
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $users = [];
+        foreach ($results as $result) {
+            $users[] = $this->mapToUserWithStatus($result);
+        }
+        return $users;
+    }
+
+
+    // Helper function to map user data with status
+    private function mapToUserWithStatus($result)
+    {
+        $user = new User();
+        $user->setId($result['user_id']);
+        $user->setUsername($result['username']);
+        $user->setEmail($result['email']);
+        $user->setAccountStatusId($result['account_status_id']);
+        $user->setAccountStatusName($result['account_status']);
+        return $user;
+    }
+
 }

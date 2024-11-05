@@ -35,6 +35,7 @@ class HomeController
     public function index()
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+        $isAdmin = $_SESSION['user']['is_admin'] ?? false;
 
         // Check if there's a sort option in the query, default to 'recent'
         $sortOption = $_GET['sort'] ?? 'recent';
@@ -60,6 +61,9 @@ class HomeController
         // Fetch categories and units if needed for forms
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
+
+        // Fetch users if admin is logged in
+        $users = ($isAdmin) ? $this->userService->getAllUsersWithStatus() : null;
 
         // Pass the necessary data to the view
         require_once __DIR__ . '/../views/home.php';
