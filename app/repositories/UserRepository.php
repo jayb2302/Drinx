@@ -71,24 +71,7 @@ class UserRepository
         return null;
     }
 
-    // Fetch user and profile by user ID
-    public function findByIdWithProfile($userId)
-    {
-        $stmt = $this->db->prepare("
-                SELECT u.*, p.first_name, p.last_name, p.profile_picture, p.bio 
-                FROM users u 
-                LEFT JOIN user_profile p ON u.user_id = p.user_id 
-                WHERE u.user_id = :user_id
-            ");
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($result) {
-            return $this->mapToUserWithProfile($result); // Map to User object with profile data
-        }
-        return null;
-    }
 
     // Save a new user to the database and return the user ID
     public function save(User $user)
@@ -183,22 +166,7 @@ class UserRepository
         return $user;
     }
 
-    public function getUserStats($userId)
-    {
-        $stmt = $this->db->prepare("
-            SELECT 
-                total_recipes,
-                likes_received,
-                comments_received,
-                points,
-                rank_name
-            FROM user_stats
-            WHERE user_id = :user_id
-        ");
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);  // Return as an array
-    }
+
 
     // Find a user by username
     public function findByUsername($username)
