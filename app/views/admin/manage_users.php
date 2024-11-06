@@ -22,7 +22,7 @@
                             <option value="2" <?= $user->getAccountStatusId() == 2 ? 'selected' : '' ?>>Suspended</option>
                             <option value="3" <?= $user->getAccountStatusId() == 3 ? 'selected' : '' ?>>Banned</option>
                         </select>
-                        <button type="submit">Update Status</button>
+                        <button class="button" type="submit">Update Status</button>
                     </form>
                 </td>
             </tr>
