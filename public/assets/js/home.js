@@ -7,3 +7,8 @@ function sortCocktails(sortOption) {
         })
         .catch(error => console.error('Error:', error));
 }
+
+function toggleUserManagement() {
+    const userManagement = document.getElementById('userManagement');
+    userManagement.style.display = userManagement.style.display === 'none' ? 'block' : 'none';
+}

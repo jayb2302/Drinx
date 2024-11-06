@@ -9,6 +9,7 @@
 <script src="<?= asset('assets/js/cocktail.js'); ?>"></script>
 <script src="<?= asset('assets/js/comments.js'); ?>"></script>
 <script src="<?= asset('assets/js/likes.js'); ?>"></script>
+<script src="<?= asset('assets/js/admin.js'); ?>"></script>
 <script src="<?= asset('assets/js/profile.js'); ?>"></script>
 
 </body>
