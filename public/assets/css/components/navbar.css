@@ -3,8 +3,9 @@ nav {
     justify-content: space-between;
     align-items: center; 
     position: relative; 
-    background-color: var(--background); 
+    background-color: var(--nav-background); 
     padding: 10px;
+    color: var(--text-secondary);
 }
 
 .nav-links {
