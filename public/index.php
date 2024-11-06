@@ -18,12 +18,14 @@ $tagRepository = new TagRepository($db);
 $difficultyRepository = new DifficultyRepository($db);
 $unitRepository = new UnitRepository($db);
 $likeRepository = new LikeRepository($db);
+$commentRepository = new CommentRepository($db);
 
 // Instantiate the services
 $ingredientService = new IngredientService($ingredientRepository, $unitRepository);
 $stepService = new StepService($stepRepository);
 $likeService = new LikeService($likeRepository);
 $userService = new UserService();
+$commentService = new CommentService($commentRepository);
 
 // Instantiate the CocktailService with all its required dependencies
 $cocktailService = new CocktailService(
