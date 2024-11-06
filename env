@@ -1,0 +1,14 @@
+# Local environment settings (Docker)
+DB_HOST=database
+DB_DATABASE=drinx_db
+DB_USERNAME=root
+DB_PASSWORD=tiger
+
+# Environment identifier
+ENV=local
+
+# Live environment settings (one.com)
+LIVE_DB_HOST=localhost
+LIVE_DB_DATABASE=c0w7in5de_drinxdb
+LIVE_DB_USERNAME=c0w7in5de_drinxdb
+LIVE_DB_PASSWORD=tiger2310
