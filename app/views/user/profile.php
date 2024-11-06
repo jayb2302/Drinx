@@ -14,8 +14,7 @@ if (isset($_SESSION['success'])) {
 ?>
 
 <!-- User Profile Header -->
-<div class="profile-header">
-<?php if ($isFollowing): ?>
+<?php if (isset($isFollowing) && $isFollowing): ?>
     <form action="/user/unfollow/<?= htmlspecialchars($profileUserId); ?>" method="POST">
         <button type="submit" class="btn btn-danger">Unfollow</button>
     </form>
@@ -24,6 +23,7 @@ if (isset($_SESSION['success'])) {
         <button type="submit" class="btn btn-primary">Follow</button>
     </form>
 <?php endif; ?>
+<div class="profile-header">
     <!-- Profile Picture -->
     <div class="profile-picture">
         <?php if ($profile->getProfilePicture()): ?>

@@ -209,7 +209,12 @@ class UserController
             return;
         }
 
-        $userId = $profile->getId();
+        $profileUserId = $profile->getId(); // Get the profile user's ID
+        $userId = $_SESSION['user']['id']; // Get the current user's ID
+
+        // Check if current user is following the profile user
+        $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
+
         $userRecipes = $this->cocktailService->getUserRecipes($userId);
         $userBadges = $this->badgeService->getUserBadges($userId);
         $profileStats = $this->userService->getUserStats($userId);
@@ -219,28 +224,31 @@ class UserController
     }
 
     // Follow a user
-    public function follow($followedUserId) {
+    public function follow($followedUserId)
+    {
         if (!AuthController::isLoggedIn()) {
             redirect('login');
         }
-    
+
         $userId = $_SESSION['user']['id'];
-    
+
         // Debugging output
         echo "Attempting to follow: UserID = $userId, FollowedUserID = $followedUserId";
+
         if ($userId === $followedUserId) {
             echo "Self-follow detected!";
             $_SESSION['error'] = "You cannot follow yourself.";
             redirect("profile/$userId");
             return;
         }
-    
-        if ($this->userService->followUser($userId, $followedUserId)) {
+
+        $followSuccess = $this->userService->followUser($userId, $followedUserId);
+        if ($followSuccess) {
             $_SESSION['success'] = "User followed successfully.";
         } else {
             $_SESSION['error'] = "Failed to follow user or already following.";
         }
-    
+
         redirect("profile/$followedUserId");
     }
 
