@@ -13,5 +13,4 @@
 <script src="<?= asset('assets/js/profile.js'); ?>"></script>
 
 </body>
-
 </html>
