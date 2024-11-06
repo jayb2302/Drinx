@@ -52,7 +52,7 @@ class UserController
         $this->badgeService = new BadgeService();
     }
 
-    // 1. Show the user profile
+    // Show the user profile
     public function profile($profileUserId)
     {
         if (!AuthController::isLoggedIn()) {
@@ -62,17 +62,21 @@ class UserController
         $userId = $_SESSION['user']['id'];
         // Fetch user profile data with user ID
         $profile = $this->userService->getUserWithProfile($profileUserId);
+        if ($profile) {
+            error_log('Profile fetched: ' . print_r($profile, true));
+        } else {
+            error_log('Profile not found for User ID: ' . $profileUserId);
+        }
         $userRecipes = $this->cocktailService->getUserRecipes($userId);
         $userBadges = $this->badgeService->getUserBadges($userId);
         $profileStats = $this->userService->getUserStats($userId);
         $isFollowing = $this->userService->isFollowing($userId, $profileUserId); // Check if current user is following the profile user
 
-
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
     }
 
-    // 2. Show user settings
+    // Show user settings
     public function settings()
     {
         if (!AuthController::isLoggedIn()) {
@@ -83,7 +87,7 @@ class UserController
         require_once __DIR__ . '/../views/user/settings.php';  // Show settings view
     }
 
-    // 3. Delete user account
+    // Delete user account
     public function deleteAccount()
     {
         if (!AuthController::isLoggedIn()) {
@@ -113,7 +117,7 @@ class UserController
         redirect('profile');
     }
 
-    // 4. Update user profile (username, email)
+    // Update user profile (username, email)
     public function updateProfile()
     {
         if (!AuthController::isLoggedIn()) {
@@ -129,16 +133,30 @@ class UserController
             $profilePicture = null;
             if (!empty($_FILES['profile_picture']['name'])) {
                 $profilePicture = $this->uploadProfilePicture($_FILES['profile_picture']);
+                if (!$profilePicture) {
+                    // Handle the error from uploadProfilePicture if needed
+                    $_SESSION['error'] = "Failed to upload profile picture.";
+                    redirect('profile/' . $_SESSION['user']['id']); // Redirect back to the profile
+                    return; // Exit the method
+                }
             }
-
+            $userId = $_SESSION['user']['id'];
             // Call the service to update the profile
-            if ($this->userService->updateUserProfile($_SESSION['user']['id'], $firstName, $lastName, $bio, $profilePicture)) {
+            if ($this->userService->updateUserProfile($userId, $firstName, $lastName, $bio, $profilePicture)) {
                 $_SESSION['success'] = "Profile updated successfully.";
+                
+                // Fetch the updated user information to get the username
+                $updatedUser = $this->userService->getUserById($userId);
+                $username = $updatedUser->getUsername(); // Assuming getUsername() retrieves the username
+    
+                // Redirect to the profile using the username
+                redirect("profile/$username");
             } else {
                 $_SESSION['error'] = "Failed to update profile.";
             }
-
-            redirect('profile');
+    
+            // If there was an error, redirect back to the profile
+            redirect("profile/$userId"); // Fallback to user ID in case of failure
         }
     }
 
@@ -209,7 +227,12 @@ class UserController
             return;
         }
 
-        $userId = $profile->getId();
+        $profileUserId = $profile->getId(); // Get the profile user's ID
+        $userId = $_SESSION['user']['id']; // Get the current user's ID
+
+        // Check if current user is following the profile user
+        $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
+
         $userRecipes = $this->cocktailService->getUserRecipes($userId);
         $userBadges = $this->badgeService->getUserBadges($userId);
         $profileStats = $this->userService->getUserStats($userId);
@@ -219,28 +242,31 @@ class UserController
     }
 
     // Follow a user
-    public function follow($followedUserId) {
+    public function follow($followedUserId)
+    {
         if (!AuthController::isLoggedIn()) {
             redirect('login');
         }
-    
+
         $userId = $_SESSION['user']['id'];
-    
+
         // Debugging output
         echo "Attempting to follow: UserID = $userId, FollowedUserID = $followedUserId";
+
         if ($userId === $followedUserId) {
             echo "Self-follow detected!";
             $_SESSION['error'] = "You cannot follow yourself.";
             redirect("profile/$userId");
             return;
         }
-    
-        if ($this->userService->followUser($userId, $followedUserId)) {
+
+        $followSuccess = $this->userService->followUser($userId, $followedUserId);
+        if ($followSuccess) {
             $_SESSION['success'] = "User followed successfully.";
         } else {
             $_SESSION['error'] = "Failed to follow user or already following.";
         }
-    
+
         redirect("profile/$followedUserId");
     }
 
