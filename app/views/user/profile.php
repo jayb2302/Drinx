@@ -30,20 +30,20 @@ if (isset($_SESSION['success'])) {
             <img class="" src="<?= asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>"
                 alt="Profile Picture" class="profile-img">
         <?php else: ?>
-            <img src="<?= asset('/../uploads/cocktails/kian.jpg'); ?>" alt="Default Profile Picture" class="profile-img">
+            <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture" class="profile-img">
         <?php endif; ?>
     </div>
 
     <!-- User Info -->
     <div class="profile-info">
-        <h2><?= htmlspecialchars($profile->getFirstName() ?? 'No First Name') . ' ' . htmlspecialchars($profile->getLastName() ?? 'No Last Name'); ?>
-        </h2>
-        <p>Username: <?= htmlspecialchars($profile->getUsername() ?? 'Unknown'); ?></p>
+    <h2><?= htmlspecialchars($profile->getFirstName() ?? 'No First Name') . ' ' . htmlspecialchars($profile->getLastName() ?? 'No Last Name'); ?></h2>        <p>@ <?= htmlspecialchars($profile->getUsername() ?? 'Unknown'); ?></p>
         <p class="bio"><?= htmlspecialchars($profile->getBio() ?? 'This user has not set a bio yet.'); ?></p>
     </div>
 
-    <!-- Edit Profile Button -->
-    <a href="#" class="btn btn-primary" onclick="toggleEditMode()">Edit Profile</a>
+    <!-- Edit Profile Button - Only show if user is viewing their own profile -->
+    <?php if ($userId === $profileUserId): ?>
+        <a href="#" class="btn btn-primary" onclick="toggleEditMode()">Edit Profile</a>
+    <?php endif; ?>
 </div>
 
 <!-- Profile Edit Form -->

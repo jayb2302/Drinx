@@ -64,7 +64,7 @@ function displayUserSuggestions(users) {
         // Check if profile picture is available or set a default
         const profilePicture = user.profile_picture 
             ? `/uploads/users/${encodeURIComponent(user.profile_picture)}` // Adjust path for user profile pictures
-            : '/uploads/cocktails/kian.jpg'; // Path to default image
+            : '/uploads/users/user-default.svg'; // Path to default image
 
         $('#searchResults').append(`
             <div class="user-suggestion">

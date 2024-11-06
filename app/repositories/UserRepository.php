@@ -35,7 +35,8 @@ class UserRepository
     }
 
     // Create a new user profile after registration
-    public function createUserProfile($userId) {
+    public function createUserProfile($userId)
+    {
         $stmt = $this->db->prepare("
             INSERT INTO user_profile (user_id) VALUES (:user_id)
         ");
@@ -156,18 +157,6 @@ class UserRepository
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         return $stmt->execute();
     }
-
-    // Helper function to map DB result to User object (with profile data)
-    private function mapToUserWithProfile($result)
-    {
-        $user = $this->mapToUser($result); // Reuse mapToUser for core fields
-        $user->setFirstName($result['first_name'] ?? null);
-        $user->setLastName($result['last_name'] ?? null);
-        $user->setProfilePicture($result['profile_picture'] ?? null);
-        $user->setBio($result['bio'] ?? null);
-        return $user;
-    }
-
     // Helper function to map DB result to User object
     private function mapToUser($result)
     {
@@ -182,6 +171,18 @@ class UserRepository
         $user->setIsAdmin($result['is_admin']);
         return $user;
     }
+    // Helper function to map DB result to User object (with profile data)
+    private function mapToUserWithProfile($result)
+    {
+        $user = $this->mapToUser($result); // Reuse mapToUser for core fields
+        $user->setFirstName($result['first_name'] ?? null);
+        $user->setLastName($result['last_name'] ?? null);
+        $user->setProfilePicture($result['profile_picture'] ?? null);
+        $user->setBio($result['bio'] ?? null);
+        return $user;
+    }
+
+
 
     public function getUserStats($userId)
     {
@@ -200,27 +201,33 @@ class UserRepository
     }
 
     // Find a user by username
-    public function findByUsername($username)
-    {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
-        $stmt->bindParam(':username', $username);
+    public function findByUsername($username) {
+        $stmt = $this->db->prepare("
+            SELECT u.*, p.first_name, p.last_name, p.profile_picture, p.bio 
+            FROM users u 
+            LEFT JOIN user_profile p ON u.user_id = p.user_id 
+            WHERE u.username = :username
+        ");
+        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    
         if ($result) {
-            return $this->mapToUser($result);
+            return $this->mapToUserWithProfile($result);
         }
         return null;
     }
 
-    public function searchUsers($query) {
+    public function searchUsers($query)
+    {
         $stmt = $this->db->prepare("SELECT user_id, username FROM users WHERE username LIKE :query LIMIT 5");
         $stmt->execute(['query' => '%' . $query . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return users as an associative array
     }
 
     // Method to follow a user
-    public function followUser($userId, $followedUserId) {
+    public function followUser($userId, $followedUserId)
+    {
         $stmt = $this->db->prepare("INSERT INTO follows (user_id, followed_user_id) VALUES (:user_id, :followed_user_id)");
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindParam(':followed_user_id', $followedUserId, PDO::PARAM_INT);
@@ -228,7 +235,8 @@ class UserRepository
     }
 
     // Method to unfollow a user
-    public function unfollowUser($userId, $followedUserId) {
+    public function unfollowUser($userId, $followedUserId)
+    {
         $stmt = $this->db->prepare("DELETE FROM follows WHERE user_id = :user_id AND followed_user_id = :followed_user_id");
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindParam(':followed_user_id', $followedUserId, PDO::PARAM_INT);
@@ -236,7 +244,8 @@ class UserRepository
     }
 
     // Check if a user is following another user
-    public function isFollowing($userId, $followedUserId) {
+    public function isFollowing($userId, $followedUserId)
+    {
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM follows WHERE user_id = :user_id AND followed_user_id = :followed_user_id");
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindParam(':followed_user_id', $followedUserId, PDO::PARAM_INT);
@@ -257,8 +266,6 @@ class UserRepository
         }
         return $result;
     }
-
-
 
     public function findAllWithStatus()
     {
@@ -289,5 +296,4 @@ class UserRepository
         $user->setAccountStatusName($result['account_status']);
         return $user;
     }
-
 }
