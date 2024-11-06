@@ -52,13 +52,12 @@ if (isset($_SESSION['success'])) {
 </div>
 
 <!-- User's Recipes Section -->
-<h3>Uploaded Recipes</h3>
-<div class="wrapper">
-    <div class="profile-recipes">
+<div class="recipe-wrapper">
+        <h3>My Recipes</h3>
         <?php if (!empty($userRecipes)): ?>
-            <div class="container">
+            <div class="recipe-container">
                 <?php foreach ($userRecipes as $recipe): ?>
-                    <article class="cocktailCard">
+                    <article class="recipe-card">
                         <!-- Show the Edit button if the logged-in user is the owner of the recipe -->
                         <?php if (isset($loggedInUserId) && $loggedInUserId === $recipe->getUserId()): ?>
                             <button>
@@ -84,7 +83,6 @@ if (isset($_SESSION['success'])) {
             <p>No recipes uploaded yet.</p>
         <?php endif; ?>
     </div>
-</div>
 
 <!-- User's Badges Section -->
 <div class="profile-badges">
