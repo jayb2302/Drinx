@@ -28,7 +28,7 @@ if ($_SESSION['user']['is_admin'] ?? false): ?>
 <?php endif; ?>
 
 <!-- Link to Add New Cocktail (only for logged-in users) -->
-<?php if (AuthController::isLoggedIn()): ?>
+<?php if (AuthController::isLoggedIn() && $currentUser->canAddCocktail($currentUser->getId())): ?>
     <a href="/cocktails/add" class="btn btn-primary">Add New Cocktail</a>
 <?php endif; ?>
 
@@ -53,6 +53,12 @@ if ($currentPath === '/login') {
 } else {
     // Show all cocktails if no specific action is requested
     echo "<h2>All Cocktails</h2>";
+    // Add sorting options here
+    echo '<div class="sort-options">';
+    echo '<a href="/?sort=recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Sort by Recent</a>';
+    echo ' | ';
+    echo '<a href="/?sort=popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Sort by Popular</a>';
+    echo '</div>';
     // Add sorting options here
     echo '<div class="sort-options">';
     echo '<a href="/?sort=recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Sort by Recent</a>';

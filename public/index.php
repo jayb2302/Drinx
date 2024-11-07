@@ -5,7 +5,6 @@ ob_start();
 require_once __DIR__ . '/../app/helpers/helpers.php';
 require_once __DIR__ . '/../router.php';
 require_once __DIR__ . '/../routes.php';
-
 // Dependency injection (manual for now)
 $db = Database::getConnection(); 
 

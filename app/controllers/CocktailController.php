@@ -94,6 +94,13 @@ class CocktailController
     {
         $this->ensureLoggedIn();
 
+        // Check if the user is suspended
+        if ($_SESSION['user']['account_status'] === 2) {
+            $_SESSION['error'] = "Your account is suspended. You cannot add new cocktails.";
+            $this->redirect('/'); // Redirect to the home page or an appropriate page
+            return;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = $this->validateCocktailInput($_POST);
             $image = $this->handleImageUpload($_FILES['image'], $errors);

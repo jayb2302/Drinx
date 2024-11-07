@@ -2,6 +2,9 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+$authController = new AuthController();
+$currentUser = $authController->getCurrentUser();
+
 ?>
 <nav class="navbar">
     <a class="navbar-brand" href="<?php echo url('/'); ?>">
