@@ -423,4 +423,24 @@ class CocktailController
         $this->cocktailService->deleteCocktail($cocktailId);
         $this->redirect('/'); // Redirect to the cocktail list
     }
+    public function getRandomCocktail()
+    {
+        // Fetch a random cocktail using the service
+        $cocktail = $this->cocktailService->getRandomCocktail();
+
+        if ($cocktail) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'id' => $cocktail->getCocktailId(),
+                'title' => $cocktail->getTitle(),
+                'image' => $cocktail->getImage(),
+                'description' => $cocktail->getDescription()
+            ]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No cocktail found.']);
+        }
+        exit; // Ensure no additional HTML is sent
+    }
+    
 }

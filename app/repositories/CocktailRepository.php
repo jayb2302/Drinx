@@ -158,7 +158,6 @@ class CocktailRepository
         return false; // Update failed
     }
 
-
     // Delete a cocktail
     public function delete($cocktailId)
     {
@@ -256,9 +255,25 @@ class CocktailRepository
             );
         }, $cocktailsData);
     }
-    public function searchCocktails($query) {
+
+    public function searchCocktails($query)
+    {
         $stmt = $this->db->prepare("SELECT cocktail_id, title, image FROM cocktails WHERE title LIKE :query LIMIT 5");
         $stmt->execute(['query' => '%' . $query . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Ensure 'image' is included in the result set
+    }
+
+    public function getRandomCocktail() {
+        $stmt = $this->db->prepare("SELECT * FROM cocktails ORDER BY RAND() LIMIT 1");
+        $stmt->execute();
+        $cocktailData = $stmt->fetchAll(PDO::FETCH_ASSOC); // Ensure this returns an array of arrays
+    
+        // Check if $cocktailData is not empty before mapping
+        if (!empty($cocktailData)) {
+            $cocktails = $this->mapCocktails($cocktailData); // Use mapCocktails to create the Cocktail object
+            return $cocktails[0] ?? null; // Return the first cocktail or null if empty
+        }
+    
+        return null; // Return null if no cocktails found
     }
 }

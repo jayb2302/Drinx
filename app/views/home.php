@@ -1,6 +1,6 @@
 <?php
-// Header inclusion
 include __DIR__ . '/layout/header.php';
+include __DIR__ . '/about/about.php';
 
 // Check if the logout_success cookie is set and display it
 if (isset($_COOKIE['logout_success'])) {
@@ -17,7 +17,7 @@ $matches = [];
 $isEditing = preg_match('#^/cocktails/(\d+)/edit$#', $currentPath, $matches);
 $cocktailId = $matches[1] ?? null;
 ?>
-<h1>Welcome to Drinx</h1>
+
 <?php
 // Admin toggle for user management
 if ($_SESSION['user']['is_admin'] ?? false): ?>
@@ -37,24 +37,28 @@ if ($_SESSION['user']['is_admin'] ?? false): ?>
 // Show login form if the current path is /login
 if ($currentPath === '/login') {
     include __DIR__ . '/auth/login.php'; // Show login form
-
     // Show register form if the current path is /register
 } elseif ($currentPath === '/register') {
     include __DIR__ . '/auth/register.php'; // Show register form
-
     // Show add cocktail form if the current path is /cocktails/add
 } elseif ($currentPath === '/cocktails/add') {
     include __DIR__ . '/cocktails/form.php'; // Show add cocktail form
-
     // Show edit cocktail form if we're editing a cocktail
 } elseif ($isEditing && isset($cocktailId)) {
     // Fetch the cocktail data for editing
     // $cocktail = $this->cocktailService->getCocktailById($cocktailId);
     include __DIR__ . '/cocktails/form.php'; // Show edit cocktail form
-
+} elseif ($currentPath === '/random') {
+    include __DIR__ . '/cocktails/random.php'; // Show random cocktail
 } else {
     // Show all cocktails if no specific action is requested
     echo "<h2>All Cocktails</h2>";
+    // Add sorting options here
+    echo '<div class="sort-options">';
+    echo '<a href="/?sort=recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Sort by Recent</a>';
+    echo ' | ';
+    echo '<a href="/?sort=popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Sort by Popular</a>';
+    echo '</div>';
     // Add sorting options here
     echo '<div class="sort-options">';
     echo '<a href="/?sort=recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Sort by Recent</a>';

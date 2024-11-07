@@ -17,7 +17,7 @@ $router = new Router(); // Instantiate the Router class
 $router->add('GET', '#^/$#', [HomeController::class, 'index']); // Home page
 $router->add('GET', '#^/login$#', [HomeController::class, 'index']); // Show login form within home page
 $router->add('GET', '#^/register$#', [HomeController::class, 'index']); // Show register form within home page
-
+$router->add('GET', '#^/about$#', [HomeController::class, 'about']);
 // Admin User Management Routes
 $router->add('POST', '#^/admin/update-status$#', [AdminController::class, 'updateUserStatus']);
 
@@ -52,6 +52,7 @@ $router->add('GET', '#^/cocktails/(\d+)-[^\/]+/edit$#', [CocktailController::cla
 $router->add('POST', '#^/cocktails/update/(\d+)$#', [CocktailController::class, 'update']); // Update cocktail
 $router->add('POST', '#^/cocktails/delete/(\d+)$#', [CocktailController::class, 'delete']); // Delete a cocktail
 $router->add('POST', '#^/cocktails/(\d+)/delete-step$#', [CocktailController::class, 'deleteStep']);
+$router->add('GET', '#^/cocktails/random$#', [CocktailController::class, 'getRandomCocktail']);
 // View cocktails
 $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // List all cocktails
 $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'view']); // View specific cocktail
