@@ -5,7 +5,7 @@ ob_start();
 require_once __DIR__ . '/../app/helpers/helpers.php';
 require_once __DIR__ . '/../router.php';
 require_once __DIR__ . '/../routes.php';
-
+require_once __DIR__ . '/../app/controllers/AuthController.php';// Dependency injection (manual for now)
 // Dependency injection (manual for now)
 $db = Database::getConnection(); 
 
