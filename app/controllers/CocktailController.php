@@ -36,8 +36,8 @@ class CocktailController
         $tagRepository = new TagRepository($db);
         $this->difficultyRepository = new DifficultyRepository($db);
         $commentRepository = new CommentRepository($db);
-        $likeRepository = new LikeRepository($db); 
-        $this->likeService = new LikeService(new LikeRepository($db)); 
+        $likeRepository = new LikeRepository($db);
+        $this->likeService = new LikeService(new LikeRepository($db));
         $commentRepository = new CommentRepository($db);
 
         // Initialize services
@@ -251,38 +251,38 @@ class CocktailController
         return $errors;
     }
 
-// Handle image upload for new cocktails
-private function handleImageUpload($file, &$errors)
-{
-    if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
-        // Step 1: Sanitize and validate the original filename
-        $image = sanitize($file['name']);
-        $fileExtension = strtolower(pathinfo($image, PATHINFO_EXTENSION));
+    // Handle image upload for new cocktails
+    private function handleImageUpload($file, &$errors)
+    {
+        if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
+            // Step 1: Sanitize and validate the original filename
+            $image = sanitize($file['name']);
+            $fileExtension = strtolower(pathinfo($image, PATHINFO_EXTENSION));
 
-        // Step 2: Check the file extension
-        $allowedTypes = ['jpeg', 'jpg', 'png', 'webp'];
-        if (!in_array($fileExtension, $allowedTypes)) {
-            $errors[] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
-            return null; // Exit if file type is not allowed
+            // Step 2: Check the file extension
+            $allowedTypes = ['jpeg', 'jpg', 'png', 'webp'];
+            if (!in_array($fileExtension, $allowedTypes)) {
+                $errors[] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
+                return null; // Exit if file type is not allowed
+            }
+
+            // Step 3: Generate a unique filename to avoid conflicts
+            $image = bin2hex(random_bytes(8)) . '.' . $fileExtension;
+            $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
+            $target_file = $target_dir . $image;
+
+            // Step 4: Move the uploaded file to the target directory
+            if (!move_uploaded_file($file['tmp_name'], $target_file)) {
+                $errors[] = "There was an error uploading the image.";
+                return null;
+            }
+
+            // Return the unique filename for storing in the database
+            return $image;
         }
 
-        // Step 3: Generate a unique filename to avoid conflicts
-        $image = bin2hex(random_bytes(8)) . '.' . $fileExtension;
-        $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
-        $target_file = $target_dir . $image;
-
-        // Step 4: Move the uploaded file to the target directory
-        if (!move_uploaded_file($file['tmp_name'], $target_file)) {
-            $errors[] = "There was an error uploading the image.";
-            return null;
-        }
-
-        // Return the unique filename for storing in the database
-        return $image;
+        return null; // Return null if no image was uploaded
     }
-
-    return null; // Return null if no image was uploaded
-}
 
 
     // Handle image update for editing cocktails
@@ -327,10 +327,10 @@ private function handleImageUpload($file, &$errors)
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $cocktailId = intval($cocktailId); // Sanitize ID
         $action = sanitize($action); // Sanitize action
-    
+
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
         $isEditing = ($action === 'edit');
-        $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;    
+        $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
         $category = $this->cocktailService->getCategoryByCocktailId($cocktailId);
@@ -376,9 +376,9 @@ private function handleImageUpload($file, &$errors)
         $this->ingredientService->clearIngredientsByCocktailId($cocktailId);
 
         foreach ($ingredients as $index => $ingredientName) {
-            $ingredientName = sanitize($ingredientName); 
-            $quantity = sanitize($quantities[$index] ?? ''); 
-            $unitId = intval($units[$index] ?? null); 
+            $ingredientName = sanitize($ingredientName);
+            $quantity = sanitize($quantities[$index] ?? '');
+            $unitId = intval($units[$index] ?? null);
 
             // Ensure ingredient name is not empty
             if (empty($ingredientName) || empty($quantity) || empty($unitId)) {
@@ -416,4 +416,24 @@ private function handleImageUpload($file, &$errors)
         $this->cocktailService->deleteCocktail($cocktailId);
         $this->redirect('/'); // Redirect to the cocktail list
     }
+    public function getRandomCocktail()
+    {
+        // Fetch a random cocktail using the service
+        $cocktail = $this->cocktailService->getRandomCocktail();
+
+        if ($cocktail) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'id' => $cocktail->getCocktailId(),
+                'title' => $cocktail->getTitle(),
+                'image' => $cocktail->getImage(),
+                'description' => $cocktail->getDescription()
+            ]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No cocktail found.']);
+        }
+        exit; // Ensure no additional HTML is sent
+    }
+    
 }

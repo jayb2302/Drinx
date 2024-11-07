@@ -60,7 +60,7 @@ class CocktailService {
     }
 
     // Delegate ingredient operations to IngredientService
-   public function getCocktailIngredients($cocktailId) {
+    public function getCocktailIngredients($cocktailId) {
         return $this->ingredientService->getIngredientsByCocktailId($cocktailId);  // Call the service
     }
 
@@ -113,6 +113,7 @@ class CocktailService {
     public function clearIngredients($cocktailId) {
         return $this->ingredientService->clearIngredientsByCocktailId($cocktailId);  // Use the service
     }
+
     public function getAllUnits() {
         return $this->ingredientService->getAllUnits();
     }
@@ -120,9 +121,11 @@ class CocktailService {
     public function getLikesForCocktail($cocktailId) {
         return $this->likeRepository->getLikesForCocktail($cocktailId);
     }
+
     public function getLikeCount($cocktailId) {
         return $this->likeRepository->getLikesForCocktail($cocktailId);
     }
+
     public function getCocktailsSortedByDate() {
         return $this->cocktailRepository->getAllSortedByDate();
     }
@@ -134,5 +137,8 @@ class CocktailService {
     public function searchCocktails($query) {
         return $this->cocktailRepository->searchCocktails($query);
     }
-    
+
+    public function getRandomCocktail() {
+        return $this->cocktailRepository->getRandomCocktail();
+    }
 }

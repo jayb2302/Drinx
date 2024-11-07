@@ -47,6 +47,8 @@ class HomeController
             $cocktails = $this->cocktailService->getCocktailsSortedByDate();
         }
 
+        $randomCocktail = $this->cocktailService->getRandomCocktail();
+
         // Sanitize and determine if we should show a specific form
         $action = isset($_GET['action']) ? sanitize($_GET['action']) : null;
         $isAdding = $action === 'add';
@@ -67,5 +69,8 @@ class HomeController
 
         // Pass the necessary data to the view
         require_once __DIR__ . '/../views/home.php';
+    }
+    public function about() {
+        require_once __DIR__ . '/../views/about.php';
     }
 }

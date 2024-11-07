@@ -11,6 +11,7 @@
 <script src="<?= asset('assets/js/likes.js'); ?>"></script>
 <script src="<?= asset('assets/js/admin.js'); ?>"></script>
 <script src="<?= asset('assets/js/profile.js'); ?>"></script>
+<script src="<?= asset('assets/js/random.js'); ?>"></script>
 
 </body>
 </html>
