@@ -199,7 +199,7 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
         <?php endif; ?>
     <?php else: ?>
         <!-- Show message for visitors who are not logged in -->
-        <p>Please <a href="/login">log in</a> or <a href="/register">register</a> to add a comment.</p>
+        <p>Please <a href="/login">log in</a> to add a comment.</p>
     <?php endif; ?>
 </div>
 
