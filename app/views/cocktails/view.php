@@ -1,8 +1,6 @@
 <?php
 include __DIR__ . '/../layout/header.php';
 include_once __DIR__ . '/../../helpers/helpers.php';
-$authController = new AuthController();
-$currentUser = $authController->getCurrentUser();
 
 if (!isset($isEditing)) {
     $isEditing = false;

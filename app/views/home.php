@@ -1,9 +1,6 @@
 <?php
 // Header inclusion
 include __DIR__ . '/layout/header.php';
-// Include the AuthController class
-$authController = new AuthController();
-$currentUser = $authController->getCurrentUser();
 
 // Check if the logout_success cookie is set and display it
 if (isset($_COOKIE['logout_success'])) {
