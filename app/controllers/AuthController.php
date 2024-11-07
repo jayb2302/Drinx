@@ -15,21 +15,28 @@ class AuthController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = sanitize($_POST['email']);
-            $password = trim($_POST['password']); // Trim password
+            $password = trim($_POST['password']);
 
             $user = $this->userService->authenticateUser($email, $password);
 
             if ($user) {
+                // Check if the user is banned
+                if ($user->isBanned()) {
+                    $_SESSION['error'] = "Your account has been banned from the platform.";
+                    header("Location: /login");  // Redirect back to the login form
+                    exit();
+                }
                 // Create session for the user
                 $_SESSION['user'] = [
                     'id' => $user->getId(),
                     'username' => $user->getUsername(),
                     'is_admin' => $user->isAdmin(),
+                    'account_status' => $user->getAccountStatusId(), // Store the actual status ID
                 ];
 
                 // Redirect to the home page after successful login
-                header("Location: /"); 
-                exit(); 
+                header("Location: /");
+                exit();
             } else {
                 // Handle invalid credentials
                 $_SESSION['error'] = "Invalid email or password.";
@@ -132,4 +139,21 @@ class AuthController
     {
         return isset($_SESSION['user']) && $_SESSION['user']['is_admin'];
     }
+
+    public function getCurrentUser()
+    {
+        if (!isset($_SESSION['user'])) {
+            return null;
+        }
+
+        // Retrieve user data from the session
+        $user = new User();
+        $user->setId($_SESSION['user']['id']);
+        $user->setUsername($_SESSION['user']['username']);
+        $user->setIsAdmin($_SESSION['user']['is_admin']);
+        $user->setAccountStatusId($_SESSION['user']['account_status']);
+
+        return $user;
+    }
+
 }

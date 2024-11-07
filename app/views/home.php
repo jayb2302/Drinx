@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Header inclusion
 include __DIR__ . '/layout/header.php';
 
@@ -28,7 +28,7 @@ if ($_SESSION['user']['is_admin'] ?? false): ?>
 <?php endif; ?>
 
 <!-- Link to Add New Cocktail (only for logged-in users) -->
-<?php if (AuthController::isLoggedIn()): ?>
+<?php if (AuthController::isLoggedIn() && $currentUser->canAddCocktail($currentUser->getId())): ?>
     <a href="/cocktails/add" class="btn btn-primary">Add New Cocktail</a>
 <?php endif; ?>
 
@@ -38,15 +38,15 @@ if ($_SESSION['user']['is_admin'] ?? false): ?>
 if ($currentPath === '/login') {
     include __DIR__ . '/auth/login.php'; // Show login form
 
-// Show register form if the current path is /register
+    // Show register form if the current path is /register
 } elseif ($currentPath === '/register') {
     include __DIR__ . '/auth/register.php'; // Show register form
 
-// Show add cocktail form if the current path is /cocktails/add
+    // Show add cocktail form if the current path is /cocktails/add
 } elseif ($currentPath === '/cocktails/add') {
     include __DIR__ . '/cocktails/form.php'; // Show add cocktail form
 
-// Show edit cocktail form if we're editing a cocktail
+    // Show edit cocktail form if we're editing a cocktail
 } elseif ($isEditing && isset($cocktailId)) {
     // Fetch the cocktail data for editing
     // $cocktail = $this->cocktailService->getCocktailById($cocktailId);
@@ -55,12 +55,12 @@ if ($currentPath === '/login') {
 } else {
     // Show all cocktails if no specific action is requested
     echo "<h2>All Cocktails</h2>";
-        // Add sorting options here
-        echo '<div class="sort-options">';
-        echo '<a href="/?sort=recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Sort by Recent</a>';
-        echo ' | ';
-        echo '<a href="/?sort=popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Sort by Popular</a>';
-        echo '</div>';
+    // Add sorting options here
+    echo '<div class="sort-options">';
+    echo '<a href="/?sort=recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Sort by Recent</a>';
+    echo ' | ';
+    echo '<a href="/?sort=popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Sort by Popular</a>';
+    echo '</div>';
     echo '<div class="wrapper">';
     include __DIR__ . '/cocktails/index.php';
     echo '</div>';
