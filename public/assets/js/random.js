@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     const cocktailContainer = document.querySelector(".about-container");
-
+    if (!cocktailContainer) {
+        console.warn("No element with class 'about-container' found.");
+        return; // Exit if the container is not present
+    }
     // Update the HTML content of the cocktail section with cocktail data
     function updateCocktailContent({ title, image, description, id }) {
         cocktailContainer.innerHTML = `
