@@ -18,9 +18,13 @@ $router->add('GET', '#^/$#', [HomeController::class, 'index']); // Home page
 $router->add('GET', '#^/login$#', [HomeController::class, 'index']); // Show login form within home page
 $router->add('GET', '#^/register$#', [HomeController::class, 'index']); // Show register form within home page
 $router->add('GET', '#^/about$#', [HomeController::class, 'about']);
+
 // Admin User Management Routes
 $router->add('POST', '#^/admin/update-status$#', [AdminController::class, 'updateUserStatus']);
 
+// Sticky cocktail routes
+$router->add('POST', '#^/admin/toggle-sticky$#', [AdminController::class, 'toggleStickyCocktail']);
+$router->add('GET', '#^/admin/sticky-cocktail$#', [AdminController::class, 'getStickyCocktail']);
 // Search route
 $router->add('GET', '#^/search$#', [SearchController::class, 'search']);
 
