@@ -38,12 +38,13 @@ $cocktailService = new CocktailService(
 );
 
 // Instantiate the HomeController with the necessary services
+$authController = new AuthController();
 $homeController = new HomeController($cocktailService, $ingredientService, $likeService, $userService);
+$adminController = new AdminController($cocktailService, $authController);
 
 // Resolve the current request URI
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $action = $router->resolve($requestUri);
-
 
 if ($action) {
     // Unpack the action array
@@ -63,6 +64,8 @@ if ($action) {
                 $controller = new SearchController($userService, $cocktailService);
             } elseif ($controllerClass === 'HomeController') {
                 $controller = $homeController; // Use the instantiated HomeController
+            } elseif ($controllerClass === 'AdminController') {
+                $controller = $adminController; // Use the instantiated AdminController
             } else {
                 $controller = new $controllerClass();
             }
