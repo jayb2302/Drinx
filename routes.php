@@ -68,3 +68,9 @@ $router->add('POST', '#^/comments/(\d+)/delete$#', [CommentController::class, 'd
 
 // Toggle like route
 $router->add('POST', '#^/cocktails/(\d+)/toggle-like$#', [LikeController::class, 'toggleLike']);
+
+
+// Sort cocktails routes
+$router->add('GET', '#^/recent$#', [HomeController::class, 'index']);
+$router->add('GET', '#^/popular$#', [HomeController::class, 'index']);
+$router->add('GET', '#^/hot$#', [HomeController::class, 'index']);

@@ -248,8 +248,28 @@ class CocktailRepository
         GROUP BY c.cocktail_id
         ORDER BY like_count DESC
     ");
-        return $this->mapCocktails($stmt->fetchAll(PDO::FETCH_ASSOC));
-    }
+    return $this->mapCocktails($stmt->fetchAll(PDO::FETCH_ASSOC));
+}
+
+    public function getAllHotCocktails() {
+    $stmt = $this->db->prepare("
+        SELECT c.*, 
+               (2 * COUNT(l.like_id) + COUNT(com.comment_id)) AS hot_score
+        FROM cocktails c
+        LEFT JOIN likes l ON c.cocktail_id = l.cocktail_id 
+            AND l.created_at >= NOW() - INTERVAL 7 DAY
+        LEFT JOIN comments com ON c.cocktail_id = com.cocktail_id 
+            AND com.created_at >= NOW() - INTERVAL 7 DAY
+        WHERE l.like_id IS NOT NULL OR com.comment_id IS NOT NULL
+        GROUP BY c.cocktail_id
+        ORDER BY hot_score DESC;
+    ");
+    $stmt->execute();
+    return $this->mapCocktails($stmt->fetchAll(PDO::FETCH_ASSOC));
+}
+
+
+
 
     // Helper function to map raw cocktail data to Cocktail objects
     private function mapCocktails($cocktailsData)

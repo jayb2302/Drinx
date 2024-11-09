@@ -182,5 +182,9 @@ class CocktailService
     {
         $this->cocktailRepository->clearStickyCocktail();
     }
+    public function getHotCocktails() {
+        return $this->cocktailRepository->getAllHotCocktails();
+    }
+
     
 }

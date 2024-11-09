@@ -39,10 +39,17 @@ class HomeController
 
         // Check if there's a sort option in the query, default to 'recent'
         $sortOption = $_GET['sort'] ?? 'recent';
+        if (strpos($_SERVER['REQUEST_URI'], '/popular') !== false) {
+            $sortOption = 'popular';
+        } elseif (strpos($_SERVER['REQUEST_URI'], '/hot') !== false) {
+            $sortOption = 'hot';
+        }
 
         // Fetch cocktails based on the sort option
         if ($sortOption === 'popular') {
             $cocktails = $this->cocktailService->getCocktailsSortedByLikes();
+        } elseif ($sortOption === 'hot') {
+            $cocktails = $this->cocktailService->getHotCocktails();
         } else {
             $cocktails = $this->cocktailService->getCocktailsSortedByDate();
         }
