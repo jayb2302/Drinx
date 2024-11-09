@@ -18,13 +18,14 @@
             <textarea name="bio" id="bio"><?= htmlspecialchars($profile->getBio() ?? '') ?></textarea>
         </div>
         <!-- Profile Picture Upload -->
-         <div class="form-group">
-             <label for="profile_picture">Profile Picture</label>
-             <input type="file" name="profile_picture" id="profile_picture">
-             <?php if ($profile->getProfilePicture()): ?>
-                <img src="<?= asset('uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>" alt="Profile Picture" width="100">
-                <?php endif; ?>
-            </div>
+        <div class="form-group">
+            <label for="profile_picture">Profile Picture</label>
+            <input type="file" name="profile_picture" id="profile_picture">
+            <?php if ($profile->getProfilePicture()): ?>
+                <img src="<?= asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>"
+                    alt="Profile picture of <?= htmlspecialchars($profile->getUsername()); ?>"
+                    width="100"> <?php endif; ?>
+        </div>
         <button type="submit" class="btn btn-success">Save Changes</button>
     </form>
 </div>

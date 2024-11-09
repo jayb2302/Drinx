@@ -28,7 +28,7 @@ if (isset($_SESSION['success'])) {
     <div class="profile-picture">
         <?php if ($profile->getProfilePicture()): ?>
             <img class="" src="<?= asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>"
-                alt="Profile Picture" class="profile-img">
+            alt="Profile picture of <?= htmlspecialchars($profile->getUsername()); ?>" class="profile-img">
         <?php else: ?>
             <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture" class="profile-img">
         <?php endif; ?>
