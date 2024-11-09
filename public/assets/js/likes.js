@@ -12,7 +12,7 @@ $(document).ready(function() {
             url: actionUrl,
             method: 'POST',
             contentType: 'application/json',
-            dataType: 'json', // Expect JSON response
+            dataType: 'json',
             success: function(response) {
                 console.log("Response from server:", response); // Debugging line
                 if (response.success) {

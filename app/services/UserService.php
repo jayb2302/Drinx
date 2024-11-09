@@ -5,21 +5,21 @@ class UserService {
     private $userRepository;
 
     public function __construct() {
-        $dbConnection = Database::getConnection(); 
+        $dbConnection = Database::getConnection();
         $this->userRepository = new UserRepository($dbConnection);
     }
 
     public function authenticateUser($email, $password) {
         $user = $this->userRepository->findByEmail($email);
-    
+
         if ($user && password_verify($password, $user->getPassword())) {
             // Update the last_login timestamp
             $user->setLastLogin(date('Y-m-d H:i:s'));
             $this->userRepository->update($user);  // Save the updated login time
-    
+
             return $user;
         }
-    
+
         return null;
     }
 
@@ -38,7 +38,7 @@ class UserService {
     public function registerUser($username, $email, $password, $accountStatusId) {
         // Hash the password before storing
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-    
+
         // Create a new user object and save it to the database
         $user = new User();
         $user->setUsername($username);
@@ -46,7 +46,7 @@ class UserService {
         $user->setPassword($hashedPassword);
         $user->setAccountStatusId($accountStatusId);  // Ensure account_status_id is set
         $user->setIsAdmin(false); // Default to a regular user
-    
+
         if ($this->userRepository->save($user)) {
             // After saving the user, create an entry in the user_profile table
             $userId = $user->getId();
@@ -109,19 +109,23 @@ class UserService {
         return $this->userRepository->getUserStats($userId);
     }
 
+    public function searchUsers($query) {
+        return $this->userRepository->searchUsers($query);
+    }
+
     public function followUser($userId, $followedUserId) {
         // Print debugging info
         echo "UserService: UserID = $userId, FollowedUserID = $followedUserId";
-    
+
         if ($userId === $followedUserId) {
             echo "Self-follow attempt in UserService";
             return false; // Prevent self-following
         }
-    
+
         if (!$this->userRepository->isFollowing($userId, $followedUserId)) {
             return $this->userRepository->followUser($userId, $followedUserId);
         }
-    
+
         return false; // Already following
     }
 
@@ -134,4 +138,16 @@ class UserService {
     public function isFollowing($userId, $followedUserId) {
         return $this->userRepository->isFollowing($userId, $followedUserId);
     }
+
+    public function getAllUsersWithStatus()
+    {
+        return $this->userRepository->findAllWithStatus();
+    }
+
+
+    public function updateUserAccountStatus($userId, $statusId)
+    {
+        return $this->userRepository->updateAccountStatus($userId, $statusId);
+    }
+
 }

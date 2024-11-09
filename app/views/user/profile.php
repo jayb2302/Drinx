@@ -14,8 +14,7 @@ if (isset($_SESSION['success'])) {
 ?>
 
 <!-- User Profile Header -->
-<div class="profile-header">
-<?php if ($isFollowing): ?>
+<?php if (isset($isFollowing) && $isFollowing): ?>
     <form action="/user/unfollow/<?= htmlspecialchars($profileUserId); ?>" method="POST">
         <button type="submit" class="btn btn-danger">Unfollow</button>
     </form>
@@ -24,26 +23,27 @@ if (isset($_SESSION['success'])) {
         <button type="submit" class="btn btn-primary">Follow</button>
     </form>
 <?php endif; ?>
+<div class="profile-header">
     <!-- Profile Picture -->
     <div class="profile-picture">
         <?php if ($profile->getProfilePicture()): ?>
             <img class="" src="<?= asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>"
                 alt="Profile Picture" class="profile-img">
         <?php else: ?>
-            <img src="<?= asset('/../uploads/cocktails/kian.jpg'); ?>" alt="Default Profile Picture" class="profile-img">
+            <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture" class="profile-img">
         <?php endif; ?>
     </div>
 
     <!-- User Info -->
     <div class="profile-info">
-        <h2><?= htmlspecialchars($profile->getFirstName() ?? 'No First Name') . ' ' . htmlspecialchars($profile->getLastName() ?? 'No Last Name'); ?>
-        </h2>
-        <p>Username: <?= htmlspecialchars($profile->getUsername() ?? 'Unknown'); ?></p>
+    <h2><?= htmlspecialchars($profile->getFirstName() ?? 'No First Name') . ' ' . htmlspecialchars($profile->getLastName() ?? 'No Last Name'); ?></h2>        <p>@ <?= htmlspecialchars($profile->getUsername() ?? 'Unknown'); ?></p>
         <p class="bio"><?= htmlspecialchars($profile->getBio() ?? 'This user has not set a bio yet.'); ?></p>
     </div>
 
-    <!-- Edit Profile Button -->
-    <a href="#" class="btn btn-primary" onclick="toggleEditMode()">Edit Profile</a>
+    <!-- Edit Profile Button - Only show if user is viewing their own profile -->
+    <?php if ($userId === $profileUserId): ?>
+        <a href="#" class="btn btn-primary" onclick="toggleEditMode()">Edit Profile</a>
+    <?php endif; ?>
 </div>
 
 <!-- Profile Edit Form -->
@@ -52,26 +52,24 @@ if (isset($_SESSION['success'])) {
 </div>
 
 <!-- User's Recipes Section -->
-<h3>Uploaded Recipes</h3>
-<div class="wrapper">
-    <div class="profile-recipes">
+<div class="recipe-wrapper">
+        <h3>My Recipes</h3>
         <?php if (!empty($userRecipes)): ?>
-            <div class="container">
+            <div class="recipe-container">
                 <?php foreach ($userRecipes as $recipe): ?>
-                    <article class="cocktailCard">
+                    <article class="recipe-card">
                         <!-- Show the Edit button if the logged-in user is the owner of the recipe -->
                         <?php if (isset($loggedInUserId) && $loggedInUserId === $recipe->getUserId()): ?>
                             <button>
-                                <a href="/?action=edit&cocktail_id=<?= $recipe->getCocktailId() ?>"
+                                <a href="/?action=edit&cocktail_id=<?= htmlspecialchars($recipe->getCocktailId()) ?>"
                                     class="text-blue-500 hover:underline">Edit Cocktail</a>
                             </button>
                         <?php endif; ?>
 
-                        <!-- Cocktail Link -->
-                        <a
-                            href="/cocktails/<?= htmlspecialchars($recipe->getCocktailId()) ?>-<?= urlencode($recipe->getTitle()) ?>">
-                            <img src="<?= asset('/../uploads/cocktails/' . htmlspecialchars($recipe->getImage())); ?>"
-                                alt="<?= htmlspecialchars($recipe->getTitle()); ?>" class="cocktailImage">
+
+                        <a href="/cocktails/<?= htmlspecialchars($recipe->getCocktailId() ?? '0') ?>-<?= urlencode($recipe->getTitle() ?? 'Untitled Cocktail') ?>">
+                            <img src="<?= asset('/../uploads/cocktails/' . htmlspecialchars($recipe->getImage() ?? 'default-image.svg')); ?>"
+                                alt="<?= htmlspecialchars($recipe->getTitle() ?? 'Cocktail Image') ?>" class="cocktailImage">
                         </a>
 
                         <!-- Cocktail Info -->
@@ -85,7 +83,6 @@ if (isset($_SESSION['success'])) {
             <p>No recipes uploaded yet.</p>
         <?php endif; ?>
     </div>
-</div>
 
 <!-- User's Badges Section -->
 <div class="profile-badges">
@@ -134,15 +131,4 @@ if (isset($_SESSION['success'])) {
         <?php endif; ?>
     </div>
 </div>
-
-<script>
-    function toggleEditMode() {
-        const form = document.getElementById('edit-profile-form');
-        form.style.display = form.style.display === "none" ? "block" : "none";
-    }
-
-    function toggleDeleteSection() {
-        const section = document.getElementById('deleteConfirmSection');
-        section.style.display = section.style.display === 'none' ? 'block' : 'none';
-    }
-</script>
+<?php include_once __DIR__ . '/../layout/footer.php'; ?>

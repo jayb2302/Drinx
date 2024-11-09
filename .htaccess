@@ -1,9 +1,43 @@
+# This is for local 
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
+    DirectoryIndex index.php
+
+    # Allow direct access to the uploads directory
+    RewriteRule ^uploads/(.*)$ /uploads/$1 [L]
+
+    # Redirect requests for the main index.php in the public directory
     RewriteRule ^index\.php$ - [L]
+
+    # If the requested filename is not a file or directory, route it through public/index.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule . /index.php [L]
+    RewriteRule ^(.*)$ index.php [L]
+
+    # Handle specific actions
     RewriteRule ^(add|login|register|edit)/?$ index.php?action=$1 [L,QSA]
 </IfModule>
+
+# This is for live
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteBase /
+
+#     # Set default directory index
+#     DirectoryIndex public/index.php
+
+#     # Allow direct access to the uploads directory
+#     RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
+
+#     # Redirect requests for the main index.php in the public directory
+#     RewriteRule ^index\.php$ - [L]
+
+#     # If the requested filename is not a file or directory, route it through public/index.php
+#     RewriteCond %{REQUEST_FILENAME} !-f
+#     RewriteCond %{REQUEST_FILENAME} !-d
+#     RewriteRule ^(.*)$ public/index.php [L]
+
+#     # Handle specific actions
+#     RewriteRule ^(add|login|register|edit)/?$ public/index.php?action=$1 [L,QSA]
+# </IfModule>

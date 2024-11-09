@@ -35,16 +35,28 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
 
         // Get the total likes for the cocktail
         $totalLikes = $this->cocktailService->getLikesForCocktail($cocktail->getCocktailId());        ?>
-
         <!-- Individual cocktail card -->
         <div class="container">
             <article class="cocktailCard">
+                <div class="button-wrapper">
 
-                <?php if (isset($loggedInUserId) && $loggedInUserId === $cocktailUserId): ?>
-                    <button>
-                        <a href="/?action=edit&cocktail_id=<?= $cocktail->getCocktailId() ?>" class="text-blue-500 hover:underline">Edit Cocktail</a>
-                    </button>
-                <?php endif; ?>
+                    <?php if (isset($loggedInUserId) && $loggedInUserId === $cocktailUserId): ?>
+                        <button class="edit-cocktail-button">
+                            <a href="/?action=edit&cocktail_id=<?= $cocktail->getCocktailId() ?>" class=" hover:underline">Edit Cocktail</a>
+                        </button>
+                    <?php endif; ?>
+
+                    <?php if ($_SESSION['user']['is_admin'] ?? false): ?>
+                        <button
+                            class="set-sticky <?= $cocktail->isSticky() ? 'active' : '' ?>"
+                            data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
+                            data-sticky-status="<?= $cocktail->isSticky() ? 'true' : 'false' ?>"
+                            aria-pressed="<?= $cocktail->isSticky() ? 'true' : 'false' ?>"
+                            title="<?= $cocktail->isSticky() ? 'Remove Sticky' : 'Sticky' ?>">
+                            <?= $cocktail->isSticky() ? 'Unstick' : 'Sticky' ?>
+                        </button>
+                    <?php endif; ?>
+                </div>
 
                 <!-- Like/Unlike Button -->
                 <div class="like-section">
@@ -55,7 +67,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                             <span class="like-icon">
                                 <?= $cocktail->hasLiked ? '♥️' : '🤍' ?>
                             </span>
-                            <span class="like-count"><?= $totalLikes ?> </span> 
+                            <span class="like-count"><?= $totalLikes ?> </span>
                         </button>
                     <?php else: ?>
                         <p><a href="/login">Log in to like</a></p>

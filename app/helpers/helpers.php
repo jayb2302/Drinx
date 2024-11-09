@@ -1,11 +1,33 @@
 <?php
+// Function to load environment variables from a .env file
+function loadEnv($filePath) {
+    if (!file_exists($filePath)) {
+        return;
+    }
+    $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $env = [];
+    
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue; // Skip comments
+        [$key, $value] = explode('=', $line, 2);
+        $env[trim($key)] = trim($value);
+    }
+    
+    return $env;
+}
+loadEnv(__DIR__ . '/../../.env');
+
 // Function to generate a URL
 function url($path = '') {
     return 'http://drinx.local/' . ltrim($path, '/');
 }
 
 function base_url() {
-    return 'http://' . $_SERVER['HTTP_HOST']; // No need to include '/Drinx' if that's not the path to the application
+    return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
+}
+
+function base_path($path = '') {
+    return __DIR__ . '/../../' . ltrim($path, '/');
 }
 
 function asset($path) {

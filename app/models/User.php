@@ -1,10 +1,12 @@
 <?php
-class User {
+class User
+{
     private $id;
     private $username;
     private $email;
     private $password;
     private $accountStatusId;
+    private $accountStatusName;
     private $joinDate;
     private $lastLogin;
     private $isAdmin;
@@ -16,110 +18,170 @@ class User {
     // Getters and Setters
 
     // ID
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
 
     // Username
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
 
-    public function setUsername($username) {
+    public function setUsername($username)
+    {
         $this->username = $username;
     }
 
     // Email
-    public function getEmail() {
+    public function getEmail()
+    {
         return $this->email;
     }
 
-    public function setEmail($email) {
+    public function setEmail($email)
+    {
         $this->email = $email;
     }
 
     // Password
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
 
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         $this->password = $password;
     }
 
     // Account Status ID
-    public function getAccountStatusId() {
+    public function getAccountStatusId()
+    {
         return $this->accountStatusId;
     }
 
-    public function setAccountStatusId($accountStatusId) {
+    public function setAccountStatusId($accountStatusId)
+    {
         $this->accountStatusId = $accountStatusId;
     }
 
+    public function setAccountStatusName($statusName)
+    {
+        $this->accountStatusName = $statusName;
+    }
+
+    public function getAccountStatusName()
+    {
+        return $this->accountStatusName;
+    }
+    public function isActive()
+    {
+        return $this->getAccountStatusId() === 1; // Assume 1 is for 'Active'
+    }
+    public function isSuspended()
+    {
+        return $this->getAccountStatusId() === 2; // Assume 2 is for 'Suspended'
+    }
+    public function isBanned()
+    {
+        return $this->getAccountStatusId() === 3; // Assume 3 is for 'Banned'
+    }
+
+    // Account Status functionality
+    public function canAddCocktail($cocktailUserId)
+    {
+        return !$this->isSuspended() && ($this->getId() === $cocktailUserId || $this->isAdmin());
+    }
+    public function canEditCocktail($cocktailUserId)
+    {
+        return !$this->isSuspended() && ($this->getId() === $cocktailUserId || $this->isAdmin());
+    }
+    public function canComment()
+    {
+        return !$this->isSuspended();
+    }
+
     // Join Date
-    public function getJoinDate() {
+    public function getJoinDate()
+    {
         return $this->joinDate;
     }
 
-    public function setJoinDate($joinDate) {
+    public function setJoinDate($joinDate)
+    {
         $this->joinDate = $joinDate;
     }
 
     // Last Login
-    public function getLastLogin() {
+    public function getLastLogin()
+    {
         return $this->lastLogin;
     }
 
-    public function setLastLogin($lastLogin) {
+    public function setLastLogin($lastLogin)
+    {
         $this->lastLogin = $lastLogin;
     }
 
     // Is Admin
-    public function isAdmin() {
+    public function isAdmin()
+    {
         return $this->isAdmin;
     }
 
-    public function setIsAdmin($isAdmin) {
+    public function setIsAdmin($isAdmin)
+    {
         $this->isAdmin = $isAdmin;
     }
 
     // First Name
-    public function getFirstName() {
+    public function getFirstName()
+    {
         return $this->firstName;
     }
 
-    public function setFirstName($firstName) {
+    public function setFirstName($firstName)
+    {
         $this->firstName = $firstName;
     }
 
     // Last Name
-    public function getLastName() {
+    public function getLastName()
+    {
         return $this->lastName;
     }
 
-    public function setLastName($lastName) {
+    public function setLastName($lastName)
+    {
         $this->lastName = $lastName;
     }
 
     // Profile Picture
-    public function getProfilePicture() {
+    public function getProfilePicture()
+    {
         return $this->profilePicture;
     }
 
-    public function setProfilePicture($profilePicture) {
+    public function setProfilePicture($profilePicture)
+    {
         $this->profilePicture = $profilePicture;
     }
 
     // Bio
-    public function getBio() {
+    public function getBio()
+    {
         return $this->bio;
     }
 
-    public function setBio($bio) {
+    public function setBio($bio)
+    {
         $this->bio = $bio;
     }
 }

@@ -8,6 +8,8 @@ require_once __DIR__ . '/app/controllers/AuthController.php';
 require_once __DIR__ . '/app/controllers/CocktailController.php';
 require_once __DIR__ . '/app/controllers/CommentController.php';
 require_once __DIR__ . '/app/controllers/LikeController.php';
+require_once __DIR__ . '/app/controllers/SearchController.php';
+require_once __DIR__ . '/app/controllers/AdminController.php';
 
 $router = new Router(); // Instantiate the Router class
 
@@ -15,6 +17,16 @@ $router = new Router(); // Instantiate the Router class
 $router->add('GET', '#^/$#', [HomeController::class, 'index']); // Home page
 $router->add('GET', '#^/login$#', [HomeController::class, 'index']); // Show login form within home page
 $router->add('GET', '#^/register$#', [HomeController::class, 'index']); // Show register form within home page
+$router->add('GET', '#^/about$#', [HomeController::class, 'about']);
+
+// Admin User Management Routes
+$router->add('POST', '#^/admin/update-status$#', [AdminController::class, 'updateUserStatus']);
+
+// Sticky cocktail routes
+$router->add('POST', '#^/admin/toggle-sticky$#', [AdminController::class, 'toggleStickyCocktail']);
+$router->add('GET', '#^/admin/sticky-cocktail$#', [AdminController::class, 'getStickyCocktail']);
+// Search route
+$router->add('GET', '#^/search$#', [SearchController::class, 'search']);
 
 // Authentication routes
 $router->add('POST', '#^/login$#', [AuthController::class, 'authenticate']); // Handle login
@@ -44,6 +56,7 @@ $router->add('GET', '#^/cocktails/(\d+)-[^\/]+/edit$#', [CocktailController::cla
 $router->add('POST', '#^/cocktails/update/(\d+)$#', [CocktailController::class, 'update']); // Update cocktail
 $router->add('POST', '#^/cocktails/delete/(\d+)$#', [CocktailController::class, 'delete']); // Delete a cocktail
 $router->add('POST', '#^/cocktails/(\d+)/delete-step$#', [CocktailController::class, 'deleteStep']);
+$router->add('GET', '#^/cocktails/random$#', [CocktailController::class, 'getRandomCocktail']);
 // View cocktails
 $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // List all cocktails
 $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'view']); // View specific cocktail
