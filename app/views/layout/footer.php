@@ -12,6 +12,7 @@
 <script src="<?= asset('assets/js/admin.js'); ?>"></script>
 <script src="<?= asset('assets/js/profile.js'); ?>"></script>
 <script src="<?= asset('assets/js/random.js'); ?>"></script>
+<script src="<?= asset('assets/js/sticky.js'); ?>"></script>
 
 </body>
 </html>

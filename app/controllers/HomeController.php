@@ -46,9 +46,9 @@ class HomeController
         } else {
             $cocktails = $this->cocktailService->getCocktailsSortedByDate();
         }
-
+ 
         $randomCocktail = $this->cocktailService->getRandomCocktail();
-
+        $stickyCocktail = $this->cocktailService->getStickyCocktail();
         // Sanitize and determine if we should show a specific form
         $action = isset($_GET['action']) ? sanitize($_GET['action']) : null;
         $isAdding = $action === 'add';
@@ -69,6 +69,34 @@ class HomeController
 
         // Pass the necessary data to the view
         require_once __DIR__ . '/../views/home.php';
+    }
+    public function setSticky()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $cocktailId = $data['cocktail_id'] ?? null;
+
+            if ($cocktailId) {
+                try {
+                    // Call the repository to set this cocktail as sticky
+                    $this->cocktailService->setStickyCocktail($cocktailId);
+                    // Return a JSON success response
+                    echo json_encode(['success' => true, 'message' => 'Cocktail set as sticky!']);
+                    http_response_code(200);
+                } catch (Exception $e) {
+                    // Return an error response
+                    echo json_encode(['success' => false, 'message' => 'Failed to set cocktail as sticky.']);
+                    http_response_code(500); // Internal server error
+                }
+            } else {
+                // Return a bad request response
+                echo json_encode(['success' => false, 'message' => 'Invalid cocktail ID.']);
+                http_response_code(400); // Bad request
+            }
+        } else {
+            // Handle method not allowed
+            http_response_code(405); // Method not allowed
+        }
     }
     public function about() {
         require_once __DIR__ . '/../views/about.php';

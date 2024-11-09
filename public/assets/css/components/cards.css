@@ -4,11 +4,10 @@
 }
  .cocktailCard {
     width: 300px; /* Set a fixed width for all cards */
-    height: 40vh; /* Set a fixed height for all cards */
+    height: 45vh; /* Set a fixed height for all cards */
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     background-color: var(--card-background);
@@ -16,11 +15,10 @@
 
 .cocktailImage {
     width: 100%;
-    height: 200px;
+    
     object-fit: cover;
     border-bottom: 1px solid #ccc;
     border-radius: 6px 6px 0 0;
-
 }
 .randomButton {
     display: flex;
@@ -29,9 +27,73 @@
 }
 
 .cocktailInfo {
-    padding: 10px;
     flex-grow: 1;
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+/*  Sticky Cocktail  */
+
+.stickyContainer {
+    position: relative;
+    display: flex;
+    justify-content: start;
+}
+
+.stickyContent {
+ background-color: var(--card-background);
+ color : var(--text-primary);
+ padding: 0 .5rem;
+ position: sticky;
+ top: 0;
+ bottom: 0;
+}
+
+.stickyCard {
+    width: 100%;
+    max-width: 20vw;
+    padding: .5rem;
+    height: 35vh;
+    overflow: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: start;
+    background-color: var(--accent-primary);
+    display: flex;
+    align-items: start;
     flex-direction: column;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.stickyCard img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.stickyCard h2 {
+    background-color: var(--card-background);
+    font-size: 1rem;
+    padding: .5rem ;
+    color: var(--accent-primary);
+    position: absolute;
+    top: 0;
+}
+
+.stickyCard h3 {
+    margin: 0;
+}
+
+.stickyCard p {
+    margin: 0;
+    text-overflow: ellipsis;
+}
+
+.stickyMediaWrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
     justify-content: center;
 }

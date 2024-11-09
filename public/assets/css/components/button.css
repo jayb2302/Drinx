@@ -38,3 +38,42 @@ button.secondary:hover {
     transition: background-color 0.3s;
     background-color: var(--button-primary);
 }
+a.button-secondary {
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    background-color: var(--button-secondary);
+}
+/** Sticky Button **/
+.button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.set-sticky {
+    background-color: var(--button-secondary); 
+    color: white; 
+    border: none; 
+    padding: 10px 20px; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+    opacity: 0.7; 
+}
+
+.set-sticky.active {
+    opacity: 1;
+    background-color: var(--button-primary); /* Change color for active state */
+}
+.set-sticky:hover {
+    background-color: var(--button-secondary); 
+}
+
+.active {
+    background-color: var(--button-secondary); /* Green color for active/sticky */
+}
+
+
