@@ -185,13 +185,13 @@ class UserRepository
     public function getUserStats($userId)
     {
         $stmt = $this->db->prepare("
-            SELECT 
-                COUNT(DISTINCT l.like_id) AS likes_received, 
-                COUNT(DISTINCT c.comment_id) AS comments_received
-            FROM users u
-            LEFT JOIN likes l ON l.user_id = u.user_id
-            LEFT JOIN comments c ON c.user_id = u.user_id
-            WHERE u.user_id = :user_id
+        SELECT 
+        COUNT(DISTINCT l.like_id) AS likes_received, 
+        COUNT(DISTINCT c.comment_id) AS comments_received
+        FROM cocktails ct
+        LEFT JOIN likes l ON l.cocktail_id = ct.cocktail_id
+        LEFT JOIN comments c ON c.cocktail_id = ct.cocktail_id
+        WHERE ct.user_id = :user_id
         ");
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -199,7 +199,8 @@ class UserRepository
     }
 
     // Find a user by username
-    public function findByUsername($username) {
+    public function findByUsername($username)
+    {
         $stmt = $this->db->prepare("
             SELECT u.*, p.first_name, p.last_name, p.profile_picture, p.bio 
             FROM users u 
@@ -209,7 +210,7 @@ class UserRepository
         $stmt->bindParam(':username', $username, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
         if ($result) {
             return $this->mapToUserWithProfile($result);
         }
