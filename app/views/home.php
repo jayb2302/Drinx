@@ -20,7 +20,8 @@ $cocktailId = $matches[1] ?? null;
         <div class="stickyCard">
             <h2>📌Sticky Cocktail</h2>
             <div class="stickyMediaWrapper">
-                <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>" alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
+                <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>"
+                    alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
             </div>
             <div class="stickyContent">
                 <h3 class="cocktail-title"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
@@ -66,15 +67,17 @@ if ($currentPath === '/login') {
     include __DIR__ . '/cocktails/random.php'; // Show random cocktail
 } else {
     echo "<h2>All Cocktails</h2>";
-    // Add sorting options here
     echo '<div class="sort-options">';
-    echo '<a href="/?sort=recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Recent</a>';
+    echo '<a href="/recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Recent</a>';
     echo ' | ';
-    echo '<a href="/?sort=popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Popular</a>';
+    echo '<a href="/popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Popular</a>';
+    echo ' | ';
+    echo '<a href="/hot" class="' . (($_GET['sort'] ?? '') === 'hot' ? 'active' : '') . '">Hot</a>';
     echo '</div>';
     echo '<div class="wrapper">';
     include __DIR__ . '/cocktails/index.php';
     echo '</div>';
+
 }
 ?>
 
