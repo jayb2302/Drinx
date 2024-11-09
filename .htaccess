@@ -5,7 +5,7 @@
     DirectoryIndex index.php
 
     # Allow direct access to the uploads directory
-    RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
+    RewriteRule ^uploads/(.*)$ /uploads/$1 [L]
 
     # Redirect requests for the main index.php in the public directory
     RewriteRule ^index\.php$ - [L]

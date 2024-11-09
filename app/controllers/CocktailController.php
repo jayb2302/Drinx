@@ -5,10 +5,10 @@ require_once __DIR__ . '/../repositories/IngredientRepository.php';
 require_once __DIR__ . '/../repositories/StepRepository.php';
 require_once __DIR__ . '/../repositories/TagRepository.php';
 require_once __DIR__ . '/../repositories/DifficultyRepository.php';
+require_once __DIR__ . '/../repositories/CommentRepository.php';
 require_once __DIR__ . '/../repositories/UnitRepository.php';
 require_once __DIR__ . '/../services/CocktailService.php';
 require_once __DIR__ . '/../services/CommentService.php';
-require_once __DIR__ . '/../repositories/CommentRepository.php';
 require_once __DIR__ . '/../services/LikeService.php';
 
 class CocktailController
@@ -36,9 +36,8 @@ class CocktailController
         $tagRepository = new TagRepository($db);
         $this->difficultyRepository = new DifficultyRepository($db);
         $commentRepository = new CommentRepository($db);
-        $likeRepository = new LikeRepository($db); 
-        $this->likeService = new LikeService(new LikeRepository($db)); 
-        $commentRepository = new CommentRepository($db);
+        $likeRepository = new LikeRepository($db);
+        $this->likeService = new LikeService(new LikeRepository($db));
 
         // Initialize services
         $unitRepository = new UnitRepository($db);
@@ -96,7 +95,16 @@ class CocktailController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = $this->validateCocktailInput($_POST);
+
+            // Log validation errors
+            error_log("Validation errors: " . print_r($errors, true));
+
+            // Handle the image upload
             $image = $this->handleImageUpload($_FILES['image'], $errors);
+
+            // Log image handling errors or success
+            error_log("Image handling result: " . print_r($image, true));
+            error_log("Image upload errors: " . print_r($errors, true));
 
             if ($this->handleValidationErrors($errors, '/cocktails/add')) return;
 
@@ -105,16 +113,19 @@ class CocktailController
                 'title' => sanitize($_POST['title']),
                 'description' => sanitize($_POST['description']),
                 'image' => $image,
+                'is_sticky' => isset($_POST['isSticky']) ? 1 : 0,
                 'category_id' => intval($_POST['category_id']),
                 'difficulty_id' => intval($_POST['difficulty_id'])
             ];
 
             try {
-                // Create the cocktail and get the ID
-                $cocktailId = $this->cocktailService->createCocktail($cocktailData);
-                error_log("Cocktail created with ID: " . $cocktailId); // Check if correct ID is returned
+                // Log cocktail data to be stored
+                error_log("Storing cocktail data: " . print_r($cocktailData, true));
 
-                // Make sure the ID is correct before adding steps and ingredients
+                // Proceed with creating the cocktail
+                $cocktailId = $this->cocktailService->createCocktail($cocktailData);
+
+                // After successful creation
                 $this->handleCocktailSteps($cocktailId, $_POST['steps']);
                 $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
 
@@ -152,28 +163,34 @@ class CocktailController
 
     public function update($cocktailId)
     {
-        $this->ensureLoggedIn(); // Ensure user is logged in
-
+        $this->ensureLoggedIn();
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
-        // Only allow the owner or an admin to update
         if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
             $this->redirect('/cocktails');
         }
 
-        // Validate input
         $errors = $this->validateCocktailInput($_POST);
         $image = $this->handleImageUpdate($_FILES['image'], $cocktail, $errors);
 
-        if ($this->handleValidationErrors($errors, '/cocktails/' . $cocktailId . '/edit')) return;
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktail->getTitle()) . '/edit');
+            return;
+        }
+        $isSticky = isset($_POST['isSticky']) ? 1 : 0;
 
         $cocktailData = [
             'title' => sanitize($_POST['title']),
             'description' => sanitize($_POST['description']),
             'category_id' => intval($_POST['category_id']),
             'difficulty_id' => intval($_POST['difficulty_id']),
-            'image' => $image
+            'image' => $image ?: $cocktail->getImage(),
+            'is_sticky' => isset($_POST['isSticky']) ? 1 : 0
         ];
+
+        // Log the cocktail data before update
+        error_log("Updating cocktail with data: " . print_r($cocktailData, true));
 
         try {
             $this->clearSteps($cocktailId);
@@ -191,9 +208,9 @@ class CocktailController
             $this->ingredientService->updateIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
             $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
 
-            $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode(sanitize($cocktailData['title'])));
+            $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
         } catch (Exception $e) {
-            $_SESSION['errors'] = ["Failed to update cocktail: " . sanitize($e->getMessage())];
+            $_SESSION['errors'] = ["Failed to update cocktail: " . $e->getMessage()];
             $this->redirect('/cocktails/' . $cocktailId . '/edit');
         }
     }
@@ -240,51 +257,76 @@ class CocktailController
     private function validateCocktailInput($data)
     {
         $errors = [];
-        $requiredFields = ['title' => 'Title', 'description' => 'Description', 'category_id' => 'Category', 'difficulty_id' => 'Difficulty'];
 
+        // Required fields
+        $requiredFields = [
+            'title' => 'Title',
+            'description' => 'Description',
+            'category_id' => 'Category',
+            'difficulty_id' => 'Difficulty'
+        ];
+
+        // Check for empty required fields
         foreach ($requiredFields as $field => $label) {
             if (empty($data[$field])) {
                 $errors[] = "$label is required.";
             }
         }
 
+        // Validate title length (optional: adjust as needed)
+        if (!empty($data['title']) && strlen($data['title']) > 255) {
+            $errors[] = "Title cannot be more than 255 characters.";
+        }
+
+        // Check category_id and difficulty_id for valid integers
+        if (isset($data['category_id']) && !filter_var($data['category_id'], FILTER_VALIDATE_INT)) {
+            $errors[] = "Category must be a valid integer.";
+        }
+        if (isset($data['difficulty_id']) && !filter_var($data['difficulty_id'], FILTER_VALIDATE_INT)) {
+            $errors[] = "Difficulty must be a valid integer.";
+        }
+
+        // Optional: Check image if it's required and exists
+        if (empty($data['image']) && !empty($data['image_required'])) {
+            $errors[] = "Image is required.";
+        }
+
         return $errors;
     }
 
-// Handle image upload for new cocktails
-private function handleImageUpload($file, &$errors)
-{
-    if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
-        // Step 1: Sanitize and validate the original filename
-        $image = sanitize($file['name']);
-        $fileExtension = strtolower(pathinfo($image, PATHINFO_EXTENSION));
+    // Handle image upload for new cocktails
+    private function handleImageUpload($file, &$errors)
+    {
+        if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
+            // Sanitize and validate the original filename
+            $image = sanitize($file['name']);
+            $fileExtension = strtolower(pathinfo($image, PATHINFO_EXTENSION));
 
-        // Step 2: Check the file extension
-        $allowedTypes = ['jpeg', 'jpg', 'png', 'webp'];
-        if (!in_array($fileExtension, $allowedTypes)) {
-            $errors[] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
-            return null; // Exit if file type is not allowed
+            // Check the file extension
+            $allowedTypes = ['jpeg', 'jpg', 'png', 'webp'];
+            if (!in_array($fileExtension, $allowedTypes)) {
+                $errors[] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
+                return null; // Exit if file type is not allowed
+            }
+
+            // Generate a unique filename to avoid conflicts
+            $image = bin2hex(random_bytes(8)) . '.' . $fileExtension;
+            $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
+            $target_file = $target_dir . $image;
+
+            // Move the uploaded file to the target directory
+            if (!move_uploaded_file($file['tmp_name'], $target_file)) {
+                $errors[] = "There was an error uploading the image.";
+                return null;
+            }
+
+            // Return the unique filename for storing in the database
+            return $image;
         }
 
-        // Step 3: Generate a unique filename to avoid conflicts
-        $image = bin2hex(random_bytes(8)) . '.' . $fileExtension;
-        $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
-        $target_file = $target_dir . $image;
-
-        // Step 4: Move the uploaded file to the target directory
-        if (!move_uploaded_file($file['tmp_name'], $target_file)) {
-            $errors[] = "There was an error uploading the image.";
-            return null;
-        }
-
-        // Return the unique filename for storing in the database
-        return $image;
+        return null; // Return null if no image was uploaded
     }
-
-    return null; // Return null if no image was uploaded
-}
-
-
+     
     // Handle image update for editing cocktails
     private function handleImageUpdate($file, $cocktail, &$errors)
     {
@@ -314,6 +356,9 @@ private function handleImageUpload($file, &$errors)
     private function handleValidationErrors($errors, $redirectUrl)
     {
         if (!empty($errors)) {
+            // Log errors for debugging purposes
+            error_log("Validation errors: " . print_r($errors, true));
+
             $_SESSION['errors'] = $errors;
             $this->redirect($redirectUrl);
             return true; // Indicate that there were errors
@@ -327,10 +372,10 @@ private function handleImageUpload($file, &$errors)
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $cocktailId = intval($cocktailId); // Sanitize ID
         $action = sanitize($action); // Sanitize action
-    
+
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
         $isEditing = ($action === 'edit');
-        $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;    
+        $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
         $category = $this->cocktailService->getCategoryByCocktailId($cocktailId);
@@ -376,9 +421,9 @@ private function handleImageUpload($file, &$errors)
         $this->ingredientService->clearIngredientsByCocktailId($cocktailId);
 
         foreach ($ingredients as $index => $ingredientName) {
-            $ingredientName = sanitize($ingredientName); 
-            $quantity = sanitize($quantities[$index] ?? ''); 
-            $unitId = intval($units[$index] ?? null); 
+            $ingredientName = sanitize($ingredientName);
+            $quantity = sanitize($quantities[$index] ?? '');
+            $unitId = intval($units[$index] ?? null);
 
             // Ensure ingredient name is not empty
             if (empty($ingredientName) || empty($quantity) || empty($unitId)) {
@@ -415,5 +460,24 @@ private function handleImageUpload($file, &$errors)
         // Delete the cocktail
         $this->cocktailService->deleteCocktail($cocktailId);
         $this->redirect('/'); // Redirect to the cocktail list
+    }
+    public function getRandomCocktail()
+    {
+        // Fetch a random cocktail using the service
+        $cocktail = $this->cocktailService->getRandomCocktail();
+
+        if ($cocktail) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'id' => $cocktail->getCocktailId(),
+                'title' => $cocktail->getTitle(),
+                'image' => $cocktail->getImage(),
+                'description' => $cocktail->getDescription()
+            ]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No cocktail found.']);
+        }
+        exit; // Ensure no additional HTML is sent
     }
 }

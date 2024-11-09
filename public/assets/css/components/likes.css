@@ -17,7 +17,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    position: relative;
+    position: absolute;
 }
 .like-section form{
     display: flex;

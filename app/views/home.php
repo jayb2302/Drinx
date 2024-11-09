@@ -1,5 +1,4 @@
-<?php 
-// Header inclusion
+<?php
 include __DIR__ . '/layout/header.php';
 
 // Check if the logout_success cookie is set and display it
@@ -12,24 +11,39 @@ if (isset($_COOKIE['logout_success'])) {
 // Get the current URL path
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Determine if we're editing a cocktail by checking the URL format (e.g., /cocktails/123/edit)
 $matches = [];
 $isEditing = preg_match('#^/cocktails/(\d+)/edit$#', $currentPath, $matches);
 $cocktailId = $matches[1] ?? null;
 ?>
-<h1>Welcome to Drinx</h1>
+<?php if (isset($stickyCocktail) && is_object($stickyCocktail)): ?>
+    <div class="stickyContainer">
+        <div class="stickyCard">
+            <h2>📌Sticky Cocktail</h2>
+            <div class="stickyMediaWrapper">
+                <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>" alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
+            </div>
+            <div class="stickyContent">
+                <h3 class="cocktail-title"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
+                <p class="cocktail-description"><?php echo htmlspecialchars($stickyCocktail->getDescription()); ?></p>
+            </div>
+        </div>
+    </div>
+<?php else: ?>
+    <p>No sticky cocktail selected or invalid data.</p>
+<?php endif; ?>
+<?php include __DIR__ . '/about/about.php'; ?>
 <?php
 // Admin toggle for user management
 if ($_SESSION['user']['is_admin'] ?? false): ?>
-    <button onclick="toggleUserManagement()">Toggle User Management</button>
+    <button class="button" onclick="toggleUserManagement()">User Management</button>
     <div id="userManagement" style="display: none;">
         <?php include __DIR__ . '/admin/manage_users.php'; ?>
     </div>
 <?php endif; ?>
 
 <!-- Link to Add New Cocktail (only for logged-in users) -->
-<?php if (AuthController::isLoggedIn()): ?>
-    <a href="/cocktails/add" class="btn btn-primary">Add New Cocktail</a>
+<?php if (AuthController::isLoggedIn() && $currentUser->canAddCocktail($currentUser->getId())): ?>
+    <a href="/cocktails/add" class="button-secondary"> Add New Cocktail </a>
 <?php endif; ?>
 
 <!-- Logic to include forms based on the path -->
@@ -37,30 +51,28 @@ if ($_SESSION['user']['is_admin'] ?? false): ?>
 // Show login form if the current path is /login
 if ($currentPath === '/login') {
     include __DIR__ . '/auth/login.php'; // Show login form
-
-// Show register form if the current path is /register
+    // Show register form if the current path is /register
 } elseif ($currentPath === '/register') {
     include __DIR__ . '/auth/register.php'; // Show register form
-
-// Show add cocktail form if the current path is /cocktails/add
+    // Show add cocktail form if the current path is /cocktails/add
 } elseif ($currentPath === '/cocktails/add') {
     include __DIR__ . '/cocktails/form.php'; // Show add cocktail form
-
-// Show edit cocktail form if we're editing a cocktail
+    // Show edit cocktail form if we're editing a cocktail
 } elseif ($isEditing && isset($cocktailId)) {
     // Fetch the cocktail data for editing
     // $cocktail = $this->cocktailService->getCocktailById($cocktailId);
     include __DIR__ . '/cocktails/form.php'; // Show edit cocktail form
-
+} elseif ($currentPath === '/random') {
+    include __DIR__ . '/cocktails/random.php'; // Show random cocktail
 } else {
     // Show all cocktails if no specific action is requested
     echo "<h2>All Cocktails</h2>";
-        // Add sorting options here
-        echo '<div class="sort-options">';
-        echo '<a href="/?sort=recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Sort by Recent</a>';
-        echo ' | ';
-        echo '<a href="/?sort=popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Sort by Popular</a>';
-        echo '</div>';
+    // Add sorting options here
+    echo '<div class="sort-options">';
+    echo '<a href="/?sort=recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Sort by Recent</a>';
+    echo ' | ';
+    echo '<a href="/?sort=popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Sort by Popular</a>';
+    echo '</div>';
     echo '<div class="wrapper">';
     include __DIR__ . '/cocktails/index.php';
     echo '</div>';

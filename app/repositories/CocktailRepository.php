@@ -30,13 +30,13 @@ class CocktailRepository
             $steps = $this->getStepsByCocktailId($cocktail_id);
             // $tags = $this->getTagsByCocktailId($cocktail_id); 
 
-
             // Create a Cocktail object with the fetched data
             return new Cocktail(
                 $result['cocktail_id'],
                 $result['title'],
                 $result['description'],
                 $result['image'],
+                (bool) $result['is_sticky'],
                 $result['category_id'],
                 $result['user_id'],
                 $ingredients, // Pass ingredients array
@@ -66,6 +66,7 @@ class CocktailRepository
                 $cocktailData['title'],
                 $cocktailData['description'],
                 $cocktailData['image'],
+                (bool) $cocktailData['is_sticky'],
                 $cocktailData['category_id'],
                 $cocktailData['user_id'],
                 $ingredients, // Pass ingredients array
@@ -84,13 +85,14 @@ class CocktailRepository
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Ingredient');
     }
 
-    private function getStepsByCocktailId($cocktailId)
+    public function getStepsByCocktailId($cocktailId)
     {
-        // Query the cocktail_steps table
-        $stmt = $this->db->prepare('SELECT * FROM cocktail_steps WHERE cocktail_id = :cocktail_id');
+        $stmt = $this->db->prepare("SELECT * FROM cocktail_steps WHERE cocktail_id = :cocktail_id");
         $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_CLASS, 'Step');
+
+        // Return the steps as an array, or an empty array if none found
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Fetch all steps or return an empty array
     }
 
     // Fetch cocktail by name
@@ -108,6 +110,7 @@ class CocktailRepository
                 $result['title'],
                 $result['description'],
                 $result['image'],
+                (bool) $result['is_sticky'],
                 $result['category_id'],
                 $result['user_id'],
                 $result['created_at'],
@@ -122,42 +125,52 @@ class CocktailRepository
     public function create($cocktailData)
     {
         $stmt = $this->db->prepare("
-            INSERT INTO cocktails (user_id, title, description, image, category_id, difficulty_id, created_at) 
-            VALUES (:user_id, :title, :description, :image, :category_id, :difficulty_id, NOW())
+            INSERT INTO cocktails (user_id, title, description, image, is_sticky, category_id, difficulty_id,  created_at) 
+            VALUES (:user_id, :title, :description, :image, :is_sticky, :category_id, :difficulty_id, NOW())
         ");
 
         $stmt->bindParam(':user_id', $cocktailData['user_id'], PDO::PARAM_INT);
         $stmt->bindParam(':title', $cocktailData['title']);
         $stmt->bindParam(':description', $cocktailData['description']);
         $stmt->bindParam(':image', $cocktailData['image']);
+        $stmt->bindParam(':is_sticky', $cocktailData['is_sticky'], PDO::PARAM_BOOL);
         $stmt->bindParam(':category_id', $cocktailData['category_id'], PDO::PARAM_INT);
         $stmt->bindParam(':difficulty_id', $cocktailData['difficulty_id'], PDO::PARAM_INT);
 
         if ($stmt->execute()) {
-            // Return the ID of the newly created cocktail
             return $this->db->lastInsertId();
         }
 
-        // If execution fails, you can throw an exception or return false
-        throw new Exception("Failed to create cocktail."); // or return false;
+        throw new Exception("Failed to create cocktail.");
     }
 
     // Update an existing cocktail
     public function update($cocktail_id, $cocktailData)
     {
-        $stmt = $this->db->prepare('UPDATE cocktails SET title = :title, description = :description, image = :image, category_id = :category_id, updated_at = NOW() WHERE cocktail_id = :id');
+        $stmt = $this->db->prepare('
+            UPDATE cocktails 
+            SET title = :title, 
+                description = :description, 
+                image = :image, 
+                is_sticky = :is_sticky, 
+                category_id = :category_id, 
+                difficulty_id = :difficulty_id, 
+                updated_at = NOW() 
+            WHERE cocktail_id = :id
+        ');
         $stmt->bindParam(':id', $cocktail_id, PDO::PARAM_INT);
         $stmt->bindParam(':title', $cocktailData['title']);
         $stmt->bindParam(':description', $cocktailData['description']);
         $stmt->bindParam(':image', $cocktailData['image']);
+        $stmt->bindParam(':is_sticky', $cocktailData['is_sticky'], PDO::PARAM_BOOL);
         $stmt->bindParam(':category_id', $cocktailData['category_id']);
+        $stmt->bindParam(':difficulty_id', $cocktailData['difficulty_id']);
 
         if ($stmt->execute()) {
             return true; // Successfully updated
         }
         return false; // Update failed
     }
-
 
     // Delete a cocktail
     public function delete($cocktailId)
@@ -244,11 +257,13 @@ class CocktailRepository
         return array_map(function ($cocktailData) {
             $ingredients = $this->getIngredientsByCocktailId($cocktailData['cocktail_id']);
             $steps = $this->getStepsByCocktailId($cocktailData['cocktail_id']);
+
             return new Cocktail(
                 $cocktailData['cocktail_id'],
                 $cocktailData['title'],
                 $cocktailData['description'],
                 $cocktailData['image'],
+                (bool)($cocktailData['is_sticky'] ?? 0),
                 $cocktailData['category_id'],
                 $cocktailData['user_id'],
                 $ingredients,
@@ -256,9 +271,53 @@ class CocktailRepository
             );
         }, $cocktailsData);
     }
-    public function searchCocktails($query) {
+
+    public function searchCocktails($query)
+    {
         $stmt = $this->db->prepare("SELECT cocktail_id, title, image FROM cocktails WHERE title LIKE :query LIMIT 5");
         $stmt->execute(['query' => '%' . $query . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Ensure 'image' is included in the result set
+    }
+
+    public function getRandomCocktail()
+    {
+        $stmt = $this->db->prepare("SELECT * FROM cocktails ORDER BY RAND() LIMIT 1");
+        $stmt->execute();
+        $cocktailData = $stmt->fetchAll(PDO::FETCH_ASSOC); // Ensure this returns an array of arrays
+
+        // Check if $cocktailData is not empty before mapping
+        if (!empty($cocktailData)) {
+            $cocktails = $this->mapCocktails($cocktailData); // Use mapCocktails to create the Cocktail object
+            return $cocktails[0] ?? null; // Return the first cocktail or null if empty
+        }
+
+        return null; // Return null if no cocktails found
+    }
+
+    public function getStickyCocktail()
+    {
+        $stmt = $this->db->prepare("SELECT * FROM cocktails WHERE is_sticky = 1 LIMIT 1");
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Return a Cocktail object or null if no sticky cocktail found
+        return $result ? $this->mapCocktails([$result])[0] : null; // Return the first cocktail or null
+    }
+
+    public function clearStickyCocktail()
+    {
+        $stmt = $this->db->prepare("UPDATE cocktails SET is_sticky = 0 WHERE is_sticky = 1");
+        return $stmt->execute();
+    }
+
+    public function setStickyCocktail($cocktailId)
+    {
+        // Clear the current sticky cocktail
+        $this->db->prepare("UPDATE cocktails SET is_sticky = 0 WHERE is_sticky = 1")->execute();
+
+        // Mark the new cocktail as sticky
+        $stmt = $this->db->prepare("UPDATE cocktails SET is_sticky = 1 WHERE cocktail_id = :cocktail_id");
+        $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
+        $stmt->execute();
     }
 }
