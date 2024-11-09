@@ -2,6 +2,8 @@
 @import '../css/pages/footer.css';
 @import '../css/pages/profile.css'; 
 @import '../css/pages/about.css';
+@import '../css/pages/home.css';
+@import '../css/components/control-panel.css';
 @import '../css/components/button.css';
 @import '../css/components/navbar.css';
 @import '../css/components/forms.css';
@@ -9,6 +11,7 @@
 @import '../css/components/likes.css';
 @import '../css/components/search.css';
 @import '../css/components/cards.css';
+
 
 :root {
     /* Colors for Light Mode */
