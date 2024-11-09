@@ -254,7 +254,6 @@ class UserController
         echo "Attempting to follow: UserID = $userId, FollowedUserID = $followedUserId";
 
         if ($userId === $followedUserId) {
-            echo "Self-follow detected!";
             $_SESSION['error'] = "You cannot follow yourself.";
             redirect("profile/$userId");
             return;

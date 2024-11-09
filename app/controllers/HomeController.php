@@ -53,7 +53,7 @@ class HomeController
         } else {
             $cocktails = $this->cocktailService->getCocktailsSortedByDate();
         }
- 
+
         $randomCocktail = $this->cocktailService->getRandomCocktail();
         $stickyCocktail = $this->cocktailService->getStickyCocktail();
         // Sanitize and determine if we should show a specific form
@@ -71,6 +71,7 @@ class HomeController
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
 
+        $userProfile = $loggedInUserId ? $this->userService->getUserWithFollowCounts($loggedInUserId) : null;
         // Fetch users if admin is logged in
         $users = ($isAdmin) ? $this->userService->getAllUsersWithStatus() : null;
 
@@ -105,7 +106,8 @@ class HomeController
             http_response_code(405); // Method not allowed
         }
     }
-    public function about() {
-        require_once __DIR__ . '/../views/about.php';
+    public function about()
+    {
+        require_once __DIR__ . '/../views/about/about.php';
     }
 }

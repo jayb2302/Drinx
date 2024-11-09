@@ -15,70 +15,74 @@ $matches = [];
 $isEditing = preg_match('#^/cocktails/(\d+)/edit$#', $currentPath, $matches);
 $cocktailId = $matches[1] ?? null;
 ?>
-<?php if (isset($stickyCocktail) && is_object($stickyCocktail)): ?>
-    <div class="stickyContainer">
-        <div class="stickyCard">
-            <h2>📌Sticky Cocktail</h2>
-            <div class="stickyMediaWrapper">
-                <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>"
-                    alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
+<div class="content-wrapper">
+    <!-- Sticky Cocktail -->
+    <main>
+        <?php if (isset($stickyCocktail) && is_object($stickyCocktail)): ?>
+            <div class="stickyContainer">
+                <div class="stickyCard">
+                    <h2>📌Sticky Cocktail</h2>
+                    <div class="stickyMediaWrapper">
+                        <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>" alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
+                    </div>
+                    <div class="stickyContent">
+                        <h3 class="cocktail-title"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
+                        <p class="cocktail-description"><?php echo htmlspecialchars($stickyCocktail->getDescription()); ?></p>
+                    </div>
+                </div>
             </div>
-            <div class="stickyContent">
-                <h3 class="cocktail-title"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
-                <p class="cocktail-description"><?php echo htmlspecialchars($stickyCocktail->getDescription()); ?></p>
+        <?php else: ?>
+            <p>No sticky cocktail selected or invalid data.</p>
+        <?php endif; ?>
+
+        <!-- -->
+        <!-- User Management Button (only for admins) -->
+        <?php
+        if ($_SESSION['user']['is_admin'] ?? false): ?>
+            <!-- <button class="button" onclick="toggleUserManagement()">User Management</button> -->
+            <div id="userManagement" style="display: none;">
+                <?php include __DIR__ . '/admin/manage_users.php'; ?>
             </div>
-        </div>
-    </div>
-<?php else: ?>
-    <p>No sticky cocktail selected or invalid data.</p>
-<?php endif; ?>
-<?php include __DIR__ . '/about/about.php'; ?>
-<?php
-// Admin toggle for user management
-if ($_SESSION['user']['is_admin'] ?? false): ?>
-    <button class="button" onclick="toggleUserManagement()">User Management</button>
-    <div id="userManagement" style="display: none;">
-        <?php include __DIR__ . '/admin/manage_users.php'; ?>
-    </div>
-<?php endif; ?>
-
-<!-- Link to Add New Cocktail (only for logged-in users) -->
-<?php if (AuthController::isLoggedIn() && $currentUser->canAddCocktail($currentUser->getId())): ?>
-    <a href="/cocktails/add" class="button-secondary"> Add New Cocktail </a>
-<?php endif; ?>
-
-<!-- Logic to include forms based on the path -->
-<?php
-// Show login form if the current path is /login
-if ($currentPath === '/login') {
-    include __DIR__ . '/auth/login.php'; // Show login form
-    // Show register form if the current path is /register
-} elseif ($currentPath === '/register') {
-    include __DIR__ . '/auth/register.php'; // Show register form
-    // Show add cocktail form if the current path is /cocktails/add
-} elseif ($currentPath === '/cocktails/add') {
-    include __DIR__ . '/cocktails/form.php'; // Show add cocktail form
-    // Show edit cocktail form if we're editing a cocktail
-} elseif ($isEditing && isset($cocktailId)) {
-    // Fetch the cocktail data for editing
-    // $cocktail = $this->cocktailService->getCocktailById($cocktailId);
-    include __DIR__ . '/cocktails/form.php'; // Show edit cocktail form
-} elseif ($currentPath === '/random') {
-    include __DIR__ . '/cocktails/random.php'; // Show random cocktail
-} else {
-    echo "<h2>All Cocktails</h2>";
-    echo '<div class="sort-options">';
-    echo '<a href="/recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Recent</a>';
+        <?php endif; ?>
+            <a href="/about">About</a>
+        <!-- Logic to include forms based on the path -->
+        <?php
+        if ($currentPath === '/login') {
+            include __DIR__ . '/auth/login.php'; // Show login form
+            // Show register form if the current path is /register
+        } elseif ($currentPath === '/register') {
+            include __DIR__ . '/auth/register.php'; // Show register form
+            // Show add cocktail form if the current path is /cocktails/add
+        } else if ($currentPath === '/about') {
+            include __DIR__ . '/about/about.php'; // Show about page
+        }
+        elseif ($currentPath === '/cocktails/add') {
+            include __DIR__ . '/cocktails/form.php'; // Show add cocktail form
+            // Show edit cocktail form if we're editing a cocktail
+        } elseif ($isEditing && isset($cocktailId)) {
+            // Fetch the cocktail data for editing
+            // $cocktail = $this->cocktailService->getCocktailById($cocktailId);
+            include __DIR__ . '/cocktails/form.php'; // Show edit cocktail form
+        } elseif ($currentPath === '/random') {
+            include __DIR__ . '/cocktails/random.php'; // Show random cocktail
+        } else {
+                    echo "<h2>All Cocktails</h2>";
+                    echo '<div class="sort-options">';
+            echo '<a href="/recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Recent</a>';
     echo ' | ';
     echo '<a href="/popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Popular</a>';
-    echo ' | ';
-    echo '<a href="/hot" class="' . (($_GET['sort'] ?? '') === 'hot' ? 'active' : '') . '">Hot</a>';
-    echo '</div>';
-    echo '<div class="wrapper">';
-    include __DIR__ . '/cocktails/index.php';
-    echo '</div>';
+            echo ' | ';
+            echo '<a href="/hot" class="' . (($_GET['sort'] ?? '') === 'hot' ? 'active' : '') . '">Hot</a>';
+            echo '</div>';
+            echo '<div class="wrapper">';
+            include __DIR__ . '/cocktails/index.php';
+            echo '</div>';
 
-}
-?>
-
+        }
+        ?>
+    </main>
+    <aside class="control-panel">
+        <?php include __DIR__ . '/layout/control_panel.php'; ?>
+    </aside>
+</div>
 <?php include __DIR__ . '/layout/footer.php'; ?>

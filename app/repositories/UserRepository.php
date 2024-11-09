@@ -182,8 +182,6 @@ class UserRepository
         return $user;
     }
 
-
-
     public function getUserStats($userId)
     {
         $stmt = $this->db->prepare("
@@ -251,6 +249,24 @@ class UserRepository
         $stmt->bindParam(':followed_user_id', $followedUserId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
+    }
+
+    // Count the number of users a user is following
+    public function getFollowingCount($userId)
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM follows WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
+
+    // Count the number of followers a user has
+    public function getFollowersCount($userId)
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM follows WHERE followed_user_id = :user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
     }
 
     // Update a user's account status
