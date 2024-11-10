@@ -12,13 +12,34 @@
     flex-direction: column;
     background-color: var(--card-background);
 }
-
+.cocktailInfo {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
+.buttonWrapper {
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+}
 .cocktailImage {
     width: 100%;
-    
     object-fit: cover;
     border-bottom: 1px solid #ccc;
     border-radius: 6px 6px 0 0;
+}
+.creatorInfo {
+    display: flex;
+    gap: 1rem;
+    padding: .5rem;
+}
+.creatorPicture {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
 }
 .randomButton {
     display: flex;

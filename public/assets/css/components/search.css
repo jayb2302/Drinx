@@ -17,7 +17,7 @@
     border: 1px solid var(--border);
     border-radius: 4px;
     z-index: 1000; 
-    
+    width: fit;
     display: none;
 }
 
