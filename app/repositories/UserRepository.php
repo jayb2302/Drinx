@@ -216,10 +216,15 @@ class UserRepository
         }
         return null;
     }
-
-    public function searchUsers($query)
-    {
-        $stmt = $this->db->prepare("SELECT user_id, username FROM users WHERE username LIKE :query LIMIT 5");
+    public function searchUsers($query) {
+        $stmt = $this->db->prepare("
+            SELECT u.user_id, u.username, 
+                   COALESCE(p.profile_picture, 'user-default.svg') AS profile_picture
+            FROM users u
+            LEFT JOIN user_profile p ON u.user_id = p.user_id
+            WHERE u.username LIKE :query
+            LIMIT 5
+        ");
         $stmt->execute(['query' => '%' . $query . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return users as an associative array
     }
@@ -313,4 +318,5 @@ class UserRepository
         $user->setAccountStatusName($result['account_status']);
         return $user;
     }
+
 }
