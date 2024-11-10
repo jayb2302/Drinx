@@ -11,6 +11,7 @@ $db = Database::getConnection();
 // Instantiate the repositories
 $cocktailRepository = new CocktailRepository($db);
 $categoryRepository = new CategoryRepository($db);
+$categoryRepository = new CategoryRepository($db);
 $ingredientRepository = new IngredientRepository($db);
 $stepRepository = new StepRepository($db);
 $tagRepository = new TagRepository($db);
@@ -41,7 +42,7 @@ $cocktailService = new CocktailService(
 
 // Instantiate the HomeController with the necessary services
 $authController = new AuthController();
-$homeController = new HomeController($cocktailService, $ingredientService, $likeService, $userService);
+$homeController = new HomeController($cocktailService, $ingredientService, $likeService, $userService, $categoryRepository);
 $adminController = new AdminController($cocktailService, $authController);
 
 // Resolve the current request URI
