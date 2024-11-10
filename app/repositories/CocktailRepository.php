@@ -251,7 +251,7 @@ class CocktailRepository
     return $this->mapCocktails($stmt->fetchAll(PDO::FETCH_ASSOC));
 }
 
-    public function getAllHotCocktails() {
+public function getAllHotCocktails() {
     $stmt = $this->db->prepare("
         SELECT c.*, 
                (2 * COUNT(l.like_id) + COUNT(com.comment_id)) AS hot_score
@@ -268,7 +268,23 @@ class CocktailRepository
     return $this->mapCocktails($stmt->fetchAll(PDO::FETCH_ASSOC));
 }
 
+    
+    
+    
 
+
+    public function getCocktailsByCategory($categoryId)
+    {
+        $stmt = $this->db->prepare("
+            SELECT * FROM cocktails 
+            WHERE category_id = :category_id
+            ORDER BY created_at DESC
+        ");
+        $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $this->mapCocktails($stmt->fetchAll(PDO::FETCH_ASSOC));
+    }
+    
 
 
     // Helper function to map raw cocktail data to Cocktail objects
