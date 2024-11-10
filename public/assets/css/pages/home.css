@@ -17,6 +17,7 @@ aside {
     width: 25%;
     color: var(--text-secondary);
 }
+
 .leftSidebar {
     background-color: var(--nav-background);
     display: flex;
@@ -33,6 +34,7 @@ aside {
 .category-sidebar a {
     color: var(--text-primary);
 }
+
 .sort-options {
     background-color: var(--card-background);
     width: 100%;
