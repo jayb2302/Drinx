@@ -1,5 +1,4 @@
-.about-section {
-    padding: 4rem 2rem;
+.aboutSection {
     background-color: var(--background);
     color: var(--text-primary);
     text-align: start;
@@ -7,21 +6,21 @@
     flex-direction: column;
 }
 
-.about-container {
+.aboutContainer {
     max-width: 80%;
     margin: 0 auto;
 }
 
 /* Heading and Intro Text */
-.about-heading {
-    font-size: 2.5rem;
+.aboutHeading {
+    font-size: 1.5rem;
     font-weight: bold;
     color: var(--text-link);
     font-family: var(--font-display);
-    margin-bottom: 1.5rem;
+    margin-bottom: .5rem;
 }
 
-.about-intro {
+.aboutIntro {
     font-size: 1.2rem;
     color: var(--text-primary);
     font-style: italic;
@@ -30,7 +29,7 @@
 }
 
 /* Description Text */
-.about-description {
+.aboutDescription {
     font-size: 1rem;
     color: var(--text-primary);
     line-height: 1.6;
@@ -39,12 +38,12 @@
 }
 
 /* Button */
-.button-container {
+.buttonContainer {
     display: flex;
     justify-content: end;
 }
 
-.random-recipe-button {
+.randomRecipeButton {
     padding: 0.8rem 1.5rem;
     background-color: var(--button-primary);
     color: var(--text-secondary);
@@ -56,22 +55,22 @@
     font-family: var(--font-body);
 }
 
-.random-recipe-button:hover {
+.randomRecipeButton:hover {
     background-color: var(--button-hover);
     color: var(--text-primary);
 }
 
 /* Responsive Media Queries */
 @media (max-width: 768px) {
-    .about-heading {
+    .aboutHeading {
         font-size: 2rem;
     }
 
-    .about-intro, .about-description {
+    .aboutIntro, .aboutDescription {
         font-size: 1rem;
     }
 
-    .random-recipe-button {
+    .randomRecipeButton {
         font-size: 0.9rem;
         padding: 0.7rem 1.2rem;
     }
