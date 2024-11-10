@@ -64,8 +64,8 @@ $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'vi
 // Comment interactions
 $router->add('POST', '#^/cocktails/(\d+)-[^/]+/comments$#', [CommentController::class, 'addComment']);
 $router->add('GET', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
-$router->add('POST', '#^/comments/(\d+)/delete$#', [CommentController::class, 'delete']); // Delete comment
-
+$router->add('POST', '#^/comments/(\d+)/delete$#', [CommentController::class, 'delete']); // Delete comment or reply
+$router->add('POST', '#^/comments/(\d+)/reply$#', [CommentController::class, 'reply']);
 // Toggle like route
 $router->add('POST', '#^/cocktails/(\d+)/toggle-like$#', [LikeController::class, 'toggleLike']);
 

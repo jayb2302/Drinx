@@ -25,7 +25,7 @@ $ingredientService = new IngredientService($ingredientRepository, $unitRepositor
 $stepService = new StepService($stepRepository);
 $likeService = new LikeService($likeRepository);
 $userService = new UserService();
-$commentService = new CommentService($commentRepository);
+$commentService = new CommentService($commentRepository, $userService);
 
 // Instantiate the CocktailService with all its required dependencies
 $cocktailService = new CocktailService(
@@ -59,7 +59,7 @@ if ($action) {
         if (class_exists($controllerClass) && method_exists($controllerClass, $method)) {
             // Inject the dependencies manually
             if ($controllerClass === 'CommentController') {
-                $controller = new CommentController($commentService);
+                $controller = new CommentController($commentService, $commentRepository, $cocktailService); // Use the instantiated CommentController
             } elseif ($controllerClass === 'LikeController') {
                 $controller = new LikeController($likeService); // Use the instantiated LikeController
             } elseif ($controllerClass === 'SearchController') {

@@ -19,6 +19,7 @@ class CocktailController
     private $difficultyRepository;
     private $commentService;
     private $likeService;
+    private $userService;
 
 
     public function __construct()
@@ -40,12 +41,14 @@ class CocktailController
         $likeRepository = new LikeRepository($db);
         $this->likeService = new LikeService(new LikeRepository($db));
         $userRepository = new UserRepository($db);
+        $userService = new UserService($userRepository);
 
         // Initialize services    
         $unitRepository = new UnitRepository($db);
         $this->ingredientService = new IngredientService($ingredientRepository, $unitRepository);
         $this->stepService = new StepService($stepRepository);
-        $this->commentService = new CommentService($commentRepository);
+        $this->commentService = new CommentService($commentRepository, $userService);
+        $this->userService = new UserService(new UserRepository($db));
     
 
         // Initialize the CocktailService with services and repositories

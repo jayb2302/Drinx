@@ -11,9 +11,7 @@ $steps = $steps ?? [];
 $ingredients = $ingredients ?? [];
 $categories = $categories ?? [];
 $units = $units ?? [];
-
 $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
-
 ?>
 <?php if (isset($_SESSION['errors'])): ?>
     <div class="error-messages">
@@ -33,6 +31,7 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
 <div class="wrapper">
     <!-- Cocktail Details -->
     <div class="recipeContainer">
+        <!-- Category and Tags -->
         <div class="orderby">
             <p class="tag font-semibold"><?= htmlspecialchars($category['category_name'] ?? 'Unknown') ?></p>
             <p class="tag text-lg font-semibold">
@@ -40,6 +39,7 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
             </p>
         </div>
 
+        <!-- Cocktail Image -->
         <div class="cocktailImage">
             <?php if ($cocktail->getImage()): ?>
                 <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>"
@@ -53,7 +53,7 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
         <div class="like-section">
             <?php if ($loggedInUserId): ?>
                 <button class="like-button"
-                 data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
+                    data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
                     data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
                     <span class="like-icon">
                         <?= $cocktail->hasLiked ? '❤️' : '🤍' ?>
@@ -65,10 +65,12 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
             <?php endif; ?>
             <!-- Display the like count -->
         </div>
-        <h1 class="title"><?= htmlspecialchars($cocktail->getTitle() ?? 'Untitled') ?></h1>
 
+        <!-- Cocktail Title and Description -->
+        <h1 class="title"><?= htmlspecialchars($cocktail->getTitle() ?? 'Untitled') ?></h1>
         <p><?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?></p>
 
+        <!-- Ingredients -->
         <h2 class="text-2xl font-semibold mt-6 mb-2">Ingredients</h2>
         <ul class="list-disc ml-5">
             <?php if (!empty($ingredients)): ?>
@@ -83,7 +85,7 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
                 <li>No ingredients listed for this cocktail.</li>
             <?php endif; ?>
         </ul>
-
+        <!-- Preparation Steps -->
         <h2 class="text-2xl font-semibold mt-6 mb-2">Preparation Steps</h2>
         <ol class="list-decimal ml-5">
             <?php if (!empty($steps)): ?>
@@ -96,10 +98,9 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
         </ol>
     </div>
 
-    <!-- Edit Button -->
+    <!-- Edit and Delete Buttons -->
     <?php if (AuthController::isLoggedIn() && ($currentUser->canEditCocktail($cocktail->getUserId()) || AuthController::isAdmin())): ?>
         <button id="editCocktailButton" class="text-blue-500 hover:underline">Edit Cocktail</button>
-        <!-- Delete Button -->
         <form action="/cocktails/delete/<?= $cocktail->getCocktailId() ?>" method="post"
             onsubmit="return confirm('Are you sure you want to delete this cocktail?');">
             <button type="submit" class="text-red-500 hover:underline">Delete Cocktail</button>
@@ -114,93 +115,84 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
         ?>
     </div>
 
-    <!-- Display Comments Section -->
-    <h2 class="text-2xl font-semibold mt-6 mb-2">Comments</h2>
-    <div class="comments-section">
-        <?php if (!empty($comments)): ?>
-            <?php foreach ($comments as $comment): ?>
-                <div class="comment-box">
-                    <div class="comment">
-                        <p><strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong></p>
-                        <p><?= htmlspecialchars($comment->getCommentText() ?? 'No comment text available') ?></p>
-                        <p class="comment-date"><small>Posted on
-                                <?= htmlspecialchars($comment->getCreatedAt() ?? 'Unknown date') ?></small></p>
-                        <!-- Dots Menu -->
-                        <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $comment->getUserId() || AuthController::isAdmin())): ?>
-                            <div class="dots-menu">
-                                <button class="dots-button">⋮</button>
-                                <div class="menu hidden">
-                                    <a href="/comments/<?= $comment->getCommentId() ?>/edit" class="menu-item">Edit</a>
-                                    <form action="/comments/<?= $comment->getCommentId() ?>/delete" method="POST"
-                                        onsubmit="return confirm('Are you sure you want to delete this comment?');">
-                                        <button type="submit" class="menu-item">Delete</button>
-                                    </form>
-                                </div>
-                            </div>
+    <!-- Comments Section -->
+    <div class="commentsSection">
+        <h2 class="text-2xl font-semibold mt-6 mb-2">Comments</h2>
+        <?php foreach ($comments as $comment): ?>
+            <div class="commentBox">
+                <div class="comment">
+                    <div class="">
+                        <?php if ($comment->getProfilePicture()): ?>
+                            <img class="creatorPicture" src="<?= asset('/../uploads/users/' . htmlspecialchars($comment->getProfilePicture())); ?>"
+                                alt="Profile picture of <?= htmlspecialchars($comment->getUsername()); ?>" >
+                        <?php else: ?>
+                            <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture" class="creatorPicture">
                         <?php endif; ?>
                     </div>
+                    <p><strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong></p>
+                    <p><?= htmlspecialchars($comment->getCommentText() ?? 'No comment text available') ?></p>
+                    <p class="comment-date"><small><?= htmlspecialchars($comment->getCreatedAt() ?? 'Unknown date') ?></small></p>
 
+                    <!-- Dots Menu for Edit/Delete -->
+                    <?php if ($_SESSION['user']['id'] === $comment->getUserId() || AuthController::isAdmin()): ?>
+                        <div class="dotsMenu">
+                            <button class="dotsButton">⋮</button>
+                            <div class="menu hidden">
+                                <a href="/cocktails/<?= $comment->getCocktailId() ?>/comments/<?= $comment->getCommentId() ?>/edit" class="menu-item">🖊️</a>
+                                <form action="/comments/<?= $comment->getCommentId() ?>/delete" method="POST">
+                                    <button type="submit" class="menu-item">🗑️</button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                     <!-- Replies Section -->
                     <?php if (!empty($comment->replies)): ?>
-                        <div class="replies-section" style="margin-left: 20px;"> <!-- Indentation for replies -->
+                        <div class="repliesSection" style="margin-left: 20px;">
                             <?php foreach ($comment->replies as $reply): ?>
                                 <div class="reply">
                                     <p><strong><?= htmlspecialchars($reply->getUsername() ?? 'Unknown User') ?>:</strong></p>
                                     <p><?= htmlspecialchars($reply->getCommentText() ?? 'No reply text available') ?></p>
-                                    <p class="comment-date"><small>Posted on
-                                        <?= htmlspecialchars($reply->getCreatedAt() ?? 'Unknown date') ?></small>
-                                    </p>
+                                    <p class="comment-date"><small>Posted on <?= htmlspecialchars($reply->getCreatedAt() ?? 'Unknown date') ?></small></p>
+    
+                                    <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $reply->getUserId() || AuthController::isAdmin())): ?>
+                                        <form action="/comments/<?= $reply->getCommentId() ?>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this reply?');">
+                                            <button type="submit" class="menu-item">🗑️</button>
+                                        </form>
+                                    <?php endif; ?>
                                 </div>
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
-
+    
+                    <!-- Reply Form -->
                     <?php if (AuthController::isLoggedIn()): ?>
-                        <!-- Show Add Comment Form if user is logged in and has permission to comment -->
-                        <?php if ($currentUser->canComment()): ?>
-                            <h3>Add a New Comment</h3>
-                            <form
-                                action="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>/comments"
-                                method="POST">
-                                <textarea name="comment" placeholder="Write your comment here..." required></textarea>
-                                <input type="hidden" name="parent_comment_id" value="">
+                        <button class="reply-button" data-comment-id="<?= $comment->getCommentId() ?>">Reply</button>
+                        <div id="reply-form-<?= $comment->getCommentId() ?>" class="reply-form hidden">
+                            <form action="/comments/<?= $comment->getCommentId() ?>/reply" method="POST">
+                                <textarea name="comment" placeholder="Write your reply here..." required></textarea>
+                                <input type="hidden" name="parent_comment_id" value="<?= $comment->getCommentId() ?>">
+                                <input type="hidden" name="cocktail_id" value="<?= $cocktailId ?>">
                                 <input type="hidden" name="cocktailTitle" value="<?= htmlspecialchars($cocktail->getTitle()) ?>">
-                                <button type="submit">Submit</button>
+                                <button type="submit">Submit Reply</button>
                             </form>
-                        <?php else: ?>
-                            <p>Your account is currently suspended. You cannot comment on cocktails.</p>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <!-- Hide the form and provide a single message for adding comments if not logged in -->
-                        
+                        </div>
                     <?php endif; ?>
                 </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p>No comments yet. Be the first to comment!</p>
-        <?php endif; ?>
-    </div>
 
-    <!-- Add Top-level Comment Form -->
-    <?php if (AuthController::isLoggedIn()): ?>
-        <!-- Show Add Comment Form if user is logged in and has permission to comment -->
-        <?php if ($currentUser->canComment()): ?>
-            <h3>Add a New Comment</h3>
-            <form
-                action="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>/comments"
-                method="POST">
-                <textarea name="comment" placeholder="Write your comment here..." required></textarea>
-                <input type="hidden" name="parent_comment_id" value="">
+            </div>
+        <?php endforeach; ?>
+
+        <!-- Top-level Comment Form -->
+        <?php if (AuthController::isLoggedIn() && $currentUser->canComment()): ?>
+            <h3 class="comment-heading">Add a New Comment</h3>
+            <form action="/cocktails/<?= $cocktail->getCocktailId() ?>-<?= urlencode($cocktail->getTitle()) ?>/comments" method="POST"> <textarea name="comment" placeholder="Write your comment here..." required></textarea>
                 <input type="hidden" name="cocktailTitle" value="<?= htmlspecialchars($cocktail->getTitle()) ?>">
                 <button type="submit">Submit</button>
             </form>
         <?php else: ?>
-            <p>Your account is currently suspended. You cannot comment on cocktails.</p>
+            <p class="login-prompt">Please <a href="/login">log in</a> to add a comment.</p>
         <?php endif; ?>
-    <?php else: ?>
-        <!-- Show message for visitors who are not logged in -->
-        <p>Please <a href="/login">log in</a> to add a comment.</p>
-    <?php endif; ?>
+    </div>
 </div>
 
 <?php include __DIR__ . '/../layout/footer.php'; ?>
