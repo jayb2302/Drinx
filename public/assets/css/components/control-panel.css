@@ -1,5 +1,5 @@
 /* Control Panel Styling */
-.control-panel {
+.controlPanel {
     background-color: var(--nav-background);
     color: var(--text-primary);
     padding: 1.5rem;
