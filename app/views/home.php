@@ -15,6 +15,8 @@ $matches = [];
 $isEditing = preg_match('#^/cocktails/(\d+)/edit$#', $currentPath, $matches);
 $cocktailId = $matches[1] ?? null;
 ?>
+
+<!-- Display sticky cocktail if available -->
 <?php if (isset($stickyCocktail) && is_object($stickyCocktail)): ?>
     <div class="stickyContainer">
         <div class="stickyCard">
@@ -32,7 +34,9 @@ $cocktailId = $matches[1] ?? null;
 <?php else: ?>
     <p>No sticky cocktail selected or invalid data.</p>
 <?php endif; ?>
+
 <?php include __DIR__ . '/about/about.php'; ?>
+
 <?php
 // Admin toggle for user management
 if ($_SESSION['user']['is_admin'] ?? false): ?>
@@ -66,6 +70,15 @@ if ($currentPath === '/login') {
 } elseif ($currentPath === '/random') {
     include __DIR__ . '/cocktails/random.php'; // Show random cocktail
 } else {
+    // Display category links and cocktail list
+    echo '<div class="category-sidebar">';
+    echo '<h3>Categories</h3>';
+    foreach ($categories as $category) {
+        $categoryName = urlencode(strtolower(str_replace(' ', '-', $category['name'])));
+        echo "<a href=\"/category=$categoryName\">{$category['name']}</a><br>";
+    }
+    echo '</div>';
+
     echo "<h2>All Cocktails</h2>";
     echo '<div class="sort-options">';
     echo '<a href="/recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Recent</a>';
@@ -74,10 +87,10 @@ if ($currentPath === '/login') {
     echo ' | ';
     echo '<a href="/hot" class="' . (($_GET['sort'] ?? '') === 'hot' ? 'active' : '') . '">Hot</a>';
     echo '</div>';
+
     echo '<div class="wrapper">';
     include __DIR__ . '/cocktails/index.php';
     echo '</div>';
-
 }
 ?>
 

@@ -185,6 +185,11 @@ class CocktailService
     public function getHotCocktails() {
         return $this->cocktailRepository->getAllHotCocktails();
     }
+    public function getCocktailsByCategory($categoryId)
+{
+    return $this->cocktailRepository->getCocktailsByCategory($categoryId);
+}
 
-    
+
+
 }

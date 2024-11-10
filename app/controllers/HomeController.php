@@ -19,20 +19,23 @@ class HomeController
     private $ingredientService;
     private $likeService;
     private $userService;
+    private $categoryRepository;
 
     public function __construct(
         CocktailService $cocktailService,
         IngredientService $ingredientService,
         LikeService $likeService,
-        UserService $userService
+        UserService $userService,
+        CategoryRepository $categoryRepository
     ) {
         $this->cocktailService = $cocktailService;
         $this->ingredientService = $ingredientService;
         $this->likeService = $likeService;
         $this->userService = $userService;
+        $this->categoryRepository = $categoryRepository;
     }
 
-    public function index()
+    public function index($categoryName = null, $sortOption = 'recent')
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $isAdmin = $_SESSION['user']['is_admin'] ?? false;
@@ -53,7 +56,9 @@ class HomeController
         } else {
             $cocktails = $this->cocktailService->getCocktailsSortedByDate();
         }
- 
+
+        // Fetch other necessary data
+        $categories = $this->categoryRepository->getAllCategories();
         $randomCocktail = $this->cocktailService->getRandomCocktail();
         $stickyCocktail = $this->cocktailService->getStickyCocktail();
         // Sanitize and determine if we should show a specific form
@@ -74,9 +79,42 @@ class HomeController
         // Fetch users if admin is logged in
         $users = ($isAdmin) ? $this->userService->getAllUsersWithStatus() : null;
 
-        // Pass the necessary data to the view
+        // Load the view
         require_once __DIR__ . '/../views/home.php';
     }
+
+    public function filterByCategory($categoryName)
+    {
+        // Decode the category name
+        $categoryName = str_replace('-', ' ', urldecode($categoryName));
+
+        // Fetch category by name to get its ID
+        $categories = $this->categoryRepository->getAllCategories();
+        $categoryId = null;
+
+        foreach ($categories as $category) {
+            if (strtolower($category['name']) === strtolower($categoryName)) {
+                $categoryId = $category['category_id'];
+                break;
+            }
+        }
+
+        // If no matching category is found, display an error or redirect
+        if ($categoryId === null) {
+            http_response_code(404);
+            echo "Category not found";
+            return;
+        }
+
+        // Fetch cocktails by category ID and include sticky cocktail for display
+        $cocktails = $this->cocktailService->getCocktailsByCategory($categoryId);
+        $stickyCocktail = $this->cocktailService->getStickyCocktail();
+        $categories = $this->categoryRepository->getAllCategories();
+
+        // Pass data to the view
+        require_once __DIR__ . '/../views/home.php';
+    }
+
     public function setSticky()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -105,7 +143,9 @@ class HomeController
             http_response_code(405); // Method not allowed
         }
     }
-    public function about() {
+
+    public function about()
+    {
         require_once __DIR__ . '/../views/about.php';
     }
 }
