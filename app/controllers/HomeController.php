@@ -85,35 +85,41 @@ class HomeController
 
     public function filterByCategory($categoryName)
     {
-        // Decode the category name
+        // Process category name and get category ID
         $categoryName = str_replace('-', ' ', urldecode($categoryName));
-
-        // Fetch category by name to get its ID
         $categories = $this->categoryRepository->getAllCategories();
         $categoryId = null;
-
+    
         foreach ($categories as $category) {
             if (strtolower($category['name']) === strtolower($categoryName)) {
                 $categoryId = $category['category_id'];
                 break;
             }
         }
-
-        // If no matching category is found, display an error or redirect
+    
         if ($categoryId === null) {
             http_response_code(404);
             echo "Category not found";
             return;
         }
-
-        // Fetch cocktails by category ID and include sticky cocktail for display
+    
         $cocktails = $this->cocktailService->getCocktailsByCategory($categoryId);
+    
+        // Return only cocktail content if the request is AJAX
+        if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
+            ob_start();
+            include __DIR__ . '/../views/cocktails/index.php';
+            $content = ob_get_clean();
+            echo json_encode(['content' => $content]);
+            return;
+        }
+    
+        // Load the full page for non-AJAX requests
         $stickyCocktail = $this->cocktailService->getStickyCocktail();
-        $categories = $this->categoryRepository->getAllCategories();
-
-        // Pass data to the view
         require_once __DIR__ . '/../views/home.php';
     }
+
+
 
     public function setSticky()
     {

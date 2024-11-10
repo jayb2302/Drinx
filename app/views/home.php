@@ -71,22 +71,8 @@ if ($currentPath === '/login') {
     include __DIR__ . '/cocktails/random.php'; // Show random cocktail
 } else {
     // Display category links and cocktail list
-    echo '<div class="category-sidebar">';
-    echo '<h3>Categories</h3>';
-    foreach ($categories as $category) {
-        $categoryName = urlencode(strtolower(str_replace(' ', '-', $category['name'])));
-        echo "<a href=\"/category=$categoryName\">{$category['name']}</a><br>";
-    }
-    echo '</div>';
-
-    echo "<h2>All Cocktails</h2>";
-    echo '<div class="sort-options">';
-    echo '<a href="/recent" class="' . (($_GET['sort'] ?? 'recent') === 'recent' ? 'active' : '') . '">Recent</a>';
-    echo ' | ';
-    echo '<a href="/popular" class="' . (($_GET['sort'] ?? '') === 'popular' ? 'active' : '') . '">Popular</a>';
-    echo ' | ';
-    echo '<a href="/hot" class="' . (($_GET['sort'] ?? '') === 'hot' ? 'active' : '') . '">Hot</a>';
-    echo '</div>';
+    include __DIR__ . '/cocktails/categories.php';
+    include __DIR__ . '/cocktails/sorting.php';
 
     echo '<div class="wrapper">';
     include __DIR__ . '/cocktails/index.php';

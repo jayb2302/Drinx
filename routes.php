@@ -76,4 +76,4 @@ $router->add('GET', '#^/popular$#', [HomeController::class, 'index']);
 $router->add('GET', '#^/hot$#', [HomeController::class, 'index']);
 
 // Category routes
-$router->add('GET', '#^/category=([a-zA-Z0-9-]+)$#', [HomeController::class, 'filterByCategory']);
+$router->add('GET', '#^/category/([a-zA-Z0-9-]+)$#', [HomeController::class, 'filterByCategory']);
