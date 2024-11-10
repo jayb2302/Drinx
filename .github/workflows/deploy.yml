@@ -29,8 +29,16 @@ jobs:
       run: |
         echo "Uploading files via SFTP..."
         sshpass -p "${{ secrets.SFTP_PASSWORD }}" sftp -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} <<EOF
+        # Upload the app, public, database, and .env
         put -r ./public/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/public
         put -r ./app/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/app
         put -r ./database/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/database
         put .env /customers/2/0/6/c0w7in5de/webroots/e251ef19/.env
+
+        # Upload router.php and routes.php explicitly
+        put ./router.php /customers/2/0/6/c0w7in5de/webroots/e251ef19/router.php
+        put ./routes.php /customers/2/0/6/c0w7in5de/webroots/e251ef19/routes.php
+
+        # Upload the .htaccess file explicitly
+        put ./.htaccess /customers/2/0/6/c0w7in5de/webroots/e251ef19/.htaccess
         EOF
