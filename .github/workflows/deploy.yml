@@ -24,10 +24,14 @@ jobs:
         echo "LIVE_DB_PASSWORD=${{ secrets.LIVE_DB_PASSWORD }}" >> .env
         echo "ENV=live" >> .env
 
+    - name: Create directories on the remote server
+      run: |
+        sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} "mkdir -p /customers/2/0/6/c0w7in5de/webroots/e251ef19/public /customers/2/0/6/c0w7in5de/webroots/e251ef19/app /customers/2/0/6/c0w7in5de/webroots/e251ef19/database"
+
     - name: Upload files via SFTP
       run: |
         echo "Uploading files via SFTP..."
-        sftp -o "PasswordAuthentication=yes" -o "StrictHostKeyChecking=no" ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} <<EOF
+        sftp -o StrictHostKeyChecking=no -o PasswordAuthentication=yes ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} <<EOF
         put -r ./public/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/public
         put -r ./app/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/app
         put -r ./database/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/database
