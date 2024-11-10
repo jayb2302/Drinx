@@ -1,9 +1,8 @@
 /* Control Panel Styling */
-.control-panel {
-    background-color: var(--card-background);
+.controlPanel {
+    background-color: var(--nav-background);
     color: var(--text-primary);
-    padding: 1.5rem;
-    border-radius: 8px;
+    padding: .5rem 1rem;
     font-family: var(--font-body);
 }
 

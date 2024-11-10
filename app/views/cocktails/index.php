@@ -1,6 +1,8 @@
 <?php
 // Include the header
-include_once __DIR__ . '/../layout/header.php';
+if (isset($isStandalone) && $isStandalone) {
+    include_once __DIR__ . '/../layout/header.php';
+}
 $metaTitle = "Cocktails";
 $pageTitle = "Cocktails";
 
@@ -28,7 +30,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $creatorPicture = htmlspecialchars($creator->getProfilePicture() ?? 'user-default.svg');
         ?>
 
-        <div class="container">
+        <div class="cocktailContainer">
             <article class="cocktailCard">
                 <!-- User Info Section -->
                 <div class="creatorInfo">

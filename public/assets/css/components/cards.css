@@ -1,28 +1,36 @@
 
 .cocktailGrid {
-    display: flex
+    display: flex;
+   
+}
+.cocktailContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    width: 100%;
+    background-color: var(--card-background);
+    padding: .1rem .2rem;
 }
  .cocktailCard {
-    width: 300px; /* Set a fixed width for all cards */
-    height: 45vh; /* Set a fixed height for all cards */
+    width: 95%; 
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
     display: flex;
     flex-direction: column;
     background-color: var(--card-background);
+    position: relative;
 }
 .cocktailInfo {
     display: flex;
-    justify-content: center;
+    justify-content:start;
     padding: 1rem;
 }
 .buttonWrapper {
     display: flex;
-    justify-content: flex-end;
     position: absolute;
-    right: 0;
-    top: 0;
+    justify-content: end;
     width: 100%;
 }
 .cocktailImage {
@@ -32,8 +40,9 @@
     border-radius: 6px 6px 0 0;
 }
 .creatorInfo {
-    display: flex;
+    position: relative;
     gap: 1rem;
+    display: flex;
     padding: .5rem;
 }
 .creatorPicture {
@@ -48,7 +57,6 @@
 }
 
 .cocktailInfo {
-    flex-grow: 1;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -80,9 +88,6 @@
     display: flex;
     align-items: start;
     flex-direction: column;
-    position: absolute;
-    top: 0;
-    right: 0;
 }
 
 .stickyCard img {
@@ -96,7 +101,7 @@
     font-size: 1rem;
     padding: .5rem ;
     color: var(--accent-primary);
-    position: absolute;
+    
     top: 0;
 }
 
@@ -115,4 +120,9 @@
     height: 20vh;
     justify-content: center;
     overflow: hidden;
+}
+
+.recipeCard h3{
+    color: var(--accent-primary);
+
 }

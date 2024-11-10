@@ -1,4 +1,4 @@
-<div class="control-panel">
+<div class="controlPanel">
     <?php if ($userProfile): ?>
         <!-- Profile Header with Display Name and Logout -->
         <?php
@@ -58,6 +58,6 @@
             <?php endif; ?>
         </div>
     <?php else: ?>
-        <p>User profile not available.</p>
+        <!-- <p>User profile not available.</p> -->
     <?php endif; ?>
 </div>

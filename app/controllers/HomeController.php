@@ -39,6 +39,7 @@ class HomeController
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $isAdmin = $_SESSION['user']['is_admin'] ?? false;
+        $isStandalone = false; // When rendering the homepage, set as false
 
         // Check if there's a sort option in the query, default to 'recent'
         $sortOption = $_GET['sort'] ?? 'recent';
