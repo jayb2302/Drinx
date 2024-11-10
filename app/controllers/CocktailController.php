@@ -20,6 +20,7 @@ class CocktailController
     private $commentService;
     private $likeService;
 
+
     public function __construct()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -38,12 +39,14 @@ class CocktailController
         $commentRepository = new CommentRepository($db);
         $likeRepository = new LikeRepository($db);
         $this->likeService = new LikeService(new LikeRepository($db));
+        $userRepository = new UserRepository($db);
 
-        // Initialize services
+        // Initialize services    
         $unitRepository = new UnitRepository($db);
         $this->ingredientService = new IngredientService($ingredientRepository, $unitRepository);
         $this->stepService = new StepService($stepRepository);
         $this->commentService = new CommentService($commentRepository);
+    
 
         // Initialize the CocktailService with services and repositories
         $this->cocktailService = new CocktailService(
@@ -53,7 +56,8 @@ class CocktailController
             $this->stepService,
             $tagRepository,
             $this->difficultyRepository,
-            $likeRepository
+            $likeRepository,
+            $userRepository
         );
     }
 
