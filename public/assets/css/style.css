@@ -78,13 +78,13 @@
     border-radius: 5px;
     color: var(--error);
     font-size: 0.9rem;
+    background-color: var(--nav-background);
   }
   .success {
     color: var(--success);
   }
   main {
    display: flex;
-    padding: 20px;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);

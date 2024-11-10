@@ -30,7 +30,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $creatorPicture = htmlspecialchars($creator->getProfilePicture() ?? 'user-default.svg');
         ?>
 
-        <div class="container">
+        <div class="cocktailContainer">
             <article class="cocktailCard">
                 <!-- User Info Section -->
                 <div class="creatorInfo">

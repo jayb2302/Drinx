@@ -2,7 +2,7 @@
 .controlPanel {
     background-color: var(--nav-background);
     color: var(--text-primary);
-    padding: 1.5rem;
+    padding: .5rem 1rem;
     font-family: var(--font-body);
 }
 
