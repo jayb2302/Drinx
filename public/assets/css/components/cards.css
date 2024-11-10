@@ -80,9 +80,6 @@
     display: flex;
     align-items: start;
     flex-direction: column;
-    position: absolute;
-    top: 0;
-    right: 0;
 }
 
 .stickyCard img {
@@ -96,7 +93,7 @@
     font-size: 1rem;
     padding: .5rem ;
     color: var(--accent-primary);
-    position: absolute;
+    
     top: 0;
 }
 
