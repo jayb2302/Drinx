@@ -1,0 +1,15 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    position: relative; 
+    background-color: var(--nav-background); 
+    padding: .5rem 5rem;
+    color: var(--text-secondary);
+    
+}
+
+.nav-links {
+    display: flex; 
+ 
+}

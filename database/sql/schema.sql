@@ -68,7 +68,7 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,  -- Storing hashed passwords
   `account_status_id` int NOT NULL,
   `join_date` timestamp DEFAULT CURRENT_TIMESTAMP,
-  `last_login` timestamp DEFAULT NULL,
+  `last_login` timestamp NULL,
   `is_admin` BOOLEAN DEFAULT 0,
   FOREIGN KEY (`account_status_id`) REFERENCES `account_status`(`account_status_id`)
 );
@@ -148,7 +148,7 @@ CREATE TABLE `comments` (
   `comment_id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int,
   `cocktail_id` int,
-  `parent_comment_id` int,
+  `parent_comment_id` int DEFAULT NULL, -- Allow NULL for top-level comments
   `comment` text NOT NULL,
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE,
@@ -187,3 +187,42 @@ CREATE TABLE `follows` (
   FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE,
   FOREIGN KEY (`followed_user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE
 );
+
+
+-- CREATE VIEW user_stats AS
+-- SELECT 
+--     u.user_id,
+--     u.username,
+--     COALESCE(ua.cocktails_uploaded, 0) AS total_recipes,
+--     COALESCE(ua.likes_received, 0) AS likes_received,
+--     COALESCE(comment_count.comments_received, 0) AS comments_received,
+--     COALESCE(ua.points, 0) AS points,
+--     r.rank_name
+-- FROM 
+--     users u
+-- LEFT JOIN (
+--     SELECT 
+--         u.user_id,
+--         COUNT(c.cocktail_id) AS cocktails_uploaded,
+--         COUNT(DISTINCT l.like_id) AS likes_received,
+--         (COUNT(c.cocktail_id) * 10 + COUNT(l.like_id) * 2) AS points
+--     FROM users u
+--     LEFT JOIN cocktails c ON u.user_id = c.user_id
+--     LEFT JOIN likes l ON l.cocktail_id = c.cocktail_id
+--     GROUP BY u.user_id
+-- ) ua ON u.user_id = ua.user_id
+-- LEFT JOIN (
+--     SELECT 
+--         c.user_id, 
+--         COUNT(*) AS comments_received
+--     FROM 
+--         cocktails c
+--     LEFT JOIN 
+--         comments cm ON cm.cocktail_id = c.cocktail_id
+--     GROUP BY 
+--         c.user_id
+-- ) comment_count ON u.user_id = comment_count.user_id
+-- LEFT JOIN 
+--     user_ranks r ON ua.points >= r.min_points
+-- ORDER BY 
+--     ua.points DESC;

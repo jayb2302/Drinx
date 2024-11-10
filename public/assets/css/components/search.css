@@ -1,0 +1,31 @@
+.search-container {
+    position: relative; 
+}
+
+#searchInput {
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--card-background); 
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    z-index: 1000; 
+    width: fit;
+    display: none;
+}
+
+.search-results div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.search-results div:hover {
+    background-color: var(--accent-hover);
+}
