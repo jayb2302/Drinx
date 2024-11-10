@@ -44,7 +44,6 @@ $cocktailId = $matches[1] ?? null;
                 <?php include __DIR__ . '/admin/manage_users.php'; ?>
             </div>
         <?php endif; ?>
-            <a href="/about">About</a>
         <!-- Logic to include forms based on the path -->
         <?php
         if ($currentPath === '/login') {
@@ -55,8 +54,7 @@ $cocktailId = $matches[1] ?? null;
             // Show add cocktail form if the current path is /cocktails/add
         } else if ($currentPath === '/about') {
             include __DIR__ . '/about/about.php'; // Show about page
-        }
-        elseif ($currentPath === '/cocktails/add') {
+        } elseif ($currentPath === '/cocktails/add') {
             include __DIR__ . '/cocktails/form.php'; // Show add cocktail form
             // Show edit cocktail form if we're editing a cocktail
         } elseif ($isEditing && isset($cocktailId)) {
@@ -66,19 +64,18 @@ $cocktailId = $matches[1] ?? null;
         } elseif ($currentPath === '/random') {
             include __DIR__ . '/cocktails/random.php'; // Show random cocktail
         } else {
-                   // Display category links and cocktail list
-    include __DIR__ . '/cocktails/categories.php';
-    include __DIR__ . '/cocktails/sorting.php';
+            // Display category links and cocktail list
+            include __DIR__ . '/cocktails/categories.php';
+            include __DIR__ . '/cocktails/sorting.php';
             echo '<div class="wrapper">';
             include __DIR__ . '/cocktails/index.php';
             echo '</div>';
-
         }
         ?>
     </main>
     <aside class="control-panel">
-        
-        <?php 
+        <?php include __DIR__ . '/about/about.php'; ?>
+        <?php
         $userProfile = $userProfile ?? null;
         include __DIR__ . '/layout/control_panel.php'; ?>
 

@@ -1,26 +1,26 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const cocktailContainer = document.querySelector(".about-container");
+    const cocktailContainer = document.querySelector(".aboutContainer");
     if (!cocktailContainer) {
-        console.warn("No element with class 'about-container' found.");
+        console.warn("No element with class 'aboutContainer' found.");
         return; // Exit if the container is not present
     }
     // Update the HTML content of the cocktail section with cocktail data
     function updateCocktailContent({ title, image, description, id }) {
         cocktailContainer.innerHTML = `
-            <h1 class="about-heading">Welcome to Drinx,</h1>
-            <h3 class="about-intro">The cocktail library that’s got social flair!</h3>
-            <p class="about-description">Here, creativity meets community as people shake, stir, and share their best recipes. Drinx is your go-to spot to show off your creations, swap tips, and find your next favorite drink. Cheers to your next masterpiece — let’s make it one for the books!</p>
-            <div class="recipe-container">
-                <div class="recipe-card">
-                    <h3>Random Cocktail: ${title}</h3>
+            <h1 class="aboutHeading">Welcome to Drinx,</h1>
+            <h3 class="aboutIntro">The cocktail library that’s got social flair!</h3>
+            <p class="aboutDescription">Here, creativity meets community as people shake, stir, and share their best recipes. Drinx is your go-to spot to show off your creations, swap tips, and find your next favorite drink. Cheers to your next masterpiece — let’s make it one for the books!</p>
+            <div class="recipeContainer">
+                <div class="recipeCard">
+                    <h3>${title}</h3>
                     <div>
                         <img src="/uploads/cocktails/${image}" alt="Random Cocktail Image" class="cocktailImage">
                         <p>${description}</p>
-                        <a href="/cocktails/${id}-${encodeURIComponent(title)}" class="btn btn-primary">View Recipe</a>
+                        <a href="/cocktails/${id}-${encodeURIComponent(title)}" class="viewRecipe">View Recipe</a>
                     </div>
                 </div>
                 <div class="randomButton">
-                    <a href="#" class="random-recipe-button btn btn-secondary">Get Another Random Cocktail</a>
+                    <a href="#" class="randomRecipeButton">Shake It Up!</a>
                 </div>            
             </div>
         `;
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Attach event listener to fetch a new cocktail when button is clicked
     function attachButtonListener() {
         cocktailContainer.addEventListener("click", function (event) {
-            if (event.target.classList.contains("random-recipe-button")) {
+            if (event.target.classList.contains("randomRecipeButton")) {
                 event.preventDefault();
                 fetchRandomCocktail();
             }
