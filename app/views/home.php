@@ -84,6 +84,9 @@ $cocktailId = $matches[1] ?? null;
         <?php
         $userProfile = $userProfile ?? null;
         include __DIR__ . '/layout/control_panel.php'; ?>
+
+
+
     </aside>
 </div>
 <?php include __DIR__ . '/layout/footer.php'; ?>

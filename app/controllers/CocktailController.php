@@ -73,6 +73,7 @@ class CocktailController
     // List all cocktails (public access)
     public function index()
     {
+        $isStandalone = true; // Set to true to indicate a standalone cocktails page
         $cocktails = $this->cocktailService->getAllCocktails();
         $categories = $this->cocktailService->getCategories();
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
