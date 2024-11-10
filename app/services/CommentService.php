@@ -2,10 +2,12 @@
 class CommentService
 {
     private $commentRepository;
+    private $userService;
 
-    public function __construct(CommentRepository $commentRepository)
+    public function __construct(CommentRepository $commentRepository, UserService $userService)
     {
         $this->commentRepository = $commentRepository;
+        $this->userService = $userService;
     }
     // Fetch a comment by its ID
     public function getCommentById($commentId)
@@ -19,16 +21,28 @@ class CommentService
         $comments = $this->commentRepository->getTopLevelCommentsByCocktailId($cocktailId);
 
         // For each top-level comment, fetch its replies and assign them
+       
         foreach ($comments as $comment) {
+            $userProfile = $this->userService->getUserWithProfile($comment->getUserId());
+            $comment->setProfilePicture($userProfile ? $userProfile->getProfilePicture() : 'user-default.svg');
+    
             $replies = $this->commentRepository->getRepliesByCommentId($comment->getCommentId());
-            $comment->replies = $replies; // Assign replies to the Comment object
+            foreach ($replies as $reply) {
+                $replyUserProfile = $this->userService->getUserWithProfile($reply->getUserId());
+                $reply->setProfilePicture($replyUserProfile ? $replyUserProfile->getProfilePicture() : 'user-default.svg');
+            }
+            $comment->replies = $replies;
         }
+
+    
+
 
         return $comments;
     }
 
     // Add a comment
-    public function addComment($userId, $cocktailId, $commentText, $parentCommentId = null) {
+    public function addComment($userId, $cocktailId, $commentText, $parentCommentId = null)
+    {
         return $this->commentRepository->addComment($userId, $cocktailId, $commentText, $parentCommentId);
     }
     // Delete a comment by its ID

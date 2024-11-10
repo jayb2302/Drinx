@@ -16,6 +16,7 @@ class CocktailService
     private $tagRepository;
     private $difficultyRepository;
     private $likeRepository;
+    private $userRepository;
 
     public function __construct(
         CocktailRepository $cocktailRepository,
@@ -24,7 +25,8 @@ class CocktailService
         StepService $stepService,
         TagRepository $tagRepository,
         DifficultyRepository $difficultyRepository,
-        LikeRepository $likeRepository
+        LikeRepository $likeRepository,
+        UserRepository $userRepository
     ) {
         $this->cocktailRepository = $cocktailRepository;
         $this->categoryRepository = $categoryRepository;
@@ -33,6 +35,7 @@ class CocktailService
         $this->tagRepository = $tagRepository;
         $this->difficultyRepository = $difficultyRepository;
         $this->likeRepository = $likeRepository;
+        $this->userRepository = $userRepository;
     }
 
     // Cocktail CRUD operations
