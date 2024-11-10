@@ -1,6 +1,8 @@
 <?php
 // Include the header
-include_once __DIR__ . '/../layout/header.php';
+if (isset($isStandalone) && $isStandalone) {
+    include_once __DIR__ . '/../layout/header.php';
+}
 $metaTitle = "Cocktails";
 $pageTitle = "Cocktails";
 
