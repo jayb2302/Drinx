@@ -20,13 +20,13 @@ document.querySelectorAll('.set-sticky').forEach(button => {
                 // Clear the 'active' class from all buttons
                 document.querySelectorAll('.set-sticky').forEach(btn => {
                     btn.classList.remove('active');
-                    btn.textContent = 'Sticky';
+                    btn.textContent = '📌';
                 });
 
                 // Update the clicked button to reflect the new sticky state
                 if (data.is_sticky) {
                     this.classList.add('active');
-                    this.textContent = 'Unstick';
+                    this.textContent = '📌';
                 }
 
                 // Update the sticky cocktail card
