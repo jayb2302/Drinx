@@ -182,8 +182,6 @@ class UserRepository
         return $user;
     }
 
-
-
     public function getUserStats($userId)
     {
         $stmt = $this->db->prepare("
@@ -218,10 +216,15 @@ class UserRepository
         }
         return null;
     }
-
-    public function searchUsers($query)
-    {
-        $stmt = $this->db->prepare("SELECT user_id, username FROM users WHERE username LIKE :query LIMIT 5");
+    public function searchUsers($query) {
+        $stmt = $this->db->prepare("
+            SELECT u.user_id, u.username, 
+                   COALESCE(p.profile_picture, 'user-default.svg') AS profile_picture
+            FROM users u
+            LEFT JOIN user_profile p ON u.user_id = p.user_id
+            WHERE u.username LIKE :query
+            LIMIT 5
+        ");
         $stmt->execute(['query' => '%' . $query . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return users as an associative array
     }
@@ -252,6 +255,24 @@ class UserRepository
         $stmt->bindParam(':followed_user_id', $followedUserId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
+    }
+
+    // Count the number of users a user is following
+    public function getFollowingCount($userId)
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM follows WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
+
+    // Count the number of followers a user has
+    public function getFollowersCount($userId)
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM follows WHERE followed_user_id = :user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
     }
 
     // Update a user's account status
@@ -297,4 +318,5 @@ class UserRepository
         $user->setAccountStatusName($result['account_status']);
         return $user;
     }
+
 }
