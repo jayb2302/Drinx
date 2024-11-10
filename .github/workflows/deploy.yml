@@ -1,0 +1,34 @@
+name: Deploy to One.com
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install sftp client
+      run: sudo apt-get install -y openssh-client
+
+    - name: Create .env file for live environment
+      run: |
+        echo "LIVE_DB_HOST=${{ secrets.LIVE_DB_HOST }}" > .env
+        echo "LIVE_DB_DATABASE=${{ secrets.LIVE_DB_DATABASE }}" >> .env
+        echo "LIVE_DB_USERNAME=${{ secrets.LIVE_DB_USERNAME }}" >> .env
+        echo "LIVE_DB_PASSWORD=${{ secrets.LIVE_DB_PASSWORD }}" >> .env
+        echo "ENV=live" >> .env
+
+    - name: Upload files via SFTP
+      run: |
+        sftp -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/customers/2/0/6/c0w7in5de/webroots/e251ef19/ <<EOF
+        put -r ./public /customers/2/0/6/c0w7in5de/webroots/e251ef19/public
+        put -r ./app /customers/2/0/6/c0w7in5de/webroots/e251ef19/app
+        put -r ./database /customers/2/0/6/c0w7in5de/webroots/e251ef19/database
+        put .env /customers/2/0/6/c0w7in5de/webroots/e251ef19/.env
+        EOF
