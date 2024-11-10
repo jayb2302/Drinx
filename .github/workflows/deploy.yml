@@ -27,8 +27,7 @@ jobs:
     - name: Upload files via SFTP
       run: |
         echo "Uploading files via SFTP..."
-        set -x  # Enable command tracing for better debugging
-        sftp -v -o StrictHostKeyChecking=no -o PasswordAuthentication=yes ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} <<EOF
+        sftp -o "PasswordAuthentication=yes" -o "StrictHostKeyChecking=no" ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} <<EOF
         put -r ./public/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/public
         put -r ./app/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/app
         put -r ./database/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/database
