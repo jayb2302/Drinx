@@ -18,6 +18,7 @@ $difficultyRepository = new DifficultyRepository($db);
 $unitRepository = new UnitRepository($db);
 $likeRepository = new LikeRepository($db);
 $commentRepository = new CommentRepository($db);
+$userRepository = new UserRepository($db);
 
 // Instantiate the services
 $ingredientService = new IngredientService($ingredientRepository, $unitRepository);
@@ -34,7 +35,8 @@ $cocktailService = new CocktailService(
     $stepService,
     $tagRepository,
     $difficultyRepository,
-    $likeRepository
+    $likeRepository,
+    $userRepository
 );
 
 // Instantiate the HomeController with the necessary services
