@@ -17,7 +17,7 @@ $currentUser = $authController->getCurrentUser();
     </div>
     <?php if (!isset($_SESSION['user'])): ?>
         <a href="/login">Login</a>
-        <a href="/register">Register</a>
+        
     <?php else: ?>
         <!-- Check if first_name and last_name exist, otherwise use the username -->
         <?php
@@ -31,15 +31,14 @@ $currentUser = $authController->getCurrentUser();
             $displayName = $username;
         }
         ?>
-        <div class="nav-links">
+        <!-- <div class="nav-links">
             <a href="/logout">Logout</a>
-        </div>
+        </div> -->
 
-        <span>
+        <!-- <span>
             <a href="/profile/<?php echo htmlspecialchars($username); ?>">
                 <div class="profile-picture">
                     <?php
-
                     $profilePicture = $_SESSION['user']['profile_picture'] ?? null; // Adjust based on your session structure
                     if ($profilePicture): ?>
                         <img src="<?= asset('/../uploads/users/' . htmlspecialchars($profilePicture)); ?>"
@@ -49,6 +48,6 @@ $currentUser = $authController->getCurrentUser();
                     <?php endif; ?>
                 </div>
             </a>
-        </span>
+        </span> -->
     <?php endif; ?>
 </nav>

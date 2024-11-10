@@ -7,7 +7,8 @@ class Comment {
     private $parentCommentId;
     private $commentText;
     private $createdAt;
-    public $replies;
+    private $profilePicture;
+    public $replies = [];
 
     public function __construct($commentId, $userId, $username, $cocktailId, $parentCommentId, $commentText, $createdAt) {
         $this->commentId = $commentId;
@@ -17,7 +18,14 @@ class Comment {
         $this->parentCommentId = $parentCommentId;
         $this->commentText = $commentText;
         $this->createdAt = $createdAt;
+        $this->profilePicture = 'user-default.svg';
         $this->replies = []; 
+    }
+    public function getProfilePicture() {
+        return $this->profilePicture;
+    }
+    public function setProfilePicture($profilePicture) {
+        $this->profilePicture = $profilePicture;
     }
 
     // Getters

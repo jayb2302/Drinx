@@ -14,8 +14,10 @@ class User
     private $lastName;
     private $profilePicture;
     private $bio;
+    private $rank;
 
-    // Getters and Setters
+    private $followersCount;
+    private $followingCount;
 
     // ID
     public function getId()
@@ -184,4 +186,30 @@ class User
     {
         $this->bio = $bio;
     }
+
+    public function getRank() {
+        return $this->rank;  
+    }
+
+    // Following methods
+    public function getFollowersCount()
+    {
+        return $this->followersCount;
+    }
+
+    public function setFollowersCount($count)
+    {
+        $this->followersCount = $count;
+    }
+
+    public function getFollowingCount()
+    {
+        return $this->followingCount;
+    }
+
+    public function setFollowingCount($count)
+    {
+        $this->followingCount = $count;
+    }
+
 }

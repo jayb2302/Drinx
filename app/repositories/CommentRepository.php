@@ -6,13 +6,26 @@ class CommentRepository {
     public function __construct(PDO $db) {
         $this->db = $db;
     }
-     // Fetch a comment by its ID
-     public function getCommentById($commentId) {
+    public function getCommentById($commentId) {
         $sql = "SELECT * FROM comments WHERE comment_id = :comment_id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':comment_id', $commentId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_OBJ);
+    
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            // Create a Comment instance with all constructor parameters
+            return new Comment(
+                $row['comment_id'],
+                $row['user_id'],
+                $row['username'],
+                $row['cocktail_id'],
+                $row['parent_comment_id'],
+                $row['comment'],
+                $row['created_at']
+            );
+        }
+        return null;
     }
     // Fetch top-level comments
     public function getTopLevelCommentsByCocktailId($cocktailId) {

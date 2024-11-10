@@ -76,6 +76,7 @@ class HomeController
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
 
+        $userProfile = $loggedInUserId ? $this->userService->getUserWithFollowCounts($loggedInUserId) : null;
         // Fetch users if admin is logged in
         $users = ($isAdmin) ? $this->userService->getAllUsersWithStatus() : null;
 

@@ -1,4 +1,4 @@
-<h1>Edit Cocktail</h1>
+<!-- <h1>Edit Cocktail</h1>
 <form method="POST" action="/cocktails/update/<?= htmlspecialchars($cocktail->cocktail_id) ?>">
     <label for="title">Title:</label>
     <input type="text" name="title" value="<?= htmlspecialchars($cocktail->title) ?>" required>
@@ -13,4 +13,4 @@
     <input type="number" name="category_id" value="<?= htmlspecialchars($cocktail->category_id) ?>" required>
 
     <input type="submit" value="Update Cocktail">
-</form>
+</form> -->
