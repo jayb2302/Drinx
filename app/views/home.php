@@ -73,11 +73,18 @@ if ($currentPath === '/login') {
     // Display category links and cocktail list
     include __DIR__ . '/cocktails/categories.php';
     include __DIR__ . '/cocktails/sorting.php';
+            echo '<div class="wrapper">';
+            include __DIR__ . '/cocktails/index.php';
+            echo '</div>';
 
-    echo '<div class="wrapper">';
-    include __DIR__ . '/cocktails/index.php';
-    echo '</div>';
-}
-?>
-
+        }
+        ?>
+    </main>
+    <aside class="control-panel">
+        
+        <?php 
+        $userProfile = $userProfile ?? null;
+        include __DIR__ . '/layout/control_panel.php'; ?>
+    </aside>
+</div>
 <?php include __DIR__ . '/layout/footer.php'; ?>

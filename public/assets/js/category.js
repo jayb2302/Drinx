@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.content) {
                     // Update the cocktail list
                     document.querySelector('.wrapper').innerHTML = data.content;
-
-                    // Update the URL without refreshing the page
-                    history.pushState(null, '', `/category/${categoryName}`);
+            
+                    // Update the URL without refreshing the page and save category in history state
+                    history.pushState({ category: categoryName }, '', `/category/${categoryName}`);
                 }
             })
             .catch(error => console.error('Error:', error));

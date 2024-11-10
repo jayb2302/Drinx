@@ -89,31 +89,31 @@ class HomeController
         $categoryName = str_replace('-', ' ', urldecode($categoryName));
         $categories = $this->categoryRepository->getAllCategories();
         $categoryId = null;
-    
+
         foreach ($categories as $category) {
             if (strtolower($category['name']) === strtolower($categoryName)) {
                 $categoryId = $category['category_id'];
                 break;
             }
         }
-    
+
         if ($categoryId === null) {
             http_response_code(404);
             echo "Category not found";
             return;
         }
-    
+
         $cocktails = $this->cocktailService->getCocktailsByCategory($categoryId);
-    
-        // Return only cocktail content if the request is AJAX
-        if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
+
+        // Check if the request is AJAX
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
             ob_start();
             include __DIR__ . '/../views/cocktails/index.php';
             $content = ob_get_clean();
             echo json_encode(['content' => $content]);
             return;
         }
-    
+
         // Load the full page for non-AJAX requests
         $stickyCocktail = $this->cocktailService->getStickyCocktail();
         require_once __DIR__ . '/../views/home.php';
