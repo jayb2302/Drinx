@@ -13,8 +13,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install sftp client
-      run: sudo apt-get install -y openssh-client
+    - name: Install dependencies
+      run: |
+        sudo apt-get install -y openssh-client sshpass
 
     - name: Create .env file for live environment
       run: |
@@ -26,7 +27,7 @@ jobs:
 
     - name: Upload files via SFTP
       run: |
-        sftp -o StrictHostKeyChecking=no -o PasswordAuthentication=yes ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/customers/2/0/6/c0w7in5de/webroots/e251ef19/ <<EOF
+        sshpass -p ${{ secrets.SFTP_PASSWORD }} sftp -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/customers/2/0/6/c0w7in5de/webroots/e251ef19/ <<EOF
         put -r ./public/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/public
         put -r ./app/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/app
         put -r ./database/* /customers/2/0/6/c0w7in5de/webroots/e251ef19/database
