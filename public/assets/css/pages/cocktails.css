@@ -8,7 +8,8 @@
   justify-content: center; /* Center the cards */
   background-color: var(--background-primary);
   gap: 20px; /* Space between cards */
-  
+  height: 80vh;
+  overflow: auto;
 }
 
 .container {

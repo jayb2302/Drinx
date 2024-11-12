@@ -60,16 +60,17 @@ function handleSearchError(jqXHR, textStatus, errorThrown) {
 
 function displayUserSuggestions(users) {
     $('#searchResults').empty(); // Clear previous results
-    users.forEach(function(user) {
-        // Check if profile picture is available or set a default
+
+    users.forEach(user => {
         const profilePicture = user.profile_picture 
-            ? `/uploads/users/${encodeURIComponent(user.profile_picture)}` // Adjust path for user profile pictures
-            : '/uploads/cocktails/kian.jpg'; // Path to default image
+            ? `/uploads/users/${encodeURIComponent(user.profile_picture)}`
+            : '/uploads/users/user-default.svg'; // Ensure this matches the correct path for the default image
 
         $('#searchResults').append(`
             <div class="user-suggestion">
                 <a href="/profile/${encodeURIComponent(user.username)}">
-                    <img src="${profilePicture}" alt="${user.username}'s profile picture" style="width: 40px; height: 40px; border-radius: 50%;"/>
+                    <img src="${profilePicture}" alt="${user.username}'s profile picture" 
+                         style="width: 40px; height: 40px; border-radius: 50%;"/>
                     ${user.username}
                 </a>
             </div>

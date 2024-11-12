@@ -1,7 +1,7 @@
-<?php
+<!-- <?php
 require_once __DIR__ . '/../../services/CocktailService.php';
-?>
-<h1>Add New Cocktail</h1>
+?> -->
+<!-- <h1>Add New Cocktail</h1>
 <form action="/cocktails" method="POST">
     <h3>Add New Cocktail</h3>
     <label for="title">Cocktail Title:</label>
@@ -51,4 +51,4 @@ require_once __DIR__ . '/../../services/CocktailService.php';
     <!-- You can add more ingredient inputs as needed -->
 
     <button type="submit">Add Cocktail</button>
-</form>
+</form> -->

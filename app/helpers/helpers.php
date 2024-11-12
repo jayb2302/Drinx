@@ -19,7 +19,8 @@ loadEnv(__DIR__ . '/../../.env');
 
 // Function to generate a URL
 function url($path = '') {
-    return 'http://drinx.local/' . ltrim($path, '/');
+    $baseUrl = (getenv('ENV') == 'live') ? 'http://drinx.local' : 'https://drinx.info';
+    return $baseUrl . '/' . ltrim($path, '/');
 }
 
 function base_url() {

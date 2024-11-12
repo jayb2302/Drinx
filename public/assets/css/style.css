@@ -1,16 +1,22 @@
-@import '../css/components/button.css';
-@import '../css/components/navbar.css';
-@import '../css/components/forms.css';
 @import '../css/pages/cocktails.css';
 @import '../css/pages/footer.css';
 @import '../css/pages/profile.css'; 
+@import '../css/pages/about.css';
+@import '../css/pages/home.css';
+@import '../css/components/control-panel.css';
+@import '../css/components/button.css';
+@import '../css/components/navbar.css';
+@import '../css/components/forms.css';
 @import '../css/components/comments.css';
 @import '../css/components/likes.css';
 @import '../css/components/search.css';
+@import '../css/components/cards.css';
+
 
 :root {
     /* Colors for Light Mode */
     --background: #f2f2f2;
+    --nav-background: #1D2227;
     --text-primary: #303841;
     --text-secondary: #f2f2f2;
     --text-link: #fad325;
@@ -18,6 +24,7 @@
     --accent-hover: #fce770;
     --accent-secondary: #fce770;
     --surface: #e0e0e0;
+    --comments-background: #303841;
     --card-background: #303841d3;
     --card-background-hover: #858e98;
     --button-primary: #fad325;
@@ -71,13 +78,13 @@
     border-radius: 5px;
     color: var(--error);
     font-size: 0.9rem;
+    background-color: var(--nav-background);
   }
   .success {
     color: var(--success);
   }
   main {
    display: flex;
-    padding: 20px;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);

@@ -1,15 +1,18 @@
 <?php
 require_once __DIR__ . '/../repositories/UserRepository.php';
 
-class UserService {
+class UserService
+{
     private $userRepository;
 
-    public function __construct() {
+    public function __construct()
+    {
         $dbConnection = Database::getConnection();
         $this->userRepository = new UserRepository($dbConnection);
     }
 
-    public function authenticateUser($email, $password) {
+    public function authenticateUser($email, $password)
+    {
         $user = $this->userRepository->findByEmail($email);
 
         if ($user && password_verify($password, $user->getPassword())) {
@@ -24,18 +27,21 @@ class UserService {
     }
 
     // Verify password
-    public function verifyPassword($userId, $password) {
+    public function verifyPassword($userId, $password)
+    {
         $user = $this->userRepository->findById($userId);
         return $user && password_verify($password, $user->getPassword());
     }
 
     // Delete a user by ID and their associated data (cocktails)
-    public function deleteUser($userId) {
+    public function deleteUser($userId)
+    {
         return $this->userRepository->deleteUser($userId);
     }
 
     // Register a new user
-    public function registerUser($username, $email, $password, $accountStatusId) {
+    public function registerUser($username, $email, $password, $accountStatusId)
+    {
         // Hash the password before storing
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
@@ -57,17 +63,20 @@ class UserService {
     }
 
     // Fetch a user by ID
-    public function getUserById($userId) {
+    public function getUserById($userId)
+    {
         return $this->userRepository->findById($userId);
     }
 
     // Fetch user and profile by user ID
-    public function getUserWithProfile($userId) {
+    public function getUserWithProfile($userId)
+    {
         return $this->userRepository->findByIdWithProfile($userId);
     }
 
     // Update user details (e.g., profile)
-    public function updateUser($userId, $username, $email) {
+    public function updateUser($userId, $username, $email)
+    {
         $user = $this->userRepository->findById($userId);
         if ($user) {
             $user->setUsername($username);
@@ -87,7 +96,8 @@ class UserService {
     }
 
     // Change user password
-    public function changeUserPassword($userId, $currentPassword, $newPassword) {
+    public function changeUserPassword($userId, $currentPassword, $newPassword)
+    {
         $user = $this->userRepository->findById($userId);
         if ($user && password_verify($currentPassword, $user->getPassword())) {
             $user->setPassword(password_hash($newPassword, PASSWORD_BCRYPT));
@@ -97,23 +107,28 @@ class UserService {
     }
 
     // Update user profile (first name, last name, bio, profile picture)
-    public function updateUserProfile($userId, $firstName, $lastName, $bio, $profilePicture = null) {
+    public function updateUserProfile($userId, $firstName, $lastName, $bio, $profilePicture = null)
+    {
         return $this->userRepository->updateProfile($userId, $firstName, $lastName, $bio, $profilePicture);
     }
 
-    public function getUserByUsername($username) {
+    public function getUserByUsername($username)
+    {
         return $this->userRepository->findByUsername($username);
     }
 
-    public function getUserStats($userId) {
+    public function getUserStats($userId)
+    {
         return $this->userRepository->getUserStats($userId);
     }
 
-    public function searchUsers($query) {
+    public function searchUsers($query)
+    {
         return $this->userRepository->searchUsers($query);
     }
 
-    public function followUser($userId, $followedUserId) {
+    public function followUser($userId, $followedUserId)
+    {
         // Print debugging info
         echo "UserService: UserID = $userId, FollowedUserID = $followedUserId";
 
@@ -129,14 +144,42 @@ class UserService {
         return false; // Already following
     }
 
-    public function unfollowUser($userId, $followedUserId) {
+    public function unfollowUser($userId, $followedUserId)
+    {
         if ($this->userRepository->isFollowing($userId, $followedUserId)) {
             return $this->userRepository->unfollowUser($userId, $followedUserId);
         }
         return false; // Not following
     }
-    public function isFollowing($userId, $followedUserId) {
+
+    public function isFollowing($userId, $followedUserId)
+    {
         return $this->userRepository->isFollowing($userId, $followedUserId);
+    }
+
+    // Get the number of users the user is following
+    public function getFollowingCount($userId)
+    {
+        return $this->userRepository->getFollowingCount($userId);
+    }
+
+    // Get the number of followers the user has
+    public function getFollowersCount($userId)
+    {
+        return $this->userRepository->getFollowersCount($userId);
+    }
+
+    public function getUserWithFollowCounts($userId)
+    {
+        $user = $this->userRepository->findByIdWithProfile($userId); // Fetch the user object
+
+        if ($user) {
+            // Set the following and followers count on the User object
+            $user->setFollowingCount($this->getFollowingCount($userId));
+            $user->setFollowersCount($this->getFollowersCount($userId));
+        }
+
+        return $user;
     }
 
     public function getAllUsersWithStatus()
@@ -144,10 +187,8 @@ class UserService {
         return $this->userRepository->findAllWithStatus();
     }
 
-
     public function updateUserAccountStatus($userId, $statusId)
     {
         return $this->userRepository->updateAccountStatus($userId, $statusId);
     }
-
 }

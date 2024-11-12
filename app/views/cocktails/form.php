@@ -12,9 +12,14 @@
                 <textarea name="description" id="description" required><?= $isEditing ? htmlspecialchars($cocktail->getDescription()) : '' ?></textarea>
             </div>
         </div>
-
+        <?php if (AuthController::isAdmin()): ?>
+            <div class="form-group">
+                <label for="isSticky">Set as Sticky</label>
+                <input type="checkbox" name="isSticky" id="isSticky" value="1" <?= $isEditing && $cocktail->isSticky() ? 'checked' : '' ?>>
+            </div>
+        <?php endif; ?>
         <label for="image">Image</label>
-        <input type="file" name="image" id="image" <?= $isEditing ? '' : 'required' ?>>
+        <input type="file" name="image" id="image" accept="image/*" <?= $isEditing ? '' : 'required' ?>>
         <?php if ($isEditing && $cocktail->getImage()): ?>
             <p>Current Image:</p>
             <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>" alt="Current Image" style="width:100px;">
@@ -121,3 +126,15 @@
         <button type="submit">Submit</button>
     </form>
 </div>
+
+<?php
+if (isset($_SESSION['errors'])) {
+    echo '<ul class="error-messages">';
+    foreach ($_SESSION['errors'] as $error) {
+        echo '<li>' . htmlspecialchars($error) . '</li>';
+    }
+    echo '</ul>';
+    // Clear the errors after displaying them
+    unset($_SESSION['errors']);
+}
+?>
