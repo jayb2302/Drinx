@@ -122,7 +122,7 @@ class Cocktail
     }
 
     // Utility methods
-    public function addIngredient(Ingredient $ingredient)
+    public function addIngredient($ingredient)
     {
         $this->ingredients[] = $ingredient;
     }

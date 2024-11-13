@@ -20,19 +20,22 @@ class HomeController
     private $likeService;
     private $userService;
     private $categoryRepository;
+    private $difficultyRepository;
 
     public function __construct(
         CocktailService $cocktailService,
         IngredientService $ingredientService,
         LikeService $likeService,
         UserService $userService,
-        CategoryRepository $categoryRepository
+        CategoryRepository $categoryRepository,
+        DifficultyRepository $difficultyRepository
     ) {
         $this->cocktailService = $cocktailService;
         $this->ingredientService = $ingredientService;
         $this->likeService = $likeService;
         $this->userService = $userService;
         $this->categoryRepository = $categoryRepository;
+        $this->difficultyRepository = $difficultyRepository;
     }
 
     public function index($categoryName = null, $sortOption = 'recent')
@@ -76,6 +79,7 @@ class HomeController
         // Fetch categories and units if needed for forms
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
+        $difficulties = $this->difficultyRepository->getAllDifficulties(); 
 
         $userProfile = $loggedInUserId ? $this->userService->getUserWithFollowCounts($loggedInUserId) : null;
         // Fetch users if admin is logged in

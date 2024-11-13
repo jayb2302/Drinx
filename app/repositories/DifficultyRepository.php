@@ -6,11 +6,10 @@ class DifficultyRepository {
         $this->db = $db;
     }
 
-    public function getAllDifficulties() {
-        $stmt = $this->db->prepare("SELECT difficulty_id, difficulty_name FROM difficulty_levels");
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $result;
+    public function getAllDifficulties()
+    {
+        $stmt = $this->db->query("SELECT difficulty_id, difficulty_name FROM difficulty_levels ORDER BY difficulty_id ASC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getDifficultyNameById($difficultyId) {
         $stmt = $this->db->prepare("SELECT difficulty_name FROM difficulty_levels WHERE difficulty_id = :id");
