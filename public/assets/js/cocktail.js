@@ -42,7 +42,7 @@ $(document).ready(function() {
 
         // Create new ingredient input fields
         const newIngredientDiv = `
-            <div class="ingredient-input">
+            <div class="ingredient-input" id="ingredientGroup${ingredientCount}">
                 <label for="ingredient${ingredientCount}">Ingredient ${ingredientCount}:</label>
                 <input type="text" name="ingredients[]" id="ingredient${ingredientCount}" required>
 
@@ -51,11 +51,13 @@ $(document).ready(function() {
 
                 <label for="unit${ingredientCount}">Unit:</label>
                 <select name="units[]" id="unit${ingredientCount}" required>
-                    ${getUnitOptions()} <!-- Call the function to get unit options -->
+                    ${getUnitOptions()} <!-- Populate unit options dynamically -->
                 </select>
+
+                <button type="button" class="remove-ingredient-button" data-ingredient-id="${ingredientCount}">Remove</button>
             </div>
         `;
-
+        
         // Append the new ingredient fields to the ingredients container
         $('#ingredientsContainer').append(newIngredientDiv);
         console.log("Added new ingredient input fields"); // Log when a new ingredient is added

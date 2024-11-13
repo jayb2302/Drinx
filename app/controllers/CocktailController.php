@@ -49,7 +49,7 @@ class CocktailController
         $this->stepService = new StepService($stepRepository);
         $this->commentService = new CommentService($commentRepository, $userService);
         $this->userService = new UserService(new UserRepository($db));
-    
+
 
         // Initialize the CocktailService with services and repositories
         $this->cocktailService = new CocktailService(
@@ -90,6 +90,7 @@ class CocktailController
         // Fetch necessary data for the form (categories, units)
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
+        $difficulties = $this->difficultyRepository->getAllDifficulties();
 
         $isEditing = false;
         // Pass the necessary data to the view
@@ -121,7 +122,6 @@ class CocktailController
                 'title' => sanitize($_POST['title']),
                 'description' => sanitize($_POST['description']),
                 'image' => $image,
-                'is_sticky' => isset($_POST['isSticky']) ? 1 : 0,
                 'category_id' => intval($_POST['category_id']),
                 'difficulty_id' => intval($_POST['difficulty_id'])
             ];
@@ -163,9 +163,13 @@ class CocktailController
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits(); // Fetch units from IngredientService
+        $difficultyId = $cocktail->getDifficultyId(); // Get the difficulty ID
+        $difficultyName = $this->difficultyRepository->getDifficultyNameById($difficultyId); // Get the difficulty name
 
+        $difficulties = $this->difficultyRepository->getAllDifficulties();
         $isEditing = true;
 
+        // Pass the variables to the view
         require_once __DIR__ . '/../views/cocktails/form.php'; // Load the edit form
     }
 
@@ -334,7 +338,7 @@ class CocktailController
 
         return null; // Return null if no image was uploaded
     }
-     
+
     // Handle image update for editing cocktails
     private function handleImageUpdate($file, $cocktail, &$errors)
     {
@@ -390,7 +394,9 @@ class CocktailController
         $tags = $this->cocktailService->getCocktailTags($cocktailId);
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
-        // Check if the user has liked this cocktail
+        $difficultyId = $cocktail->getDifficultyId();
+        $difficulties = $this->difficultyRepository->getAllDifficulties();
+        $difficultyName = $this->difficultyRepository->getDifficultyNameById($cocktail->getDifficultyId());
         $hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;
 
         // Fetch total likes for the cocktail (if you need to display total likes)

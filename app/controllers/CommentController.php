@@ -2,13 +2,11 @@
 class CommentController
 {
     private $commentService;
-    private $commentRepository;
     private $cocktailService;
 
-    public function __construct(CommentService $commentService, CommentRepository $commentRepository, CocktailService $cocktailService)
+    public function __construct(CommentService $commentService, CocktailService $cocktailService)
     {
         $this->commentService = $commentService;
-        $this->commentRepository = $commentRepository;
         $this->cocktailService = $cocktailService; // Initialize cocktailService
     }
 
@@ -25,7 +23,7 @@ class CommentController
         }
 
         // Get comment data from POST
-        $commentText = sanitize($_POST['comment'] ?? '');
+        $commentText = sanitize($_POST['commentText'] ?? '');
         $parentCommentId = isset($_POST['parent_comment_id']) ? sanitize($_POST['parent_comment_id']) : null;
 
         if (empty($commentText)) {
@@ -50,14 +48,41 @@ class CommentController
     public function edit($commentId)
     {
         $comment = $this->commentService->getCommentById($commentId);
-
-        // Ensure the user owns the comment or is an admin
+    
         if ($_SESSION['user']['id'] !== $comment->getUserId() && !AuthController::isAdmin()) {
-            header("Location: /cocktails");
+            header("HTTP/1.1 403 Forbidden");
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
             exit();
         }
+    
+        // Update comment with AJAX data
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $newCommentText = $_POST['comment'] ?? '';
+            if ($this->commentService->updateComment($commentId, $newCommentText)) {
+                echo json_encode(['success' => true, 'comment' => $newCommentText]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to update comment']);
+            }
+            exit();
+        }
+    }
 
-        // Display edit form (you can load a view here)
+    public function update($commentId) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $newCommentText = $_POST['comment'] ?? '';
+            
+            // Perform the update
+            $updated = $this->commentService->updateComment($commentId, $newCommentText);
+
+            // Redirect or send response based on success
+            if ($updated) {
+                header('Location: /cocktails');
+            } else {
+                echo json_encode(['error' => 'Failed to update comment']);
+            }
+        } else {
+            header("HTTP/1.1 405 Method Not Allowed");
+        }
     }
     public function delete($commentId)
     {
@@ -93,7 +118,7 @@ class CommentController
                 $parentCommentId = $commentId;
 
                 // Add reply to the database
-                $this->commentRepository->addComment($userId, $cocktailId, $commentText, $parentCommentId);
+                $this->commentService->addComment($userId, $cocktailId, $commentText, $parentCommentId);
 
                 // Redirect back to the cocktail page with title
                 $cocktailTitle = urlencode($_POST['cocktailTitle'] ?? '');

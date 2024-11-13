@@ -5,8 +5,6 @@ function loadEnv($filePath) {
         return;
     }
     $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $env = [];
-    
     foreach ($lines as $line) {
         if (strpos(trim($line), '#') === 0) continue; // Skip comments
         [$key, $value] = explode('=', $line, 2);
@@ -17,9 +15,15 @@ function loadEnv($filePath) {
 }
 loadEnv(__DIR__ . '/../../.env');
 
-// Function to generate a URL
+// // Function to generate a URL
+// function url($path = '') {
+//     $baseUrl = (getenv('ENV') == 'live') ? 'http://drinx.local' : 'https://drinx.info';
+//     return $baseUrl . '/' . ltrim($path, '/');
+// }
+// Function to generate URL based on environment
 function url($path = '') {
-    $baseUrl = (getenv('ENV') == 'live') ? 'http://drinx.local' : 'https://drinx.info';
+    $environment = $_ENV['ENV'] ?? 'local'; // Default to 'local' if ENV is not set
+    $baseUrl = ($environment === 'live') ? 'https://drinx.info' : 'http://drinx.local';
     return $baseUrl . '/' . ltrim($path, '/');
 }
 

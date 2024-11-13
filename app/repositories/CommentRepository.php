@@ -39,20 +39,22 @@ class CommentRepository {
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
         $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Convert each result to a Comment model
         $comments = [];
         foreach ($results as $result) {
-            $comments[] = new Comment(
-                $result->comment_id,
-                $result->user_id,
-                $result->username, 
-                $result->cocktail_id,
-                $result->parent_comment_id,
-                $result->comment,
-                $result->created_at
-            );
+            foreach ($results as $result) {
+                $comments[] = new Comment(
+                    $result['comment_id'],
+                    $result['user_id'],
+                    $result['username'],
+                    $result['cocktail_id'],
+                    $result['parent_comment_id'],
+                    $result['comment'], // Ensure this matches your database
+                    $result['created_at']
+                );
+            }
         }
         return $comments;
     }
@@ -95,8 +97,8 @@ class CommentRepository {
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':user_id', $userId);
             $stmt->bindParam(':cocktail_id', $cocktailId);
-            $stmt->bindParam(':comment', $commentText);
             $stmt->bindParam(':parent_comment_id', $parentCommentId);
+            $stmt->bindParam(':comment', $commentText);
             
             $result = $stmt->execute();
             error_log("Comment Inserted: " . json_encode($stmt->errorInfo())); // Log the error info if any
@@ -106,6 +108,14 @@ class CommentRepository {
             return false;
         }
     }
+
+    public function updateComment($commentId, $newText) {
+        $stmt = $this->db->prepare("UPDATE comments SET comment = :newComment WHERE comment_id = :commentId");
+        $stmt->bindParam(':newComment', $newText, PDO::PARAM_STR);
+        $stmt->bindParam(':commentId', $commentId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
      // Delete a comment by its ID
      public function deleteComment($commentId) {
         $sql = "DELETE FROM comments WHERE comment_id = :comment_id";
