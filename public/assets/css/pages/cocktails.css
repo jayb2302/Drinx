@@ -11,6 +11,17 @@
   height: 80vh;
   overflow: auto;
 }
+.recipeWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start; /* Ensures that items align at the top */
+  justify-content: center; /* Center the cards */
+  background-color: var(--background-primary);
+  gap: 20px; /* Space between cards */
+  height: 80vh;
+  overflow: auto;
+}
 
 .container {
   width: auto;
