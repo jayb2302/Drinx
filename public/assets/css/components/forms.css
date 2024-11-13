@@ -1,16 +1,147 @@
+/* Form container styling */
 .form-container {
-    display: flex;
-    flex-direction: column;
-    width: 60%;
-    margin: 0 auto; /* Center the container */
-    padding: 20px; 
-    background-color: var( --button-primary-transparent); 
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    position: relative;
+  background-color: var(--background);
+  color: var(--text-primary);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-body);
+  max-width: 500px;
+  margin: auto;
+}
 
-  }
+/* Form heading */
+.form-container h1 {
+  color: var(--accent-primary);
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Form group styling */
 .form-group {
-    display: flex;
-    flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+/* Labels */
+.form-group label {
+  display: block;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+/* Input fields and textareas */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background-color: var(--surface);
+  margin-bottom: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+/* Focused input fields */
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent-primary);
+  outline: none;
+}
+
+/* File input */
+input[type="file"] {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+
+/* Buttons */
+button,
+input[type="submit"] {
+  background-color: var(--button-primary);
+  color: var(--text-secondary);
+  font-weight: bold;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: var(--font-body);
+}
+
+/* Button hover effect */
+button:hover,
+input[type="submit"]:hover {
+  background-color: var(--button-hover);
+}
+
+/* Add New Ingredient and Add New Step buttons */
+#addIngredientButton,
+#addStepButton {
+  background-color: var(--accent-secondary);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+#addIngredientButton:hover,
+#addStepButton:hover {
+  background-color: var(--accent-hover);
+}
+
+/* Error messages */
+.error-messages {
+  color: var(--error);
+  font-weight: bold;
+  margin-top: 1rem;
+  list-style: none;
+}
+
+/* Ingredient and step containers */
+.ingredient-input,
+.step-input {
+  border: 1px solid var(--border);
+  padding: 1rem;
+  border-radius: 4px;
+  background-color: var(--card-background);
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.ingredient-input label,
+.step-input label {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.ingredient-input select,
+.step-input select {
+ width: 100%;
+}
+
+/* Delete step button */
+.delete-step-button {
+  background-color: var(--error);
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.delete-step-button:hover {
+  background-color: var(--warning);
 }

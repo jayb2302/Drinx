@@ -17,35 +17,47 @@ class CocktailRepository
     // Fetch cocktail by ID
     public function getById($cocktail_id)
     {
-        $stmt = $this->db->prepare('SELECT * FROM cocktails WHERE cocktail_id = :id');
+        $stmt = $this->db->prepare("
+            SELECT 
+                c.*, 
+                d.difficulty_name 
+            FROM 
+                cocktails c 
+            LEFT JOIN 
+                difficulty_levels d ON c.difficulty_id = d.difficulty_id 
+            WHERE 
+                c.cocktail_id = :id
+        ");
         $stmt->bindParam(':id', $cocktail_id, PDO::PARAM_INT);
         $stmt->execute();
-
-        // Fetch the cocktail data
+    
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    
         if ($result) {
-            // Fetch ingredients, steps, and tags
             $ingredients = $this->getIngredientsByCocktailId($cocktail_id);
             $steps = $this->getStepsByCocktailId($cocktail_id);
-            // $tags = $this->getTagsByCocktailId($cocktail_id); 
-
-            // Create a Cocktail object with the fetched data
-            return new Cocktail(
+            $tags = []; // Initialize with empty tags or fetch as needed
+    
+            $cocktail = new Cocktail(
                 $result['cocktail_id'],
+                $result['user_id'], // User ID should be correctly passed here
                 $result['title'],
                 $result['description'],
                 $result['image'],
                 (bool) $result['is_sticky'],
                 $result['category_id'],
-                $result['user_id'],
-                $ingredients, // Pass ingredients array
-                $steps, // Pass steps array
-                // $tags // Pass tags array
+                $result['difficulty_id'],
+                $ingredients,
+                $steps,
+                $tags,
+                $result['like_count'] ?? 0,
+                $result['difficulty_name'] ?? null
             );
+    
+            return $cocktail;
         }
-
-        return null; // Return null if no cocktail found
+    
+        return null;
     }
 
     // Fetch all cocktails
@@ -63,15 +75,18 @@ class CocktailRepository
             // Create and return a Cocktail object
             return new Cocktail(
                 $cocktailData['cocktail_id'],
+                $cocktailData['user_id'],
                 $cocktailData['title'],
                 $cocktailData['description'],
                 $cocktailData['image'],
                 (bool) $cocktailData['is_sticky'],
                 $cocktailData['category_id'],
-                $cocktailData['user_id'],
-                $ingredients, // Pass ingredients array
-                $steps, // Pass steps array
-                $tags // Pass tags array
+                $cocktailData['difficulty_id'],
+                $ingredients, 
+                $steps, 
+                $tags,
+                $cocktailData['like_count'] ?? 0,
+                $cocktailData['difficulty_name'] ?? null
             );
         }, $cocktailsData);
     }
@@ -107,14 +122,16 @@ class CocktailRepository
         if ($result) {
             return new Cocktail(
                 $result['cocktail_id'],
+                $result['user_id'],
                 $result['title'],
                 $result['description'],
                 $result['image'],
                 (bool) $result['is_sticky'],
                 $result['category_id'],
-                $result['user_id'],
+                $result['difficulty_id'],
                 $result['created_at'],
-                $result['updated_at']
+                $result['updated_at'],
+                $result['like_count'] ?? 0
             );
         }
 
@@ -217,11 +234,11 @@ class CocktailRepository
 
             return new Cocktail(
                 $cocktailData['cocktail_id'],
+                $cocktailData['user_id'],
                 $cocktailData['title'],
                 $cocktailData['description'],
                 $cocktailData['image'],
                 $cocktailData['category_id'],
-                $cocktailData['user_id'],
                 $ingredients,
                 $steps
             );
@@ -296,12 +313,13 @@ public function getAllHotCocktails() {
 
             return new Cocktail(
                 $cocktailData['cocktail_id'],
+                $cocktailData['user_id'],
                 $cocktailData['title'],
                 $cocktailData['description'],
                 $cocktailData['image'],
                 (bool)($cocktailData['is_sticky'] ?? 0),
                 $cocktailData['category_id'],
-                $cocktailData['user_id'],
+                $cocktailData['difficulty_id'],
                 $ingredients,
                 $steps
             );
