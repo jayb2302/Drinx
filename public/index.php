@@ -41,7 +41,7 @@ $cocktailService = new CocktailService(
 
 // Instantiate the HomeController with the necessary services
 $authController = new AuthController();
-$homeController = new HomeController($cocktailService, $ingredientService, $likeService, $userService, $categoryRepository);
+$homeController = new HomeController($cocktailService, $ingredientService, $likeService, $userService, $categoryRepository, $difficultyRepository);
 $adminController = new AdminController($cocktailService, $authController);
 
 // Resolve the current request URI

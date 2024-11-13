@@ -1,15 +1,16 @@
 function debounce(func, delay) {
     let timeout;
-    return function(...args) {
+    return function (...args) {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
             func.apply(this, args);
         }, delay);
     };
 }
-$(document).ready(function() {
-    $('#searchInput').on('input', function() {
-        var query = $(this).val();
+
+$(document).ready(function () {
+    $('#searchInput').on('input', debounce(function () {
+        const query = $(this).val();
 
         // Only send a request if the query length is greater than or equal to 3
         if (query.length >= 3) {
@@ -17,7 +18,7 @@ $(document).ready(function() {
         } else {
             clearSearchResults();
         }
-    });
+    }, 300)); // Add debounce delay
 });
 
 function performSearch(query) {
@@ -32,17 +33,17 @@ function performSearch(query) {
 
 function handleSearchSuccess(data) {
     console.log(data); // Log the response to see its structure
-    
+
     // Clear previous results
     $('#searchResults').empty();
 
     // Check and display user suggestions
-    if (data && data.users && data.users.length > 0) {
+    if (data?.users?.length > 0) {
         displayUserSuggestions(data.users);
     }
 
     // Check and display cocktail suggestions
-    if (data && data.cocktails && data.cocktails.length > 0) {
+    if (data?.cocktails?.length > 0) {
         displayCocktailSuggestions(data.cocktails);
     }
 
@@ -59,13 +60,10 @@ function handleSearchError(jqXHR, textStatus, errorThrown) {
 }
 
 function displayUserSuggestions(users) {
-    $('#searchResults').empty(); // Clear previous results
-
     users.forEach(user => {
-        const profilePicture = user.profile_picture 
+        const profilePicture = user.profile_picture
             ? `/uploads/users/${encodeURIComponent(user.profile_picture)}`
-            : '/uploads/users/user-default.svg'; // Ensure this matches the correct path for the default image
-
+            : '/uploads/users/user-default.svg';
         $('#searchResults').append(`
             <div class="user-suggestion">
                 <a href="/profile/${encodeURIComponent(user.username)}">
@@ -79,22 +77,24 @@ function displayUserSuggestions(users) {
 }
 
 function displayCocktailSuggestions(cocktails) {
-    $('#searchResults').empty(); // Clear previous results
-    cocktails.forEach(function(cocktail) {
-        // Construct the image path
-        let imagePath = cocktail.image ? `/uploads/cocktails/${cocktail.image}` : '/uploads/cocktails/default-image.webp';
+    cocktails.forEach(cocktail => {
+        // Ensure required properties are available
+        const cocktailId = cocktail.cocktail_id || null;
+        const title = cocktail.title || 'Untitled Cocktail';
+        const imagePath = cocktail.image ? `/uploads/cocktails/${cocktail.image}` : '/uploads/cocktails/default-image.webp';
 
-        // Generate the URL-friendly title
-        let urlTitle = encodeURIComponent(cocktail.title.replace(/\s+/g, '+')); // Replace spaces with '+' for URL encoding
-
-        $('#searchResults').append(`
-            <div>
-                <a href="/cocktails/${cocktail.cocktail_id}-${urlTitle}">
-                    <img src="${imagePath}" alt="${cocktail.title} image" style="width: 40px; height: 40px;"/>
-                    ${cocktail.title}
-                </a>
-            </div>
-        `);
+        // Display cocktail suggestion if it has an ID
+        if (cocktailId) {
+            const urlTitle = encodeURIComponent(title.replace(/\s+/g, '+'));
+            $('#searchResults').append(`
+                <div class="cocktail-suggestion">
+                    <a href="/cocktails/${cocktailId}-${urlTitle}">
+                        <img src="${imagePath}" alt="${title} image" style="width: 40px; height: 40px;"/>
+                        ${title}
+                    </a>
+                </div>
+            `);
+        }
     });
 
     // Show results if any suggestions are found
