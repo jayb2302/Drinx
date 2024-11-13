@@ -126,7 +126,10 @@ class UserService
     {
         return $this->userRepository->searchUsers($query);
     }
-
+    public function searchAllUsers($query)
+    {
+        return $this->userRepository->searchAllUsers($query);
+    }
     public function followUser($userId, $followedUserId)
     {
         // Print debugging info

@@ -67,7 +67,7 @@ class HomeController
         $isAdding = $action === 'add';
         $isLoggingIn = $action === 'login';
         $isRegistering = $action === 'register';
-
+    
         // Add 'hasLiked' status to each cocktail
         foreach ($cocktails as $cocktail) {
             $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktail->getCocktailId()) : false;

@@ -1,0 +1,63 @@
+/* Table styling */
+.manage-users {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  padding: 0 3%;
+}
+
+/* Apply general styling to all table headers */
+.manage-users thead th {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  text-align: left;
+  padding: 10px;
+  font-size: 1em;
+  font-weight: 200;
+  transition: 0.2s ease-out;
+}
+/* Apply hover effect and cursor only to the first 3 th elements */
+.sortable {
+  cursor: pointer;
+}
+.sortable:hover {
+  text-decoration: underline;
+  font-weight: bold;
+  background-color: var(--text-primary);
+  color: var(--surface);
+  font-weight: 900;
+}
+
+/* Row styling */
+.users-rows {
+  border-bottom: 1px solid var(--text-primary);
+  background-color: var(--text-secondary);
+  color: var(--text-primary);
+  transition: 0.2s ease-out;
+}
+.users-rows:hover {
+  border-bottom: 1px solid #ddd;
+  background-color: var(--text-primary);
+  color: var(--text-secondary);
+}
+
+/* Cell styling */
+.users-rows td {
+  padding: 12px;
+  text-align: left;
+}
+
+/* Form and button styling */
+.update-status-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.update-status-form select {
+  margin-right: 10px;
+  padding: 5px;
+  border: 1px solid var(--text-secondary);
+  border-radius: 4px;
+}
+

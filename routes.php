@@ -27,6 +27,7 @@ $router->add('POST', '#^/admin/toggle-sticky$#', [AdminController::class, 'toggl
 $router->add('GET', '#^/admin/sticky-cocktail$#', [AdminController::class, 'getStickyCocktail']);
 // Search route
 $router->add('GET', '#^/search$#', [SearchController::class, 'search']);
+$router->add('GET', '#^/searchAllUsers$#', [SearchController::class, 'adminUserSearch']);
 
 // Authentication routes
 $router->add('POST', '#^/login$#', [AuthController::class, 'authenticate']); // Handle login
