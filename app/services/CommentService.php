@@ -33,10 +33,6 @@ class CommentService
             }
             $comment->replies = $replies;
         }
-
-    
-
-
         return $comments;
     }
 
@@ -44,6 +40,14 @@ class CommentService
     public function addComment($userId, $cocktailId, $commentText, $parentCommentId = null)
     {
         return $this->commentRepository->addComment($userId, $cocktailId, $commentText, $parentCommentId);
+    }
+
+    public function updateComment($commentId, $newCommentText)
+    {
+        if (empty($newCommentText)) {
+            throw new InvalidArgumentException("Comment cannot be empty.");
+        }
+        return $this->commentRepository->updateComment($commentId, $newCommentText);
     }
     // Delete a comment by its ID
     public function deleteComment($commentId)
