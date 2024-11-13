@@ -1,16 +1,22 @@
 <h2>Manage Users</h2>
-<table>
+<input type="text" id="userSearch" placeholder="Search users..." class="user-search-input">
+
+<table class="manage-users">
     <thead>
         <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Account Status</th>
+            <th>Profiles</th>
+            <th data-sort="username" class="sortable">Username <span class="sort-indicator"></span></th>
+            <th data-sort="email" class="sortable">Email <span class="sort-indicator"></span></th>
+            <th data-sort="status" class="sortable">Account Status <span class="sort-indicator"></span></th>
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="userTableBody">
         <?php foreach ($users as $user): ?>
-            <tr>
+            <tr class="users-rows">
+                <td>
+                    <a href="/profile/<?= htmlspecialchars($user->getUsername()); ?>" class="view-profile">View Profile</a>
+                </td>
                 <td><?= htmlspecialchars($user->getUsername()); ?></td>
                 <td><?= htmlspecialchars($user->getEmail()); ?></td>
                 <td><?= htmlspecialchars($user->getAccountStatusName()); ?></td>
@@ -25,7 +31,12 @@
                         <button class="button" type="submit">Update Status</button>
                     </form>
                 </td>
+
             </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
+
+
+
+

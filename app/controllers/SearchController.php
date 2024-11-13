@@ -25,4 +25,16 @@ class SearchController {
             'cocktails' => $cocktails,
         ]);
     }
+    public function adminUserSearch() {
+        $query = $_GET['query'] ?? '';
+    
+        // Fetch all users that match the query without a limit
+        $users = $this->userService->searchAllUsers($query);
+    
+        // Return results as JSON
+        header('Content-Type: application/json');
+        echo json_encode([
+            'users' => $users]);
+    }
+    
 }
