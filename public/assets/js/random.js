@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const cocktailContainer = document.querySelector(".aboutContainer");
     if (!cocktailContainer) {
-        console.warn("No element with class 'aboutContainer' found.");
         return; // Exit if the container is not present
     }
     // Update the HTML content of the cocktail section with cocktail data
@@ -9,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
         cocktailContainer.innerHTML = `
             <h1 class="aboutHeading">Welcome to Drinx,</h1>
             <h3 class="aboutIntro">The cocktail library that’s got social flair!</h3>
-            <p class="aboutDescription">Here, creativity meets community as people shake, stir, and share their best recipes. Drinx is your go-to spot to show off your creations, swap tips, and find your next favorite drink. Cheers to your next masterpiece — let’s make it one for the books!</p>
+            <p class="aboutDescription"> Cheers to your next masterpiece — let’s make it one for the books!</p>
             <div class="recipeContainer">
                 <div class="recipeCard">
                     <h3>${title}</h3>
