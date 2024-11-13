@@ -17,24 +17,24 @@ class CocktailRepository
     // Method to create a Cocktail object from database result data
     private function createCocktailObject($data)
     {
-        $ingredients = $this->getIngredientsByCocktailId($data['cocktail_id']);
-        $steps = $this->getStepsByCocktailId($data['cocktail_id']);
-        $tags = []; // Initialize tags if needed
-
+        $ingredients = $this->getIngredientsByCocktailId($data['cocktail_id'] ?? null);
+        $steps = $this->getStepsByCocktailId($data['cocktail_id'] ?? null);
+        $tags = $data['tags'] ?? [];
+    
         return new Cocktail(
-            $data['cocktail_id'],
-            $data['user_id'],
-            $data['title'],
-            $data['description'],
-            $data['image'],
-            (bool)$data['is_sticky'],
-            $data['category_id'],
-            $data['difficulty_id'],
+            $data['cocktail_id'] ?? 0,
+            $data['user_id'] ?? 0,
+            $data['title'] ?? 'Unknown',
+            $data['description'] ?? 'No description available',
+            $data['image'] ?? 'default-image.webp',
+            (bool)($data['is_sticky'] ?? false),
+            $data['category_id'] ?? null,
+            $data['difficulty_id'] ?? null,
             $ingredients,
             $steps,
             $tags,
             $data['like_count'] ?? 0,
-            $data['difficulty_name'] ?? null
+            $data['difficulty_name'] ?? null,
         );
     }
 
@@ -148,16 +148,22 @@ class CocktailRepository
         $stmt = $this->db->prepare("
             SELECT cocktail_id, title, image 
             FROM cocktails 
-            WHERE title LIKE :query 
-            LIMIT 5
+            WHERE title LIKE :query
         ");
-        $searchTerm = '%' . $query . '%'; // Prepare the search term with wildcards
+        $searchTerm = '%' . $query . '%';
         $stmt->bindParam(':query', $searchTerm, PDO::PARAM_STR);
         $stmt->execute();
-
+    
         $cocktailsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return array_map([$this, 'createCocktailObject'], $cocktailsData);
+    
+        // Map the results directly to prevent adding default attributes like hasLiked
+        return array_map(function ($data) {
+            return [
+                'cocktail_id' => $data['cocktail_id'],
+                'title' => $data['title'],
+                'image' => $data['image'] ?? 'default-image.webp'
+            ];
+        }, $cocktailsData);
     }
 
     // Fetch cocktails sorted by creation date
@@ -271,7 +277,7 @@ class CocktailRepository
 
         return $cocktailData ? $this->createCocktailObject($cocktailData) : null;
     }
-    
+
     // Clears the sticky status from any cocktail
     public function clearStickyCocktail()
     {
