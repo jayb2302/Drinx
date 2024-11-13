@@ -7,9 +7,19 @@ class DifficultyRepository {
     }
 
     public function getAllDifficulties() {
-        $stmt = $this->db->prepare("SELECT * FROM difficulties");
+        $stmt = $this->db->prepare("SELECT difficulty_id, difficulty_name FROM difficulty_levels");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+    public function getDifficultyNameById($difficultyId) {
+        $stmt = $this->db->prepare("SELECT difficulty_name FROM difficulty_levels WHERE difficulty_id = :id");
+        $stmt->bindParam(':id', $difficultyId, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $difficultyName = $stmt->fetchColumn();
+        
+        return $difficultyName ? $difficultyName : 'Not specified'; // Return 'Not specified' if null
     }
 }
 ?>

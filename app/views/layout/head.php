@@ -10,6 +10,7 @@
     <!-- Include CSS -->
     <link rel="stylesheet" href="<?= asset('assets/css/style.css'); ?>">
     <link rel="stylesheet" href="https://use.typekit.net/qcq3ahl.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
 </head>
 <?php
