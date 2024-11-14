@@ -23,8 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>
                     <a href="/profile/${encodeURIComponent(user.username)}">
                         <img src="${profileImage}" 
-                             alt="Profile picture of ${sanitizeHTML(user.username)}" 
-                             class="profile-pic" 
                              width="40" 
                              height="40">
                     </a>

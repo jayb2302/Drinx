@@ -241,27 +241,17 @@ class UserRepository
             FROM users u
             LEFT JOIN user_profile p ON u.user_id = p.user_id
         ";
-    
-        // Add a condition for the search query if provided
+        
+        // Add filtering if a query is provided
         if ($query) {
             $sql .= " WHERE u.username LIKE :query";
         }
     
         $stmt = $this->db->prepare($sql);
-        
-        if ($query) {
-            $stmt->execute(['query' => '%' . $query . '%']);
-        } else {
-            $stmt->execute();
-        }
-    
+        $stmt->execute($query ? ['query' => "%$query%"] : []);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    
-    
-    
-
     // Method to follow a user
     public function followUser($userId, $followedUserId)
     {
