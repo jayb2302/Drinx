@@ -15,7 +15,9 @@
         <?php foreach ($users as $user): ?>
             <tr class="users-rows">
                 <td>
-                    <a href="/profile/<?= htmlspecialchars($user->getUsername()); ?>" class="view-profile">View Profile</a>
+                    <a href="/profile/<?= htmlspecialchars($user->getUsername()); ?>" class="view-profile">
+                        <img class="profile-pictue m" alt="Profile picture of <?= htmlspecialchars($user->getUsername()); ?>">
+                    </a>
                 </td>
                 <td><?= htmlspecialchars($user->getUsername()); ?></td>
                 <td><?= htmlspecialchars($user->getEmail()); ?></td>
@@ -31,7 +33,6 @@
                         <button class="button" type="submit">Update Status</button>
                     </form>
                 </td>
-
             </tr>
         <?php endforeach; ?>
     </tbody>

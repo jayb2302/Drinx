@@ -228,25 +228,30 @@ class UserRepository
         $stmt->execute(['query' => '%' . $query . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return users as an associative array
     }
-    public function searchAllUsers($query) {
-        $stmt = $this->db->prepare("
-            SELECT u.user_id, u.username, u.email, 
-                   u.account_status_id,
+    public function searchAllUsers($query = null) {
+        $sql = "
+            SELECT u.user_id, u.username, u.email, u.account_status_id,
                    CASE 
                        WHEN u.account_status_id = 1 THEN 'Active'
                        WHEN u.account_status_id = 2 THEN 'Suspended'
                        WHEN u.account_status_id = 3 THEN 'Banned'
                        ELSE 'Unknown'
-                   END AS account_status_name
+                   END AS account_status_name,
+                   COALESCE(p.profile_picture, 'user-default.svg') AS profile_picture
             FROM users u
-            WHERE u.username LIKE :query
-        ");
-        $stmt->execute(['query' => '%' . $query . '%']);
+            LEFT JOIN user_profile p ON u.user_id = p.user_id
+        ";
+        
+        // Add filtering if a query is provided
+        if ($query) {
+            $sql .= " WHERE u.username LIKE :query";
+        }
+    
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($query ? ['query' => "%$query%"] : []);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    
-
     // Method to follow a user
     public function followUser($userId, $followedUserId)
     {

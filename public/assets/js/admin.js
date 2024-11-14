@@ -10,14 +10,23 @@ document.addEventListener("DOMContentLoaded", () => {
         return temp.innerHTML;
     }
 
-    // Function to render users in the table body
     function renderUsers(users) {
         userTableBody.innerHTML = ''; // Clear table
         users.forEach(user => {
+            const profileImage = user.profile_picture && user.profile_picture !== 'user-default.svg' 
+                ? `/uploads/users/${encodeURIComponent(user.profile_picture)}`
+                : '/uploads/users/user-default.svg';
+    
             const row = document.createElement("tr");
             row.className = 'users-rows';
             row.innerHTML = `
-                <td><a href="/profile/${encodeURIComponent(user.username)}" class="view-profile">View Profile</a></td>
+                <td>
+                    <a href="/profile/${encodeURIComponent(user.username)}">
+                        <img src="${profileImage}" 
+                             width="40" 
+                             height="40">
+                    </a>
+                </td>
                 <td>${sanitizeHTML(user.username)}</td>
                 <td>${sanitizeHTML(user.email)}</td>
                 <td>${sanitizeHTML(user.account_status_name)}</td>
@@ -35,11 +44,13 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
             userTableBody.appendChild(row);
         });
-
-        // Reattach form submit event listeners to the new forms
         attachStatusFormListeners();
     }
-
+    
+   
+    
+    
+  
     // Fetch and render all users initially or when clearing search
     function fetchAllUsers() {
         fetch(`/searchAllUsers`)

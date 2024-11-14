@@ -46,6 +46,22 @@
   padding: 12px;
   text-align: left;
 }
+.users-rows td:first-child {
+  text-align-last: center;
+}
+.profile-pic{
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  transition: 0.2s ease-out;
+  border: 2px solid var(--text-primary);
+  object-fit: cover;
+}
+.profile-pic:hover{
+  cursor: pointer;
+  scale: 1.1;
+  border: 2px solid var(--accent-primary);
+}
 
 /* Form and button styling */
 .update-status-form {
@@ -60,4 +76,5 @@
   border: 1px solid var(--text-secondary);
   border-radius: 4px;
 }
+
 
