@@ -21,6 +21,7 @@ class HomeController
     private $userService;
     private $categoryRepository;
     private $difficultyRepository;
+    private $tagRepository;
 
     public function __construct(
         CocktailService $cocktailService,
@@ -28,7 +29,8 @@ class HomeController
         LikeService $likeService,
         UserService $userService,
         CategoryRepository $categoryRepository,
-        DifficultyRepository $difficultyRepository
+        DifficultyRepository $difficultyRepository,
+        TagRepository $tagRepository
     ) {
         $this->cocktailService = $cocktailService;
         $this->ingredientService = $ingredientService;
@@ -36,6 +38,7 @@ class HomeController
         $this->userService = $userService;
         $this->categoryRepository = $categoryRepository;
         $this->difficultyRepository = $difficultyRepository;
+        $this->tagRepository = $tagRepository;
     }
 
     public function index($categoryName = null, $sortOption = 'recent')
@@ -65,6 +68,7 @@ class HomeController
         $categories = $this->categoryRepository->getAllCategories();
         $randomCocktail = $this->cocktailService->getRandomCocktail();
         $stickyCocktail = $this->cocktailService->getStickyCocktail();
+        
         // Sanitize and determine if we should show a specific form
         $action = isset($_GET['action']) ? sanitize($_GET['action']) : null;
         $isAdding = $action === 'add';
@@ -79,7 +83,10 @@ class HomeController
         // Fetch categories and units if needed for forms
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
+        $tagRepository = new TagRepository(Database::getConnection());
+        $tags = $this->tagRepository->getAllTags();
         $difficulties = $this->difficultyRepository->getAllDifficulties(); 
+        $tagCategories = $this->tagRepository->getAllTagCategories();
 
         $userProfile = $loggedInUserId ? $this->userService->getUserWithFollowCounts($loggedInUserId) : null;
         // Fetch users if admin is logged in

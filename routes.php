@@ -22,6 +22,13 @@ $router->add('GET', '#^/about$#', [HomeController::class, 'about']);
 // Admin User Management Routes
 $router->add('POST', '#^/admin/update-status$#', [AdminController::class, 'updateUserStatus']);
 
+// Admin Tag Management Routes
+$router->add('GET', '#^/admin/tags$#', [TagController::class, 'showManageTagsPage']); // Fetch all tags
+$router->add('POST', '#^/admin/tag/save$#', [TagController::class, 'saveTag']);
+$router->add('POST', '#^/admin/tag/add$#', [TagController::class, 'saveTag']);
+$router->add('POST', '#^/admin/tag/delete$#', [TagController::class, 'deleteTag']);
+$router->add('GET', '#^/admin/tag/edit/(\d+)$#', [TagController::class, 'editTag']);
+
 // Sticky cocktail routes
 $router->add('POST', '#^/admin/toggle-sticky$#', [AdminController::class, 'toggleStickyCocktail']);
 $router->add('GET', '#^/admin/sticky-cocktail$#', [AdminController::class, 'getStickyCocktail']);
@@ -61,7 +68,9 @@ $router->add('GET', '#^/cocktails/random$#', [CocktailController::class, 'getRan
 // View cocktails
 $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // List all cocktails
 $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'view']); // View specific cocktail
-
+// Tag Routes
+$router->add('GET', '#^/tags/([a-zA-Z0-9-]+)$#', [TagController::class, 'showTagsByCategory']);  // Show tags for a category like "Flavor", "Mood", etc.
+$router->add('POST', '#^/cocktails/(\d+)/assign-tags$#', [TagController::class, 'assignTagsToCocktail']);  // Assign tags based on ingredients for a cocktail
 // Comment interactions
 $router->add('POST', '#^/cocktails/(\d+)-[^/]+/comments$#', [CommentController::class, 'addComment']);
 $router->add('GET', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment

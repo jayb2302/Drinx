@@ -168,8 +168,13 @@ CREATE TABLE `likes` (
 
 CREATE TABLE `tags` (
   `tag_id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(255) UNIQUE NOT NULL
+  `name` varchar(50) UNIQUE NOT NULL
 );
+
+CREATE TABLE `tag_categories` (
+  `tag_category_id` int(11) NOT NULL,
+  `category_name` varchar(100) NOT NULL
+) 
 
 CREATE TABLE `cocktail_tags` (
   `cocktail_id` int,

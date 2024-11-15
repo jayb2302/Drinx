@@ -15,6 +15,7 @@
 <script src="<?= asset('assets/js/random.js'); ?>"></script>
 <script src="<?= asset('assets/js/sticky.js'); ?>"></script>
 <script src="<?= asset('assets/js/category.js'); ?>"></script>
+<script src="<?= asset('assets/js/tags.js'); ?>"> </script>
 
 </body>
 </html>
