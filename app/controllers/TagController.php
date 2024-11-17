@@ -7,10 +7,11 @@ class TagController
     {
         $this->tagRepository = $tagRepository;
     }
+    
     public function getAllTags()
     {
         $tags = $this->tagRepository->getAllTags();
-
+    
         header('Content-Type: application/json');
         if ($tags) {
             http_response_code(200);

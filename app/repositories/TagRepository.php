@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/Tag.php';
-class TagRepository {
+class TagRepository
+{
     private $db;
 
     public function __construct($db)
@@ -177,5 +178,12 @@ class TagRepository {
         } catch (Exception $e) {
             throw new Exception("Error assigning tags by ingredients: " . $e->getMessage());
         }
+    }
+    public function doesTagExist($tagId)
+    {
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM tags WHERE tag_id = :id');
+        $stmt->bindParam(':id', $tagId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
     }
 }

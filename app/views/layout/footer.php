@@ -16,6 +16,7 @@
 <script src="<?= asset('assets/js/sticky.js'); ?>"></script>
 <script src="<?= asset('assets/js/category.js'); ?>"></script>
 <script src="<?= asset('assets/js/tags.js'); ?>"> </script>
+<script src="<?= asset('assets/js/ingredientTags.js'); ?>"> </script>
 
 </body>
 </html>

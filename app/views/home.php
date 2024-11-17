@@ -52,6 +52,9 @@ $cocktailId = $matches[1] ?? null;
             <div id="tagsManagement" style="display: none;">
                 <?php include __DIR__ . '/admin/manage_tags.php';?>
             </div>
+            <div id="ingredientManagement" style="display: none;">
+                <?php include __DIR__ . '/admin/manage_ingredient.php';?>
+            </div>
         <?php endif; ?>
         <!-- Logic to include forms based on the path -->
         <?php
