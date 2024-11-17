@@ -176,6 +176,15 @@ CREATE TABLE `tag_categories` (
   `category_name` varchar(100) NOT NULL
 ) 
 
+CREATE TABLE ingredient_tags (
+    ingredient_tag_id INT AUTO_INCREMENT PRIMARY KEY,
+    ingredient_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_ingredient FOREIGN KEY (ingredient_id) REFERENCES ingredients (ingredient_id) ON DELETE CASCADE,
+    CONSTRAINT fk_tag FOREIGN KEY (tag_id) REFERENCES tags (tag_id) ON DELETE CASCADE
+);
+
 CREATE TABLE `cocktail_tags` (
   `cocktail_id` int,
   `tag_id` int,
