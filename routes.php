@@ -23,12 +23,13 @@ $router->add('GET', '#^/about$#', [HomeController::class, 'about']);
 $router->add('POST', '#^/admin/update-status$#', [AdminController::class, 'updateUserStatus']);
 
 // Admin Tag Management Routes
-$router->add('GET', '#^/admin/tags$#', [TagController::class, 'showManageTagsPage']); // Fetch all tags
+$router->add('GET', '#^/admin/tags$#', [TagController::class, 'getAllTags']); // Fetch all tags
 $router->add('POST', '#^/admin/tag/save$#', [TagController::class, 'saveTag']);
 $router->add('POST', '#^/admin/tag/add$#', [TagController::class, 'saveTag']);
 $router->add('POST', '#^/admin/tag/delete$#', [TagController::class, 'deleteTag']);
 $router->add('GET', '#^/admin/tag/edit/(\d+)$#', [TagController::class, 'editTag']);
-
+$router->add('GET', '#^/admin/ingredients/uncategorized$#', [IngredientController::class, 'getUncategorizedIngredients']);
+$router->add('POST', '#^/admin/ingredients/assign-tag$#', [IngredientController::class, 'assignTag']);
 // Sticky cocktail routes
 $router->add('POST', '#^/admin/toggle-sticky$#', [AdminController::class, 'toggleStickyCocktail']);
 $router->add('GET', '#^/admin/sticky-cocktail$#', [AdminController::class, 'getStickyCocktail']);
@@ -57,7 +58,6 @@ $router->add('POST', '#^/user/unfollow/(\d+)$#', [UserController::class, 'unfoll
 
 // Cocktails routes
 $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // Show all cocktails
-// Update the router to use HomeController for add action
 $router->add('GET', '#^/cocktails/add$#', [HomeController::class, 'index']); // Show add form
 $router->add('POST', '#^/cocktails/store$#', [CocktailController::class, 'store']); // Handle cocktail submission
 $router->add('GET', '#^/cocktails/(\d+)-[^\/]+/edit$#', [CocktailController::class, 'edit']);
@@ -71,6 +71,17 @@ $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'vi
 // Tag Routes
 $router->add('GET', '#^/tags/([a-zA-Z0-9-]+)$#', [TagController::class, 'showTagsByCategory']);  // Show tags for a category like "Flavor", "Mood", etc.
 $router->add('POST', '#^/cocktails/(\d+)/assign-tags$#', [TagController::class, 'assignTagsToCocktail']);  // Assign tags based on ingredients for a cocktail
+// Admin Ingredient Management
+$router->add('GET', '#^/admin/ingredients/uncategorized$#', [IngredientController::class, 'getUncategorizedIngredients']); // Get uncategorized ingredients
+$router->add('POST', '#^/admin/ingredients/assign-tag$#', [IngredientController::class, 'assignTag']); // Assign tag to ingredient
+$router->add('POST', '#^/admin/ingredients/create$#', [IngredientController::class, 'createIngredient']); // Add new ingredient
+$router->add('POST', '#^/admin/ingredients/edit$#', [IngredientController::class, 'editIngredientName']); // Edit ingredient
+$router->add('POST', '#^/admin/ingredients/delete$#', [IngredientController::class, 'deleteIngredient']); // Delete ingredient 
+
+// Admin Unit Management
+$router->add('GET', '#^/admin/units$#', [IngredientController::class, 'showUnits']); // View all units
+$router->add('POST', '#^/admin/unit/add$#', [IngredientController::class, 'addUnit']); // Add a new unit
+$router->add('POST', '#^/admin/unit/delete$#', [IngredientController::class, 'deleteUnit']); // Delete a unit
 // Comment interactions
 $router->add('POST', '#^/cocktails/(\d+)-[^/]+/comments$#', [CommentController::class, 'addComment']);
 $router->add('GET', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
