@@ -1,10 +1,11 @@
 <?php
 session_start(); 
 ob_start();
-
 require_once __DIR__ . '/../app/helpers/helpers.php';
 require_once __DIR__ . '/../router.php';
 require_once __DIR__ . '/../routes.php';
+require_once __DIR__ . '/../app/controllers/TagController.php';
+require_once __DIR__ . '/../app/controllers/IngredientController.php';
 // Dependency injection (manual for now)
 $db = Database::getConnection(); 
 
@@ -41,9 +42,12 @@ $cocktailService = new CocktailService(
 
 // Instantiate the HomeController with the necessary services
 $authController = new AuthController();
-$homeController = new HomeController($cocktailService, $ingredientService, $likeService, $userService, $categoryRepository, $difficultyRepository);
+$homeController = new HomeController($cocktailService, $ingredientService, $likeService, $userService, $categoryRepository, $difficultyRepository, $tagRepository);
 $adminController = new AdminController($cocktailService, $authController);
+$searchController = new SearchController($userService, $cocktailService);
 
+$tagController = new TagController($tagRepository);
+$ingredientController = new IngredientController($ingredientRepository, $tagRepository);
 // Resolve the current request URI
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $action = $router->resolve($requestUri);
@@ -68,6 +72,10 @@ if ($action) {
                 $controller = $homeController; // Use the instantiated HomeController
             } elseif ($controllerClass === 'AdminController') {
                 $controller = $adminController; // Use the instantiated AdminController
+            } elseif ($controllerClass === 'TagController') {
+                $controller = $tagController; // Use the instantiated TagController
+            } elseif ($controllerClass === 'IngredientController') {
+                $controller = $ingredientController; // Use the instantiated IngredientController
             } else {
                 $controller = new $controllerClass();
             }

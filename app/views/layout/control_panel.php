@@ -51,6 +51,13 @@
                     <?php include __DIR__ . '/../admin/manage_users.php'; ?>
                 </div>
             <?php endif; ?>
+            <!-- User Management Button (only for admins) -->
+            <?php if ($_SESSION['user']['is_admin'] ?? false): ?>
+                <button id="toggleTagsManagementButton" class="button">Tags Management</button>
+            <?php endif; ?>
+            <?php if ($_SESSION['user']['is_admin'] ?? false): ?>
+                <button id="toggleIngredientManagementButton" class="button">Ingredient Management</button>
+            <?php endif; ?>
 
             <!-- Link to Add New Cocktail (only for logged-in users) -->
             <?php if (AuthController::isLoggedIn() && $currentUser->canAddCocktail($currentUser->getId())): ?>

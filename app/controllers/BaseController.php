@@ -1,31 +1,40 @@
 <?php
+
 require_once __DIR__ . '/../repositories/CocktailRepository.php';
 require_once __DIR__ . '/../repositories/CategoryRepository.php';
 require_once __DIR__ . '/../repositories/IngredientRepository.php';
-require_once __DIR__ . '/../repositories/StepRepository.php'; // Corrected path
+require_once __DIR__ . '/../repositories/StepRepository.php';
 require_once __DIR__ . '/../repositories/TagRepository.php';
 require_once __DIR__ . '/../repositories/DifficultyRepository.php';
 require_once __DIR__ . '/../repositories/LikeRepository.php';
-require_once __DIR__ . '/../repositories/UnitRepository.php'; // Ensure all dependencies are included
+require_once __DIR__ . '/../repositories/UnitRepository.php';
 require_once __DIR__ . '/../services/IngredientService.php';
 require_once __DIR__ . '/../services/StepService.php';
-require_once __DIR__ . '/../services/CocktailService.php'; // Assuming you need this for instantiation
-require_once __DIR__ . '/../services/UserService.php'; // Include UserService if necessary
+require_once __DIR__ . '/../services/CocktailService.php';
+require_once __DIR__ . '/../services/UserService.php';
 
 class BaseController {
     protected $userService;
     protected $cocktailService;
     protected $stepService;
+    protected $dbConnection;
 
     public function __construct() {
-        $dbConnection = Database::getConnection();
+        // Set up DB connection once
+        $this->dbConnection = Database::getConnection();
 
-        // Instantiate repositories
-        $cocktailRepository = new CocktailRepository($dbConnection);
-        $categoryRepository = new CategoryRepository($dbConnection); // Ensure this is defined
-        $ingredientRepository = new IngredientRepository($dbConnection);
-        $unitRepository = new UnitRepository($dbConnection);
-        $stepRepository = new StepRepository($dbConnection); // Instantiate StepRepository
+        // Instantiate Repositories
+        $cocktailRepository = new CocktailRepository($this->dbConnection);
+        $categoryRepository = new CategoryRepository($this->dbConnection);
+        $ingredientRepository = new IngredientRepository($this->dbConnection);
+        $unitRepository = new UnitRepository($this->dbConnection);
+        $stepRepository = new StepRepository($this->dbConnection);
+        $tagRepository = new TagRepository($this->dbConnection);
+        $difficultyRepository = new DifficultyRepository($this->dbConnection);
+        $likeRepository = new LikeRepository($this->dbConnection);
+        $userRepository = new UserRepository($this->dbConnection);
+
+        // Instantiate Services
         $ingredientService = new IngredientService($ingredientRepository, $unitRepository);
         $stepService = new StepService($stepRepository); // Pass only StepRepository if that is all that is needed
         $tagRepository = new TagRepository($dbConnection);
@@ -38,7 +47,7 @@ class BaseController {
             $cocktailRepository,
             $categoryRepository,
             $ingredientService,
-            $stepService,
+            $this->stepService,
             $tagRepository,
             $difficultyRepository,
             $likeRepository,
@@ -46,6 +55,6 @@ class BaseController {
         );
 
         // Instantiate UserService
-        $this->userService = new UserService(/* pass dependencies if necessary */);
+        $this->userService = new UserService($userRepository);  // Assuming UserService depends on UserRepository
     }
 }

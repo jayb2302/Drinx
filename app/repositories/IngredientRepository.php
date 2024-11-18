@@ -37,10 +37,10 @@ class IngredientRepository
         return $ingredients;
     }
 
-    public function fetchIngredientsForCocktail($cocktailId)
-    {
-        return $this->getIngredientsByCocktailId($cocktailId);
-    }
+    // public function fetchIngredientsForCocktail($cocktailId)
+    // {
+    //     return $this->getIngredientsByCocktailId($cocktailId);
+    // }
 
     public function addIngredient($cocktailId, $ingredientId, $quantity, $unitId)
     {
@@ -71,14 +71,39 @@ class IngredientRepository
         return $stmt->fetchColumn();
     }
 
-
+    
     public function createIngredient($ingredientName)
     {
-        $stmt = $this->db->prepare('INSERT INTO ingredients (name) VALUES (:name)');
-        $stmt->bindParam(':name', $ingredientName, PDO::PARAM_STR);
-        $stmt->execute();
+        try {
+            $stmt = $this->db->prepare('INSERT INTO ingredients (name) VALUES (:name)');
+            $stmt->bindParam(':name', $ingredientName, PDO::PARAM_STR);
+            
+            if ($stmt->execute()) {
+                return $this->db->lastInsertId(); // Return the ID of the new ingredient
+            }
+            
+            // If insertion fails, return false and log error
+            error_log("Failed to insert ingredient: " . $ingredientName);
+            return false;
+        } catch (PDOException $e) {
+            // Log the exception
+            error_log("Error inserting ingredient: " . $e->getMessage());
+            return false; // Return false if there's an exception
+        }
+    }
+    
+    public function doesIngredientExist($ingredientId) {
+        $stmt = $this->db->prepare("SELECT 1 FROM ingredients WHERE ingredient_id = :ingredient_id LIMIT 1");
+        $stmt->execute(['ingredient_id' => $ingredientId]);
+        return $stmt->fetchColumn() !== false;
+    }
+    public function updateIngredientName($ingredientId, $ingredientName)
+    {
+        $stmt = $this->db->prepare("UPDATE ingredients SET name = :ingredient_name WHERE ingredient_id = :ingredient_id");
+        $stmt->bindParam(':ingredient_name', $ingredientName);
+        $stmt->bindParam(':ingredient_id', $ingredientId);
 
-        return $this->db->lastInsertId(); // Return the ID of the newly created ingredient
+        return $stmt->execute();
     }
     // Get all available units
     public function getAllUnits()
@@ -102,5 +127,32 @@ class IngredientRepository
         $stmt = $this->db->prepare('DELETE FROM ingredients WHERE ingredient_id = :ingredient_id');
         $stmt->bindParam(':ingredient_id', $ingredientId, PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+    public function fetchUncategorizedIngredients()
+    {
+        $stmt = $this->db->prepare('
+        SELECT i.ingredient_id, i.name
+        FROM ingredients i
+        LEFT JOIN ingredient_tags it ON i.ingredient_id = it.ingredient_id
+        LEFT JOIN tags t ON it.tag_id = t.tag_id
+        WHERE t.name = "Uncategorized" OR t.tag_id IS NULL
+    ');
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function assignTag($ingredientId, $tagId)
+    {
+        $sql = "INSERT INTO ingredient_tags (ingredient_id, tag_id) VALUES (:ingredient_id, :tag_id)";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute(['ingredient_id' => $ingredientId, 'tag_id' => $tagId]);
+    }
+    public function getUncategorizedTagId()
+    {
+        $stmt = $this->db->prepare('SELECT tag_id FROM tags WHERE name = "Uncategorized"');
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
 }

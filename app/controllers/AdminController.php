@@ -93,16 +93,16 @@ class AdminController
     {
         $data = json_decode(file_get_contents('php://input'), true);
         $cocktailId = $data['cocktail_id'] ?? null;
-    
+
         if ($cocktailId) {
             $this->cocktailService->clearStickyCocktail(); // Clear current sticky
-    
+
             $isSticky = false;
             if (!$this->cocktailService->getStickyCocktail() || !$this->cocktailService->getStickyCocktail()->getCocktailId() === $cocktailId) {
                 $this->cocktailService->setStickyCocktail($cocktailId);
                 $isSticky = true;
             }
-    
+
             echo json_encode([
                 'success' => true,
                 'is_sticky' => $isSticky,
@@ -112,5 +112,14 @@ class AdminController
             echo json_encode(['success' => false, 'message' => 'Invalid cocktail ID.']);
         }
         exit;
+    }
+
+    public function manageTags()
+    {
+        $tagRepository = new TagRepository(Database::getConnection());
+
+
+        // Pass the $tags variable to the view
+        require_once __DIR__ . '/../views/admin/manage_tags.php';
     }
 }

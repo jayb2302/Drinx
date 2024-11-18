@@ -19,6 +19,7 @@ class CocktailController
     private $difficultyRepository;
     private $commentService;
     private $likeService;
+    private $tagRepository;
     private $userService;
 
 
