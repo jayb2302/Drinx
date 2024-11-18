@@ -17,21 +17,51 @@ export function initializeSortAndCategories() {
         history.pushState({ category: state.currentCategory, sort: state.currentSort }, '', newPath);
     }
 
+    function updateSortIndicator() {
+        // Clear the "active" class from all sort options
+        document.querySelectorAll('.sort-options a').forEach(option => {
+            option.classList.remove('active');
+        });
+
+        // Add the "active" class to the current sort option
+        const currentSortOption = document.querySelector(`.sort-options a[href$="/${state.currentSort}"]`);
+        if (currentSortOption) {
+            currentSortOption.classList.add('active');
+        } else {
+            console.warn('Sort indicator not found for:', state.currentSort);
+        }
+    }
+
     function fetchCocktails() {
         const url = state.currentCategory
             ? `/category/${state.currentCategory}/${state.currentSort}`
             : `/${state.currentSort}`;
-        console.log("Fetching URL:", url);
     
         fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then((response) => response.json())
-            .then((data) => {
-                document.querySelector('.wrapper').innerHTML = data.content;
-                initializeLikes(); // Reinitialize event listeners for like buttons
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error fetching cocktails: ${response.status}`);
+                }
+                return response.json();
             })
-            .catch((error) => console.error('Error fetching cocktails:', error));
-    }
+            .then(data => {
+                const wrapper = document.querySelector('.wrapper');
+                if (wrapper) {
+                    wrapper.innerHTML = data.content;
     
+                    console.log('Cocktails content updated, reinitializing functionality...');
+    
+                    // Update active sort option
+                    updateSortIndicator();
+    
+                    // Dispatch a DOMUpdated event for all modules to reinitialize
+                    document.dispatchEvent(new Event('Drinx.DOMUpdated'));
+                } else {
+                    console.error('Wrapper element not found!');
+                }
+            })
+            .catch(error => console.error('Error fetching cocktails:', error));
+    }
 
     document.querySelectorAll('.category-sidebar a').forEach(link => {
         link.addEventListener('click', function (e) {
@@ -61,4 +91,7 @@ export function initializeSortAndCategories() {
             fetchCocktails();
         }
     };
+
+    // Initial update of the sort indicator on page load
+    updateSortIndicator();
 }
