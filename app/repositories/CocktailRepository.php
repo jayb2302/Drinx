@@ -20,7 +20,7 @@ class CocktailRepository
         $ingredients = $this->getIngredientsByCocktailId($data['cocktail_id'] ?? null);
         $steps = $this->getStepsByCocktailId($data['cocktail_id'] ?? null);
         $tags = $data['tags'] ?? [];
-    
+
         return new Cocktail(
             $data['cocktail_id'] ?? 0,
             $data['user_id'] ?? 0,
@@ -153,9 +153,9 @@ class CocktailRepository
         $searchTerm = '%' . $query . '%';
         $stmt->bindParam(':query', $searchTerm, PDO::PARAM_STR);
         $stmt->execute();
-    
+
         $cocktailsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
         // Map the results directly to prevent adding default attributes like hasLiked
         return array_map(function ($data) {
             return [
@@ -207,27 +207,54 @@ class CocktailRepository
 
         return array_map([$this, 'createCocktailObject'], $cocktailsData);
     }
-
-    // Fetches all categories
-    public function getCategories()
-    {
-        $stmt = $this->db->query('SELECT * FROM categories');
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    // Fetches the category for a given cocktail ID
-    public function getCategoryByCocktailId($cocktailId)
+    // Cocktails sorted by creation date within a category
+    public function getCocktailsByCategorySortedByDate($categoryId)
     {
         $stmt = $this->db->prepare("
-            SELECT cat.* 
-            FROM categories cat
-            JOIN cocktails c ON c.category_id = cat.category_id
-            WHERE c.cocktail_id = :cocktail_id
-        ");
-        $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
+        SELECT * FROM cocktails
+        WHERE category_id = :category_id
+        ORDER BY created_at DESC
+    ");
+        $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return array_map([$this, 'createCocktailObject'], $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
+
+    // Cocktails sorted by likes within a category
+    public function getCocktailsByCategorySortedByLikes($categoryId)
+    {
+        $stmt = $this->db->prepare("
+        SELECT c.*, COUNT(l.like_id) AS like_count
+        FROM cocktails c
+        LEFT JOIN likes l ON c.cocktail_id = l.cocktail_id
+        WHERE c.category_id = :category_id
+        GROUP BY c.cocktail_id
+        ORDER BY like_count DESC
+    ");
+        $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+        $stmt->execute();
+        return array_map([$this, 'createCocktailObject'], $stmt->fetchAll(PDO::FETCH_ASSOC));
+    }
+
+    // Hot cocktails within a category
+    public function getHotCocktailsByCategory($categoryId)
+    {
+        $stmt = $this->db->prepare("
+        SELECT c.*, (2 * COUNT(l.like_id) + COUNT(com.comment_id)) AS hot_score
+        FROM cocktails c
+        LEFT JOIN likes l ON c.cocktail_id = l.cocktail_id AND l.created_at >= NOW() - INTERVAL 7 DAY
+        LEFT JOIN comments com ON c.cocktail_id = com.cocktail_id AND com.created_at >= NOW() - INTERVAL 7 DAY
+        WHERE c.category_id = :category_id
+        AND (l.created_at >= NOW() - INTERVAL 7 DAY OR com.created_at >= NOW() - INTERVAL 7 DAY)
+        GROUP BY c.cocktail_id
+        ORDER BY hot_score DESC;
+
+    ");
+        $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+        $stmt->execute();
+        return array_map([$this, 'createCocktailObject'], $stmt->fetchAll(PDO::FETCH_ASSOC));
+    }
+
 
     // Fetch cocktails by category
     public function getCocktailsByCategory($categoryId)
