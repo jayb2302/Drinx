@@ -65,7 +65,7 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
                         <?= $cocktail->hasLiked ? '❤️' : '🤍' ?>
                     </span>
                 </button>
-                <span class="like-count"><?= $totalLikes ?>  </span>
+                <span class="like-count"><?= $totalLikes ?> </span>
             <?php else: ?>
                 <p><a href="/login">Log in to like</a></p>
             <?php endif; ?>

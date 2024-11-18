@@ -5,15 +5,28 @@
 </footer>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-<script src="<?= asset('assets/js/sort&category.js'); ?>"></script>
-<script src="<?= asset('assets/js/search.js'); ?>"></script>
-<script src="<?= asset('assets/js/cocktail.js'); ?>"></script>
-<script src="<?= asset('assets/js/comments.js'); ?>"></script>
-<script src="<?= asset('assets/js/likes.js'); ?>"></script>
-<script src="<?= asset('assets/js/admin.js'); ?>"></script>
-<script src="<?= asset('assets/js/profile.js'); ?>"></script>
-<script src="<?= asset('assets/js/random.js'); ?>"></script>
-<script src="<?= asset('assets/js/sticky.js'); ?>"></script>
+<script type="module">
+    import { initializeLikes } from '/assets/js/modules/likes.js';
+    import { initializeAdmin } from '/assets/js/modules/admin.js';
+    import { initializeRandomCocktail } from '/assets/js/modules/random.js';
+    import { initializeComments } from '/assets/js/modules/comments.js';
+    import { initializeProfile } from '/assets/js/modules/profile.js';
+    import { initializeSearch } from '/assets/js/modules/search.js';
+    import { initializeSticky } from '/assets/js/modules/sticky.js';
+    import { initializeCocktail } from '/assets/js/modules/cocktail.js';
+    import { initializeSortAndCategories } from '/assets/js/modules/sort-and-category.js';
+
+
+    if (document.querySelector('.category-sidebar')) initializeSortAndCategories();
+    if (document.querySelector('.like-button')) initializeLikes();
+    if (document.querySelector('#userTableBody')) initializeAdmin();
+    if (document.querySelector('.aboutContainer')) initializeRandomCocktail();
+    if (document.querySelector('.dotsButton')) initializeComments();
+    if (document.getElementById('edit-profile-form')) initializeProfile();
+    if (document.querySelector('#searchInput')) initializeSearch();
+    if (document.querySelector('.set-sticky')) initializeSticky();
+    if (document.getElementById('cocktailId')) initializeCocktail();
+</script>
 
 </body>
 </html>
