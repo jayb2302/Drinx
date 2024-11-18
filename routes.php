@@ -19,30 +19,35 @@ $router->add('GET', '#^/login$#', [HomeController::class, 'index']); // Show log
 $router->add('GET', '#^/register$#', [HomeController::class, 'index']); // Show register form within home page
 $router->add('GET', '#^/about$#', [HomeController::class, 'about']);
 
-// Admin User Management Routes
-$router->add('POST', '#^/admin/update-status$#', [AdminController::class, 'updateUserStatus']);
-
-// Admin Tag Management Routes
-$router->add('GET', '#^/admin/tags$#', [TagController::class, 'getAllTags']); // Fetch all tags
-$router->add('POST', '#^/admin/tag/save$#', [TagController::class, 'saveTag']);
-$router->add('POST', '#^/admin/tag/add$#', [TagController::class, 'saveTag']);
-$router->add('POST', '#^/admin/tag/delete$#', [TagController::class, 'deleteTag']);
-$router->add('GET', '#^/admin/tag/edit/(\d+)$#', [TagController::class, 'editTag']);
-$router->add('GET', '#^/admin/ingredients/uncategorized$#', [IngredientController::class, 'getUncategorizedIngredients']);
-$router->add('POST', '#^/admin/ingredients/assign-tag$#', [IngredientController::class, 'assignTag']);
-// Sticky cocktail routes
-$router->add('POST', '#^/admin/toggle-sticky$#', [AdminController::class, 'toggleStickyCocktail']);
-$router->add('GET', '#^/admin/sticky-cocktail$#', [AdminController::class, 'getStickyCocktail']);
-// Search route
-$router->add('GET', '#^/search$#', [SearchController::class, 'search']);
-$router->add('GET', '#^/searchAllUsers$#', [SearchController::class, 'adminUserSearch']);
-
 // Authentication routes
 $router->add('POST', '#^/login$#', [AuthController::class, 'authenticate']); // Handle login
 $router->add('GET', '#^/login$#', [AuthController::class, 'showLoginForm']); // Show login form
 $router->add('POST', '#^/register$#', [AuthController::class, 'store']); // Handle registration
 $router->add('GET', '#^/register$#', [AuthController::class, 'showRegisterForm']); // Show registration form
 $router->add('GET', '#^/logout$#', [AuthController::class, 'logout']); // Logout route
+
+// Admin User Management Routes
+$router->add('POST', '#^/admin/update-status$#', [AdminController::class, 'updateUserStatus']);
+// Sticky cocktail routes
+$router->add('POST', '#^/admin/toggle-sticky$#', [AdminController::class, 'toggleStickyCocktail']);
+$router->add('GET', '#^/admin/sticky-cocktail$#', [AdminController::class, 'getStickyCocktail']);
+// Admin Tag Management Routes
+$router->add('GET', '#^/admin/tags$#', [TagController::class, 'getAllTags']); // Fetch all tags
+$router->add('POST', '#^/admin/tag/save$#', [TagController::class, 'saveTag']);
+$router->add('POST', '#^/admin/tag/add$#', [TagController::class, 'saveTag']);
+$router->add('POST', '#^/admin/tag/delete$#', [TagController::class, 'deleteTag']);
+$router->add('GET', '#^/admin/tag/edit/(\d+)$#', [TagController::class, 'editTag']);
+// Ingredient Manangement Routes
+$router->add('GET', '#^/admin/ingredients/uncategorized$#', [IngredientController::class, 'getUncategorizedIngredients']);
+$router->add('POST', '#^/admin/ingredients/assign-tag$#', [IngredientController::class, 'assignTag']);
+$router->add('POST', '#^/admin/ingredients/create$#', [IngredientController::class, 'createIngredient']); // Add new ingredient
+$router->add('POST', '#^/admin/ingredients/edit$#', [IngredientController::class, 'editIngredientName']); // Edit ingredient name
+$router->add('POST', '#^/admin/ingredients/delete$#', [IngredientController::class, 'deleteIngredient']); // Delete ingredient
+// Search route
+$router->add('GET', '#^/search$#', [SearchController::class, 'search']);
+$router->add('GET', '#^/searchAllUsers$#', [SearchController::class, 'adminUserSearch']);
+
+
 
 // User routes
 $router->add('GET', '#^/profile/(\d+)$#', [UserController::class, 'profile']);

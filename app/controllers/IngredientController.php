@@ -29,95 +29,101 @@ class IngredientController
     }
 
     // Assign a tag to an ingredient
-    public function assignTag()
-    {
+    public function assignTag() {
         try {
             $data = json_decode(file_get_contents('php://input'), true);
             $ingredientId = $data['ingredient_id'] ?? null;
             $ingredientName = trim($data['ingredient_name'] ?? '');
             $tagId = $data['tag_id'] ?? null;
-
-            // Validate input
+    
+            // Debugging log
+            error_log("Assigning Tag - Ingredient ID: $ingredientId, Tag ID: $tagId");
+    
             if (!$ingredientId || !$tagId) {
                 http_response_code(400);
+                error_log("Invalid ingredient or tag ID.");
                 echo json_encode(['status' => 'error', 'message' => 'Invalid ingredient ID or tag ID provided.']);
                 return;
             }
-
+    
             // Ensure ingredient exists
             if (!$this->ingredientRepository->doesIngredientExist($ingredientId)) {
                 http_response_code(404);
+                error_log("Ingredient not found: $ingredientId");
                 echo json_encode(['status' => 'error', 'message' => 'Ingredient not found.']);
                 return;
             }
-
+    
             // Ensure tag exists
             if (!$this->tagRepository->doesTagExist($tagId)) {
                 http_response_code(404);
+                error_log("Tag not found: $tagId");
                 echo json_encode(['status' => 'error', 'message' => 'Tag not found.']);
                 return;
             }
-
+    
             // Assign the tag
             $result = $this->ingredientRepository->assignTag($ingredientId, $tagId);
-
+    
             if ($result) {
                 echo json_encode(['status' => 'success', 'message' => 'Tag assigned successfully.']);
             } else {
                 http_response_code(500);
+                error_log("Failed to assign tag for Ingredient ID: $ingredientId");
                 echo json_encode(['status' => 'error', 'message' => 'Failed to assign tag.']);
             }
         } catch (Exception $e) {
+            error_log("Error in assignTag method: " . $e->getMessage());
             http_response_code(500);
             echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred.']);
         }
     }
 
     public function createIngredient()
-{
-    try {
-        $data = json_decode(file_get_contents('php://input'), true);
-        $ingredientName = trim($data['ingredient_name'] ?? '');
+    {
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $ingredientName = trim($data['ingredient_name'] ?? '');
 
-        // Check if ingredient name is empty
-        if (empty($ingredientName)) {
-            http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Ingredient name is required.']);
-            return;
-        }
+            // Check if ingredient name is empty
+            if (empty($ingredientName)) {
+                http_response_code(400);
+                echo json_encode(['status' => 'error', 'message' => 'Ingredient name is required.']);
+                return;
+            }
 
-        // Check if ingredient already exists by name
-        $ingredientId = $this->ingredientRepository->getIngredientIdByName($ingredientName);
+            // Check if ingredient already exists by name
+            $ingredientId = $this->ingredientRepository->getIngredientIdByName($ingredientName);
 
-        if ($ingredientId) {
-            // If the ingredient already exists, send an error
-            http_response_code(409);
-            echo json_encode(['status' => 'error', 'message' => 'Ingredient already exists.']);
-            return;
-        }
+            if ($ingredientId) {
+                // If the ingredient already exists, send an error
+                http_response_code(409);
+                echo json_encode(['status' => 'error', 'message' => 'Ingredient already exists.']);
+                return;
+            }
 
-        // Create the new ingredient
-        $ingredientId = $this->ingredientRepository->createIngredient($ingredientName);
+            // Create the new ingredient
+            $ingredientId = $this->ingredientRepository->createIngredient($ingredientName);
 
-        if ($ingredientId) {
-            // Get the "Uncategorized" tag ID using the repository
-            $uncategorizedTagId = $this->ingredientRepository->getUncategorizedTagId();
+            if ($ingredientId) {
+                // Get the "Uncategorized" tag ID using the repository
+                $uncategorizedTagId = $this->ingredientRepository->getUncategorizedTagId();
 
-            // Assign the "Uncategorized" tag
-            $this->ingredientRepository->assignTag($ingredientId, $uncategorizedTagId);
+                // Assign the "Uncategorized" tag
+                $this->ingredientRepository->assignTag($ingredientId, $uncategorizedTagId);
 
-            // Return success response
-            echo json_encode(['status' => 'success', 'message' => 'Ingredient added successfully.', 'ingredient_id' => $ingredientId]);
-        } else {
+                // Return success response
+                echo json_encode(['status' => 'success', 'message' => 'Ingredient added successfully.', 'ingredient_id' => $ingredientId]);
+            } else {
+                http_response_code(500);
+                echo json_encode(['status' => 'error', 'message' => 'Failed to add ingredient.']);
+            }
+        } catch (Exception $e) {
+            error_log("Error: " . $e->getMessage()); // Log the exception
             http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => 'Failed to add ingredient.']);
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred.']);
         }
-    } catch (Exception $e) {
-        error_log("Error: " . $e->getMessage()); // Log the exception
-        http_response_code(500);
-        echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred.']);
     }
-}
 
     public function editIngredientName()
     {

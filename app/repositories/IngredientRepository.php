@@ -71,24 +71,17 @@ class IngredientRepository
         return $stmt->fetchColumn();
     }
 
-    public function doesIngredientExist($ingredientId)
-    {
-        $stmt = $this->db->prepare('SELECT COUNT(*) FROM ingredients WHERE ingredient_id = :id');
-        $stmt->bindParam(':id', $ingredientId, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchColumn() > 0;
-    }
-
+    
     public function createIngredient($ingredientName)
     {
         try {
             $stmt = $this->db->prepare('INSERT INTO ingredients (name) VALUES (:name)');
             $stmt->bindParam(':name', $ingredientName, PDO::PARAM_STR);
-    
+            
             if ($stmt->execute()) {
                 return $this->db->lastInsertId(); // Return the ID of the new ingredient
             }
-    
+            
             // If insertion fails, return false and log error
             error_log("Failed to insert ingredient: " . $ingredientName);
             return false;
@@ -98,7 +91,12 @@ class IngredientRepository
             return false; // Return false if there's an exception
         }
     }
-
+    
+    public function doesIngredientExist($ingredientId) {
+        $stmt = $this->db->prepare("SELECT 1 FROM ingredients WHERE ingredient_id = :ingredient_id LIMIT 1");
+        $stmt->execute(['ingredient_id' => $ingredientId]);
+        return $stmt->fetchColumn() !== false;
+    }
     public function updateIngredientName($ingredientId, $ingredientName)
     {
         $stmt = $this->db->prepare("UPDATE ingredients SET name = :ingredient_name WHERE ingredient_id = :ingredient_id");

@@ -326,44 +326,44 @@ $(function () {
     // Handle tag assignment
     function handleAssignTag() {
         const ingredientId = $("#ingredientId").val();
-        const ingredientName = $("#ingredientNameDisplay").text().trim();
         const tagId = $("#tag").val();
-    
+        
+        console.log("Ingredient ID:", ingredientId);  // Debugging line
+        console.log("Tag ID:", tagId);  // Debugging line
+        
         if (!ingredientId || !tagId) {
             alert("Please select a valid tag.");
             return;
         }
-    
+        
         $.ajax({
             url: "/admin/ingredients/assign-tag",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({ ingredient_id: ingredientId, tag_id: tagId }),
             success: function (response) {
-                try {
-                    // Ensure the response is properly parsed if it's a string
-                    if (typeof response === "string") {
-                        response = JSON.parse(response);
-                    }
+                console.log("Server Response:", response);  // Log the response to verify it
     
-                    // Check the response status
+                try {
+                    if (typeof response === "string") {
+                        response = JSON.parse(response);  // Ensure it is parsed properly
+                    }
+                    
                     if (response.status === "success") {
                         alert(response.message);
-                        // Manually update the tag display on the ingredient item
-                        // This should match your implementation logic
-                        updateIngredientTagInList(ingredientId, tagId);
-                        fetchUncategorizedIngredients(); // Refresh the list (this can be optional depending on the use case)
+                        updateIngredientTagInList(ingredientId, tagId);  // Update UI
+                        fetchUncategorizedIngredients();  // Optionally refresh list
                         $("#assignTagDialog").dialog("close");
                     } else {
                         alert(response.message || "Error assigning tag.");
                     }
                 } catch (e) {
-                    console.error("Error processing server response:", e, response);
+                    console.error("Error processing server response:", e);
                     alert("Failed to process the server response.");
                 }
             },
             error: function (xhr, status, error) {
-                console.error("Assign Tag Error:", error, xhr.responseText);
+                console.error("Assign Tag Error:", error);
                 alert("An error occurred while assigning the tag.");
             }
         });
@@ -426,6 +426,21 @@ $(function () {
     //         }
     //     });
     // }
+    function updateIngredientTagInList(ingredientId, tagId) {
+        console.log('Updating ingredient tag:', ingredientId, tagId); // Debug log
+        const ingredientItem = document.querySelector(`#ingredientList li[data-ingredient-id='${ingredientId}']`);
+    
+        if (ingredientItem) {
+            const tagElement = ingredientItem.querySelector("span:nth-child(2)");
+            if (tagElement) {
+                const tagName = $("#tag option:selected").text();
+                const categoryName = $("#tag option:selected").closest("optgroup").attr("label");
+                tagElement.textContent = `${tagName} (${categoryName || 'No category'})`;
+            }
+        } else {
+            console.log('Ingredient not found in the list:', ingredientId); // Debug log
+        }
+    }
     // Initial fetch for uncategorized ingredients
     fetchUncategorizedIngredients();
 });
