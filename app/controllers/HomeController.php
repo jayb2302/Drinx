@@ -44,86 +44,76 @@ class HomeController
         $isAdmin = $_SESSION['user']['is_admin'] ?? false;
         $isStandalone = false; // When rendering the homepage, set as false
 
-        // Check if there's a sort option in the query, default to 'recent'
-        $sortOption = $_GET['sort'] ?? 'recent';
-        if (strpos($_SERVER['REQUEST_URI'], '/popular') !== false) {
-            $sortOption = 'popular';
-        } elseif (strpos($_SERVER['REQUEST_URI'], '/hot') !== false) {
-            $sortOption = 'hot';
+        // Checks if $categoryName is one of the sort options (recent, popular, hot)
+        if (in_array($categoryName, ['recent', 'popular', 'hot'])) {
+            $sortOption = $categoryName;
+            $categoryName = null;
         }
 
-        // Fetch cocktails based on the sort option
-        if ($sortOption === 'popular') {
-            $cocktails = $this->cocktailService->getCocktailsSortedByLikes();
-        } elseif ($sortOption === 'hot') {
-            $cocktails = $this->cocktailService->getHotCocktails();
+        // Resolve sorting option (default to 'recent')
+        $sortOption = $sortOption ?? ($_GET['sort'] ?? 'recent');
+
+        // Fetch cocktails globally or by category
+        if ($categoryName) {
+            $categoryName = str_replace('-', ' ', urldecode($categoryName));
+            $categoryId = $this->categoryRepository->getCategoryIdByName($categoryName);
+            if (!$categoryId) {
+                http_response_code(404);
+                echo "Category not found.";
+                return;
+            }
+            $cocktails = match ($sortOption) {
+                'popular' => $this->cocktailService->getCocktailsByCategorySortedByLikes($categoryId),
+                'hot' => $this->cocktailService->getHotCocktailsByCategory($categoryId),
+                default => $this->cocktailService->getCocktailsByCategorySortedByDate($categoryId),
+            };
         } else {
-            $cocktails = $this->cocktailService->getCocktailsSortedByDate();
+            // No category selected, fetch cocktails globally
+            $cocktails = match ($sortOption) {
+                'popular' => $this->cocktailService->getCocktailsSortedByLikes(),
+                'hot' => $this->cocktailService->getHotCocktails(),
+                default => $this->cocktailService->getCocktailsSortedByDate(),
+            };
         }
 
-        // Fetch other necessary data
-        $categories = $this->categoryRepository->getAllCategories();
+        // Check for AJAX request
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
+            ob_start();
+            include __DIR__ . '/../views/cocktails/index.php';
+            $content = ob_get_clean();
+            header('Content-Type: application/json');
+            echo json_encode(['content' => $content]);
+            return;
+        }
+
+        // Additional data needed for the page
+        $categories = $this->cocktailService->getCategories();
         $randomCocktail = $this->cocktailService->getRandomCocktail();
         $stickyCocktail = $this->cocktailService->getStickyCocktail();
-        // Sanitize and determine if we should show a specific form
+        $units = $this->ingredientService->getAllUnits();
+        $difficulties = $this->difficultyRepository->getAllDifficulties();
+
+        // Add 'hasLiked' status to each cocktail if the user is logged in
+        foreach ($cocktails as $cocktail) {
+            $cocktail->hasLiked = $loggedInUserId
+                ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktail->getCocktailId())
+                : false;
+        }
+
+        // Prepare user profile and admin data
+        $userProfile = $loggedInUserId ? $this->userService->getUserWithFollowCounts($loggedInUserId) : null;
+        $users = $isAdmin ? $this->userService->getAllUsersWithStatus() : null;
+
+        // Determine if specific forms should be shown based on the action query
         $action = isset($_GET['action']) ? sanitize($_GET['action']) : null;
         $isAdding = $action === 'add';
         $isLoggingIn = $action === 'login';
         $isRegistering = $action === 'register';
-    
-        // Add 'hasLiked' status to each cocktail
-        foreach ($cocktails as $cocktail) {
-            $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktail->getCocktailId()) : false;
-        }
-
-        // Fetch categories and units if needed for forms
-        $categories = $this->cocktailService->getCategories();
-        $units = $this->ingredientService->getAllUnits();
-        $difficulties = $this->difficultyRepository->getAllDifficulties(); 
-
-        $userProfile = $loggedInUserId ? $this->userService->getUserWithFollowCounts($loggedInUserId) : null;
-        // Fetch users if admin is logged in
-        $users = ($isAdmin) ? $this->userService->getAllUsersWithStatus() : null;
 
         // Load the view
         require_once __DIR__ . '/../views/home.php';
     }
 
-    public function filterByCategory($categoryName)
-    {
-        // Process category name and get category ID
-        $categoryName = str_replace('-', ' ', urldecode($categoryName));
-        $categories = $this->categoryRepository->getAllCategories();
-        $categoryId = null;
-
-        foreach ($categories as $category) {
-            if (strtolower($category['name']) === strtolower($categoryName)) {
-                $categoryId = $category['category_id'];
-                break;
-            }
-        }
-
-        if ($categoryId === null) {
-            http_response_code(404);
-            echo "Category not found";
-            return;
-        }
-
-        $cocktails = $this->cocktailService->getCocktailsByCategory($categoryId);
-
-        // Check if the request is AJAX
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
-            ob_start();
-            include __DIR__ . '/../views/cocktails/index.php';
-            $content = ob_get_clean();
-            echo json_encode(['content' => $content]);
-            return;
-        }
-
-        // Load the full page for non-AJAX requests
-        $stickyCocktail = $this->cocktailService->getStickyCocktail();
-        require_once __DIR__ . '/../views/home.php';
-    }
 
 
 

@@ -31,6 +31,7 @@ class BaseController {
         $tagRepository = new TagRepository($dbConnection);
         $difficultyRepository = new DifficultyRepository($dbConnection);
         $likeRepository = new LikeRepository($dbConnection);
+        $userRepository = new UserRepository($dbConnection);
 
         // Instantiate the CocktailService with all its required dependencies
         $this->cocktailService = new CocktailService(
@@ -40,7 +41,8 @@ class BaseController {
             $stepService,
             $tagRepository,
             $difficultyRepository,
-            $likeRepository
+            $likeRepository,
+            $userRepository 
         );
 
         // Instantiate UserService

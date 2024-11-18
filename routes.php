@@ -13,6 +13,12 @@ require_once __DIR__ . '/app/controllers/AdminController.php';
 
 $router = new Router(); // Instantiate the Router class
 
+// Category routes (with sort options)
+$router->add('GET', '#^/category/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)$#', [HomeController::class, 'index']); // Match /category/{category}/{sort}
+$router->add('GET', '#^/category/([a-zA-Z0-9-]+)$#', [HomeController::class, 'index']); // Match /category/{category}
+// Sort cocktails routes (for all cocktails)
+$router->add('GET', '#^/(recent|popular|hot)$#', [HomeController::class, 'index']);
+
 // Home Routes
 $router->add('GET', '#^/$#', [HomeController::class, 'index']); // Home page
 $router->add('GET', '#^/login$#', [HomeController::class, 'index']); // Show login form within home page
@@ -71,11 +77,3 @@ $router->add('POST', '#^/comments/(\d+)/reply$#', [CommentController::class, 're
 // Toggle like route
 $router->add('POST', '#^/cocktails/(\d+)/toggle-like$#', [LikeController::class, 'toggleLike']);
 
-
-// Sort cocktails routes
-$router->add('GET', '#^/recent$#', [HomeController::class, 'index']);
-$router->add('GET', '#^/popular$#', [HomeController::class, 'index']);
-$router->add('GET', '#^/hot$#', [HomeController::class, 'index']);
-
-// Category routes
-$router->add('GET', '#^/category/([a-zA-Z0-9-]+)$#', [HomeController::class, 'filterByCategory']);

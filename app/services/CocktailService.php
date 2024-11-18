@@ -160,6 +160,20 @@ class CocktailService
     {
         return $this->cocktailRepository->getAllSortedByLikes();
     }
+    public function getCocktailsByCategorySortedByDate($categoryId)
+    {
+        return $this->cocktailRepository->getCocktailsByCategorySortedByDate($categoryId);
+    }
+
+    public function getCocktailsByCategorySortedByLikes($categoryId)
+    {
+        return $this->cocktailRepository->getCocktailsByCategorySortedByLikes($categoryId);
+    }
+
+    public function getHotCocktailsByCategory($categoryId)
+    {
+        return $this->cocktailRepository->getHotCocktailsByCategory($categoryId);
+    }
 
     public function searchCocktails($query)
     {
@@ -185,13 +199,15 @@ class CocktailService
     {
         $this->cocktailRepository->clearStickyCocktail();
     }
-    public function getHotCocktails() {
+    public function getHotCocktails()
+    {
         return $this->cocktailRepository->getAllHotCocktails();
     }
     public function getCocktailsByCategory($categoryId)
-{
-    return $this->cocktailRepository->getCocktailsByCategory($categoryId);
-}
+    {
+        return $this->cocktailRepository->getCocktailsByCategory($categoryId);
+    }
+    
 
 
 
