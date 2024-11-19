@@ -1,12 +1,13 @@
 $(function () {
-    // Toggle Tag Management visibility
-    $("#toggleTagsManagementButton").click(function () {
+        // Cache selectors
         const $tagsManagement = $("#tagsManagement");
-
-        $tagsManagement.is(":visible")
-            ? $tagsManagement.slideUp()
-            : $tagsManagement.slideDown();
-    });
+        const $tagDialog = $("#tagDialog");
+        const $notificationDialog = $("#notificationDialog");
+    
+        // Toggle Tag Management visibility
+        $("#toggleTagsManagementButton").on("click", function () {
+            $tagsManagement.slideToggle();
+        })
 
     // Initialize the jQuery UI dialog
     $("#tagDialog").dialog({
@@ -66,10 +67,13 @@ $(function () {
         const tagId = $button.data("tag-id");
         const tagName = $button.data("tag-name");
         const tagCategoryId = $button.data("tag-category-id");
-
+    
+        // Set values in the dialog form
         $("#tagId").val(tagId);
         $("#tagName").val(tagName);
-        $("#tagCategory").val(tagCategoryId);
+        $("#tagCategory").val(tagCategoryId); // Set the category based on the selected tag's category ID
+    
+        // Open the dialog
         $("#tagDialog").dialog("open");
     }
 

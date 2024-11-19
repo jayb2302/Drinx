@@ -286,22 +286,12 @@ $(function () {
             url: "/admin/tags",
             method: "GET",
             success: function (response) {
+                console.log("Tags Response:", response); // Debug log
                 if (response.status === "success") {
                     const $dropdown = $("#tag");
                     $dropdown.empty();
-
-                    // Group tags by category
-                    const groupedTags = {};
-                    response.tags.forEach(tag => {
-                        const category = tag.category_name || "Uncategorized";
-                        if (!groupedTags[category]) {
-                            groupedTags[category] = [];
-                        }
-                        groupedTags[category].push(tag);
-                    });
-
-                    // Populate the dropdown
-                    for (const [category, tags] of Object.entries(groupedTags)) {
+    
+                    for (const [category, tags] of Object.entries(response.tags)) {
                         const $optgroup = $("<optgroup>").attr("label", category);
                         tags.forEach(tag => {
                             $optgroup.append(
@@ -310,10 +300,10 @@ $(function () {
                         });
                         $dropdown.append($optgroup);
                     }
-
+    
                     if (callback) callback();
                 } else {
-                    alert("No tags found.");
+                    alert(response.message || "No tags found.");
                 }
             },
             error: function (xhr, status, error) {
@@ -327,39 +317,28 @@ $(function () {
     function handleAssignTag() {
         const ingredientId = $("#ingredientId").val();
         const tagId = $("#tag").val();
-        
-        console.log("Ingredient ID:", ingredientId);  // Debugging line
-        console.log("Tag ID:", tagId);  // Debugging line
-        
+    
+        console.log("Assigning Tag - Ingredient ID:", ingredientId, "Tag ID:", tagId);
+    
         if (!ingredientId || !tagId) {
             alert("Please select a valid tag.");
             return;
         }
-        
+    
         $.ajax({
             url: "/admin/ingredients/assign-tag",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({ ingredient_id: ingredientId, tag_id: tagId }),
             success: function (response) {
-                console.log("Server Response:", response);  // Log the response to verify it
+                console.log("Assign Tag Response:", response);
     
-                try {
-                    if (typeof response === "string") {
-                        response = JSON.parse(response);  // Ensure it is parsed properly
-                    }
-                    
-                    if (response.status === "success") {
-                        alert(response.message);
-                        updateIngredientTagInList(ingredientId, tagId);  // Update UI
-                        fetchUncategorizedIngredients();  // Optionally refresh list
-                        $("#assignTagDialog").dialog("close");
-                    } else {
-                        alert(response.message || "Error assigning tag.");
-                    }
-                } catch (e) {
-                    console.error("Error processing server response:", e);
-                    alert("Failed to process the server response.");
+                if (response.status === "success") {
+                    alert(response.message);
+                    fetchUncategorizedIngredients(); // Refresh ingredient list
+                    $("#assignTagDialog").dialog("close");
+                } else {
+                    alert(response.message || "Failed to assign tag.");
                 }
             },
             error: function (xhr, status, error) {

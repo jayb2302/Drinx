@@ -3,6 +3,9 @@
 @import '../css/pages/profile.css'; 
 @import '../css/pages/about.css';
 @import '../css/pages/home.css';
+@import '../css/pages/admin.css';
+@import '../css/components/jquery-ui.css';
+@import '../css/components/tags.css';
 @import '../css/components/control-panel.css';
 @import '../css/components/button.css';
 @import '../css/components/navbar.css';
@@ -89,7 +92,7 @@
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    color: var(--text-primary); 
+    color: var(--text-secondary); 
     letter-spacing: 0.03em;
   }
   
@@ -101,9 +104,10 @@ a {
     color: var(--text-link);
     text-decoration: none;
     transition: color 0.3s;
+    font-size: 1.2rem;
   }
   
   a:hover {
-    color: var(--accent-hover);
+    color: var(--text-primary);
 }
  
