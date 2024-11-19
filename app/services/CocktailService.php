@@ -54,6 +54,11 @@ class CocktailService
         return $this->cocktailRepository->getAll();
     }
 
+    public function countCocktails()
+    {
+        return $this->cocktailRepository->countCocktails();
+    }
+    
     public function createCocktail($cocktailData)
     {
         return $this->cocktailRepository->create($cocktailData);
@@ -120,10 +125,10 @@ class CocktailService
         return $this->tagRepository->addTagToCocktail($cocktailId, $tagId);
     }
 
-    public function removeTagFromCocktail($cocktailId, $tagId)
-    {
-        return $this->tagRepository->removeTagFromCocktail($cocktailId, $tagId);
-    }
+    // public function removeTagFromCocktail($cocktailId, $tagId)
+    // {
+    //     return $this->tagRepository->removeTagFromCocktail($cocktailId, $tagId);
+    // }
 
     public function getAllTags()
     {
@@ -207,8 +212,4 @@ class CocktailService
     {
         return $this->cocktailRepository->getCocktailsByCategory($categoryId);
     }
-    
-
-
-
 }

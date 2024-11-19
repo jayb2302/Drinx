@@ -33,12 +33,13 @@ $router->add('GET', '#^/register$#', [AuthController::class, 'showRegisterForm']
 $router->add('GET', '#^/logout$#', [AuthController::class, 'logout']); // Logout route
 
 // Admin User Management Routes
+$router->add('GET', '#^/admin/dashboard$#', [AdminController::class, 'dashboard']);
 $router->add('POST', '#^/admin/update-status$#', [AdminController::class, 'updateUserStatus']);
 // Sticky cocktail routes
 $router->add('POST', '#^/admin/toggle-sticky$#', [AdminController::class, 'toggleStickyCocktail']);
 $router->add('GET', '#^/admin/sticky-cocktail$#', [AdminController::class, 'getStickyCocktail']);
 // Admin Tag Management Routes
-$router->add('GET', '#^/admin/tags$#', [TagController::class, 'getAllTags']); // Fetch all tags
+$router->add('GET', '#^/admin/tags$#', [AdminController::class, 'manageTags']);
 $router->add('POST', '#^/admin/tag/save$#', [TagController::class, 'saveTag']);
 $router->add('POST', '#^/admin/tag/add$#', [TagController::class, 'saveTag']);
 $router->add('POST', '#^/admin/tag/delete$#', [TagController::class, 'deleteTag']);

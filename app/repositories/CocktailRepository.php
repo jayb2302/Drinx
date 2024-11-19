@@ -80,6 +80,7 @@ class CocktailRepository
             LIMIT 1";
         return $this->db->query($query)->fetch();
     }
+    
     public function countCocktailsWithoutComments()
     {
         $query = "
@@ -89,6 +90,7 @@ class CocktailRepository
         WHERE cm.comment_id IS NULL";
         return $this->db->query($query)->fetchColumn();
     }
+
     // Fetch cocktail by name
     public function getByName($name)
     {
