@@ -1,4 +1,7 @@
 <?php
+$metaTitle = "Drinx - Cocktail Library";
+$pageTitle = "Drip, Drop, Drinx";
+
 include __DIR__ . '/layout/header.php';
 
 // Check if the logout_success cookie is set and display it
@@ -15,6 +18,12 @@ $matches = [];
 $isEditing = preg_match('#^/cocktails/(\d+)/edit$#', $currentPath, $matches);
 $cocktailId = $matches[1] ?? null;
 ?>
+
+<?php if (isset($includeScripts) && is_array($includeScripts)): ?>
+    <?php foreach ($includeScripts as $script): ?>
+        <script src="<?= htmlspecialchars($script); ?>"></script>
+    <?php endforeach; ?>
+<?php endif; ?>
 <div class="content-wrapper">
 <aside class="leftSidebar">
         <?php include __DIR__ . '/cocktails/categories.php'; ?>
@@ -45,6 +54,12 @@ $cocktailId = $matches[1] ?? null;
             <!-- <button class="button" onclick="toggleUserManagement()">User Management</button> -->
             <div id="userManagement" style="display: none;">
                 <?php include __DIR__ . '/admin/manage_users.php'; ?>
+            </div>
+            <div id="tagsManagement" style="display: none;">
+                <?php include __DIR__ . '/admin/manage_tags.php';?>
+            </div>
+            <div id="ingredientManagement" style="display: none;">
+                <?php include __DIR__ . '/admin/manage_ingredients.php';?>
             </div>
         <?php endif; ?>
         <!-- Logic to include forms based on the path -->
@@ -84,9 +99,6 @@ $cocktailId = $matches[1] ?? null;
         <?php
         $userProfile = $userProfile ?? null;
         include __DIR__ . '/layout/control_panel.php'; ?>
-
-
-
     </aside>
 </div>
 <?php include __DIR__ . '/layout/footer.php'; ?>

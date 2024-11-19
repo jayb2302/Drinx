@@ -15,6 +15,7 @@ class User
     private $profilePicture;
     private $bio;
     private $rank;
+    private $recipeCount;
 
     private $followersCount;
     private $followingCount;
@@ -210,6 +211,16 @@ class User
     public function setFollowingCount($count)
     {
         $this->followingCount = $count;
+    }
+
+    public function setRecipeCount($recipeCount)
+    {
+        $this->recipeCount = $recipeCount;
+    }
+
+    public function getRecipeCount()
+    {
+        return $this->recipeCount;
     }
 
 }

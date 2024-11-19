@@ -21,6 +21,7 @@ class HomeController
     private $userService;
     private $categoryRepository;
     private $difficultyRepository;
+    private $tagRepository;
 
     public function __construct(
         CocktailService $cocktailService,
@@ -28,7 +29,8 @@ class HomeController
         LikeService $likeService,
         UserService $userService,
         CategoryRepository $categoryRepository,
-        DifficultyRepository $difficultyRepository
+        DifficultyRepository $difficultyRepository,
+        TagRepository $tagRepository
     ) {
         $this->cocktailService = $cocktailService;
         $this->ingredientService = $ingredientService;
@@ -36,6 +38,7 @@ class HomeController
         $this->userService = $userService;
         $this->categoryRepository = $categoryRepository;
         $this->difficultyRepository = $difficultyRepository;
+        $this->tagRepository = $tagRepository;
     }
 
     public function index($categoryName = null, $sortOption = 'recent')
@@ -92,6 +95,7 @@ class HomeController
         $stickyCocktail = $this->cocktailService->getStickyCocktail();
         $units = $this->ingredientService->getAllUnits();
         $difficulties = $this->difficultyRepository->getAllDifficulties();
+        $tags = $this->tagRepository->getAllTags();
 
         // Add 'hasLiked' status to each cocktail if the user is logged in
         foreach ($cocktails as $cocktail) {
@@ -109,7 +113,9 @@ class HomeController
         $isAdding = $action === 'add';
         $isLoggingIn = $action === 'login';
         $isRegistering = $action === 'register';
-
+        $includeScripts = [
+            asset('assets/js/sort-category.js')
+        ];  
         // Load the view
         require_once __DIR__ . '/../views/home.php';
     }
