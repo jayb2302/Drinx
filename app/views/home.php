@@ -18,6 +18,12 @@ $matches = [];
 $isEditing = preg_match('#^/cocktails/(\d+)/edit$#', $currentPath, $matches);
 $cocktailId = $matches[1] ?? null;
 ?>
+
+<?php if (isset($includeScripts) && is_array($includeScripts)): ?>
+    <?php foreach ($includeScripts as $script): ?>
+        <script src="<?= htmlspecialchars($script); ?>"></script>
+    <?php endforeach; ?>
+<?php endif; ?>
 <div class="content-wrapper">
 <aside class="leftSidebar">
         <?php include __DIR__ . '/cocktails/categories.php'; ?>
@@ -53,7 +59,7 @@ $cocktailId = $matches[1] ?? null;
                 <?php include __DIR__ . '/admin/manage_tags.php';?>
             </div>
             <div id="ingredientManagement" style="display: none;">
-                <?php include __DIR__ . '/admin/manage_ingredient.php';?>
+                <?php include __DIR__ . '/admin/manage_ingredients.php';?>
             </div>
         <?php endif; ?>
         <!-- Logic to include forms based on the path -->

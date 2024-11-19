@@ -5,13 +5,17 @@
         <input type="text" id="tagName" required>
         <br><br>
         <label for="tagCategory">Category:</label>
-        <select id="tagCategory" required>
-            <option value="">Select a category</option>
-            <?php foreach ($tagCategories as $category): ?>
-                <option value="<?= htmlspecialchars($category['tag_category_id']) ?>">
-                    <?= htmlspecialchars($category['category_name']) ?>
-                </option>
-            <?php endforeach; ?>
+        <select id="tagCategory" name="tagCategory">
+            <option value="">Select Category</option>
+            <?php if (!empty($categories)): ?>
+                <?php foreach ($categories as $category): ?>
+                    <option value="<?= htmlspecialchars($category['tag_category_id']); ?>">
+                        <?= htmlspecialchars($category['category_name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <option>No categories available</option>
+            <?php endif; ?>
         </select>
     </form>
 </div>

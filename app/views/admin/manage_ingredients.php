@@ -1,5 +1,5 @@
-
-<h1>Manage Ingredients</h1>
+<div class="admin-container">
+<h1 class="admin-control-tile">Manage Ingredients</h1>
 
 <!-- Button to open the Add New Ingredient Modal -->
 <button id="adminAddIngredientButton">Add New Ingredient</button>
@@ -40,4 +40,5 @@
             <select id="tag" name="tag_id"></select>
         </form>
     </div>
+</div>
 </div>

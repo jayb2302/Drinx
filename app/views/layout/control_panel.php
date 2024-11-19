@@ -44,24 +44,28 @@
                 <a href="/profile/<?= htmlspecialchars($username); ?>" class="button-primary">View Profile</a>
             <?php endif; ?>
 
-            <!-- User Management Button (only for admins) -->
+
             <?php if ($_SESSION['user']['is_admin'] ?? false): ?>
-                <button class="button" onclick="toggleUserManagement()">User Management</button>
+                <!-- <button class="button" onclick="toggleUserManagement()">User Management</button> -->
                 <div id="userManagement" style="display: none;">
                     <?php include __DIR__ . '/../admin/manage_users.php'; ?>
                 </div>
+<!-- 
+                <button id="toggleTagsManagementButton" class="button">Tags Management</button> -->
+
             <?php endif; ?>
             <!-- User Management Button (only for admins) -->
             <?php if ($_SESSION['user']['is_admin'] ?? false): ?>
-                <button id="toggleTagsManagementButton" class="button">Tags Management</button>
-            <?php endif; ?>
-            <?php if ($_SESSION['user']['is_admin'] ?? false): ?>
-                <button id="toggleIngredientManagementButton" class="button">Ingredient Management</button>
+               <button class="button-secondary">
+                   <a lass="button" href="/admin/dashboard">Dashboard</a>
+               </button> 
             <?php endif; ?>
 
             <!-- Link to Add New Cocktail (only for logged-in users) -->
             <?php if (AuthController::isLoggedIn() && $currentUser->canAddCocktail($currentUser->getId())): ?>
-                <a href="/cocktails/add" class="button-secondary">Add New Cocktail</a>
+                <button class="button-secondary">
+                    <a href="/cocktails/add" >Add New Cocktail</a>
+                </button>
             <?php endif; ?>
         </div>
     <?php else: ?>
