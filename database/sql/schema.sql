@@ -168,7 +168,21 @@ CREATE TABLE `likes` (
 
 CREATE TABLE `tags` (
   `tag_id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(255) UNIQUE NOT NULL
+  `name` varchar(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE `tag_categories` (
+  `tag_category_id` int(11) NOT NULL,
+  `category_name` varchar(100) NOT NULL
+) 
+
+CREATE TABLE ingredient_tags (
+    ingredient_tag_id INT AUTO_INCREMENT PRIMARY KEY,
+    ingredient_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_ingredient FOREIGN KEY (ingredient_id) REFERENCES ingredients (ingredient_id) ON DELETE CASCADE,
+    CONSTRAINT fk_tag FOREIGN KEY (tag_id) REFERENCES tags (tag_id) ON DELETE CASCADE
 );
 
 CREATE TABLE `cocktail_tags` (

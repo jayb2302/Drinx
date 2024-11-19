@@ -1,4 +1,5 @@
-<h2>Manage Users</h2>
+<div class="admin-container">
+<h1 class="admin-control-title">Manage Users</h1>
 <input type="text" id="userSearch" placeholder="Search users..." class="user-search-input">
 
 <table class="manage-users">
@@ -37,7 +38,7 @@
         <?php endforeach; ?>
     </tbody>
 </table>
-
+</div>
 
 
 

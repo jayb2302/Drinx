@@ -28,6 +28,8 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $creator = $this->userService->getUserWithProfile($cocktailUserId);
         $creatorName = htmlspecialchars($creator->getUsername() ?? 'Unknown User');
         $creatorPicture = htmlspecialchars($creator->getProfilePicture() ?? 'user-default.svg');
+        // $tags = $this->cocktailService->getTagsForCocktail($cocktail->getCocktailId());
+
         ?>
 
         <div class="cocktailContainer">
@@ -74,6 +76,18 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                 <div class="cocktailInfo">
                     <h3><?= $cocktailTitle ?> <?= $totalLikes ?>♥️ </h3>
                 </div>
+                Display Tags
+                <!-- <div class="cocktailTags">
+                    <?php if (!empty($tags)): ?>
+                        <ul class="tags-list">
+                            <?php foreach ($tags as $tag): ?>
+                                <li class="tag"><?= htmlspecialchars($tag['name']) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p>No tags available.</p>
+                    <?php endif; ?>
+                </div> -->
 
             </article>
         </div>

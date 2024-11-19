@@ -5,7 +5,8 @@ footer {
     text-align: center;
     font-size: 0.9rem;
     border-top: 1px solid var(--border);
-    
+    position: fixed;
+    bottom: 0;
     width: 100%;
   }
   
