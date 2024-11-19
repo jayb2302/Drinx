@@ -37,11 +37,28 @@ class IngredientRepository
         return $ingredients;
     }
 
-    // public function fetchIngredientsForCocktail($cocktailId)
-    // {
-    //     return $this->getIngredientsByCocktailId($cocktailId);
-    // }
+    public function fetchIngredientsForCocktail($cocktailId)
+    {
+        return $this->getIngredientsByCocktailId($cocktailId);
+    }
 
+    public function countIngredients()
+    {
+        $query = "SELECT COUNT(*) FROM ingredients";
+        return $this->db->query($query)->fetchColumn();
+    }
+
+    public function getMostUsedIngredient()
+    {
+        $query = "
+        SELECT i.name, COUNT(ci.ingredient_id) AS usage_count
+        FROM ingredients i
+        JOIN cocktail_ingredients ci ON i.ingredient_id = ci.ingredient_id
+        GROUP BY i.ingredient_id
+        ORDER BY usage_count DESC
+        LIMIT 1";
+        return $this->db->query($query)->fetch();
+    }
     public function addIngredient($cocktailId, $ingredientId, $quantity, $unitId)
     {
         // Prepare the SQL statement to insert into the cocktail_ingredients table
@@ -71,17 +88,16 @@ class IngredientRepository
         return $stmt->fetchColumn();
     }
 
-    
     public function createIngredient($ingredientName)
     {
         try {
             $stmt = $this->db->prepare('INSERT INTO ingredients (name) VALUES (:name)');
             $stmt->bindParam(':name', $ingredientName, PDO::PARAM_STR);
-            
+
             if ($stmt->execute()) {
                 return $this->db->lastInsertId(); // Return the ID of the new ingredient
             }
-            
+
             // If insertion fails, return false and log error
             error_log("Failed to insert ingredient: " . $ingredientName);
             return false;
@@ -91,12 +107,7 @@ class IngredientRepository
             return false; // Return false if there's an exception
         }
     }
-    
-    public function doesIngredientExist($ingredientId) {
-        $stmt = $this->db->prepare("SELECT 1 FROM ingredients WHERE ingredient_id = :ingredient_id LIMIT 1");
-        $stmt->execute(['ingredient_id' => $ingredientId]);
-        return $stmt->fetchColumn() !== false;
-    }
+
     public function updateIngredientName($ingredientId, $ingredientName)
     {
         $stmt = $this->db->prepare("UPDATE ingredients SET name = :ingredient_name WHERE ingredient_id = :ingredient_id");
@@ -105,6 +116,7 @@ class IngredientRepository
 
         return $stmt->execute();
     }
+    
     // Get all available units
     public function getAllUnits()
     {
@@ -145,9 +157,19 @@ class IngredientRepository
 
     public function assignTag($ingredientId, $tagId)
     {
-        $sql = "INSERT INTO ingredient_tags (ingredient_id, tag_id) VALUES (:ingredient_id, :tag_id)";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute(['ingredient_id' => $ingredientId, 'tag_id' => $tagId]);
+        $query = "INSERT INTO ingredient_tags (ingredient_id, tag_id) VALUES (:ingredientId, :tagId)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':ingredientId', $ingredientId, PDO::PARAM_INT);
+        $stmt->bindParam(':tagId', $tagId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+    public function doesIngredientExist($ingredientId)
+    {
+        $query = "SELECT COUNT(*) FROM ingredients WHERE ingredient_id = :ingredientId";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':ingredientId', $ingredientId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
     }
     public function getUncategorizedTagId()
     {

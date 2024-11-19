@@ -21,18 +21,18 @@ class BaseController {
 
     public function __construct() {
         // Set up DB connection once
-        $this->dbConnection = Database::getConnection();
+        $dbConnection = Database::getConnection();
 
         // Instantiate Repositories
-        $cocktailRepository = new CocktailRepository($this->dbConnection);
-        $categoryRepository = new CategoryRepository($this->dbConnection);
-        $ingredientRepository = new IngredientRepository($this->dbConnection);
-        $unitRepository = new UnitRepository($this->dbConnection);
-        $stepRepository = new StepRepository($this->dbConnection);
-        $tagRepository = new TagRepository($this->dbConnection);
-        $difficultyRepository = new DifficultyRepository($this->dbConnection);
-        $likeRepository = new LikeRepository($this->dbConnection);
-        $userRepository = new UserRepository($this->dbConnection);
+        $cocktailRepository = new CocktailRepository($dbConnection);
+        $categoryRepository = new CategoryRepository($dbConnection);
+        $ingredientRepository = new IngredientRepository($dbConnection);
+        $unitRepository = new UnitRepository($dbConnection);
+        $stepRepository = new StepRepository($dbConnection);
+        $tagRepository = new TagRepository($dbConnection);
+        $difficultyRepository = new DifficultyRepository($dbConnection);
+        $likeRepository = new LikeRepository($dbConnection);
+        $userRepository = new UserRepository($dbConnection);
 
         // Instantiate Services
         $ingredientService = new IngredientService($ingredientRepository, $unitRepository);

@@ -8,16 +8,42 @@ require_once __DIR__ . '/../helpers/helpers.php';
 
 class AdminController
 {
-    private $userRepository;
+    private $adminService;
     private $authController;
     private $cocktailService;
 
-    public function __construct(CocktailService $cocktailService, AuthController $authController)
-    {
+    public function __construct(
+        AdminService $adminService,
+        AuthController $authController,
+        CocktailService $cocktailService,
+    ) {
         $dbConnection = Database::getConnection();
-        $this->userRepository = new UserRepository($dbConnection);
+        $this->adminService = $adminService;
         $this->cocktailService = $cocktailService;
         $this->authController = $authController;
+    }
+
+    public function dashboard()
+    {
+        // Check if the user is an admin
+        if (empty($_SESSION['user']['is_admin'])) {
+            http_response_code(403);
+            echo "Access denied.";
+            exit();
+        }
+
+        // Fetch the dashboard data, including tags
+        $dashboardData = $this->adminService->getDashboardData();
+
+        // Extract data
+        $stats = $dashboardData['stats'] ?? [];
+        $users = $dashboardData['users'] ?? [];
+        $cocktails = $dashboardData['cocktails'] ?? [];
+        $groupedTags = $dashboardData['groupedTags'] ?? [];
+        $categories = $dashboardData['tagCategories'] ?? [];
+
+        // Load the dashboard view and pass the data
+        require_once __DIR__ . '/../views/admin/dashboard.php';
     }
 
     // Update user status (e.g., active, banned, suspended)
@@ -28,7 +54,7 @@ class AdminController
             $statusId = sanitize($_POST['status_id']);
 
             // Update account status in the database
-            $this->userRepository->updateAccountStatus($userId, $statusId);
+            $result = $this->adminService->updateUserStatus($userId, $statusId);
 
             // Respond with a success message in JSON format instead of redirecting
             echo json_encode(['status' => 'success', 'message' => 'User status updated successfully.']);
@@ -47,7 +73,7 @@ class AdminController
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user']['is_admin']) && $_SESSION['user']['is_admin']) {
             // Get the raw POST data
             $data = json_decode(file_get_contents('php://input'), true);
-            $cocktailId = intval($data['cocktail_id'] ?? 0); // Ensure you're using the correct variable
+            $cocktailId = intval($data['cocktail_id'] ?? 0);
 
             if ($cocktailId) {
                 try {
@@ -114,12 +140,16 @@ class AdminController
         exit;
     }
 
+    // Manage Tags Page
     public function manageTags()
     {
-        $tagRepository = new TagRepository(Database::getConnection());
+        $data = $this->adminService->getTagsAndCategories();
+        $groupedTags = $data['groupedTags'] ?? [];
+        $categories = $data['categories'] ?? [];
 
+        error_log('Grouped Tags: ' . print_r($groupedTags, true)); // Debugging
+        error_log('Categories: ' . print_r($categories, true));   // Debugging
 
-        // Pass the $tags variable to the view
         require_once __DIR__ . '/../views/admin/manage_tags.php';
     }
 }

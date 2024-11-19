@@ -9,6 +9,54 @@ class UserRepository
     {
         $this->db = $dbConnection;
     }
+    // Get all users
+    public function getAllUsers()
+    {
+        $stmt = $this->db->query("SELECT * FROM users");
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $users = [];
+        foreach ($results as $result) {
+            $users[] = $this->mapToUser($result);
+        }
+        return $users;
+    }
+
+    // Count the number of users
+    public function countUsers()
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) AS total FROM users");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
+    public function getUserWithMostRecipes()
+    {
+        $query = "
+            SELECT 
+                u.user_id,
+                u.username,
+                p.profile_picture,
+                COUNT(c.cocktail_id) AS recipe_count
+            FROM users u
+            LEFT JOIN cocktails c ON u.user_id = c.user_id
+            LEFT JOIN user_profile p ON u.user_id = p.user_id
+            GROUP BY u.user_id
+            ORDER BY recipe_count DESC
+            LIMIT 1
+        ";
+    
+        $result = $this->db->query($query)->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            $user = new User();
+            $user->setId($result['user_id']);
+            $user->setUsername($result['username']);
+            $user->setProfilePicture($result['profile_picture']);
+            $user->setRecipeCount($result['recipe_count']);
+            return $user;
+        }
+    
+        return null; // No top creator found
+    }
 
     // Delete a user and associated cocktails
     public function deleteUser($userId)

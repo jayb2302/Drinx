@@ -19,7 +19,14 @@ class TagRepository
         ORDER BY tag_categories.category_name, tags.name";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); // This returns both tag and category data
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+    }
+
+    public function countTags()
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) AS total FROM tags");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
     }
 
     public function getTagById($tagId)
@@ -132,8 +139,8 @@ class TagRepository
             $tag = $this->getTagByName($tagName);
             if (!$tag) {
                 // If the tag doesn't exist, insert it with 'Uncategorized'
-                $this->save($tagName, null, null);  // null for tag_category_id
-                $tag = $this->getTagByName($tagName);  // Fetch newly created tag
+                $this->save($tagName, null, null);  
+                $tag = $this->getTagByName($tagName); 
             }
 
             // Insert the tag ID into cocktail_tags
@@ -173,7 +180,6 @@ class TagRepository
                 } elseif (in_array(strtolower($ingredient['name']), ['mint', 'soda'])) {
                     $this->addTagToCocktail($cocktailId, 'Refreshing');
                 }
-                // More conditions for other tags as needed
             }
         } catch (Exception $e) {
             throw new Exception("Error assigning tags by ingredients: " . $e->getMessage());
@@ -181,9 +187,19 @@ class TagRepository
     }
     public function doesTagExist($tagId)
     {
-        $stmt = $this->db->prepare('SELECT COUNT(*) FROM tags WHERE tag_id = :id');
-        $stmt->bindParam(':id', $tagId, PDO::PARAM_INT);
+        $query = "SELECT COUNT(*) FROM tags WHERE tag_id = :tagId";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':tagId', $tagId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
+    }
+    public function countUnusedTags()
+    {
+        $query = "
+        SELECT COUNT(*) 
+        FROM tags t
+        LEFT JOIN cocktail_tags ct ON t.tag_id = ct.tag_id
+        WHERE ct.tag_id IS NULL";
+        return $this->db->query($query)->fetchColumn();
     }
 }
