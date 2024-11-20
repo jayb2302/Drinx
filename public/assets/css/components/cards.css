@@ -1,8 +1,8 @@
-
 .cocktailGrid {
     display: flex;
-   
+
 }
+
 .cocktailContainer {
     display: flex;
     flex-wrap: wrap;
@@ -12,8 +12,9 @@
     background-color: var(--card-background);
     padding: .1rem .2rem;
 }
- .cocktailCard {
-    width: 95%; 
+
+.cocktailCard {
+    width: 95%;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -22,45 +23,58 @@
     background-color: var(--card-background);
     position: relative;
 }
+
 .cocktailInfo {
     display: flex;
-    justify-content:start;
+    justify-content: start;
     padding: 1rem;
 }
+
 .buttonWrapper {
     display: flex;
     position: absolute;
     justify-content: end;
     width: 100%;
 }
+
 .cocktailImage {
     width: 100%;
     object-fit: cover;
     border-bottom: 1px solid #ccc;
     border-radius: 6px 6px 0 0;
 }
+
 .creatorInfo {
     position: relative;
     gap: 1rem;
     display: flex;
     padding: .5rem;
 }
+
+.coctailInfo h3 {
+    color: var(--accent-primary);
+}
+
 .creatorPicture {
     width: 50px;
     height: 50px;
     border-radius: 50%;
 }
+
 .randomButton {
     display: flex;
-    justify-content: flex-end; 
-    padding-top: 1rem; 
+    justify-content: flex-end;
+    padding-top: 1rem;
 }
 
 .cocktailInfo {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: start;
+    background-color: var(--nav-background);
+   
 }
+
 /*  Sticky Cocktail  */
 
 .stickyContainer {
@@ -70,15 +84,14 @@
 }
 
 .stickyContent {
- background-color: var(--card-background);
- color : var(--text-primary);
- padding: 0 .5rem;
- top: 0;
- bottom: 0;
+    background-color: var(--card-background);
+    color: var(--text-primary);
+    padding: 0 .5rem;
+    top: 0;
+    bottom: 0;
 }
 
 .stickyCard {
-    max-width: 15vw;
     padding: .5rem;
     overflow: auto;
     border-radius: 8px;
@@ -86,12 +99,12 @@
     text-align: start;
     background-color: var(--accent-primary);
     display: flex;
-    align-items: start;
+    align-items: stretch;
     flex-direction: column;
 }
 
 .stickyCard img {
-    
+    object-fit: cover;
     height: auto;
     border-radius: 4px;
 }
@@ -99,9 +112,8 @@
 .stickyCard h2 {
     background-color: var(--card-background);
     font-size: 1rem;
-    padding: .5rem ;
+    padding: .5rem;
     color: var(--accent-primary);
-    
     top: 0;
 }
 
@@ -122,7 +134,7 @@
     overflow: hidden;
 }
 
-.recipeCard h3{
+.recipeCard h3 {
     color: var(--accent-primary);
 
 }

@@ -1,21 +1,27 @@
 /* Form container styling */
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 2rem;
+}
 .form-container {
-  background-color: var(--background);
-  color: var(--text-primary);
+  background-color: var(--card-background);
+  color: var(--text-secondary);
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: var(--font-body);
-  max-width: 500px;
+  width: 40vw;
   margin: auto;
 }
 
 /* Form heading */
-.form-container h1 {
+.form-container h2 {
   color: var(--accent-primary);
   font-family: var(--font-display);
   font-size: 1.8rem;
-  text-align: center;
+  text-align: start;
   margin-bottom: 1rem;
 }
 
@@ -28,7 +34,7 @@
 .form-group label {
   display: block;
   font-weight: bold;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   margin-bottom: 0.3rem;
 }
 
