@@ -14,14 +14,14 @@
     import { initializeSearch } from '/assets/js/modules/search.js';
     import { initializeSticky } from '/assets/js/modules/sticky.js';
     import { initializeCocktail } from '/assets/js/modules/cocktail.js';
-    import { initializeSortAndCategories } from '/assets/js/modules/sort-and-category.js';
+    import { initializeSortAndCategories } from '/assets/js/modules/sort-category.js';
 
 
     if (document.querySelector('.category-sidebar')) initializeSortAndCategories();
     if (document.querySelector('.like-button')) initializeLikes();
     if (document.querySelector('#userTableBody')) initializeAdmin();
     if (document.querySelector('.aboutContainer')) initializeRandomCocktail();
-    if (document.querySelector('.dotsButton')) initializeComments();
+    if (document.querySelector('.commentsSection')) initializeComments();
     if (document.getElementById('edit-profile-form')) initializeProfile();
     if (document.querySelector('#searchInput')) initializeSearch();
     if (document.querySelector('.set-sticky')) initializeSticky();

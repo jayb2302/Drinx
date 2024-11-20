@@ -2,14 +2,15 @@
 class CommentController
 {
     private $commentService;
+    private $commentRepository;
     private $cocktailService;
 
-    public function __construct(CommentService $commentService, CocktailService $cocktailService)
+    public function __construct(CommentService $commentService, CommentRepository $commentRepository, CocktailService $cocktailService)
     {
         $this->commentService = $commentService;
-        $this->cocktailService = $cocktailService; // Initialize cocktailService
+        $this->commentRepository = $commentRepository;
+        $this->cocktailService = $cocktailService; 
     }
-
 
     // Add a comment or reply
     public function addComment($cocktailId)
@@ -17,8 +18,8 @@ class CommentController
         // Ensure user is logged in
         $userId = $_SESSION['user']['id'] ?? null;
         if (!$userId) {
-            $_SESSION['error'] = 'You must be logged in to comment.';
-            header("Location: /login");
+            http_response_code(401); // Unauthorized
+            echo json_encode(['error' => 'You must be logged in to comment.']);
             exit();
         }
 
@@ -27,109 +28,152 @@ class CommentController
         $parentCommentId = isset($_POST['parent_comment_id']) ? sanitize($_POST['parent_comment_id']) : null;
 
         if (empty($commentText)) {
-            $_SESSION['error'] = 'Comment cannot be empty.';
-            header("Location: /cocktails/{$cocktailId}");
+            http_response_code(400); // Bad Request
+            echo json_encode(['error' => 'Comment cannot be empty.']);
             exit();
         }
 
-        // Ensure parent_comment_id is null for top-level comments
-        $parentCommentId = empty($parentCommentId) ? null : $parentCommentId;
+        try {
+            // Add the comment
+            $this->commentService->addComment($userId, $cocktailId, $commentText, $parentCommentId);
 
-        // Add the comment using service
-        $this->commentService->addComment($userId, $cocktailId, $commentText, $parentCommentId);
+            // Fetch updated cocktail and comments
+            $cocktail = $this->cocktailService->getCocktailById($cocktailId);
+            $comments = $this->commentService->getCommentsWithReplies($cocktailId);
+            $currentUser = (new AuthController())->getCurrentUser(); // Ensure current user is available
 
-        // Redirect back to the cocktail view
-        $cocktailTitle = urlencode($_POST['cocktailTitle']);
-        header("Location: /cocktails/{$cocktailId}-{$cocktailTitle}");
+            // Render the entire comment section
+            ob_start();
+            require __DIR__ . '/../views/cocktails/comment_section.php';
+            $commentsHtml = ob_get_clean();
+
+            // Return JSON response
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'html' => $commentsHtml]);
+        } catch (Exception $e) {
+            http_response_code(500); // Internal Server Error
+            echo json_encode(['error' => $e->getMessage()]);
+        }
         exit();
     }
 
     // Edit comment
     public function edit($commentId)
     {
+        error_log("Editing comment with ID: $commentId");
+        header('Content-Type: application/json');
         $comment = $this->commentService->getCommentById($commentId);
-    
+
+        if (!$comment) {
+            error_log("Comment with ID $commentId not found.");
+            http_response_code(404);
+            echo json_encode(['error' => 'Comment not found.']);
+            exit();
+        }
+        // Ensure the user owns the comment or is an admin
         if ($_SESSION['user']['id'] !== $comment->getUserId() && !AuthController::isAdmin()) {
-            header("HTTP/1.1 403 Forbidden");
-            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            error_log("User not authorized to edit comment ID: $commentId");
+            http_response_code(403); // Forbidden
+            echo json_encode(['error' => 'You are not authorized to edit this comment.']);
             exit();
         }
-    
-        // Update comment with AJAX data
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $newCommentText = $_POST['comment'] ?? '';
-            if ($this->commentService->updateComment($commentId, $newCommentText)) {
-                echo json_encode(['success' => true, 'comment' => $newCommentText]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to update comment']);
+        try {
+            $newCommentText = sanitize($_POST['commentText'] ?? '');
+            if (empty($newCommentText)) {
+                error_log("Comment text is empty for comment ID: $commentId");
+                http_response_code(400); // Bad Request
+                echo json_encode(['error' => 'Comment text cannot be empty.']);
+                exit();
             }
-            exit();
-        }
-    }
+            // Update the comment
+            error_log("Updating comment ID: $commentId with new text: $newCommentText");
+            $this->commentService->updateComment($commentId, $newCommentText);
+           
+            // Fetch updated comments for the entire section
+            $cocktailId = $comment->getCocktailId();
+            $updatedComments = $this->commentService->getCommentsWithReplies($cocktailId);
+           
+            // Return the updated comments section HTML
+            ob_start();
+            $cocktail = $this->cocktailService->getCocktailById($cocktailId); // Assuming you have a method to get cocktail info
+            $currentUser = (new AuthController())->getCurrentUser(); // Ensure current user is available
+            $comments = $updatedComments;
+            require __DIR__ . '/../views/cocktails/comment_section.php';
+            $updatedCommentsHtml = ob_get_clean();
 
-    public function update($commentId) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $newCommentText = $_POST['comment'] ?? '';
-            
-            // Perform the update
-            $updated = $this->commentService->updateComment($commentId, $newCommentText);
-
-            // Redirect or send response based on success
-            if ($updated) {
-                header('Location: /cocktails');
-            } else {
-                echo json_encode(['error' => 'Failed to update comment']);
-            }
-        } else {
-            header("HTTP/1.1 405 Method Not Allowed");
+            error_log("Successfully edited comment ID: $commentId");
+            echo json_encode(['success' => true, 'html' => $updatedCommentsHtml]);
+        } catch (Exception $e) {
+            error_log("Exception occurred while editing comment ID $commentId: " . $e->getMessage());
+            http_response_code(500); // Internal Server Error
+            echo json_encode(['error' => $e->getMessage()]);
         }
+        exit();
     }
     public function delete($commentId)
     {
         $comment = $this->commentService->getCommentById($commentId);
-
         if ($_SESSION['user']['id'] !== $comment->getUserId() && !AuthController::isAdmin()) {
-            header("Location: /cocktails");
+            http_response_code(403); // Forbidden
+            echo json_encode(['error' => 'You are not authorized to delete this comment.']);
             exit();
         }
+        try {
+            // Get cocktail ID before deletion
+            $cocktailId = $comment->getCocktailId();
+           
+            // Delete the comment
+            $this->commentService->deleteComment($commentId);
+           
+            // Fetch updated comments and render the section
+            $cocktail = $this->cocktailService->getCocktailById($cocktailId);
+            $comments = $this->commentService->getCommentsWithReplies($cocktailId);
+            $currentUser = (new AuthController())->getCurrentUser();
 
-        // Get cocktail ID and title for redirect
-        $cocktailId = $comment->getCocktailId();
-        $cocktail = $this->cocktailService->getCocktailById($cocktailId); // Retrieve cocktail using cocktailService
-        $cocktailTitle = $cocktail ? urlencode($cocktail->getTitle()) : 'Unknown';
+            ob_start();
+            require __DIR__ . '/../views/cocktails/comment_section.php';
+            $commentsHtml = ob_get_clean();
 
-        // Delete the comment
-        $this->commentService->deleteComment($commentId);
-
-        // Redirect back to the cocktail page
-        header("Location: /cocktails/{$cocktailId}-{$cocktailTitle}");
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'html' => $commentsHtml]); // Send full HTML
+        } catch (Exception $e) {
+            http_response_code(500); // Internal Server Error
+            echo json_encode(['error' => $e->getMessage()]);
+        }
         exit();
     }
-
     public function reply($commentId)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userId = $_SESSION['user']['id'] ?? null;
-            $commentText = $_POST['comment'] ?? '';
-            $cocktailId = $_POST['cocktail_id'] ?? null; // Retrieve cocktail_id from the form
-
-            // Validate inputs
-            if ($userId && $commentText && $cocktailId) {
-                $parentCommentId = $commentId;
-
-                // Add reply to the database
-                $this->commentService->addComment($userId, $cocktailId, $commentText, $parentCommentId);
-
-                // Redirect back to the cocktail page with title
-                $cocktailTitle = urlencode($_POST['cocktailTitle'] ?? '');
-                header("Location: /cocktails/{$cocktailId}-{$cocktailTitle}");
-                exit;
-            } else {
-                // Handle invalid input
-                $_SESSION['errors'] = ["Failed to post reply. Please try again."];
-                header("Location: /cocktails/{$cocktailId}");
-                exit;
+            $commentText = sanitize($_POST['comment'] ?? '');
+            $cocktailId = sanitize($_POST['cocktail_id'] ?? null);
+            if (!$userId || !$commentText || !$cocktailId) {
+                http_response_code(400); // Bad Request
+                echo json_encode(['error' => 'Invalid input.']);
+                exit();
             }
+            try {
+                // Add reply to the database
+                $this->commentRepository->addComment($userId, $cocktailId, $commentText, $commentId);
+                
+                // Fetch updated cocktail and comments
+                $cocktail = $this->cocktailService->getCocktailById($cocktailId);
+                $comments = $this->commentService->getCommentsWithReplies($cocktailId);
+                $currentUser = (new AuthController())->getCurrentUser();
+
+                // Render the entire comments section
+                ob_start();
+                require __DIR__ . '/../views/cocktails/comment_section.php';
+                $commentsHtml = ob_get_clean();
+
+                header('Content-Type: application/json');
+                echo json_encode(['success' => true, 'html' => $commentsHtml]);
+            } catch (Exception $e) {
+                http_response_code(500); // Internal Server Error
+                echo json_encode(['error' => $e->getMessage()]);
+            }
+            exit();
         }
     }
 }

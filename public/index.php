@@ -20,7 +20,7 @@ if ($action) {
         if (class_exists($controllerClass) && method_exists($controllerClass, $method)) {
             // Inject the dependencies manually
             if ($controllerClass === 'CommentController') {
-                $controller = new CommentController($commentService, $cocktailService); // Use the instantiated CommentController
+                $controller = new CommentController($commentService, $commentRepository , $cocktailService); // Use the instantiated CommentController
             } elseif ($controllerClass === 'LikeController') {
                 $controller = new LikeController($likeService); // Use the instantiated LikeController
             } elseif ($controllerClass === 'SearchController') {

@@ -28,7 +28,6 @@ export function initializeSticky() {
     }
 
     function attachStickyListeners() {
-        console.log('Attaching sticky listeners...');
         document.querySelectorAll('.set-sticky').forEach(button => {
             button.addEventListener('click', function () {
                 const cocktailId = this.dataset.cocktailId;

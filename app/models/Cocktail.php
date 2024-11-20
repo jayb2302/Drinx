@@ -3,7 +3,7 @@ class Cocktail
 {
     private $cocktail_id;
     private $user_id;
-    public $hasLiked = false;
+    public $hasLiked = null;
     private $is_sticky = false;
     private $title;
     private $description;

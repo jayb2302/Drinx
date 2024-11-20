@@ -49,7 +49,7 @@ export function initializeSortAndCategories() {
                 if (wrapper) {
                     wrapper.innerHTML = data.content;
     
-                    console.log('Cocktails content updated, reinitializing functionality...');
+                    // console.log('Cocktails content updated, reinitializing functionality...');
     
                     // Update active sort option
                     updateSortIndicator();

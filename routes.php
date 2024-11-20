@@ -97,6 +97,7 @@ $router->add('POST', '#^/admin/unit/delete$#', [IngredientController::class, 'de
 // Comment interactions
 $router->add('POST', '#^/cocktails/(\d+)-[^/]+/comments$#', [CommentController::class, 'addComment']);
 $router->add('GET', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
+$router->add('POST', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
 $router->add('POST', '#^/comments/(\d+)/update$#', [CommentController::class, 'update']); // Update comment
 $router->add('POST', '#^/comments/(\d+)/delete$#', [CommentController::class, 'delete']); // Delete comment or reply
 $router->add('POST', '#^/comments/(\d+)/reply$#', [CommentController::class, 'reply']);
