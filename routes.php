@@ -2,16 +2,7 @@
 use App\Routing\Router;
 
 require_once __DIR__ . '/router.php';
-require_once __DIR__ . '/app/controllers/HomeController.php';
-require_once __DIR__ . '/app/controllers/UserController.php';
-require_once __DIR__ . '/app/controllers/AuthController.php';
-require_once __DIR__ . '/app/controllers/CocktailController.php';
-require_once __DIR__ . '/app/controllers/CommentController.php';
-require_once __DIR__ . '/app/controllers/LikeController.php';
-require_once __DIR__ . '/app/controllers/SearchController.php';
-require_once __DIR__ . '/app/controllers/AdminController.php';
-require_once __DIR__ . '/app/controllers/TagController.php';
-require_once __DIR__ . '/app/controllers/IngredientController.php';
+require_once __DIR__ . '/app/config/dependencies.php';
 
 $router = new Router(); // Instantiate the Router class
 

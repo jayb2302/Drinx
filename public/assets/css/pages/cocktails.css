@@ -84,6 +84,7 @@ h1 {
   flex-direction: column;
   margin-bottom: 20px;
   position: relative;
+  width: 60vh;
 }
 .recipeContent {
   display: flex;

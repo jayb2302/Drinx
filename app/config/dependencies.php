@@ -1,11 +1,31 @@
 <?php
+require_once __DIR__ . '/../repositories/CocktailRepository.php';
+require_once __DIR__ . '/../repositories/CategoryRepository.php';
+require_once __DIR__ . '/../repositories/IngredientRepository.php';
+require_once __DIR__ . '/../repositories/StepRepository.php';
+require_once __DIR__ . '/../repositories/TagRepository.php';
+require_once __DIR__ . '/../repositories/DifficultyRepository.php';
+require_once __DIR__ . '/../repositories/UnitRepository.php';
+require_once __DIR__ . '/../repositories/LikeRepository.php';
+require_once __DIR__ . '/../repositories/CommentRepository.php';
+require_once __DIR__ . '/../repositories/UserRepository.php';
+// Services
+require_once __DIR__ . '/../services/AdminService.php';
+require_once __DIR__ . '/../services/IngredientService.php';
+require_once __DIR__ . '/../services/StepService.php';
+require_once __DIR__ . '/../services/LikeService.php';
+require_once __DIR__ . '/../services/UserService.php';
+require_once __DIR__ . '/../services/CommentService.php';
+require_once __DIR__ . '/../services/CocktailService.php';
+// Controllers
 require_once __DIR__ . '/../controllers/TagController.php';
 require_once __DIR__ . '/../controllers/IngredientController.php';
 require_once __DIR__ . '/../controllers/SearchController.php';
 require_once __DIR__ . '/../controllers/HomeController.php';
 require_once __DIR__ . '/../controllers/AdminController.php';
 require_once __DIR__ . '/../controllers/AuthController.php';
-require_once __DIR__ . '/../services/AdminService.php';
+require_once __DIR__ . '/../controllers/UserController.php';
+require_once __DIR__ . '/../controllers/CocktailController.php';
 
 // Database connection
 $db = Database::getConnection();

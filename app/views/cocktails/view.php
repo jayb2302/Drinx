@@ -94,12 +94,12 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
 
             <h2 class="text-2xl font-semibold mt-6 mb-2">Ingredients</h2>
             <ul class="list-disc ml-5">
-                <?php if (!empty($ingredients)): ?>
-                    <?php foreach ($ingredients as $ingredient): ?>
+                <?php if (!empty($processedIngredients)): ?>
+                    <?php foreach ($processedIngredients as $ingredient): ?>
                         <li>
-                            <?= htmlspecialchars($ingredient->getName()) ?>:
-                            <?= htmlspecialchars($ingredient->getQuantity()) ?>
-                            <?= htmlspecialchars($ingredient->getUnitName()) ?>
+                            <?= htmlspecialchars($ingredient['name']) ?>:
+                            <?= htmlspecialchars($ingredient['quantity']) ?>
+                            <?= htmlspecialchars($ingredient['unit']) ?>
                         </li>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -126,10 +126,10 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
                 <button id="editCocktailButton" class="primary">Edit </button>
                 <!-- Delete Button -->
                 <form action="/cocktails/delete/<?= $cocktail->getCocktailId() ?>" method="post"
-                onsubmit="return confirm('Are you sure you want to delete this cocktail?');">
-                <button type="submit" class="delete">Delete</button>
-            </form>
-        </div>
+                    onsubmit="return confirm('Are you sure you want to delete this cocktail?');">
+                    <button type="submit" class="delete">Delete</button>
+                </form>
+            </div>
         <?php endif; ?>
 
 

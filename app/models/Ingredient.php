@@ -7,8 +7,6 @@ class Ingredient {
     private $unit_id;
     private $unit_name;
 
- 
-
     public function __construct($ingredient_id = null, $name = '', $cocktail_id = null, $quantity = null, $unit_id = null, $unit_name = null) {
         $this->ingredient_id = $ingredient_id;
         $this->name = $name;
@@ -33,6 +31,11 @@ class Ingredient {
 
     public function getQuantity() {
         return $this->quantity;
+    }
+    
+    public function getFormattedQuantity($ingredientService)
+    {
+        return $ingredientService->convertDecimalToFraction($this->quantity);
     }
 
     public function getUnitName() {
