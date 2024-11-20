@@ -61,7 +61,8 @@ class CocktailController
             $tagRepository,
             $this->difficultyRepository,
             $likeRepository,
-            $userRepository
+            $userRepository,
+            $commentRepository
         );
     }
 
@@ -78,13 +79,25 @@ class CocktailController
         $cocktails = $this->cocktailService->getAllCocktails();
         $categories = $this->cocktailService->getCategories();
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+    
         // Pass `hasLiked` status to the view for each cocktail
         foreach ($cocktails as $cocktail) {
+            // Get like status for the current user
             $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktail->getCocktailId()) : false;
+    
+            // Fetch the top-level comments for the cocktail (limit to 3, for example)
+            $comments = $this->cocktailService->getTopLevelCommentsForCocktail($cocktail->getCocktailId(), 3);
+            error_log("Fetched comments for cocktail ID " . $cocktail->getCocktailId() . ": " . print_r($comments, true));
+    
+            $cocktail->comments = $comments;  // Attach comments to the cocktail object
+    
+            // Fetch the comment count for this cocktail
+            $cocktail->commentCount = count($comments); // Count the number of comments
         }
+    
+        // Pass data to the view
         require_once __DIR__ . '/../views/cocktails/index.php'; // Load the view to display cocktails
     }
-
     // Show the form to add a new cocktail (only for logged-in users)
     public function add()
     {

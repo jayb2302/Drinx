@@ -10,6 +10,8 @@ require_once __DIR__ . '/app/controllers/CommentController.php';
 require_once __DIR__ . '/app/controllers/LikeController.php';
 require_once __DIR__ . '/app/controllers/SearchController.php';
 require_once __DIR__ . '/app/controllers/AdminController.php';
+require_once __DIR__ . '/app/controllers/TagController.php';
+require_once __DIR__ . '/app/controllers/IngredientController.php';
 
 $router = new Router(); // Instantiate the Router class
 
@@ -95,7 +97,7 @@ $router->add('GET', '#^/admin/units$#', [IngredientController::class, 'showUnits
 $router->add('POST', '#^/admin/unit/add$#', [IngredientController::class, 'addUnit']); // Add a new unit
 $router->add('POST', '#^/admin/unit/delete$#', [IngredientController::class, 'deleteUnit']); // Delete a unit
 // Comment interactions
-$router->add('POST', '#^/cocktails/(\d+)-[^/]+/comments$#', [CommentController::class, 'addComment']);
+$router->add('POST', '#^/cocktails/(\d+)/comments$#', [CommentController::class, 'addComment']);
 $router->add('GET', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
 $router->add('POST', '#^/comments/(\d+)/update$#', [CommentController::class, 'update']); // Update comment
 $router->add('POST', '#^/comments/(\d+)/delete$#', [CommentController::class, 'delete']); // Delete comment or reply

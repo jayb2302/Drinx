@@ -43,7 +43,8 @@ $cocktailService = new CocktailService(
     $tagRepository,
     $difficultyRepository,
     $likeRepository,
-    $userRepository
+    $userRepository,
+    $commentRepository
 );
 
 // Controllers

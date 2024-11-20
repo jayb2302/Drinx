@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__ . '/../repositories/CocktailRepository.php';
 require_once __DIR__ . '/../repositories/CategoryRepository.php';
 require_once __DIR__ . '/../repositories/IngredientRepository.php';
@@ -33,6 +32,7 @@ class BaseController {
         $difficultyRepository = new DifficultyRepository($dbConnection);
         $likeRepository = new LikeRepository($dbConnection);
         $userRepository = new UserRepository($dbConnection);
+        $commentRepository = new CommentRepository($dbConnection);
 
         // Instantiate Services
         $ingredientService = new IngredientService($ingredientRepository, $unitRepository);
@@ -51,7 +51,8 @@ class BaseController {
             $tagRepository,
             $difficultyRepository,
             $likeRepository,
-            $userRepository 
+            $userRepository,
+            $commentRepository 
         );
 
         // Instantiate UserService
