@@ -25,27 +25,38 @@ class AdminController
     }
 
     public function dashboard()
-    {
-        // Check if the user is an admin
-        if (empty($_SESSION['user']['is_admin'])) {
-            http_response_code(403);
-            echo "Access denied.";
-            exit();
-        }
-
-        // Fetch the dashboard data, including tags
-        $dashboardData = $this->adminService->getDashboardData();
-
-        // Extract data
-        $stats = $dashboardData['stats'] ?? [];
-        $users = $dashboardData['users'] ?? [];
-        $cocktails = $dashboardData['cocktails'] ?? [];
-        $groupedTags = $dashboardData['groupedTags'] ?? [];
-        $categories = $dashboardData['tagCategories'] ?? [];
-
-        // Load the dashboard view and pass the data
-        require_once __DIR__ . '/../views/admin/dashboard.php';
+{
+    // Check if the user is an admin
+    if (empty($_SESSION['user']['is_admin'])) {
+        http_response_code(403);
+        echo "Access denied.";
+        exit();
     }
+
+    // Fetch the dashboard data, including tags
+    $dashboardData = $this->adminService->getDashboardData();
+
+    // Extract data and add checks
+    $stats = $dashboardData['stats'] ?? [];
+    $users = $dashboardData['users'] ?? [];
+    $cocktails = $dashboardData['cocktails'] ?? [];
+    $groupedTags = $dashboardData['groupedTags'] ?? [];
+    $categories = $dashboardData['tagCategories'] ?? [];
+
+    // Log any missing data for debugging
+    error_log('Dashboard Data: ' . print_r($dashboardData, true));
+
+    // Ensure the required data is present
+    if (empty($stats) || empty($users) || empty($cocktails)) {
+        error_log('Some expected data is missing in dashboard: ' . print_r($dashboardData, true));
+        // Handle error or redirect if data is incomplete
+        echo "Missing required dashboard data.";
+        exit();
+    }
+
+    // Load the dashboard view and pass the data
+    require_once __DIR__ . '/../views/admin/dashboard.php';
+}
 
     // Update user status (e.g., active, banned, suspended)
     public function updateUserStatus()
@@ -144,13 +155,26 @@ class AdminController
     // Manage Tags Page
     public function manageTags()
     {
-        $data = $this->adminService->getTagsAndCategories();
-        $groupedTags = $data['groupedTags'] ?? [];
-        $categories = $data['categories'] ?? [];
-
-        error_log('Grouped Tags: ' . print_r($groupedTags, true)); // Debugging
-        error_log('Categories: ' . print_r($categories, true));   // Debugging
-
-        require_once __DIR__ . '/../views/admin/manage_tags.php';
+        try {
+            // Get the tags and categories data from the service
+            $data = $this->adminService->getTagsAndCategories();
+            $groupedTags = $data['groupedTags'] ?? [];
+            $categories = $data['categories'] ?? [];
+    
+            // Return the grouped tags and categories as a JSON response
+            echo json_encode([
+                'status' => 'success',
+                'groupedTags' => $groupedTags,
+                'categories' => $categories,
+            ]);
+        } catch (Exception $e) {
+            // If there is an error, return a failure message
+            http_response_code(500);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred while fetching the tags and categories.',
+            ]);
+        }
     }
+
 }

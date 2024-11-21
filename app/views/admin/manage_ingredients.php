@@ -2,13 +2,13 @@
 <h1 class="admin-control-tile">Manage Ingredients</h1>
 
 <!-- Button to open the Add New Ingredient Modal -->
-<button id="adminAddIngredientButton">Add New Ingredient</button>
+<button id="openAddIngredientButton">Add Ingredient</button>
 
 <!-- Add New Ingredient Modal -->
-<div id="addIngredientModal" title="Add New Ingredient" style="display: none;">
+<div id="addIngredientDialog" title="Add Ingredient" style="display: none;">
     <form id="addIngredientForm">
-        <label for="ingredientName">Ingredient Name:</label>
-        <input type="text" id="ingredientName" name="ingredientName" required>
+        <label for="ingredientNameInput">Ingredient Name:</label>
+        <input type="text" id="ingredientNameInput" name="ingredient_name" required />
     </form>
 </div>
 
@@ -35,7 +35,7 @@
         <form id="assignTagForm">
         <input type="hidden" id="ingredientId" name="ingredient_id">            
             <!-- Display Ingredient Name here -->
-            <p><strong>Ingredient: </strong><span id="ingredientNameDisplay"></span></p>
+            <p><strong>Ingredient: </strong><span id="ingredientName"></span></p>
             <label for="tag">Select Tag:</label>
             <select id="tag" name="tag_id"></select>
         </form>

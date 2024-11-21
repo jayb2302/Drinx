@@ -80,6 +80,8 @@ class IngredientController
         }
     }
 
+    
+
     public function createIngredient()
     {
         try {
