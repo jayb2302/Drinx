@@ -109,11 +109,10 @@ class IngredientController
             $ingredientId = $this->ingredientRepository->createIngredient($ingredientName);
 
             if ($ingredientId) {
-                // Get the "Uncategorized" tag ID using the repository
-                $uncategorizedTagId = $this->ingredientRepository->getUncategorizedTagId();
+               
 
                 // Assign the "Uncategorized" tag
-                $this->ingredientRepository->assignTag($ingredientId, $uncategorizedTagId);
+            
 
                 // Return success response
                 echo json_encode(['status' => 'success', 'message' => 'Ingredient added successfully.', 'ingredient_id' => $ingredientId]);

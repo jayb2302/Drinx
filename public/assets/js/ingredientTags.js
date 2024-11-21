@@ -222,26 +222,48 @@ $(function () {
     
     // Call fetch function on page load
     fetchUncategorizedIngredients();
-    function handleAddIngredient() {
-        const ingredientName = $("#ingredientNameInput").val().trim(); // Assume there's an input with this ID
-        console.log("Adding Ingredient:", ingredientName);
-    
+    // Handle adding a new ingredient
+    function handleAddIngredient(event) {
+        event.preventDefault();  // Prevent the form from submitting traditionally
+
+        const ingredientName = $("#ingredientNameInput").val().trim();
+
         if (!ingredientName) {
             alert("Please enter an ingredient name.");
             return;
         }
-    
+
         $.ajax({
-            url: "/admin/ingredients/create",
+            url: "/admin/ingredients/create", // Your backend endpoint
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({ ingredient_name: ingredientName }),
             success: function (response) {
-                console.log("Server Response:", response); // Debugging log
+                console.log("Server Response:", response);  // Log the raw response
+                
+                // Check if response is a string, and parse it into an object if necessary
+                if (typeof response === "string") {
+                    try {
+                        response = JSON.parse(response);  // Parse the response string into an object
+                    } catch (error) {
+                        console.error("Error parsing response:", error);
+                        alert("Error parsing the response from the server.");
+                        return;
+                    }
+                }
+
+                // Now check the response status and act accordingly
+                if (response.status === "success") {
+                    alert(response.message);  // Show success message
+                    fetchUncategorizedIngredients();  // Refresh the ingredient list
+                    $("#addIngredientDialog").dialog("close");  // Close modal if needed
+                } else {
+                    alert(response.message || "Error adding ingredient.");
+                }
             },
             error: function (xhr, status, error) {
-                console.error("AJAX Error:", error);
-                console.log("Response Text:", xhr.responseText); // Debug raw response text
+                console.error("Error:", error);
+                alert("Error adding ingredient: " + xhr.responseText);
             }
         });
     }
