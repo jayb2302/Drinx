@@ -174,7 +174,7 @@ CREATE TABLE `tags` (
 CREATE TABLE `tag_categories` (
   `tag_category_id` int(11) NOT NULL,
   `category_name` varchar(100) NOT NULL
-) 
+); 
 
 CREATE TABLE ingredient_tags (
     ingredient_tag_id INT AUTO_INCREMENT PRIMARY KEY,

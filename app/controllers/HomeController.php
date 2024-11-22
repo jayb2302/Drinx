@@ -113,9 +113,9 @@ class HomeController
         $isAdding = $action === 'add';
         $isLoggingIn = $action === 'login';
         $isRegistering = $action === 'register';
-        $includeScripts = [
-            asset('assets/js/sort-category.js')
-        ];  
+        // $includeScripts = [
+        //     asset('assets/js/sort-category.js')
+        // ];  
         // Load the view
         require_once __DIR__ . '/../views/home.php';
     }
