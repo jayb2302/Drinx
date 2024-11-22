@@ -9,6 +9,7 @@ import { initializeComments } from './modules/comments.js';
 import { initializeAdmin } from './modules/admin.js';
 import { initializeCocktail } from './modules/cocktail.js';
 import { initializeIngredients } from './modules/ingredients.js';
+import { initializeTags } from './modules/tags.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     const pageType = window.pageType || document.querySelector('meta[name="page-type"]')?.content;
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (pageType === 'admin') {
         initializeAdmin();
         initializeIngredients();
+        initializeTags();
     } else if (pageType === 'cocktail') {
         initializeCocktail();
         initializeComments();
