@@ -6,8 +6,9 @@ import { initializeSticky } from './modules/sticky.js';
 import { initializeRandomCocktail } from './modules/random.js';
 import { initializeSortAndCategories } from './modules/sort-category.js';
 import { initializeComments } from './modules/comments.js';
-// import { initializeAdmin } from './modules/admin.js';
+import { initializeAdmin } from './modules/admin.js';
 import { initializeCocktail } from './modules/cocktail.js';
+import { initializeIngredients } from './modules/ingredients.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     const pageType = window.pageType || document.querySelector('meta[name="page-type"]')?.content;
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
         initializeProfile();
     } else if (pageType === 'admin') {
         initializeAdmin();
+        initializeIngredients();
     } else if (pageType === 'cocktail') {
         initializeCocktail();
         initializeComments();

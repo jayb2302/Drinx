@@ -10,7 +10,7 @@
         <label for="ingredientNameInput">Ingredient Name:</label>
         <input type="text" id="ingredientNameInput" name="ingredient_name" required />
     </form>
-</div>
+</div>  
 
 <!-- Ingredient Management Section -->
 <div id="ingredientManagement">
