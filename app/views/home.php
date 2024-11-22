@@ -1,6 +1,7 @@
 <?php
 $metaTitle = "Drinx - Cocktail Library";
 $pageTitle = "Drip, Drop, Drinx";
+$page="home";
 
 include __DIR__ . '/layout/header.php';
 

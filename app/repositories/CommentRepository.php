@@ -9,27 +9,32 @@ class CommentRepository
         $this->db = $db;
     }
     public function getCommentById($commentId)
-    {
-        $sql = "SELECT * FROM comments WHERE comment_id = :comment_id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':comment_id', $commentId, PDO::PARAM_INT);
-        $stmt->execute();
+{
+    $sql = "
+        SELECT c.*, u.username 
+        FROM comments c
+        JOIN users u ON c.user_id = u.user_id 
+        WHERE c.comment_id = :comment_id
+    ";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':comment_id', $commentId, PDO::PARAM_INT);
+    $stmt->execute();
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($row) {
-            // Create a Comment instance with all constructor parameters
-            return new Comment(
-                $row['comment_id'],
-                $row['user_id'],
-                $row['username'],
-                $row['cocktail_id'],
-                $row['parent_comment_id'],
-                $row['comment'],
-                $row['created_at']
-            );
-        }
-        return null;
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row) {
+        // Create a Comment instance with all constructor parameters
+        return new Comment(
+            $row['comment_id'],
+            $row['user_id'],
+            $row['username'],
+            $row['cocktail_id'],
+            $row['parent_comment_id'],
+            $row['comment'],
+            $row['created_at']
+        );
     }
+    return null;
+}
 
     public function countComments()
     {
@@ -46,28 +51,26 @@ class CommentRepository
             JOIN users u ON c.user_id = u.user_id
             WHERE c.cocktail_id = :cocktail_id AND c.parent_comment_id IS NULL 
             ORDER BY c.created_at DESC";
-
+    
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+    
         // Convert each result to a Comment model
         $comments = [];
-        foreach ($results as $result) {
-            $replyCount = $this->getReplyCountByCommentId($result['comment_id']);
-            
+        foreach ($results as $result) { // Single loop only
             $comments[] = new Comment(
                 $result['comment_id'],
                 $result['user_id'],
                 $result['username'],
                 $result['cocktail_id'],
                 $result['parent_comment_id'],
-                $result['comment'],
-                $result['created_at'],
-                $replyCount
+                $result['comment'], // Ensure this matches your database
+                $result['created_at']
             );
         }
+    
         return $comments;
     }
 
