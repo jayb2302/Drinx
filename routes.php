@@ -77,12 +77,15 @@ $router->add('POST', '#^/cocktails/update/(\d+)$#', [CocktailController::class, 
 $router->add('POST', '#^/cocktails/delete/(\d+)$#', [CocktailController::class, 'delete']); // Delete a cocktail
 $router->add('POST', '#^/cocktails/(\d+)/delete-step$#', [CocktailController::class, 'deleteStep']);
 $router->add('GET', '#^/cocktails/random$#', [CocktailController::class, 'getRandomCocktail']);
+
 // View cocktails
 $router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // List all cocktails
 $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'view']); // View specific cocktail
+
 // Tag Routes
 $router->add('GET', '#^/tags/([a-zA-Z0-9-]+)$#', [TagController::class, 'showTagsByCategory']);  // Show tags for a category like "Flavor", "Mood", etc.
 $router->add('POST', '#^/cocktails/(\d+)/assign-tags$#', [TagController::class, 'assignTagsToCocktail']);  // Assign tags based on ingredients for a cocktail
+
 // Admin Ingredient Management
 $router->add('GET', '#^/admin/ingredients/uncategorized$#', [IngredientController::class, 'getUncategorizedIngredients']); // Get uncategorized ingredients
 $router->add('POST', '#^/admin/ingredients/assign-tag$#', [IngredientController::class, 'assignTag']); // Assign tag to ingredient
@@ -94,13 +97,15 @@ $router->add('POST', '#^/admin/ingredients/delete$#', [IngredientController::cla
 $router->add('GET', '#^/admin/units$#', [IngredientController::class, 'showUnits']); // View all units
 $router->add('POST', '#^/admin/unit/add$#', [IngredientController::class, 'addUnit']); // Add a new unit
 $router->add('POST', '#^/admin/unit/delete$#', [IngredientController::class, 'deleteUnit']); // Delete a unit
+
 // Comment interactions
 $router->add('POST', '#^/cocktails/(\d+)-[^/]+/comments$#', [CommentController::class, 'addComment']);
-$router->add('GET', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
-$router->add('POST', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
+// $router->add('GET', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
+$router->add('POST', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment * current itteration only uses POST. ** Edit is a prefared naming convention
 $router->add('POST', '#^/comments/(\d+)/update$#', [CommentController::class, 'update']); // Update comment
 $router->add('POST', '#^/comments/(\d+)/delete$#', [CommentController::class, 'delete']); // Delete comment or reply
 $router->add('POST', '#^/comments/(\d+)/reply$#', [CommentController::class, 'reply']);
+
 // Toggle like route
 $router->add('POST', '#^/cocktails/(\d+)/toggle-like$#', [LikeController::class, 'toggleLike']);
 

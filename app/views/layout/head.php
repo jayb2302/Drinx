@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) : 'Default Title' ?></title>
     <meta name="description" content="<?= isset($metaTitle) ? htmlspecialchars($metaTitle) : 'Default meta description' ?>">
+    <meta name="page-type" content="<?= htmlspecialchars($page ?? '') ?>">
+
     <link rel="icon" href="<?= asset('assets/brand/LogoIdea.svg');?>" type="image/x-icon">
 
     <!-- Include CSS -->

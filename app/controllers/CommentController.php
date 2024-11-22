@@ -2,14 +2,12 @@
 class CommentController
 {
     private $commentService;
-    private $commentRepository;
     private $cocktailService;
 
-    public function __construct(CommentService $commentService, CommentRepository $commentRepository, CocktailService $cocktailService)
+    public function __construct(CommentService $commentService, CocktailService $cocktailService)
     {
         $this->commentService = $commentService;
-        $this->commentRepository = $commentRepository;
-        $this->cocktailService = $cocktailService; 
+        $this->cocktailService = $cocktailService;
     }
 
     // Add a comment or reply
@@ -51,8 +49,10 @@ class CommentController
             header('Content-Type: application/json');
             echo json_encode(['success' => true, 'html' => $commentsHtml]);
         } catch (Exception $e) {
+            error_log($e->getMessage());
             http_response_code(500); // Internal Server Error
-            echo json_encode(['error' => $e->getMessage()]);
+            echo json_encode(['error' => 'An unexpected error occurred.']);
+
         }
         exit();
     }
@@ -88,11 +88,11 @@ class CommentController
             // Update the comment
             error_log("Updating comment ID: $commentId with new text: $newCommentText");
             $this->commentService->updateComment($commentId, $newCommentText);
-           
+
             // Fetch updated comments for the entire section
             $cocktailId = $comment->getCocktailId();
             $updatedComments = $this->commentService->getCommentsWithReplies($cocktailId);
-           
+
             // Return the updated comments section HTML
             ob_start();
             $cocktail = $this->cocktailService->getCocktailById($cocktailId); // Assuming you have a method to get cocktail info
@@ -104,9 +104,9 @@ class CommentController
             error_log("Successfully edited comment ID: $commentId");
             echo json_encode(['success' => true, 'html' => $updatedCommentsHtml]);
         } catch (Exception $e) {
-            error_log("Exception occurred while editing comment ID $commentId: " . $e->getMessage());
+            error_log($e->getMessage());
             http_response_code(500); // Internal Server Error
-            echo json_encode(['error' => $e->getMessage()]);
+            echo json_encode(['error' => 'An unexpected error occurred.']);
         }
         exit();
     }
@@ -121,10 +121,10 @@ class CommentController
         try {
             // Get cocktail ID before deletion
             $cocktailId = $comment->getCocktailId();
-           
+
             // Delete the comment
             $this->commentService->deleteComment($commentId);
-           
+
             // Fetch updated comments and render the section
             $cocktail = $this->cocktailService->getCocktailById($cocktailId);
             $comments = $this->commentService->getCommentsWithReplies($cocktailId);
@@ -137,8 +137,9 @@ class CommentController
             header('Content-Type: application/json');
             echo json_encode(['success' => true, 'html' => $commentsHtml]); // Send full HTML
         } catch (Exception $e) {
+            error_log($e->getMessage());
             http_response_code(500); // Internal Server Error
-            echo json_encode(['error' => $e->getMessage()]);
+            echo json_encode(['error' => 'An unexpected error occurred.']);
         }
         exit();
     }
@@ -155,8 +156,8 @@ class CommentController
             }
             try {
                 // Add reply to the database
-                $this->commentRepository->addComment($userId, $cocktailId, $commentText, $commentId);
-                
+                $this->commentService->addComment($userId, $cocktailId, $commentText, $commentId);
+
                 // Fetch updated cocktail and comments
                 $cocktail = $this->cocktailService->getCocktailById($cocktailId);
                 $comments = $this->commentService->getCommentsWithReplies($cocktailId);
@@ -170,8 +171,9 @@ class CommentController
                 header('Content-Type: application/json');
                 echo json_encode(['success' => true, 'html' => $commentsHtml]);
             } catch (Exception $e) {
+                error_log($e->getMessage());
                 http_response_code(500); // Internal Server Error
-                echo json_encode(['error' => $e->getMessage()]);
+                echo json_encode(['error' => 'An unexpected error occurred.']);
             }
             exit();
         }

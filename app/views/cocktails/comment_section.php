@@ -1,8 +1,3 @@
-<?php
-if (!isset($cocktail) || !isset($currentUser) || !isset($comments)) {
-    throw new Exception("Required variables are missing in the comment section view.");
-}
-?>
 <div class="commentsSection">
     <h2 class="">Comments</h2>
     <?php foreach ($comments as $comment): ?>

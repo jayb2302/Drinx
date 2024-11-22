@@ -1,4 +1,5 @@
 <?php
+$page= 'cocktail';
 include __DIR__ . '/../layout/header.php';
 include_once __DIR__ . '/../../helpers/helpers.php';
 

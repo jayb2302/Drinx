@@ -1,6 +1,7 @@
 <?php 
 $metaTitle = "Drinx - Cocktail Library";
 $pageTitle = "Drinx - Admin Dashboard";
+$page="admin";
 require_once __DIR__ . '/../layout/header.php'; 
 ?>
 <!-- Admin Dashboard Navigation -->
