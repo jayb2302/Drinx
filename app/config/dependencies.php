@@ -26,6 +26,8 @@ require_once __DIR__ . '/../controllers/AdminController.php';
 require_once __DIR__ . '/../controllers/AuthController.php';
 require_once __DIR__ . '/../controllers/UserController.php';
 require_once __DIR__ . '/../controllers/CocktailController.php';
+require_once __DIR__ . '/../controllers/CommentController.php';
+require_once __DIR__ . '/../controllers/LikeController.php';
 
 // Database connection
 $db = Database::getConnection();
@@ -81,7 +83,7 @@ $homeController = new HomeController(
 
 
 $adminController = new AdminController($adminService, $authController, $cocktailService);
-
+$commentController = new CommentController($commentService, $cocktailService);
 $tagController = new TagController($tagRepository);
 $ingredientController = new IngredientController($ingredientRepository, $tagRepository);
 $searchController = new SearchController($userService, $cocktailService);

@@ -30,8 +30,6 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
     </button>
 </div>
 <div class="content-wrapper">
-
-
     <main class="recipeWrapper">
         <!-- Hidden Form (inline editing) -->
         <div id="editFormContainer" style="display: none;">
@@ -117,11 +115,13 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
                 </form>
             </div>
         <?php endif; ?>
+    </main>
 
-
-</div>
-<?php 
+        <aside class="commentSection">
+            <?php 
 require_once __DIR__ . '/comment_section.php';
 ?>
+</aside>
+</div>
 
 <?php include __DIR__ . '/../layout/footer.php'; ?>
