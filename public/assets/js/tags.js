@@ -9,19 +9,18 @@ $(function () {
             $tagsManagement.slideToggle();
         })
 
-    // Initialize the jQuery UI dialog
-    $("#tagDialog").dialog({
-        autoOpen: false,
-        modal: true,
-        buttons: {
-            Save: function () {
-                handleSaveTag();
-            },
-            Cancel: function () {
-                $(this).dialog("close");
+        $("#tagDialog").dialog({
+            autoOpen: false,  // Ensure dialog is not open by default
+            modal: true,
+            buttons: {
+                Save: function () {
+                    handleSaveTag();
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                }
             }
-        }
-    });
+        });
 
     // Initialize the notification dialog
     $("#notificationDialog").dialog({
@@ -105,7 +104,26 @@ $(function () {
                     const jsonResponse = JSON.parse(response);
                     if (jsonResponse.status === 'success') {
                         alert(jsonResponse.message);
-                        location.reload(); // Reload the page to reflect changes
+
+                        // If editing an existing tag, update the tag in the UI
+                        if (tagId) {
+                            const tagItem = $(`.tag-item[data-tag-id="${tagId}"]`);
+                            tagItem.find(".tag-name").text(tagName); // Update the tag name in the list
+                            tagItem.find(".tag-category").text(tagCategoryId); // Update the category if needed
+                        } else {
+                            // Add the new tag to the list dynamically without refreshing the page
+                            const newTagHtml = `
+                                <li class="tag-item" data-tag-id="${jsonResponse.tag_id}">
+                                    <span class="tag-name">${tagName}</span> - <span class="tag-category">${tagCategoryId}</span>
+                                    <button class="editTagButton">Edit</button>
+                                    <button class="deleteTagButton">Delete</button>
+                                </li>
+                            `;
+                            $("#tagList").append(newTagHtml); // Add the new tag to the list
+                        }
+
+                        // Close the modal dialog
+                        $("#tagDialog").dialog("close"); // Ensure this is the correct ID of your modal
                     } else {
                         alert(jsonResponse.message);
                     }
@@ -140,7 +158,12 @@ $(function () {
                         const jsonResponse = JSON.parse(response);
                         if (jsonResponse.status === 'success') {
                             alert(jsonResponse.message);
-                            location.reload(); // Reload the page to reflect changes
+    
+                            // Remove the tag from the UI without refreshing the page
+                            $button.closest('.tag-item').remove(); // Adjust the selector based on your HTML structure
+    
+                            // Optionally, you can update the list of tags dynamically if needed
+                            // fetchTags(); // You can implement this function to reload the tags list dynamically
                         } else {
                             alert(jsonResponse.message); // Display error message from response
                         }

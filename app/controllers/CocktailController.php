@@ -1,15 +1,5 @@
 <?php
-require_once __DIR__ . '/../repositories/CocktailRepository.php';
-require_once __DIR__ . '/../repositories/CategoryRepository.php';
-require_once __DIR__ . '/../repositories/IngredientRepository.php';
-require_once __DIR__ . '/../repositories/StepRepository.php';
-require_once __DIR__ . '/../repositories/TagRepository.php';
-require_once __DIR__ . '/../repositories/DifficultyRepository.php';
-require_once __DIR__ . '/../repositories/CommentRepository.php';
-require_once __DIR__ . '/../repositories/UnitRepository.php';
-require_once __DIR__ . '/../services/CocktailService.php';
-require_once __DIR__ . '/../services/CommentService.php';
-require_once __DIR__ . '/../services/LikeService.php';
+require_once __DIR__ . '/../config/dependencies.php';
 
 class CocktailController
 {
@@ -61,7 +51,8 @@ class CocktailController
             $tagRepository,
             $this->difficultyRepository,
             $likeRepository,
-            $userRepository
+            $userRepository,
+            $commentRepository
         );
     }
 
@@ -78,13 +69,23 @@ class CocktailController
         $cocktails = $this->cocktailService->getAllCocktails();
         $categories = $this->cocktailService->getCategories();
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+
         // Pass `hasLiked` status to the view for each cocktail
         foreach ($cocktails as $cocktail) {
+            // Get like status for the current user
             $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktail->getCocktailId()) : false;
+
+            // Fetch the top-level comments for the cocktail (limit to 3, for example)
+            $comments = $this->cocktailService->getTopLevelCommentsForCocktail($cocktail->getCocktailId(), 3);
+            error_log("Fetched comments for cocktail ID " . $cocktail->getCocktailId() . ": " . print_r($comments, true));
+
+            $cocktail->comments = $comments;  // Assign the comments to the cocktail object
+            $cocktail->commentCount = count($comments); // Count the number of comments
         }
+
+        // Pass data to the view
         require_once __DIR__ . '/../views/cocktails/index.php'; // Load the view to display cocktails
     }
-
     // Show the form to add a new cocktail (only for logged-in users)
     public function add()
     {
@@ -95,7 +96,7 @@ class CocktailController
 
         $isEditing = false;
         // Pass the necessary data to the view
-        require_once __DIR__ . '/../views/cocktails/form.php'; // Include the form view
+        require_once __DIR__ . '/../views/cocktails/form.php';
     }
 
     // Store a new cocktail in the database (only for logged-in users)
@@ -136,7 +137,9 @@ class CocktailController
 
                 // After successful creation
                 $this->handleCocktailSteps($cocktailId, $_POST['steps']);
-                $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
+
+                $parsedQuantities = $this->processQuantities($_POST['quantities']);
+                $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $parsedQuantities, $_POST['units']);
 
                 $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
             } catch (Exception $e) {
@@ -144,7 +147,6 @@ class CocktailController
                 $this->redirect('/cocktails/add');
             }
         }
-
         $this->redirect('/cocktails');
     }
 
@@ -163,9 +165,9 @@ class CocktailController
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
         $categories = $this->cocktailService->getCategories();
-        $units = $this->ingredientService->getAllUnits(); // Fetch units from IngredientService
-        $difficultyId = $cocktail->getDifficultyId(); // Get the difficulty ID
-        $difficultyName = $this->difficultyRepository->getDifficultyNameById($difficultyId); // Get the difficulty name
+        $units = $this->ingredientService->getAllUnits();
+        $difficultyId = $cocktail->getDifficultyId();
+        $difficultyName = $this->difficultyRepository->getDifficultyNameById($difficultyId);
 
         $difficulties = $this->difficultyRepository->getAllDifficulties();
         $isEditing = true;
@@ -201,13 +203,11 @@ class CocktailController
             'image' => $image ?: $cocktail->getImage(),
             'is_sticky' => isset($_POST['isSticky']) ? 1 : 0
         ];
-
-        // Log the cocktail data before update
         error_log("Updating cocktail with data: " . print_r($cocktailData, true));
 
         try {
-            $this->clearSteps($cocktailId);
             $this->cocktailService->updateCocktail($cocktailId, $cocktailData);
+            $this->clearSteps($cocktailId);
             $this->handleCocktailSteps($cocktailId, $_POST['steps']);
 
             // Check for deletions of steps
@@ -216,9 +216,10 @@ class CocktailController
                     $this->stepService->deleteStep($cocktailId, $stepId); // Call to delete the step
                 }
             }
+            $parsedQuantities = $this->ingredientService->processQuantities($_POST['quantities']);
 
             // Handle ingredients
-            $this->ingredientService->updateIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
+            $this->ingredientService->updateIngredients($cocktailId, $_POST['ingredients'], $parsedQuantities, $_POST['units']);
             $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
 
             $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
@@ -226,6 +227,12 @@ class CocktailController
             $_SESSION['errors'] = ["Failed to update cocktail: " . $e->getMessage()];
             $this->redirect('/cocktails/' . $cocktailId . '/edit');
         }
+    }
+
+    public function countCocktails()
+    {
+        $count = $this->cocktailService->countCocktails();
+        echo json_encode(['count' => $count]);
     }
 
     // Delete steps
@@ -376,7 +383,7 @@ class CocktailController
             $this->redirect($redirectUrl);
             return true; // Indicate that there were errors
         }
-        return false; // No errors
+        return false;
     }
 
     // View cocktail details (public access)
@@ -388,8 +395,22 @@ class CocktailController
 
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
         $isEditing = ($action === 'edit');
-        $cocktail->hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;
+        // Check if user has liked the cocktail
+        $cocktail->hasLiked = $loggedInUserId
+            ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId)
+            : false;
+
+        // Fetch ingredients and convert quantities to fractions
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
+        $processedIngredients = [];
+        foreach ($ingredients as $ingredient) {
+            $processedIngredients[] = [
+                'name' => $ingredient->getName(),
+                'quantity' => $this->ingredientService->convertDecimalToFraction($ingredient->getQuantity()),
+                'unit' => $ingredient->getUnitName(),
+            ];
+        }
+
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
         $category = $this->cocktailService->getCategoryByCocktailId($cocktailId);
         $tags = $this->cocktailService->getCocktailTags($cocktailId);
@@ -398,11 +419,9 @@ class CocktailController
         $difficultyId = $cocktail->getDifficultyId();
         $difficulties = $this->difficultyRepository->getAllDifficulties();
         $difficultyName = $this->difficultyRepository->getDifficultyNameById($cocktail->getDifficultyId());
-        $hasLiked = $loggedInUserId ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId) : false;
 
-        // Fetch total likes for the cocktail (if you need to display total likes)
+        // Fetch total likes for the cocktail
         $totalLikes = $this->likeService->getLikesForCocktail($cocktailId);
-
         $comments = $this->commentService->getCommentsWithReplies($cocktailId);
 
         if ($isEditing) {
@@ -428,6 +447,12 @@ class CocktailController
         }
     }
 
+    // Process quantities
+    private function processQuantities($quantities)
+    {
+        return array_map('sanitizeNumber', $quantities);
+    }
+
     // Handle cocktail ingredients
     private function handleCocktailIngredients($cocktailId, $ingredients, $quantities, $units)
     {
@@ -437,12 +462,12 @@ class CocktailController
 
         foreach ($ingredients as $index => $ingredientName) {
             $ingredientName = sanitize($ingredientName);
-            $quantity = sanitize($quantities[$index] ?? '');
+            $quantity = sanitizeNumber($quantities[$index] ?? '');
             $unitId = intval($units[$index] ?? null);
 
             // Ensure ingredient name is not empty
             if (empty($ingredientName) || empty($quantity) || empty($unitId)) {
-                continue; // Skip to the next ingredient if any required field is missing
+                continue;
             }
 
             // Check if the ingredient already exists

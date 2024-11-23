@@ -14,7 +14,6 @@ if (isset($_COOKIE['logout_success'])) {
 
 // Get the current URL path
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
 $matches = [];
 $isEditing = preg_match('#^/cocktails/(\d+)/edit$#', $currentPath, $matches);
 $cocktailId = $matches[1] ?? null;
@@ -48,21 +47,7 @@ $cocktailId = $matches[1] ?? null;
     <!-- Sticky Cocktail -->
     <main>
 
-        <!-- -->
-        <!-- User Management Button (only for admins) -->
-        <?php
-        if ($_SESSION['user']['is_admin'] ?? false): ?>
-            <!-- <button class="button" onclick="toggleUserManagement()">User Management</button> -->
-            <div id="userManagement" style="display: none;">
-                <?php include __DIR__ . '/admin/manage_users.php'; ?>
-            </div>
-            <div id="tagsManagement" style="display: none;">
-                <?php include __DIR__ . '/admin/manage_tags.php';?>
-            </div>
-            <div id="ingredientManagement" style="display: none;">
-                <?php include __DIR__ . '/admin/manage_ingredients.php';?>
-            </div>
-        <?php endif; ?>
+        
         <!-- Logic to include forms based on the path -->
         <?php
         if ($currentPath === '/login') {

@@ -2,10 +2,14 @@
 export function initializeComments() {
     const commentsSection = document.querySelector('.commentsSection');
 
+    if (!commentsSection) {
+        console.error("Comments section not found.");
+        return;
+    }
     // Clear existing event listeners to avoid duplicates
     const newCommentsSection = commentsSection.cloneNode(true);
     commentsSection.replaceWith(newCommentsSection);
-
+    
     // Top-level comment submission
     const commentForm = newCommentsSection.querySelector('#TopLevelCommentForm');
     if (commentForm) {
@@ -17,22 +21,33 @@ export function initializeComments() {
                 const response = await fetch(commentForm.action, {
                     method: 'POST',
                     body: formData,
-                    headers: { 'Accept': 'application/json' },
+                    headers: {
+                        'Accept': 'application/json', // Expect JSON response from the server
+                    },
                 });
+
+                // Validate the response
+                const contentType = response.headers.get('Content-Type');
+                if (!response.ok || !contentType || !contentType.includes('application/json')) {
+                    const rawText = await response.text();
+                    console.error('Unexpected Response:', rawText);
+                    alert('Failed to add comment. Please try again.');
+                    return;
+                }
 
                 const data = await response.json();
                 if (data.success) {
-                    newCommentsSection.outerHTML = data.html;
-                    document.dispatchEvent(new Event('Drinx.DOMUpdated'));
+                    newCommentsSection.innerHTML = data.html; // Replace comments section with updated HTML
+                    document.dispatchEvent(new Event('Drinx.DOMUpdated')); // Trigger any reinitialization if needed
                 } else {
                     alert(data.error || 'Failed to add comment.');
                 }
             } catch (error) {
-                console.error('Error adding comment:', error);
+                console.error('Unexpected Error:', error);
+                alert('An unexpected error occurred. Please try again.');
             }
         });
     }
-
     // Event delegation for dynamically added elements
     newCommentsSection.addEventListener('click', async (event) => {
         const target = event.target;
@@ -174,6 +189,6 @@ export function initializeComments() {
     });
     // Add a global listener for DOM updates
     document.addEventListener('Drinx.DOMUpdated', () => {
-    initializeComments();
-});
+        initializeComments();
+    });
 }

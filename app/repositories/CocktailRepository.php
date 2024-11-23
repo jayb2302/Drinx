@@ -61,33 +61,6 @@ class CocktailRepository
 
         return array_map([$this, 'createCocktailObject'], $cocktailsData);
     }
-    public function countCocktails()
-    {
-        $stmt = $this->db->query("SELECT COUNT(*) AS total FROM cocktails");
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['total'];
-    }
-    public function getMostPopularCocktail()
-    {
-        $query = "
-            SELECT c.title, COUNT(l.like_id) AS like_count
-            FROM cocktails c
-            JOIN likes l ON c.cocktail_id = l.cocktail_id
-            GROUP BY c.cocktail_id
-            ORDER BY like_count DESC
-            LIMIT 1";
-        return $this->db->query($query)->fetch();
-    }
-    
-    public function countCocktailsWithoutComments()
-    {
-        $query = "
-        SELECT COUNT(*) 
-        FROM cocktails c
-        LEFT JOIN comments cm ON c.cocktail_id = cm.cocktail_id
-        WHERE cm.comment_id IS NULL";
-        return $this->db->query($query)->fetchColumn();
-    }
 
     // Fetch cocktail by name
     public function getByName($name)
@@ -101,6 +74,13 @@ class CocktailRepository
         return $result ? $this->createCocktailObject($result) : null;
     }
 
+    // Count all cocktails
+    public function countCocktails()
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM cocktails");
+        return $stmt->fetchColumn();
+    }
+    
     // Create a new cocktail
     public function create($cocktailData)
     {
@@ -304,6 +284,23 @@ class CocktailRepository
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Ingredient');
     }
 
+   
+    public function getMostPopularCocktail()
+    {
+        $stmt = $this->db->prepare("
+            SELECT c.*, COUNT(l.like_id) AS like_count
+            FROM cocktails c
+            LEFT JOIN likes l ON c.cocktail_id = l.cocktail_id
+            GROUP BY c.cocktail_id
+            ORDER BY like_count DESC
+            LIMIT 1
+        ");
+        $stmt->execute();
+        $cocktailData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $cocktailData ? $this->createCocktailObject($cocktailData) : null;
+    }
+
     private function getStepsByCocktailId($cocktailId)
     {
         $stmt = $this->db->prepare("SELECT * FROM cocktail_steps WHERE cocktail_id = :cocktail_id");
@@ -347,5 +344,18 @@ class CocktailRepository
         $stmt = $this->db->prepare("UPDATE cocktails SET is_sticky = 1 WHERE cocktail_id = :cocktail_id");
         $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+
+    public function countCocktailsWithoutComments()
+    {
+        $stmt = $this->db->prepare(" 
+            SELECT COUNT(c.cocktail_id) 
+            FROM cocktails c 
+            LEFT JOIN comments com ON c.cocktail_id = com.cocktail_id 
+            WHERE com.comment_id IS NULL
+        ");
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
 }

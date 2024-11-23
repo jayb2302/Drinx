@@ -1,5 +1,5 @@
 <?php
-require_once '../path/to/CocktailService.php'; // Adjust the path to match your setup
+require_once '/../app/services/CocktailService.php'; 
 
 header('Content-Type: application/json');
 

@@ -44,6 +44,14 @@ function sanitize($input) {
     return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
 
+// Function to validate and sanitize numeric input
+function sanitizeNumber($input) {
+    if (is_numeric($input)) {
+        // Convert to float for fractional values
+        return floatval($input); 
+    }
+    return null; 
+}
 
 // Function to redirect to a given path
 function redirect($path) {

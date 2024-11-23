@@ -2,16 +2,9 @@
 use App\Routing\Router;
 
 require_once __DIR__ . '/router.php';
-require_once __DIR__ . '/app/controllers/HomeController.php';
-require_once __DIR__ . '/app/controllers/UserController.php';
-require_once __DIR__ . '/app/controllers/AuthController.php';
-require_once __DIR__ . '/app/controllers/CocktailController.php';
-require_once __DIR__ . '/app/controllers/CommentController.php';
-require_once __DIR__ . '/app/controllers/LikeController.php';
-require_once __DIR__ . '/app/controllers/SearchController.php';
-require_once __DIR__ . '/app/controllers/AdminController.php';
+require_once __DIR__ . '/app/config/dependencies.php';
 
-$router = new Router(); // Instantiate the Router class
+$router = new Router(); 
 
 // Category routes (with sort options)
 $router->add('GET', '#^/category/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)$#', [HomeController::class, 'index']); // Match /category/{category}/{sort}
@@ -54,8 +47,6 @@ $router->add('POST', '#^/admin/ingredients/delete$#', [IngredientController::cla
 $router->add('GET', '#^/search$#', [SearchController::class, 'search']);
 $router->add('GET', '#^/searchAllUsers$#', [SearchController::class, 'adminUserSearch']);
 
-
-
 // User routes
 $router->add('GET', '#^/profile/(\d+)$#', [UserController::class, 'profile']);
 $router->add('GET', '#^/profile/([a-zA-Z0-9_-]+)$#', [UserController::class, 'profileByUsername']); // Show profile by username
@@ -77,15 +68,12 @@ $router->add('POST', '#^/cocktails/update/(\d+)$#', [CocktailController::class, 
 $router->add('POST', '#^/cocktails/delete/(\d+)$#', [CocktailController::class, 'delete']); // Delete a cocktail
 $router->add('POST', '#^/cocktails/(\d+)/delete-step$#', [CocktailController::class, 'deleteStep']);
 $router->add('GET', '#^/cocktails/random$#', [CocktailController::class, 'getRandomCocktail']);
-
-// View cocktails
-$router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // List all cocktails
 $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'view']); // View specific cocktail
 
 // Tag Routes
 $router->add('GET', '#^/tags/([a-zA-Z0-9-]+)$#', [TagController::class, 'showTagsByCategory']);  // Show tags for a category like "Flavor", "Mood", etc.
 $router->add('POST', '#^/cocktails/(\d+)/assign-tags$#', [TagController::class, 'assignTagsToCocktail']);  // Assign tags based on ingredients for a cocktail
-
+    
 // Admin Ingredient Management
 $router->add('GET', '#^/admin/ingredients/uncategorized$#', [IngredientController::class, 'getUncategorizedIngredients']); // Get uncategorized ingredients
 $router->add('POST', '#^/admin/ingredients/assign-tag$#', [IngredientController::class, 'assignTag']); // Assign tag to ingredient

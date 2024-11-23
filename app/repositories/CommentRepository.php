@@ -105,6 +105,26 @@ class CommentRepository
         return $replies;
     }
 
+    public function getCommentCountByCocktailId($cocktailId)
+    {
+        $sql = "SELECT COUNT(*) AS total FROM comments WHERE cocktail_id = :cocktail_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }        
+
+    // Get the reply count for a specific comment
+    public function getReplyCountByCommentId($commentId)
+    {
+        $sql = "SELECT COUNT(*) AS total FROM comments WHERE parent_comment_id = :comment_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':comment_id', $commentId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
     // Add a new comment
     public function addComment($userId, $cocktailId, $commentText, $parentCommentId = null)
     {

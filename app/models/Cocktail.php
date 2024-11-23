@@ -16,6 +16,9 @@ class Cocktail
     private $likeCount = 0;
     private $difficulty_name; 
 
+    public $commentCount = 0;
+    public $comments = [];
+
 
     public function __construct(
         $cocktail_id = null,
@@ -154,5 +157,13 @@ class Cocktail
     public function setDifficultyId($difficulty_id)
     {
         $this->difficulty_id = $difficulty_id;
+    }
+
+    public function getCommentCount() {
+        return $this->commentCount;
+    }
+
+    public function getComments() {
+        return $this->comments;
     }
 }

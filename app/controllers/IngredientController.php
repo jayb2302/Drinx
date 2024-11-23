@@ -29,23 +29,24 @@ class IngredientController
     }
 
     // Assign a tag to an ingredient
-    public function assignTag() {
+    public function assignTag()
+    {
         try {
             $data = json_decode(file_get_contents('php://input'), true);
             $ingredientId = $data['ingredient_id'] ?? null;
             $ingredientName = trim($data['ingredient_name'] ?? '');
             $tagId = $data['tag_id'] ?? null;
-    
+
             // Debugging log
             error_log("Assigning Tag - Ingredient ID: $ingredientId, Tag ID: $tagId");
-    
+
             if (!$ingredientId || !$tagId) {
                 http_response_code(400);
                 error_log("Invalid ingredient or tag ID.");
                 echo json_encode(['status' => 'error', 'message' => 'Invalid ingredient ID or tag ID provided.']);
                 return;
             }
-    
+
             // Ensure ingredient exists
             if (!$this->ingredientRepository->doesIngredientExist($ingredientId)) {
                 http_response_code(404);
@@ -53,7 +54,7 @@ class IngredientController
                 echo json_encode(['status' => 'error', 'message' => 'Ingredient not found.']);
                 return;
             }
-    
+
             // Ensure tag exists
             if (!$this->tagRepository->doesTagExist($tagId)) {
                 http_response_code(404);
@@ -61,10 +62,10 @@ class IngredientController
                 echo json_encode(['status' => 'error', 'message' => 'Tag not found.']);
                 return;
             }
-    
+
             // Assign the tag
             $result = $this->ingredientRepository->assignTag($ingredientId, $tagId);
-    
+
             if ($result) {
                 echo json_encode(['status' => 'success', 'message' => 'Tag assigned successfully.']);
             } else {
@@ -78,6 +79,8 @@ class IngredientController
             echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred.']);
         }
     }
+
+    
 
     public function createIngredient()
     {
@@ -106,11 +109,10 @@ class IngredientController
             $ingredientId = $this->ingredientRepository->createIngredient($ingredientName);
 
             if ($ingredientId) {
-                // Get the "Uncategorized" tag ID using the repository
-                $uncategorizedTagId = $this->ingredientRepository->getUncategorizedTagId();
+               
 
                 // Assign the "Uncategorized" tag
-                $this->ingredientRepository->assignTag($ingredientId, $uncategorizedTagId);
+            
 
                 // Return success response
                 echo json_encode(['status' => 'success', 'message' => 'Ingredient added successfully.', 'ingredient_id' => $ingredientId]);

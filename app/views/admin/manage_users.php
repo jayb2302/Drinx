@@ -27,9 +27,9 @@
                     <form class="update-status-form" data-user-id="<?= $user->getId(); ?>">
                         <input type="hidden" name="user_id" value="<?= $user->getId(); ?>">
                         <select name="status_id">
-                            <option value="1" <?= $user->getAccountStatusId() == 1 ? 'selected' : '' ?>>Active</option>
-                            <option value="2" <?= $user->getAccountStatusId() == 2 ? 'selected' : '' ?>>Suspended</option>
-                            <option value="3" <?= $user->getAccountStatusId() == 3 ? 'selected' : '' ?>>Banned</option>
+                            <option value="1" <?= $user->getAccountStatusId() == 1 ? 'selected' : '' ?>>🟢</option>
+                            <option value="2" <?= $user->getAccountStatusId() == 2 ? 'selected' : '' ?>>🟡</option>
+                            <option value="3" <?= $user->getAccountStatusId() == 3 ? 'selected' : '' ?>>🔴</option>
                         </select>
                         <button class="button" type="submit">Update Status</button>
                     </form>

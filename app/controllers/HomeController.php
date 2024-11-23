@@ -1,17 +1,5 @@
 <?php
-require_once __DIR__ . '/../repositories/CocktailRepository.php';
-require_once __DIR__ . '/../repositories/CategoryRepository.php';
-require_once __DIR__ . '/../repositories/IngredientRepository.php';
-require_once __DIR__ . '/../repositories/StepRepository.php';
-require_once __DIR__ . '/../repositories/TagRepository.php';
-require_once __DIR__ . '/../repositories/DifficultyRepository.php';
-require_once __DIR__ . '/../services/CocktailService.php';
-require_once __DIR__ . '/../services/IngredientService.php';
-require_once __DIR__ . '/../services/StepService.php';
-require_once __DIR__ . '/../repositories/UnitRepository.php';
-require_once __DIR__ . '/../services/LikeService.php';
-require_once __DIR__ . '/../repositories/LikeRepository.php';
-require_once __DIR__ . '/../services/UserService.php';
+require_once __DIR__ . '/../config/dependencies.php';
 
 class HomeController
 {
@@ -45,6 +33,8 @@ class HomeController
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $isAdmin = $_SESSION['user']['is_admin'] ?? false;
+        $cocktails = $this->cocktailService->getAllCocktails();
+
         $isStandalone = false; // When rendering the homepage, set as false
 
         // Checks if $categoryName is one of the sort options (recent, popular, hot)
@@ -79,31 +69,35 @@ class HomeController
             };
         }
 
-        // Check for AJAX request
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
-            ob_start();
-            include __DIR__ . '/../views/cocktails/index.php';
-            $content = ob_get_clean();
-            header('Content-Type: application/json');
-            echo json_encode(['content' => $content]);
-            return;
-        }
-
         // Additional data needed for the page
         $categories = $this->cocktailService->getCategories();
         $randomCocktail = $this->cocktailService->getRandomCocktail();
         $stickyCocktail = $this->cocktailService->getStickyCocktail();
         $units = $this->ingredientService->getAllUnits();
         $difficulties = $this->difficultyRepository->getAllDifficulties();
-        $tags = $this->tagRepository->getAllTags();
-
+        
         // Add 'hasLiked' status to each cocktail if the user is logged in
         foreach ($cocktails as $cocktail) {
             $cocktail->hasLiked = $loggedInUserId
                 ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktail->getCocktailId())
                 : false;
-        }
+            // Get the comment count and top-level comments for the cocktail
+            $commentCount = $this->cocktailService->getCommentCountForCocktail($cocktail->getCocktailId());
+            $comments = $this->cocktailService->getTopLevelCommentsForCocktail($cocktail->getCocktailId(), 3);
 
+            // Set the properties on the cocktail object
+            $cocktail->commentCount = $commentCount;
+            $cocktail->comments = $comments;
+        }
+        // Check for AJAX request
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
+            ob_start();
+            include __DIR__ . '/../views/cocktails/index.php';  // This will include the comments
+            $content = ob_get_clean();
+            header('Content-Type: application/json');
+            echo json_encode(['content' => $content]);  // Make sure the response has content
+            return;
+        }
         // Prepare user profile and admin data
         $userProfile = $loggedInUserId ? $this->userService->getUserWithFollowCounts($loggedInUserId) : null;
         $users = $isAdmin ? $this->userService->getAllUsersWithStatus() : null;
@@ -119,9 +113,6 @@ class HomeController
         // Load the view
         require_once __DIR__ . '/../views/home.php';
     }
-
-
-
 
     public function setSticky()
     {
@@ -144,11 +135,11 @@ class HomeController
             } else {
                 // Return a bad request response
                 echo json_encode(['success' => false, 'message' => 'Invalid cocktail ID.']);
-                http_response_code(400); // Bad request
+                http_response_code(400);
             }
         } else {
             // Handle method not allowed
-            http_response_code(405); // Method not allowed
+            http_response_code(405); 
         }
     }
 

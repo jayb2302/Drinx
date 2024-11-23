@@ -29,6 +29,7 @@
     --accent-secondary: #fce770;
     --surface: #e0e0e0;
     --comments-background: #303841;
+    --comment-text: #f2f2f2dc;
     --card-background: #303841d3;
     --card-background-hover: #858e98;
     --button-primary: #fad325;
@@ -76,6 +77,7 @@
     letter-spacing: 0.02em;
     margin: 0;
   }
+
   .alert {
     padding: 10px;
     margin: 10px 0;
@@ -84,12 +86,16 @@
     font-size: 0.9rem;
     background-color: var(--nav-background);
   }
+  
   .success {
     color: var(--success);
+  
   }
+  
   main {
    display: flex;
   }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     color: var(--text-secondary); 
@@ -108,6 +114,9 @@ a {
   }
   
   a:hover {
-    color: var(--text-primary);
+    color: var(--accent-primary);
 }
  
+li {
+  list-style: none;
+}

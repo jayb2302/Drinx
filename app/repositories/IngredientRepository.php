@@ -141,16 +141,16 @@ class IngredientRepository
         return $stmt->execute();
     }
 
-    public function fetchUncategorizedIngredients()
+    public function fetchUncategorizedIngredients($uncategorizedTag = 'Uncategorized')
     {
         $stmt = $this->db->prepare('
         SELECT i.ingredient_id, i.name
         FROM ingredients i
         LEFT JOIN ingredient_tags it ON i.ingredient_id = it.ingredient_id
         LEFT JOIN tags t ON it.tag_id = t.tag_id
-        WHERE t.name = "Uncategorized" OR t.tag_id IS NULL
-    ');
-
+        WHERE t.name = :uncategorizedTag OR t.tag_id IS NULL
+        ');
+        $stmt->bindParam(':uncategorizedTag', $uncategorizedTag, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

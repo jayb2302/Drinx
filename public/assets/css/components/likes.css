@@ -1,9 +1,11 @@
 .like-button {
     color: white;
+    background-color: var(--card-background);
     border: none;
     padding: 8px 12px;
     cursor: pointer;
 }
+
 .unlike-button {
     background-color: #dc3545;
     color: white;
@@ -13,7 +15,8 @@
 }
 
 .like-section {
-    background-color: #28a745;
+    background-color: var(--nav-background);
+    color: var(--accent-primary);
     display: flex;
     align-items: center;
     margin-bottom: 20px;

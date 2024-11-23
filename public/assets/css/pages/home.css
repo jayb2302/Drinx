@@ -1,8 +1,7 @@
 .content-wrapper {
-    width: 100%;
     display: flex;
     gap: 20px;
-    padding: .5 5rem;
+    padding: .5 1rem;
 }
 
 main {
@@ -27,8 +26,11 @@ aside {
 }
 
 .category-sidebar {
-    background-color: var(--nav-background);
+    background-color: var(--background);
+    padding: .5rem 1rem;
     color: var(--text-primary);
+    border-radius: 10px;
+    margin-bottom: 1rem;
 }
 
 .category-sidebar a {
@@ -46,6 +48,8 @@ aside {
 
 aside h3 {
     color: var(--accent-primary);
+    letter-spacing: .2rem;
+    font-size: 1.5rem;
 }
 
 .sidebar {

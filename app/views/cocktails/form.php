@@ -53,8 +53,13 @@
                         </datalist>
 
                         <label for="quantity<?= $i + 1 ?>">Quantity:</label>
-                        <input type="number" name="quantities[]" id="quantity<?= $i + 1 ?>" value="<?= htmlspecialchars($ingredient->getQuantity()) ?>" required>
-
+                        <input
+                            type="text"
+                            name="quantities[]"
+                            id="quantity<?= $i + 1 ?>"
+                            value="<?= htmlspecialchars($ingredient->getQuantity()) ?>"
+                            placeholder="e.g., 1/2 or 1.5"
+                            required>
                         <label for="unit<?= $i + 1 ?>">Unit:</label>
                         <select name="units[]" id="unit<?= $i + 1 ?>" required>
                             <?php foreach ($units as $unit): ?>
@@ -71,8 +76,12 @@
                     <input type="text" name="ingredients[]" id="ingredient1" required>
 
                     <label for="quantity1">Quantity:</label>
-                    <input type="number" name="quantities[]" id="quantity1" required>
-
+                    <input
+                        type="text"
+                        name="quantities[]"
+                        id="quantity1"
+                        placeholder="e.g., 1/2 or 3.5"
+                        required>
                     <label for="unit1">Unit:</label>
                     <select name="units[]" id="unit1" required>
                         <?php foreach ($units as $unit): ?>
