@@ -5,10 +5,9 @@ class UserService
 {
     private $userRepository;
 
-    public function __construct()
+    public function __construct(UserRepository $userRepository = null)
     {
-        $dbConnection = Database::getConnection();
-        $this->userRepository = new UserRepository($dbConnection);
+        $this->userRepository = $userRepository ?? new UserRepository(Database::getConnection());
     }
 
     public function authenticateUser($email, $password)
@@ -126,7 +125,10 @@ class UserService
     {
         return $this->userRepository->searchUsers($query);
     }
-
+    public function searchAllUsers($query)
+    {
+        return $this->userRepository->searchAllUsers($query);
+    }
     public function followUser($userId, $followedUserId)
     {
         // Print debugging info

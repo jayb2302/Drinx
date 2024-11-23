@@ -1,0 +1,92 @@
+.manage-users-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: var(--card-background);
+  padding: .5rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-body);
+  color: var(--text-secondary);
+}
+
+* Table styling */
+.manage-users {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  padding: 0 3%;
+}
+
+/* Apply general styling to all table headers */
+.manage-users thead th {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  text-align: left;
+  padding: 10px;
+  font-size: 1em;
+  font-weight: 200;
+  transition: 0.2s ease-out;
+}
+/* Apply hover effect and cursor only to the first 3 th elements */
+.sortable {
+  cursor: pointer;
+}
+.sortable:hover {
+  text-decoration: underline;
+  font-weight: bold;
+  background-color: var(--text-primary);
+  color: var(--surface);
+  font-weight: 900;
+}
+
+/* Row styling */
+.users-rows {
+  border-bottom: 1px solid var(--text-primary);
+  background-color: var(--text-secondary);
+  color: var(--text-primary);
+  transition: 0.2s ease-out;
+}
+.users-rows:hover {
+  border-bottom: 1px solid #ddd;
+  background-color: var(--text-primary);
+  color: var(--text-secondary);
+}
+
+/* Cell styling */
+.users-rows td {
+  padding: 12px;
+  text-align: left;
+}
+.users-rows td:first-child {
+  text-align-last: center;
+}
+.profile-pic{
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  transition: 0.2s ease-out;
+  border: 2px solid var(--text-primary);
+  object-fit: cover;
+}
+.profile-pic:hover{
+  cursor: pointer;
+  scale: 1.1;
+  border: 2px solid var(--accent-primary);
+}
+
+/* Form and button styling */
+.update-status-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.update-status-form select {
+  margin-right: 10px;
+  padding: 5px;
+  border: 1px solid var(--text-secondary);
+  border-radius: 4px;
+}
+
+

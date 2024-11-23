@@ -1,4 +1,8 @@
 <?php
+$metaTitle = "Drinx - Cocktail Library";
+$pageTitle = "Drip, Drop, Drinx";
+$page="home";
+
 include __DIR__ . '/layout/header.php';
 
 // Check if the logout_success cookie is set and display it
@@ -10,11 +14,16 @@ if (isset($_COOKIE['logout_success'])) {
 
 // Get the current URL path
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
 $matches = [];
 $isEditing = preg_match('#^/cocktails/(\d+)/edit$#', $currentPath, $matches);
 $cocktailId = $matches[1] ?? null;
 ?>
+
+<?php if (isset($includeScripts) && is_array($includeScripts)): ?>
+    <?php foreach ($includeScripts as $script): ?>
+        <script src="<?= htmlspecialchars($script); ?>"></script>
+    <?php endforeach; ?>
+<?php endif; ?>
 <div class="content-wrapper">
 <aside class="leftSidebar">
         <?php include __DIR__ . '/cocktails/categories.php'; ?>
@@ -38,15 +47,7 @@ $cocktailId = $matches[1] ?? null;
     <!-- Sticky Cocktail -->
     <main>
 
-        <!-- -->
-        <!-- User Management Button (only for admins) -->
-        <?php
-        if ($_SESSION['user']['is_admin'] ?? false): ?>
-            <!-- <button class="button" onclick="toggleUserManagement()">User Management</button> -->
-            <div id="userManagement" style="display: none;">
-                <?php include __DIR__ . '/admin/manage_users.php'; ?>
-            </div>
-        <?php endif; ?>
+        
         <!-- Logic to include forms based on the path -->
         <?php
         if ($currentPath === '/login') {
@@ -84,9 +85,6 @@ $cocktailId = $matches[1] ?? null;
         <?php
         $userProfile = $userProfile ?? null;
         include __DIR__ . '/layout/control_panel.php'; ?>
-
-
-
     </aside>
 </div>
 <?php include __DIR__ . '/layout/footer.php'; ?>

@@ -1,0 +1,10 @@
+-- DELIMITER //
+-- CREATE PROCEDURE GetUncategorizedIngredients()
+-- BEGIN
+--     SELECT i.ingredient_id, i.name
+--     FROM ingredients i
+--     LEFT JOIN ingredient_tags it ON i.ingredient_id = it.ingredient_id
+--     LEFT JOIN tags t ON it.tag_id = t.tag_id
+--     WHERE t.name = 'Uncategorized';
+-- END //
+-- DELIMITER ;

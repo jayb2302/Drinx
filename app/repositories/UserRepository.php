@@ -9,6 +9,54 @@ class UserRepository
     {
         $this->db = $dbConnection;
     }
+    // Get all users
+    public function getAllUsers()
+    {
+        $stmt = $this->db->query("SELECT * FROM users");
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $users = [];
+        foreach ($results as $result) {
+            $users[] = $this->mapToUser($result);
+        }
+        return $users;
+    }
+
+    // Count the number of users
+    public function countUsers()
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) AS total FROM users");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
+    public function getUserWithMostRecipes()
+    {
+        $query = "
+            SELECT 
+                u.user_id,
+                u.username,
+                p.profile_picture,
+                COUNT(c.cocktail_id) AS recipe_count
+            FROM users u
+            LEFT JOIN cocktails c ON u.user_id = c.user_id
+            LEFT JOIN user_profile p ON u.user_id = p.user_id
+            GROUP BY u.user_id
+            ORDER BY recipe_count DESC
+            LIMIT 1
+        ";
+    
+        $result = $this->db->query($query)->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            $user = new User();
+            $user->setId($result['user_id']);
+            $user->setUsername($result['username']);
+            $user->setProfilePicture($result['profile_picture']);
+            $user->setRecipeCount($result['recipe_count']);
+            return $user;
+        }
+    
+        return null; // No top creator found
+    }
 
     // Delete a user and associated cocktails
     public function deleteUser($userId)
@@ -228,7 +276,30 @@ class UserRepository
         $stmt->execute(['query' => '%' . $query . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return users as an associative array
     }
-
+    public function searchAllUsers($query = null) {
+        $sql = "
+            SELECT u.user_id, u.username, u.email, u.account_status_id,
+                   CASE 
+                       WHEN u.account_status_id = 1 THEN 'Active'
+                       WHEN u.account_status_id = 2 THEN 'Suspended'
+                       WHEN u.account_status_id = 3 THEN 'Banned'
+                       ELSE 'Unknown'
+                   END AS account_status_name,
+                   COALESCE(p.profile_picture, 'user-default.svg') AS profile_picture
+            FROM users u
+            LEFT JOIN user_profile p ON u.user_id = p.user_id
+        ";
+        
+        // Add filtering if a query is provided
+        if ($query) {
+            $sql .= " WHERE u.username LIKE :query";
+        }
+    
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($query ? ['query' => "%$query%"] : []);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
     // Method to follow a user
     public function followUser($userId, $followedUserId)
     {

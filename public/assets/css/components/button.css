@@ -1,7 +1,7 @@
 /* buttons.css */
 
 button {
-    padding: 10px 15px;
+    padding: 1rem 4rem;
     display: inline-block;
     justify-content: end;
     border: 1px solid var(--border);
@@ -14,7 +14,8 @@ button {
 
 button.primary {
     background-color: var(--button-primary);
-    color: var(--text-secondary);
+    color: var(--text-primary);
+    width: 100%;
 }
 
 button.primary:hover {
@@ -24,10 +25,18 @@ button.primary:hover {
 button.secondary {
     background-color: var(--button-secondary);
     color: var(--text-secondary);
+    width: 100%;
+    font-size: 1.2rem;
 }
 
 button.secondary:hover {
-    background-color: var(--accent-hover);
+    background-color: var(--card-background);
+}
+button.delete {
+    background-color: var(--error);
+    color: var(--text-secondary);
+    width: 100%;
+    height: auto;
 }
 .button {
     padding: 10px 15px;
@@ -38,7 +47,7 @@ button.secondary:hover {
     transition: background-color 0.3s;
     background-color: var(--button-primary);
 }
-a.button-secondary {
+.button-secondary {
     padding: 10px 15px;
     border: 1px solid var(--border);
     border-radius: 5px;
@@ -51,6 +60,11 @@ a.button-secondary {
 .button-wrapper {
     display: flex;
     justify-content: flex-end;
+    width: 100%;
+}
+.buttons{
+    display: flex;
+    gap: 10px;  
     width: 100%;
 }
 

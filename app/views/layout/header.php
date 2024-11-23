@@ -12,8 +12,11 @@ $currentUser = $authController->getCurrentUser();
     </a>
     <!-- Search Bar -->
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search for cocktails or users..." autocomplete="off" />
-        <div id="searchResults" class="search-results" style="display: none;"></div>
+    <input type="text" id="searchInput" placeholder="Search for cocktails or users..." autocomplete="off" />
+    <div id="searchResults" class="search-results" style="display: none;">
+        <div id="userSuggestions"></div>
+        <div id="cocktailSuggestions"></div>
     </div>
+</div>
   
 </nav>

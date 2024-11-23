@@ -20,6 +20,8 @@
             <label for="register-password">Password:</label>
             <input type="password" name="password" id="password" required>
         </div>
-        <button type="submit">Register</button>
+        <div class="form-group">
+            <button class="secondary" type="submit">Register</button>
+        </div>
     </form>
 </div>

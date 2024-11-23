@@ -32,6 +32,7 @@ class UserController
         $unitRepository = new UnitRepository($dbConnection);  // Instantiate UnitRepository
         $likeRepository = new LikeRepository($dbConnection);  
         $userRepository = new UserRepository($dbConnection);
+        $commentRepository = new CommentRepository($dbConnection);  // Instantiate CommentRepository
 
 
         // Initialize services
@@ -47,7 +48,9 @@ class UserController
             $tagRepository,
             $difficultyRepository,
             $likeRepository,
-            $userRepository
+            $userRepository,
+            $commentRepository
+            
         );
 
         $this->userService = new UserService();

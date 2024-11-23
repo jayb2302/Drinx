@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../repositories/CommentRepository.php';
 require_once __DIR__ . '/../repositories/CocktailRepository.php';
 require_once __DIR__ . '/../repositories/CategoryRepository.php';
 require_once __DIR__ . '/../repositories/IngredientRepository.php';
@@ -7,8 +8,10 @@ require_once __DIR__ . '/../repositories/TagRepository.php';
 require_once __DIR__ . '/../repositories/DifficultyRepository.php';
 require_once __DIR__ . '/../repositories/LikeRepository.php';
 
+
 class CocktailService
 {
+    private $commentRepository;
     private $cocktailRepository;
     private $categoryRepository;
     private $ingredientService;
@@ -26,7 +29,8 @@ class CocktailService
         TagRepository $tagRepository,
         DifficultyRepository $difficultyRepository,
         LikeRepository $likeRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        CommentRepository $commentRepository
     ) {
         $this->cocktailRepository = $cocktailRepository;
         $this->categoryRepository = $categoryRepository;
@@ -36,6 +40,7 @@ class CocktailService
         $this->difficultyRepository = $difficultyRepository;
         $this->likeRepository = $likeRepository;
         $this->userRepository = $userRepository;
+        $this->commentRepository = $commentRepository;
     }
 
     // Cocktail CRUD operations
@@ -52,6 +57,11 @@ class CocktailService
     public function getAllCocktails()
     {
         return $this->cocktailRepository->getAll();
+    }
+
+    public function countCocktails()
+    {
+        return $this->cocktailRepository->countCocktails();
     }
 
     public function createCocktail($cocktailData)
@@ -120,10 +130,10 @@ class CocktailService
         return $this->tagRepository->addTagToCocktail($cocktailId, $tagId);
     }
 
-    public function removeTagFromCocktail($cocktailId, $tagId)
-    {
-        return $this->tagRepository->removeTagFromCocktail($cocktailId, $tagId);
-    }
+    // public function removeTagFromCocktail($cocktailId, $tagId)
+    // {
+    //     return $this->tagRepository->removeTagFromCocktail($cocktailId, $tagId);
+    // }
 
     public function getAllTags()
     {
@@ -160,6 +170,20 @@ class CocktailService
     {
         return $this->cocktailRepository->getAllSortedByLikes();
     }
+    public function getCocktailsByCategorySortedByDate($categoryId)
+    {
+        return $this->cocktailRepository->getCocktailsByCategorySortedByDate($categoryId);
+    }
+
+    public function getCocktailsByCategorySortedByLikes($categoryId)
+    {
+        return $this->cocktailRepository->getCocktailsByCategorySortedByLikes($categoryId);
+    }
+
+    public function getHotCocktailsByCategory($categoryId)
+    {
+        return $this->cocktailRepository->getHotCocktailsByCategory($categoryId);
+    }
 
     public function searchCocktails($query)
     {
@@ -185,14 +209,38 @@ class CocktailService
     {
         $this->cocktailRepository->clearStickyCocktail();
     }
-    public function getHotCocktails() {
+    public function getHotCocktails()
+    {
         return $this->cocktailRepository->getAllHotCocktails();
     }
     public function getCocktailsByCategory($categoryId)
-{
-    return $this->cocktailRepository->getCocktailsByCategory($categoryId);
-}
+    {
+        return $this->cocktailRepository->getCocktailsByCategory($categoryId);
+    }
+    public function getTagsForCocktail($cocktailId)
+    {
+        return $this->tagRepository->getTagsByCocktailId($cocktailId);
+    }
 
 
+    // Get the comment count for a specific cocktail
+    public function getTopLevelCommentsForCocktail($cocktailId, $limit = 3)
+    {
+        $comments = $this->commentRepository->getTopLevelCommentsByCocktailId($cocktailId);
 
+        // Limit the comments to the first 3
+        $comments = array_slice($comments, 0, $limit);
+
+        // Now also get the reply count for each comment
+        foreach ($comments as $comment) {
+            $comment->replyCount = $this->commentRepository->getReplyCountByCommentId($comment->getCommentId());
+        }
+
+        return $comments;
+    }
+
+    public function getCommentCountForCocktail($cocktailId)
+    {
+        return $this->commentRepository->getCommentCountByCocktailId($cocktailId);
+    }
 }

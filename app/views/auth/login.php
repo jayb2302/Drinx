@@ -25,8 +25,10 @@
             <input type="password" class="form-control" id="login-password" name="password" required>
         </div>
 
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" class="secondary">Login</button>
     </form>
-    
-    <a href="/register" class="btn btn-link">Register</a>
+    <button class="secondary">
+
+        <a href="/register" class="secondary">Register</a>
+    </button>
 </div>

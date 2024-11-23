@@ -15,15 +15,25 @@ class CategoryRepository {
     }
     
 
-    public function getCategoryByCocktailId($cocktailId) {
-        $stmt = $this->db->prepare('
-            SELECT c.category_id, cat.name AS category_name 
-            FROM cocktails c
-            JOIN categories cat ON c.category_id = cat.category_id
+    public function getCategoryByCocktailId($cocktailId)
+    {
+        $stmt = $this->db->prepare("
+            SELECT cat.* 
+            FROM categories cat
+            JOIN cocktails c ON c.category_id = cat.category_id
             WHERE c.cocktail_id = :cocktail_id
-        ');
-        $stmt->bindParam(':cocktail_id', $cocktailId);
+        ");
+        $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public function getCategoryIdByName($categoryName)
+    {
+        $stmt = $this->db->prepare("SELECT category_id FROM categories WHERE LOWER(name) = LOWER(:name)");
+        $stmt->execute(['name' => $categoryName]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result['category_id'] : null;
+    }
+
 }

@@ -5,7 +5,8 @@ footer {
     text-align: center;
     font-size: 0.9rem;
     border-top: 1px solid var(--border);
-    
+    /* position: fixed; */ /* Blocks view on for example cocktail page. Can't access the submit button */ /* Temporary fix */
+    bottom: 0;
     width: 100%;
   }
   

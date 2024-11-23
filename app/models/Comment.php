@@ -8,9 +8,10 @@ class Comment {
     private $commentText;
     private $createdAt;
     private $profilePicture;
-    public $replies = [];
+    public $replies = []; 
+    public $replyCount = 0; 
 
-    public function __construct($commentId, $userId, $username, $cocktailId, $parentCommentId, $commentText, $createdAt) {
+    public function __construct($commentId, $userId, $username, $cocktailId, $parentCommentId, $commentText, $createdAt, $replyCount = 0) {
         $this->commentId = $commentId;
         $this->userId = $userId;
         $this->username = $username;
@@ -20,6 +21,7 @@ class Comment {
         $this->createdAt = $createdAt;
         $this->profilePicture = 'user-default.svg';
         $this->replies = []; 
+        $this->replyCount = $replyCount;
     }
     public function getProfilePicture() {
         return $this->profilePicture;
@@ -57,4 +59,11 @@ class Comment {
         return $this->parentCommentId;
     }
     
+    public function getReplyCount() {
+        return $this->replyCount;
+    }
+
+    public function setReplyCount($count) {
+        $this->replyCount = $count;
+    }
 }

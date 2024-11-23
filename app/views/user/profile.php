@@ -1,4 +1,6 @@
-<?php include_once __DIR__ . '/../layout/header.php'; ?>
+<?php 
+$page='profile';
+include_once __DIR__ . '/../layout/header.php'; ?>
 <?php
 // Display any error messages (optional)
 if (isset($_SESSION['error'])) {
@@ -42,14 +44,14 @@ if (isset($_SESSION['success'])) {
 
     <!-- Edit Profile Button - Only show if user is viewing their own profile -->
     <?php if ($userId === $profileUserId): ?>
-        <a href="#" class="btn btn-primary" onclick="toggleEditMode()">Edit Profile</a>
-    <?php endif; ?>
-</div>
+        <a id="edit-profile-button" class="btn btn-primary" >Edit Profile</a>
 
-<!-- Profile Edit Form -->
-<div id="edit-profile-form" style="display:none;">
-    <?php include __DIR__ . '/form.php'; ?>
-</div>
+        <!-- Profile Edit Form - Only show if user is viewing their own profile -->
+        <div id="edit-profile-form" style="display:none;">
+            <?php include __DIR__ . '/form.php'; ?>
+        </div>
+    <?php endif; ?>
+
 
 <!-- User's Recipes Section -->
 <div class="recipe-wrapper">
@@ -112,10 +114,11 @@ if (isset($_SESSION['success'])) {
     </ul>
 </div>
 <!-- Delete Account Button -->
+ <?php if ($userId === $profileUserId):?>
 <div class="delete-account-section">
-    <button onclick="toggleDeleteSection()">Delete Account</button>
+    <button id="deleteAccountButton">Delete Account</button>
 
-    <div id="deleteConfirmSection" style="display: none;">
+    <div id="deleteConfirmSection" style="display:none;">
         <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
 
         <form action="/profile/delete" method="POST">
@@ -131,4 +134,5 @@ if (isset($_SESSION['success'])) {
         <?php endif; ?>
     </div>
 </div>
+<?php endif; ?>
 <?php include_once __DIR__ . '/../layout/footer.php'; ?>

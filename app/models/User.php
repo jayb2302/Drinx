@@ -15,6 +15,7 @@ class User
     private $profilePicture;
     private $bio;
     private $rank;
+    private $recipeCount;
 
     private $followersCount;
     private $followingCount;
@@ -105,6 +106,11 @@ class User
     {
         return !$this->isSuspended() && ($this->getId() === $cocktailUserId || $this->isAdmin());
     }
+    public function canEditComment($commentUserId)
+    {
+        return !$this->isSuspended() && ($this->getId() === $commentUserId || $this->isAdmin());
+    }
+
     public function canComment()
     {
         return !$this->isSuspended();
@@ -187,8 +193,9 @@ class User
         $this->bio = $bio;
     }
 
-    public function getRank() {
-        return $this->rank;  
+    public function getRank()
+    {
+        return $this->rank;
     }
 
     // Following methods
@@ -210,6 +217,16 @@ class User
     public function setFollowingCount($count)
     {
         $this->followingCount = $count;
+    }
+
+    public function setRecipeCount($recipeCount)
+    {
+        $this->recipeCount = $recipeCount;
+    }
+
+    public function getRecipeCount()
+    {
+        return $this->recipeCount;
     }
 
 }

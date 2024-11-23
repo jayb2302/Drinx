@@ -1,7 +1,9 @@
-<?php if (!isset($_SESSION['user'])): ?>
-    <a href="/login">Login</a>
-<?php endif; ?>
 <section class="aboutSection">
+    <?php if (!isset($_SESSION['user'])): ?>
+        <button class="button-secondary">
+            <a href="/login">Login</a>
+        </button>
+    <?php endif; ?>
     <div class="aboutContainer">
         <h1 class="aboutHeading">Welcome to Drinx,</h1>
         <!-- <h3>The cocktail library that thinks it's a social media platform!</h3> -->
