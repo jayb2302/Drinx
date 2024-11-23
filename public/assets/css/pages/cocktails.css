@@ -49,6 +49,7 @@
   background-color: var(--button-primary-transparent);
   border-radius: 8px;
   width: 100%;
+  margin: 0;
 }
 .cocktailImage {
   display: flex;
@@ -65,10 +66,10 @@
 }
 /* Title styles */
 h1 {
-  font-family: var(--font-display); /* Use display font for the title */
-  font-size: 2.5rem; /* Larger font size for the title */
-  color: var(--text-primary); /* Primary text color */
-  margin-bottom: 20px; /* Space below the title */
+  font-family: var(--font-display); 
+  font-size: 2.5rem; 
+  color: var(--text-primary); 
+  margin-bottom: 20px; 
 }
 
 /* Recipe section styles */
@@ -126,7 +127,7 @@ a:hover {
 
 .tag{
   background-color: var(--accent-secondary); 
-  color: var(--text-primary); 
+  color: var(--text-secondary); 
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
   padding: 5px 5px; 
   width: auto;
@@ -137,10 +138,10 @@ a:hover {
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .container {
-      padding: 15px; /* Reduce padding on small screens */
+      padding: 15px; 
   }
 
   h1 {
-      font-size: 2rem; /* Smaller font size for titles on mobile */
+      font-size: 2rem; 
   }
 }

@@ -19,7 +19,6 @@
     color: var(--accent-primary);
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
 }
 .like-section form{
     display: flex;

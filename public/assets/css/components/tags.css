@@ -11,7 +11,6 @@
     color: var(--text-primary);
 }
 
-
 /* Categories Container */
 .categories-container {
     display: flex;
@@ -76,6 +75,7 @@
     padding: 5px;
     border-radius: 3px;
     transition: background-color 0.2s ease;
+    color: var(--text-primary);
 }
 
 .tag-item:hover {
@@ -141,31 +141,31 @@
 /* Base styling for the scrollable categories */
 .category-block {
     overflow-y: auto;
-    scrollbar-width: thin; /* Firefox: thin scrollbar */
-    scrollbar-color: var(--accent-primary) var(--background); /* Firefox: color for thumb and track */
+    scrollbar-width: thin; 
+    scrollbar-color: var(--accent-primary) var(--background); 
 }
 
 /* WebKit-based browsers (Chrome, Edge, Safari) */
 .category-block::-webkit-scrollbar {
-    width: 10px; /* Adjust scrollbar width */
-    height: 10px; /* Adjust scrollbar height if horizontal scrollbar is present */
+    width: 10px; 
+    height: 10px;
 }
 
 .category-block::-webkit-scrollbar-track {
-    background: var(--background); /* Background of the scrollbar track */
-    border-radius: 5px; /* Rounded edges for the track */
+    background: var(--background); 
+    border-radius: 5px; 
 }
 
 .category-block::-webkit-scrollbar-thumb {
-    background: var(--accent-primary); /* Scrollbar thumb color */
+    background: var(--accent-primary);
     border-radius: 5px; /* Rounded edges for the thumb */
     border: 2px solid var(--background); /* Space between thumb and track */
 }
 
 .category-block::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-hover); /* Hover effect for the scrollbar thumb */
+    background: var(--accent-hover); 
 }
 
 .category-block::-webkit-scrollbar-corner {
-    background: var(--background); /* Corner of scrollbar when both horizontal and vertical are present */
+    background: var(--background); 
 }
