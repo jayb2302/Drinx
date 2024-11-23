@@ -28,6 +28,9 @@
     display: flex;
     justify-content: start;
     padding: 1rem;
+    & h3 {
+        margin: 0;
+    }
 }
 
 .buttonWrapper {
@@ -89,6 +92,9 @@
     padding: 0 .5rem;
     top: 0;
     bottom: 0;
+    & h3 {
+        font-size: 1.2rem;
+    }
 }
 
 .stickyCard {

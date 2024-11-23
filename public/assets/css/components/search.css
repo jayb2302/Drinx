@@ -1,5 +1,6 @@
 .search-container {
     position: relative; 
+    width: calc(100% - 5%);
 }
 
 #searchInput {
@@ -13,19 +14,24 @@
     position: absolute;
     top: 100%;
     left: 0;
+    color: var(--text-primary);
     background-color: var(--card-background); 
     border: 1px solid var(--border);
     border-radius: 4px;
     z-index: 1000; 
-    width: fit;
+    width: 100%;
     display: none;
 }
 
 .search-results div {
     padding: 10px;
     cursor: pointer;
+   
 }
 
 .search-results div:hover {
     background-color: var(--accent-hover);
+   & a {
+    color: var(--text-secondary);
+   }
 }

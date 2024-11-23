@@ -30,7 +30,7 @@
     --surface: #e0e0e0;
     --comments-background: #303841;
     --comment-text: #f2f2f2dc;
-    --card-background: #303841d3;
+    --card-background: #303841e2;
     --card-background-hover: #858e98;
     --button-primary: #fad325;
     --button-primary-transparent: rgba(250, 211, 37, 0.7);
@@ -51,6 +51,7 @@
     :root {
       /* Colors for Dark Mode */
       --background: #303841;
+      --nav-background: #1D2227;
       --text-primary: #f2f2f2;
       --text-secondary: #303841;
       --text-link: #fad325;
@@ -58,8 +59,12 @@
       --accent-hover: #fce770;
       --accent-secondary: #fce770;
       --surface: #3f4a52;
-      --card-background: #3f4a52b6;
+      --comments-background: #303841;
+      --comment-text: #f2f2f2dc;
+      --card-background: #3f4a52de;
+      --card-background-hover: #858e98;
       --button-primary: #fad325;
+      --button-primary-transparent: rgba(250, 211, 37, 0.7);
       --button-secondary: #303841;
       --button-hover: #fcd77b;
       --border: #405056;
@@ -98,7 +103,6 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    color: var(--text-secondary); 
     letter-spacing: 0.03em;
   }
   

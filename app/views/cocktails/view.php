@@ -13,6 +13,8 @@ $ingredients = $ingredients ?? [];
 $categories = $categories ?? [];
 $units = $units ?? [];
 $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
+$cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
+
 
 ?>
 <?php if (isset($_SESSION['errors'])): ?>
@@ -72,7 +74,7 @@ $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
             <?php endif; ?>
             <!-- Display the like count -->
         </div>
-        <h1 class="title"><?= htmlspecialchars($cocktail->getTitle() ?? 'Untitled') ?></h1>
+        <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
         <p><strong>Difficulty:</strong> <?= htmlspecialchars($cocktail->getDifficultyName() ?? 'Not specified') ?></p>
         <p><?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?></p>
 

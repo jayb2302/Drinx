@@ -48,7 +48,6 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                     </a>
                 </div>
 
-
                 <!-- Cocktail Card Content -->
                 <div class="buttonWrapper">
                     <?php if ($_SESSION['user']['is_admin'] ?? false): ?>
@@ -61,13 +60,13 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                         </button>
                     <?php endif; ?>
 
-
                     <div class="like-section">
                         <!-- Display the like count for all users -->
                         <?php if ($loggedInUserId): ?>
                             <!-- If the user is logged in, show the like button -->
                             <button class="like-button" data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
                                 data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
+                                <?= $totalLikes ?>
                                 <span class="like-icon">
                                     <?= $cocktail->hasLiked ? '❤️' : '🤍' ?>
                                 </span>
@@ -88,8 +87,6 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
 
                 </div>
 
-
-
                 <!-- Cocktail Image and Title -->
                 <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
                     <img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= $cocktailTitle ?>" class="cocktailImage">
@@ -106,8 +103,8 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                 <!-- Comment Count and Recent Comments -->
                 <div class="commentSection">
                     <?php if ($cocktail->commentCount > 0): ?>
-                        <p class="commentCount"> <?= $cocktail->commentCount ?> </p>
                         <div class="recentComments">
+                            <p class="commentCount"> <?= $cocktail->commentCount ?> comments</p>
                             <ul>
                                 <?php foreach ($cocktail->comments as $comment): ?>
                                     <li class="commentBox">
