@@ -16,8 +16,8 @@
         <?php foreach ($users as $user): ?>
             <tr class="users-rows">
                 <td>
-                    <a href="/user/<?= htmlspecialchars($user->getUsername()); ?>" class="view-profile">
-                        <img class="profile-pic m" alt="Profile picture of <?= htmlspecialchars($user->getUsername()); ?>">
+                    <a href="/profile/<?= htmlspecialchars($user->getUsername()); ?>" class="view-profile">
+                        <img class="profile-pictue m" alt="Profile picture of <?= htmlspecialchars($user->getUsername()); ?>">
                     </a>
                 </td>
                 <td><?= htmlspecialchars($user->getUsername()); ?></td>
@@ -27,9 +27,9 @@
                     <form class="update-status-form" data-user-id="<?= $user->getId(); ?>">
                         <input type="hidden" name="user_id" value="<?= $user->getId(); ?>">
                         <select name="status_id">
-                            <option value="1" <?= $user->getAccountStatusId() == 1 ? '🟢' : '' ?>>🟢</option>
-                            <option value="2" <?= $user->getAccountStatusId() == 2 ? '🟡' : '' ?>>🟡</option>
-                            <option value="3" <?= $user->getAccountStatusId() == 3 ? '🔴' : '' ?>>🔴</option>
+                            <option value="1" <?= $user->getAccountStatusId() == 1 ? 'selected' : '' ?>>🟢</option>
+                            <option value="2" <?= $user->getAccountStatusId() == 2 ? 'selected' : '' ?>>🟡</option>
+                            <option value="3" <?= $user->getAccountStatusId() == 3 ? 'selected' : '' ?>>🔴</option>
                         </select>
                         <button class="button" type="submit">Update Status</button>
                     </form>

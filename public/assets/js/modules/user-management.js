@@ -15,7 +15,12 @@ export function initializeUserManagement() {
             const profileImage = user.profile_picture && user.profile_picture !== "user-default.svg" 
                 ? `/uploads/users/${encodeURIComponent(user.profile_picture)}`
                 : "/uploads/users/user-default.svg";
-
+                const statusCircle = {
+                    1: '🟢', // Active
+                    2: '🟡', // Suspended
+                    3: '🔴'  // Banned
+                };
+        
             const row = document.createElement("tr");
             row.className = "users-rows";
             row.innerHTML = `
@@ -26,14 +31,17 @@ export function initializeUserManagement() {
                 </td>
                 <td>${sanitizeHTML(user.username)}</td>
                 <td>${sanitizeHTML(user.email)}</td>
-                <td>${sanitizeHTML(user.account_status_name)}</td>
+                <td>
+                <span class="status-circle">${statusCircle[user.account_status_id] || ''}</span>
+                <span>${sanitizeHTML(user.account_status_name)}</span>
+            </td>
                 <td>
                     <form class="update-status-form" data-user-id="${user.user_id}">
                         <input type="hidden" name="user_id" value="${user.user_id}">
                         <select name="status_id">
-                            <option value="1" ${user.account_status_id == 1 ? "🟢" : ""}>🟢</option>
-                            <option value="2" ${user.account_status_id == 2 ? "🟡" : ""}>🟡</option>
-                            <option value="3" ${user.account_status_id == 3 ? "🔴" : ""}>🔴</option>
+                            <option value="1" ${user.account_status_id == 1 ? "selected" : ""}>🟢</option>
+                            <option value="2" ${user.account_status_id == 2 ? "selected" : ""}>🟡</option>
+                            <option value="3" ${user.account_status_id == 3 ? "selected" : ""}>🔴</option>
                         </select>
                         <button class="button" type="submit">Update Status</button>
                     </form>
