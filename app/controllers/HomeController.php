@@ -1,17 +1,5 @@
 <?php
-require_once __DIR__ . '/../repositories/CocktailRepository.php';
-require_once __DIR__ . '/../repositories/CategoryRepository.php';
-require_once __DIR__ . '/../repositories/IngredientRepository.php';
-require_once __DIR__ . '/../repositories/StepRepository.php';
-require_once __DIR__ . '/../repositories/TagRepository.php';
-require_once __DIR__ . '/../repositories/DifficultyRepository.php';
-require_once __DIR__ . '/../services/CocktailService.php';
-require_once __DIR__ . '/../services/IngredientService.php';
-require_once __DIR__ . '/../services/StepService.php';
-require_once __DIR__ . '/../repositories/UnitRepository.php';
-require_once __DIR__ . '/../services/LikeService.php';
-require_once __DIR__ . '/../repositories/LikeRepository.php';
-require_once __DIR__ . '/../services/UserService.php';
+require_once __DIR__ . '/../config/dependencies.php';
 
 class HomeController
 {
@@ -88,7 +76,6 @@ class HomeController
         $units = $this->ingredientService->getAllUnits();
         $difficulties = $this->difficultyRepository->getAllDifficulties();
         
-
         // Add 'hasLiked' status to each cocktail if the user is logged in
         foreach ($cocktails as $cocktail) {
             $cocktail->hasLiked = $loggedInUserId
@@ -127,9 +114,6 @@ class HomeController
         require_once __DIR__ . '/../views/home.php';
     }
 
-
-
-
     public function setSticky()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -151,11 +135,11 @@ class HomeController
             } else {
                 // Return a bad request response
                 echo json_encode(['success' => false, 'message' => 'Invalid cocktail ID.']);
-                http_response_code(400); // Bad request
+                http_response_code(400);
             }
         } else {
             // Handle method not allowed
-            http_response_code(405); // Method not allowed
+            http_response_code(405); 
         }
     }
 
