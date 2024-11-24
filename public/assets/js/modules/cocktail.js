@@ -40,7 +40,7 @@ export function initializeCocktail() {
             ingredientCount++;
             const newIngredientDiv = `
                 <div class="ingredient-input" id="ingredientGroup${ingredientCount}">
-                    <label for="ingredient${ingredientCount}">Ingredient ${ingredientCount}:</label>
+                    <label for="ingredient${ingredientCount}">${ingredientCount}:</label>
                     <input type="text" name="ingredients[]" id="ingredient${ingredientCount}" required>
                     
                     <label for="quantity${ingredientCount}">Quantity:</label>

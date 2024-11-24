@@ -34,6 +34,13 @@ class HomeController
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $isAdmin = $_SESSION['user']['is_admin'] ?? false;
         $cocktails = $this->cocktailService->getAllCocktails();
+        $user = $_SESSION['user'] ?? null; 
+
+        // Pass data to the view
+        $data = [
+            'cocktails' => $cocktails,
+            'user' => $user,
+        ];
 
         $isStandalone = false; // When rendering the homepage, set as false
 

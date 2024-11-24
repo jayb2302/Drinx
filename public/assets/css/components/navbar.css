@@ -2,11 +2,12 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center; 
-    position: relative; 
+    position: sticky;
+    top:0; 
     background-color: var(--nav-background); 
     padding: .5rem 1rem;
     color: var(--text-secondary);
-    
+    z-index: 1000;
 }
 
 .nav-links {

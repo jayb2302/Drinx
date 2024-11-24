@@ -1,16 +1,5 @@
 .cocktailGrid {
     display: flex;
-
-}
-
-.cocktailContainer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    width: 100%;
-    background-color: var(--card-background);
-    padding: .1rem .2rem;
 }
 
 .cocktailCard {
@@ -20,7 +9,7 @@
     text-align: center;
     display: flex;
     flex-direction: column;
-    background-color: var(--card-background);
+    background-image: var(--background);
     position: relative;
 }
 
@@ -51,11 +40,10 @@
     position: relative;
     gap: 1rem;
     display: flex;
-    padding: .5rem;
-}
-
-.coctailInfo h3 {
-    color: var(--accent-primary);
+    padding: .5rem 0;
+    a {
+        z-index: 1000;
+    }
 }
 
 .creatorPicture {
@@ -74,8 +62,11 @@
     display: flex;
     flex-direction: row;
     justify-content: start;
-    background-color: var(--nav-background);
-   
+    background-color: var(--button-primary-transparent);
+    border-radius: 10px;
+    & h3 {
+        color: var(--accent-primary);
+    }
 }
 
 /*  Sticky Cocktail  */
@@ -92,8 +83,10 @@
     padding: 0 .5rem;
     top: 0;
     bottom: 0;
-    & h3 {
-        font-size: 1.2rem;
+    border-radius: 0 0 8px 8px;
+    & a h3 {
+        font-size: 1rem;
+        margin: 0;
     }
 }
 
@@ -103,29 +96,33 @@
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     text-align: start;
-    background-color: var(--accent-primary);
+    background-image: var(--radialSecondaryAccent);
     display: flex;
     align-items: stretch;
     flex-direction: column;
+    & h2 {
+        background-color: var(--card-background);
+        font-size: 1rem;
+        padding: .5rem;
+        color: var(--accent-primary);
+        top: 0;
+        border-radius: 8px 8px 0 0;
+    }
+    & img {
+        object-fit: cover;
+        height: auto;
+        border-radius: 4px;
+    }
+    & h3 {
+        margin: 0;
+        padding: .5rem 0 0 0;
+    }
+    & a :hover {
+        color: var(--text-primary);
+    }
 }
 
-.stickyCard img {
-    object-fit: cover;
-    height: auto;
-    border-radius: 4px;
-}
-
-.stickyCard h2 {
-    background-color: var(--card-background);
-    font-size: 1rem;
-    padding: .5rem;
-    color: var(--accent-primary);
-    top: 0;
-}
-
-.stickyCard h3 {
-    margin: 0;
-}
+.stickyCard 
 
 .stickyCard p {
     margin: 0;

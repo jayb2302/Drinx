@@ -40,8 +40,10 @@ $cocktailId = $matches[1] ?? null;
                         <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>" alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
                     </div>
                     <div class="stickyContent">
-                        <h3 class="cocktail-title"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
-                        <p class="cocktail-description"><?php echo htmlspecialchars($stickyCocktail->getDescription()); ?></p>
+                            <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
+                                <h3 class="stickyTitle"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
+                            </a>
+                        <p class="stickyDescription"><?php echo htmlspecialchars($stickyCocktail->getDescription()); ?></p>
                     </div>
                 </div>
             </div>
@@ -49,10 +51,7 @@ $cocktailId = $matches[1] ?? null;
             <p>No sticky cocktail selected or invalid data.</p>
         <?php endif; ?>
     </aside>
-    <!-- Sticky Cocktail -->
     <main>
-
-        
         <!-- Logic to include forms based on the path -->
         <?php
         if ($currentPath === '/login') {

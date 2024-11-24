@@ -1,5 +1,5 @@
 <?php
-$page= 'cocktail';
+$page = 'cocktail';
 include __DIR__ . '/../layout/header.php';
 include_once __DIR__ . '/../../helpers/helpers.php';
 
@@ -26,11 +26,6 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
     <?php unset($_SESSION['errors']); ?>
 <?php endif; ?>
 
-<div class="cocktail-actions">
-    <button class="secondary">
-        <a href="/" class="">Back to Cocktails</a>
-    </button>
-</div>
 <div class="content-wrapper">
     <div class="creator-details">
         <div class="creatorInfo">
@@ -59,6 +54,7 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
         <!-- Cocktail Details -->
 
         <div class="recipeContainer">
+        <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
             <div class="orderby">
                 <p class="tag font-semibold"><?= htmlspecialchars($category['name'] ?? 'Unknown') ?></p>
 
@@ -76,13 +72,14 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
             <!-- Like/Unlike Button -->
             <div class="like-section">
                 <?php if ($loggedInUserId): ?>
-                    <button class="like-button" data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
+                    <button class="like-button"
+                        data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
                         data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
                         <span class="like-icon">
                             <?= $cocktail->hasLiked ? '❤️' : '🤍' ?>
                         </span>
                     </button>
-                    <span class="like-count"><?= $totalLikes ?> </span>
+                    <span class="like-count"><?= $totalLikes ?>  </span>
                 <?php else: ?>
                     <button class="like-button" onclick="showLoginPopup(event)">
                         <span class="like-icon">🤍</span>
@@ -121,22 +118,20 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
                 <?php endif; ?>
             </ol>
         </div>
-
-        <!-- Edit Button -->
-        <?php if (AuthController::isLoggedIn() && ($currentUser->canEditCocktail($cocktail->getUserId()) || AuthController::isAdmin())): ?>
-            <div class="buttons">
-
-                <button id="editCocktailButton" class="primary">Edit </button>
-                <!-- Delete Button -->
-                <form action="/cocktails/delete/<?= $cocktail->getCocktailId() ?>" method="post"
-                    onsubmit="return confirm('Are you sure you want to delete this cocktail?');">
-                    <button type="submit" class="delete">Delete</button>
-                </form>
-            </div>
-        <?php endif; ?>
     </main>
 
     <aside class="commentSection">
+        <div class="cocktailActions">
+            <?php if (AuthController::isLoggedIn() && ($currentUser->canEditCocktail($cocktail->getUserId()) || AuthController::isAdmin())): ?>
+                <button id="editCocktailButton" class="primary"> 🖊️ </button>
+                <!-- Delete Button -->
+                <form action="/cocktails/delete/<?= $cocktail->getCocktailId() ?>" method="post"
+                onsubmit="return confirm('Are you sure you want to delete this cocktail?');">
+                <button type="submit" class="delete">🗑️</button>
+            </form>
+            <?php endif; ?>
+            <a href="/" class="button-secondary">Back</a>
+        </div>
         <?php
         require_once __DIR__ . '/comment_section.php';
         ?>

@@ -143,7 +143,7 @@ class CocktailService
     // Delegate ingredient clearing to IngredientService
     public function clearIngredients($cocktailId)
     {
-        return $this->ingredientService->clearIngredientsByCocktailId($cocktailId);  // Use the service
+        return $this->ingredientService->clearIngredientsByCocktailId($cocktailId);  
     }
 
     public function getAllUnits()

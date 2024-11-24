@@ -1,5 +1,5 @@
 .aboutSection {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     text-align: start;
     display: flex;
     flex-direction: column;
@@ -8,9 +8,7 @@
 
 .aboutContainer {
     background-color: var(--card-background);
-    max-width: 100%;
     border-radius: 10px;
-    padding: 0 1rem;
 }
 
 /* Heading and Intro Text */
@@ -24,7 +22,7 @@
 
 .aboutIntro {
     font-size: 1.2rem;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-style: italic;
     margin-bottom: 1.5rem;
     font-family: var(--font-body);
@@ -33,7 +31,7 @@
 /* Description Text */
 .aboutDescription {
     font-size: 1rem;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     line-height: 1.6;
     margin-bottom: 2rem;
     font-family: var(--font-body);
@@ -47,8 +45,9 @@
 
 .randomRecipeButton {
     padding: 0.8rem 1.5rem;
-    background-color: var(--button-primary);
-    color: var(--text-secondary);
+    background-color: var(--accent-primary);
+    color: var(--text-primary);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     font-size: 1rem;
     border: none;
     border-radius: 0.3rem;

@@ -1,7 +1,6 @@
 .content-wrapper {
     display: flex;
-    gap: 20px;
-    padding: .5 1rem;
+    padding: .5 .1rem;
 }
 
 main {
@@ -22,7 +21,7 @@ aside {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: .5rem 1rem;
+    padding: 0 1rem;
 }
 
 .category-sidebar {
@@ -31,19 +30,25 @@ aside {
     color: var(--text-primary);
     border-radius: 10px;
     margin-bottom: 1rem;
-}
-
-.category-sidebar a {
-    color: var(--text-primary);
+    & a {
+        color: var(--text-primary);
+        padding-left: .5rem;
+    }
+    & a:hover {
+        color: var(--accent-primary);
+    }
 }
 
 .sort-options {
-    background-color: var(--card-background);
+    background-color: var(--background);
     width: 100%;
     display: flex;
     justify-content: center;
     gap: .5rem;
     padding: .5rem 0;
+    & a {
+        padding: .2rem .5rem;
+    }
 }
 
 aside h3 {
