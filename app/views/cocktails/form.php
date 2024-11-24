@@ -34,12 +34,23 @@
                 </option>
             <?php endforeach; ?>
         </select>
+        <label for="difficulty_id">Difficulty</label>
+        <select name="difficulty_id" id="difficulty_id" required>
+            <option value="">Select Difficulty</option>
+            <?php foreach ($difficulties as $difficulty): ?>
+                <option value="<?= htmlspecialchars($difficulty['difficulty_id']); ?>"
+                    <?= ($isEditing && $cocktail->getDifficultyId() == $difficulty['difficulty_id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($difficulty['difficulty_name']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
 
         <h3>Ingredients</h3>
-        <div id="ingredientsContainer">
+        <div id="ingredientsContainer" class="ingredientsContainer">
             <?php if ($isEditing): ?>
                 <?php foreach ($ingredients as $i => $ingredient): ?>
                     <div class="ingredient-input">
+                    <label for="ingredient<?= $i + 1 ?>"> <?= $i + 1 ?>:</label>
                         <input type="text" name="ingredients[]" id="ingredient"
                             value="<?= isset($ingredient) ? htmlspecialchars($ingredient->getName()) : '' ?>"
                             list="ingredientList" required>
@@ -92,21 +103,22 @@
             <?php endif; ?>
         </div>
 
-        <input type="hidden" id="unitOptions" value='<?php
-                                                        $options = [];
-                                                        foreach ($units as $unit) {
-                                                            $options[] = [
-                                                                'id' => $unit['unit_id'],
-                                                                'name' => htmlspecialchars($unit['unit_name'])
-                                                            ];
-                                                        }
-                                                        echo json_encode($options);
-                                                        ?>'>
-
+        <input 
+        type="hidden" 
+        id="unitOptions" 
+        value='<?php
+            $options = [];
+            foreach ($units as $unit) {
+                $options[] = [
+                    'id' => $unit['unit_id'],
+                    'name' => htmlspecialchars($unit['unit_name'])
+                ];
+            }
+            echo json_encode($options); ?>'>
         <button type="button" id="addIngredientButton">Add New Ingredient</button>
 
         <h3>Preparation Steps</h3>
-        <div id="stepsContainer">
+        <div id="stepsContainer" class="stepContainer">
             <?php if (!empty($steps)): ?>
                 <?php foreach ($steps as $i => $step): ?>
                     <div class="step-input">
@@ -134,16 +146,7 @@
 
         <button type="button" id="addStepButton">Add New Step</button>
 
-        <label for="difficulty_id">Difficulty</label>
-        <select name="difficulty_id" id="difficulty_id" required>
-            <option value="">Select Difficulty</option>
-            <?php foreach ($difficulties as $difficulty): ?>
-                <option value="<?= htmlspecialchars($difficulty['difficulty_id']); ?>"
-                    <?= ($isEditing && $cocktail->getDifficultyId() == $difficulty['difficulty_id']) ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($difficulty['difficulty_name']); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+        
         <button type="submit">Submit</button>
     </form>
 </div>

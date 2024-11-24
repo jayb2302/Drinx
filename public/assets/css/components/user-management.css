@@ -2,12 +2,12 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  background-color: var(--card-background);
+  background-color: var(--background);
   padding: .5rem 2rem;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   font-family: var(--font-body);
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 * Table styling */
@@ -20,7 +20,7 @@
 
 /* Apply general styling to all table headers */
 .manage-users thead th {
-  background-color: var(--surface);
+  background-color: var(--card-background);
   color: var(--text-primary);
   text-align: left;
   padding: 10px;
@@ -42,14 +42,14 @@
 
 /* Row styling */
 .users-rows {
-  border-bottom: 1px solid var(--text-primary);
-  background-color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  background-color: var(--card-background);
   color: var(--text-primary);
   transition: 0.2s ease-out;
 }
 .users-rows:hover {
-  border-bottom: 1px solid #ddd;
-  background-color: var(--text-primary);
+  border-bottom: 2px solid var(--border);
+  background-color: var(--nav-background);
   color: var(--text-secondary);
 }
 

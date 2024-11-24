@@ -121,7 +121,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                                                 <p><strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong></p>
 
                                                 <!-- Optionally add dots menu for edit/delete if user is logged in and is the comment creator or an admin -->
-                                                <?php if ($_SESSION['user']['id'] === $comment->getUserId() || AuthController::isAdmin()): ?>
+                                                <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $comment->getUserId() || AuthController::isAdmin())): ?>
                                                     <div class="dotsMenu">
                                                         <button class="dotsButton">⋮</button>
                                                         <div class="menu hidden">

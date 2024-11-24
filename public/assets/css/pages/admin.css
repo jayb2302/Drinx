@@ -8,6 +8,7 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     color: var(--text-secondary);
     font-family: var(--font-body);
+    margin-bottom: 15%;
 }
 .admin-container h1 {
    font-family: var(--font-display);
@@ -28,18 +29,17 @@
     display: flex;
     gap: .5rem;
     margin-bottom: 2rem;
-}
-
-.dashboard-navigation .button {
+ & .button {
     flex: 1;
-    background: var(--button-primary);
-    color: var(--text-secondary);
+    background: var(--button-primary-transparent);
+    color: var(--text-primary);
     padding: 0.5rem;
     border: none;
     border-radius: 0.5rem;
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s;
+}
 }
 
 .dashboard-navigation .button:hover {
