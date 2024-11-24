@@ -15,7 +15,7 @@ import { initializeUserManagement } from './modules/user-management.js';
 document.addEventListener('DOMContentLoaded', function () {
     const pageType = window.pageType || document.querySelector('meta[name="page-type"]')?.content;
 
- 
+    initializeSearch();
     switch (pageType) {
         case 'home':
             // Initialize features for the home page
@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
             initializeLikes();
             initializeSticky();
             initializeRandomCocktail();
-            initializeSearch();
             initializeCocktail();
             break;
 

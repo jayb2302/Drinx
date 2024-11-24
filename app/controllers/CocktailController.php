@@ -117,7 +117,8 @@ class CocktailController
             error_log("Image handling result: " . print_r($image, true));
             error_log("Image upload errors: " . print_r($errors, true));
 
-            if ($this->handleValidationErrors($errors, '/cocktails/add')) return;
+            if ($this->handleValidationErrors($errors, '/cocktails/add'))
+                return;
 
             $cocktailData = [
                 'user_id' => $_SESSION['user']['id'],
@@ -400,6 +401,8 @@ class CocktailController
             ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId)
             : false;
 
+        $creatorId = $cocktail->getUserId();
+        $creator = $this->userService->getUserWithProfile($creatorId);
         // Fetch ingredients and convert quantities to fractions
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
         $processedIngredients = [];

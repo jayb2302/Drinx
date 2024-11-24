@@ -1,5 +1,5 @@
 <?php
-$page= 'cocktail';
+$page = 'cocktail';
 include __DIR__ . '/../layout/header.php';
 include_once __DIR__ . '/../../helpers/helpers.php';
 
@@ -26,13 +26,11 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
     <?php unset($_SESSION['errors']); ?>
 <?php endif; ?>
 
-<div class="cocktail-actions">
-    <button class="secondary">
-        <a href="/" class="">Back to Cocktails</a>
-    </button>
-</div>
 <div class="content-wrapper">
     <main class="recipeWrapper">
+        <div class="creator-details">
+            
+        </div>
         <!-- Hidden Form (inline editing) -->
         <div id="editFormContainer" style="display: none;">
             <?php
@@ -41,7 +39,24 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
             ?>
         </div>
         <!-- Cocktail Details -->
+
         <div class="recipeContainer">
+        <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
+        <div class="creatorInfo">
+                <?php if ($creator->getProfilePicture()): ?>
+                    <img class="creatorPicture"
+                        src="<?= asset('/../uploads/users/' . htmlspecialchars($creator->getProfilePicture())); ?>"
+                        alt="Profile picture of <?= htmlspecialchars($creator->getUsername()); ?>">
+                <?php else: ?>
+                    <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture"
+                        class="creator-picture">
+                <?php endif; ?>
+                <a href="/profile/<?= htmlspecialchars($creator->getUsername()); ?>">
+                    <?= htmlspecialchars($creator->getFirstName() ?? $creator->getUsername()); ?>
+                </a>
+                </p>
+            </div>
+        
             <div class="orderby">
                 <p class="tag font-semibold"><?= htmlspecialchars($category['name'] ?? 'Unknown') ?></p>
 
@@ -56,27 +71,33 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
                 <?php endif; ?>
             </div>
 
-        <!-- Like/Unlike Button -->
-        <div class="like-section">
-            <?php if ($loggedInUserId): ?>
-                <button class="like-button"
-                    data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
-                    data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
-                    <span class="like-icon">
-                        <?= $cocktail->hasLiked ? '❤️' : '🤍' ?>
-                    </span>
-                </button>
-                <span class="like-count"><?= $totalLikes ?>  </span>
-            <?php else: ?>
-                <button class="like-button" onclick="showLoginPopup(event)">
+            <!-- Like/Unlike Button -->
+            <div class="like-section">
+                <?php if ($loggedInUserId): ?>
+                    <button class="like-button"
+                        data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
+                        data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
+                        <span class="like-icon">
+                            <?= $cocktail->hasLiked ? '❤️' : '🤍' ?>
+                        </span>
+                    </button>
+                    <span class="like-count"><?= $totalLikes ?>  </span>
+                <?php else: ?>
+                    <button class="like-button" onclick="showLoginPopup(event)">
                         <span class="like-icon">🤍</span>
                     </button>
-            <?php endif; ?>
-            <!-- Display the like count -->
-        </div>
-        <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
-        <p><strong>Difficulty:</strong> <?= htmlspecialchars($cocktail->getDifficultyName() ?? 'Not specified') ?></p>
-        <p><?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?></p>
+                <?php endif; ?>
+                <!-- Display the like count -->
+            </div>
+            <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
+            <div class="orderby">
+                    <?php foreach ($tags ?? [] as $tag): ?>
+                        <span class="tag"><?= htmlspecialchars($tag['name']) ?></span>
+                    <?php endforeach; ?>
+                </div>
+            <p><strong>Difficulty:</strong> <?= htmlspecialchars($cocktail->getDifficultyName() ?? 'Not specified') ?>
+            </p>
+            <p><?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?></p>
 
             <h2 class="text-2xl font-semibold mt-6 mb-2">Ingredients</h2>
             <ul class="list-disc ml-5">
@@ -104,26 +125,24 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
                 <?php endif; ?>
             </ol>
         </div>
-
-        <!-- Edit Button -->
-        <?php if (AuthController::isLoggedIn() && ($currentUser->canEditCocktail($cocktail->getUserId()) || AuthController::isAdmin())): ?>
-            <div class="buttons">
-
-                <button id="editCocktailButton" class="primary">Edit </button>
-                <!-- Delete Button -->
-                <form action="/cocktails/delete/<?= $cocktail->getCocktailId() ?>" method="post"
-                    onsubmit="return confirm('Are you sure you want to delete this cocktail?');">
-                    <button type="submit" class="delete">Delete</button>
-                </form>
-            </div>
-        <?php endif; ?>
     </main>
 
-        <aside class="commentSection">
-            <?php 
-require_once __DIR__ . '/comment_section.php';
-?>
-</aside>
+    <aside class="commentSection">
+        <div class="cocktailActions">
+            <?php if (AuthController::isLoggedIn() && ($currentUser->canEditCocktail($cocktail->getUserId()) || AuthController::isAdmin())): ?>
+                <button id="editCocktailButton" class="primary"> 🖊️ </button>
+                <!-- Delete Button -->
+                <form action="/cocktails/delete/<?= $cocktail->getCocktailId() ?>" method="post"
+                onsubmit="return confirm('Are you sure you want to delete this cocktail?');">
+                <button type="submit" class="delete">🗑️</button>
+            </form>
+            <?php endif; ?>
+            <a href="/" class="button-secondary">Back</a>
+        </div>
+        <?php
+        require_once __DIR__ . '/comment_section.php';
+        ?>
+    </aside>
 </div>
 
 <?php include __DIR__ . '/../layout/footer.php'; ?>

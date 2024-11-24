@@ -4,25 +4,39 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: flex-start; /* Ensures that items align at the top */
-  justify-content: center; /* Center the cards */
+  align-items: flex-start; 
+  justify-content: center; 
   background-color: var(--background-primary);
-  gap: 20px; /* Space between cards */
+  gap: 5rem; 
   height: 80vh;
   overflow: auto;
 }
 .recipeWrapper {
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   flex-wrap: wrap;
-  align-items: flex-start; /* Ensures that items align at the top */
+  align-items: flex-start; 
   justify-content: center; /* Center the cards */
   background-color: var(--background-primary);
-  gap: 20px; /* Space between cards */
-  height: 80vh;
+  gap: 2rem; 
   overflow: auto;
+  height: 80dvh;
 }
-
+aside .cocktailActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .5rem;
+}
+.cocktailContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+  background-color: var(--background);
+  padding: .1rem .2rem;
+}
 .container {
   width: auto;
   display: flex;
@@ -80,13 +94,16 @@ h1 {
   overflow: scroll;
   flex-direction: column;
 }
+
 .recipeContainer {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
   position: relative;
-  width: 60vh;
+  overflow: auto;
+  width: clamp(20vw, 90%, 80vw);
 }
+
 .recipeContent {
   display: flex;
   flex-direction: column;
@@ -98,7 +115,7 @@ h1 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 5%;
 }
 
 .orderby {
@@ -110,15 +127,14 @@ h1 {
 
 /* Ingredient and step lists */
 ul, ol {
-  padding-left: 20px; /* Indentation for lists */
-  margin-bottom: 20px; /* Space below the lists */
+  padding-left: 20px;
+  margin-bottom: 20px; 
 }
-
 
 /* Link styles */
 a {
-  color: var(--text-link); /* Link color */
-  text-decoration: none; /* Remove underline */
+  color: var(--text-link); 
+  text-decoration: none; 
 }
 
 a:hover {
@@ -127,7 +143,7 @@ a:hover {
 
 .tag{
   background-color: var(--accent-secondary); 
-  color: var(--text-secondary); 
+  color: var(--text-primary); 
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
   padding: 5px 5px; 
   width: auto;

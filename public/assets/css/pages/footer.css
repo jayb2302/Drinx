@@ -1,13 +1,14 @@
 footer {
     color: var(--text-secondary);
-    background-color: var(--card-background);
+    background-color: var(--nav-background);
     padding: 20px 0;
     text-align: center;
     font-size: 0.9rem;
     border-top: 1px solid var(--border);
-    /* position: fixed; */ /* Blocks view on for example cocktail page. Can't access the submit button */ /* Temporary fix */
+    position: fixed; 
     bottom: 0;
-    width: 100%;
+    width: 100vw;
+    z-index: 1001;
   }
   
   footer a {

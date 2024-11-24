@@ -2,17 +2,16 @@
 form {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  margin-top: 2rem;
+  padding: .2 rem .5rem;
+  background-color: var(--card-background);
 }
 .form-container {
-  background-color: var(--card-background);
-  color: var(--text-secondary);
-  padding: 2rem;
+  background-color: var(--background);
+  color: var(--text-primary);
+  padding: 0 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: var(--font-body);
-  width: 40vw;
   margin: auto;
 }
 
@@ -34,14 +33,18 @@ form {
 .form-group label {
   display: block;
   font-weight: bold;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   margin-bottom: 0.3rem;
 }
 
+textarea {
+  background-color: var(--card-background);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
 /* Input fields and textareas */
 input[type="text"],
 input[type="number"],
-textarea,
 select {
   padding: 0.5rem;
   border: 1px solid var(--border);
@@ -71,8 +74,8 @@ input[type="file"] {
 /* Buttons */
 button,
 input[type="submit"] {
-  background-color: var(--button-primary);
-  color: var(--text-secondary);
+  background-color: var(--accent-primary);
+  color: var(--text-primary);
   font-weight: bold;
   padding: 0.7rem 1.2rem;
   border: none;
@@ -150,4 +153,16 @@ input[type="submit"]:hover {
 
 .delete-step-button:hover {
   background-color: var(--warning);
+}
+
+#editFormContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  & .ingredientsContainer, .stepContainer {
+    display: flex;
+    align-content: stretch;
+    width: 100%;
+    gap: 1rem;
+  }
 }

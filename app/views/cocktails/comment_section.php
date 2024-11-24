@@ -1,5 +1,18 @@
 <div class="commentsSection">
     <h2 class="">Comments</h2>
+    <!-- Top-level Comment Form -->
+    <?php if (AuthController::isLoggedIn() && $currentUser->canComment()): ?>
+        <h3 class="commentHeading">New Comment</h3>
+        <form id="TopLevelCommentForm"
+            action="/cocktails/<?= $cocktail->getCocktailId() ?>-<?= urlencode($cocktail->getTitle()) ?>/comments"
+            method="POST">
+            <textarea name="commentText" placeholder="Write your comment here..." required></textarea>
+            <input type="hidden" name="cocktailTitle" value="<?= htmlspecialchars($cocktail->getTitle()) ?>">
+            <button type="submit">Submit</button>
+        </form>
+    <?php else: ?>
+        <p class="loginPrompt">Please <a href="/login">log in</a> to add a comment.</p>
+    <?php endif; ?>
     <?php foreach ($comments as $comment): ?>
         <div class="commentBox">
             <div class="comment">
@@ -12,7 +25,11 @@
                         <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture"
                             class="creatorPicture">
                     <?php endif; ?>
-                    <p><strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong></p>
+                    
+                    <p>
+                        <strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong>
+                        <small><?= htmlspecialchars($comment->getCreatedAt() ?? 'Unknown date') ?></small>
+                    </p>
                     <!-- Dots Menu for Edit/Delete -->
                     <?php if (AuthController::isLoggedIn() && ($currentUser->canEditComment($comment->getUserId()) || AuthController::isAdmin())): ?>
                         <div class="dotsMenu">
@@ -27,7 +44,7 @@
                         </div>
                     <?php else: ?>
 
-                    <?php endif; ?>
+                        <?php endif; ?>
                 </div>
                 <!-- Inline edit form (initially hidden) -->
                 <form id="editForm-<?= $comment->getCommentId() ?>" class="editCommentForm hidden"
@@ -35,9 +52,8 @@
                     <textarea name="commentText"><?= htmlspecialchars($comment->getCommentText()) ?></textarea>
                     <button type="submit">Save</button>
                     <button type="button" class="cancelEditButton">Cancel</button>
-                    </form>
+                </form>
 
-                <p class="commentDate"><small><?= htmlspecialchars($comment->getCreatedAt() ?? 'Unknown date') ?></small>
                 </p>
                 <p><?= htmlspecialchars($comment->getCommentText() ?? 'No comment text available') ?></p>
                 <!-- Display comment text here -->
@@ -55,7 +71,7 @@
                                 <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $reply->getUserId() || AuthController::isAdmin())): ?>
                                     <form action="/comments/<?= $reply->getCommentId() ?>/delete" method="POST"
                                         onsubmit="return confirm('Are you sure you want to delete this reply?');">
-                                        <button type="submit" class="menuItem">🗑️</button>
+                                        <button type="submit" class="delete">🗑️</button>
                                     </form>
                                 <?php endif; ?>
                             </div>
@@ -72,7 +88,7 @@
                             <input type="hidden" name="parent_comment_id" value="<?= $comment->getCommentId() ?>">
                             <input type="hidden" name="cocktail_id" value="<?= $cocktailId ?>">
                             <input type="hidden" name="cocktailTitle" value="<?= htmlspecialchars($cocktail->getTitle()) ?>">
-                            <button type="submit">Submit Reply</button>
+                            <button type="submit" class="secondary">Submit</button>
                         </form>
                     </div>
                 <?php endif; ?>
@@ -80,19 +96,6 @@
 
         </div>
     <?php endforeach; ?>
-    <!-- Top-level Comment Form -->
-    <?php if (AuthController::isLoggedIn() && $currentUser->canComment()): ?>
-        <h3 class="commentHeading">Add a New Comment</h3>
-        <form id="TopLevelCommentForm"
-            action="/cocktails/<?= $cocktail->getCocktailId() ?>-<?= urlencode($cocktail->getTitle()) ?>/comments"
-            method="POST">
-            <textarea name="commentText" placeholder="Write your comment here..." required></textarea>
-            <input type="hidden" name="cocktailTitle" value="<?= htmlspecialchars($cocktail->getTitle()) ?>">
-            <button type="submit">Submit</button>
-        </form>
 
-    <?php else: ?>
-        <p class="loginPrompt">Please <a href="/login">log in</a> to add a comment.</p>
-    <?php endif; ?>
 
 </div>

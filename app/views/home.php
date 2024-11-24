@@ -11,6 +11,11 @@ if (isset($_COOKIE['logout_success'])) {
     // Clear the cookie after displaying the message
     setcookie('logout_success', '', time() - 3600, "/"); // Expire the cookie immediately
 }
+if (isset($_COOKIE['account_deleted_success'])) {
+    echo '<div class="alert alert-success">' . htmlspecialchars($_COOKIE['account_deleted_success']) . '</div>';
+    // Unset the cookie after displaying the message
+    setcookie('account_deleted_success', '', time() - 3600, "/");
+}
 
 // Get the current URL path
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -35,8 +40,10 @@ $cocktailId = $matches[1] ?? null;
                         <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>" alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
                     </div>
                     <div class="stickyContent">
-                        <h3 class="cocktail-title"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
-                        <p class="cocktail-description"><?php echo htmlspecialchars($stickyCocktail->getDescription()); ?></p>
+                            <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
+                                <h3 class="stickyTitle"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
+                            </a>
+                        <p class="stickyDescription"><?php echo htmlspecialchars($stickyCocktail->getDescription()); ?></p>
                     </div>
                 </div>
             </div>
@@ -44,10 +51,7 @@ $cocktailId = $matches[1] ?? null;
             <p>No sticky cocktail selected or invalid data.</p>
         <?php endif; ?>
     </aside>
-    <!-- Sticky Cocktail -->
     <main>
-
-        
         <!-- Logic to include forms based on the path -->
         <?php
         if ($currentPath === '/login') {
