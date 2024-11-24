@@ -11,6 +11,11 @@ if (isset($_COOKIE['logout_success'])) {
     // Clear the cookie after displaying the message
     setcookie('logout_success', '', time() - 3600, "/"); // Expire the cookie immediately
 }
+if (isset($_COOKIE['account_deleted_success'])) {
+    echo '<div class="alert alert-success">' . htmlspecialchars($_COOKIE['account_deleted_success']) . '</div>';
+    // Unset the cookie after displaying the message
+    setcookie('account_deleted_success', '', time() - 3600, "/");
+}
 
 // Get the current URL path
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

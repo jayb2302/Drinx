@@ -30,7 +30,7 @@ class UserController
         $tagRepository = new TagRepository($dbConnection);
         $difficultyRepository = new DifficultyRepository($dbConnection);
         $unitRepository = new UnitRepository($dbConnection);  // Instantiate UnitRepository
-        $likeRepository = new LikeRepository($dbConnection);  
+        $likeRepository = new LikeRepository($dbConnection);
         $userRepository = new UserRepository($dbConnection);
         $commentRepository = new CommentRepository($dbConnection);  // Instantiate CommentRepository
 
@@ -50,7 +50,7 @@ class UserController
             $likeRepository,
             $userRepository,
             $commentRepository
-            
+
         );
 
         $this->userService = new UserService();
@@ -63,8 +63,8 @@ class UserController
         if (!AuthController::isLoggedIn()) {
             redirect('login');
         }
+        $loggedInUserId = $_SESSION['user']['id'] ?? null;
 
-        $userId = $_SESSION['user']['id'];
         // Fetch user profile data with user ID
         $profile = $this->userService->getUserWithProfile($profileUserId);
         if ($profile) {
@@ -72,10 +72,10 @@ class UserController
         } else {
             error_log('Profile not found for User ID: ' . $profileUserId);
         }
-        $userRecipes = $this->cocktailService->getUserRecipes($userId);
-        $userBadges = $this->badgeService->getUserBadges($userId);
-        $profileStats = $this->userService->getUserStats($userId);
-        $isFollowing = $this->userService->isFollowing($userId, $profileUserId); // Check if current user is following the profile user
+        $userRecipes = $this->cocktailService->getUserRecipes($profileUserId);
+        $userBadges = $this->badgeService->getUserBadges($profileUserId);
+        $profileStats = $this->userService->getUserStats($profileUserId);
+        $isFollowing = $this->userService->isFollowing($loggedInUserId, $profileUserId); // Check if current user is following the profile user
 
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
@@ -108,7 +108,8 @@ class UserController
             if ($this->userService->verifyPassword($userId, $password)) {
                 // Delete the user and associated data
                 if ($this->userService->deleteUser($userId)) {
-                    session_destroy();  // End session after deletion
+                    setcookie('account_deleted_success', 'Account deleted successfully.', time() + 10, "/");
+                    session_destroy(); // End session after deletion
                     redirect('/');
                 } else {
                     $_SESSION['error'] = 'Failed to delete the account.';
@@ -149,17 +150,17 @@ class UserController
             // Call the service to update the profile
             if ($this->userService->updateUserProfile($userId, $firstName, $lastName, $bio, $profilePicture)) {
                 $_SESSION['success'] = "Profile updated successfully.";
-                
+
                 // Fetch the updated user information to get the username
                 $updatedUser = $this->userService->getUserById($userId);
                 $username = $updatedUser->getUsername(); // Assuming getUsername() retrieves the username
-    
+
                 // Redirect to the profile using the username
                 redirect("profile/$username");
             } else {
                 $_SESSION['error'] = "Failed to update profile.";
             }
-    
+
             // If there was an error, redirect back to the profile
             redirect("profile/$userId"); // Fallback to user ID in case of failure
         }
@@ -238,9 +239,9 @@ class UserController
         // Check if current user is following the profile user
         $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
 
-        $userRecipes = $this->cocktailService->getUserRecipes($userId);
-        $userBadges = $this->badgeService->getUserBadges($userId);
-        $profileStats = $this->userService->getUserStats($userId);
+        $userRecipes = $this->cocktailService->getUserRecipes( $profileUserId);
+        $userBadges = $this->badgeService->getUserBadges( $profileUserId);
+        $profileStats = $this->userService->getUserStats( $profileUserId);
 
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
