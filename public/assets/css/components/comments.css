@@ -101,16 +101,16 @@
     padding: 1rem;
     border-radius: 8px;
     margin-top: 1rem;
-}
-
-.replyForm textarea {
-    width: fit-content;
-    padding: 0.5rem;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    resize: vertical;
-    background-color: var(--background);
-    color: var(--text-primary);
+    width: 100%;
+    & textarea {
+        width: fit-content;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid var(--border);
+        resize: vertical;
+        background-color: var(--background);
+        color: var(--text-primary);
+    }
 }
 
 .commentHeading {

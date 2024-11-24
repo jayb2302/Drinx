@@ -20,8 +20,7 @@
   background-color: var(--background-primary);
   gap: 2rem; 
   overflow: auto;
-  
-  
+  height: 80dvh;
 }
 aside .cocktailActions {
   display: flex;

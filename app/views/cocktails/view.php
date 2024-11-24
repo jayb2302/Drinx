@@ -27,23 +27,10 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
 <?php endif; ?>
 
 <div class="content-wrapper">
-    <div class="creator-details">
-        <div class="creatorInfo">
-            <?php if ($creator->getProfilePicture()): ?>
-                <img class="creatorPicture"
-                    src="<?= asset('/../uploads/users/' . htmlspecialchars($creator->getProfilePicture())); ?>"
-                    alt="Profile picture of <?= htmlspecialchars($creator->getUsername()); ?>">
-            <?php else: ?>
-                <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture"
-                    class="creator-picture">
-            <?php endif; ?>
-            <a href="/profile/<?= htmlspecialchars($creator->getUsername()); ?>">
-                <?= htmlspecialchars($creator->getFirstName() ?? $creator->getUsername()); ?>
-            </a>
-            </p>
-        </div>
-    </div>
     <main class="recipeWrapper">
+        <div class="creator-details">
+            
+        </div>
         <!-- Hidden Form (inline editing) -->
         <div id="editFormContainer" style="display: none;">
             <?php
@@ -55,6 +42,21 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
 
         <div class="recipeContainer">
         <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
+        <div class="creatorInfo">
+                <?php if ($creator->getProfilePicture()): ?>
+                    <img class="creatorPicture"
+                        src="<?= asset('/../uploads/users/' . htmlspecialchars($creator->getProfilePicture())); ?>"
+                        alt="Profile picture of <?= htmlspecialchars($creator->getUsername()); ?>">
+                <?php else: ?>
+                    <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture"
+                        class="creator-picture">
+                <?php endif; ?>
+                <a href="/profile/<?= htmlspecialchars($creator->getUsername()); ?>">
+                    <?= htmlspecialchars($creator->getFirstName() ?? $creator->getUsername()); ?>
+                </a>
+                </p>
+            </div>
+        
             <div class="orderby">
                 <p class="tag font-semibold"><?= htmlspecialchars($category['name'] ?? 'Unknown') ?></p>
 

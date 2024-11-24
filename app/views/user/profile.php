@@ -34,12 +34,42 @@ if (isset($_SESSION['success'])) {
         <?php else: ?>
             <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture" class="profile-img">
         <?php endif; ?>
+        <h2>
+            <?= htmlspecialchars($profile->getFirstName() ?? 'No First Name') . ' ' . htmlspecialchars($profile->getLastName() ?? 'No Last Name'); ?>
+        </h2>        
+        <p>@ <?= htmlspecialchars($profile->getUsername() ?? 'Unknown'); ?></p>
     </div>
 
     <!-- User Info -->
     <div class="profile-info">
-    <h2><?= htmlspecialchars($profile->getFirstName() ?? 'No First Name') . ' ' . htmlspecialchars($profile->getLastName() ?? 'No Last Name'); ?></h2>        <p>@ <?= htmlspecialchars($profile->getUsername() ?? 'Unknown'); ?></p>
         <p class="bio"><?= htmlspecialchars($profile->getBio() ?? 'This user has not set a bio yet.'); ?></p>
+        <!-- User's Badges Section -->
+<div class="profile-badges">
+    <h3>Achievements</h3>
+    <?php if (!empty($userBadges)): ?>
+        <div class="badge-grid">
+            <?php foreach ($userBadges as $badge): ?>
+                <div class="badge-card">
+                    <img src="<?= asset('uploads/badges/' . htmlspecialchars($badge['badge_image'])); ?>"
+                        alt="<?= htmlspecialchars($badge['badge_name']); ?>" class="badge-img">
+                    <p><?= htmlspecialchars($badge['badge_name']); ?></p>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p>No badges earned yet.</p>
+    <?php endif; ?>
+</div>
+
+<!-- Social Profile Statistics (Optional) -->
+<div class="profile-stats">
+    <h3>Statistics</h3>
+    <ul>
+        <li>Total Recipes: <?= count($userRecipes); ?></li>
+        <li>Likes Received: <?= $profileStats['likes_received'] ?? 0; ?></li>
+        <li>Comments Received: <?= $profileStats['comments_received'] ?? 0; ?></li>
+    </ul>
+</div>
     </div>
 
     <!-- Edit Profile Button - Only show if user is viewing their own profile -->
@@ -53,8 +83,9 @@ if (isset($_SESSION['success'])) {
     <?php endif; ?>
 
 
-<!-- User's Recipes Section -->
-<div class="recipe-wrapper">
+</div>
+<!-- Recipe Section -->
+<div class="user-recipes">
         <h3>My Recipes</h3>
         <?php if (!empty($userRecipes)): ?>
             <div class="recipe-container">
@@ -85,34 +116,6 @@ if (isset($_SESSION['success'])) {
             <p>No recipes uploaded yet.</p>
         <?php endif; ?>
     </div>
-
-<!-- User's Badges Section -->
-<div class="profile-badges">
-    <h3>Achievements</h3>
-    <?php if (!empty($userBadges)): ?>
-        <div class="badge-grid">
-            <?php foreach ($userBadges as $badge): ?>
-                <div class="badge-card">
-                    <img src="<?= asset('uploads/badges/' . htmlspecialchars($badge['badge_image'])); ?>"
-                        alt="<?= htmlspecialchars($badge['badge_name']); ?>" class="badge-img">
-                    <p><?= htmlspecialchars($badge['badge_name']); ?></p>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php else: ?>
-        <p>No badges earned yet.</p>
-    <?php endif; ?>
-</div>
-
-<!-- Social Profile Statistics (Optional) -->
-<div class="profile-stats">
-    <h3>Statistics</h3>
-    <ul>
-        <li>Total Recipes: <?= count($userRecipes); ?></li>
-        <li>Likes Received: <?= $profileStats['likes_received'] ?? 0; ?></li>
-        <li>Comments Received: <?= $profileStats['comments_received'] ?? 0; ?></li>
-    </ul>
-</div>
 <!-- Delete Account Button -->
  <?php if ($userId === $profileUserId):?>
 <div class="delete-account-section">

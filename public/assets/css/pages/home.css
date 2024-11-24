@@ -1,19 +1,31 @@
 .content-wrapper {
     display: flex;
+    flex-direction: row;
     padding: .5 .1rem;
+    @media screen and (max-width: 768px) {
+        flex-direction: column;
+        
+    }
 }
 
 main {
-    width: 60vw;
+    width: clamp(90vw, 90%, 80vw);
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     gap: 20px;
+    border-radius: 10px;
+    @media screen and (max-width: 768px) {
+        width: 100%;
+    }
 }
 
 aside {
-    width: 20vw;
+    width: clamp(30vw, 10%, 90vw);
     color: var(--text-secondary);
+    @media screen and (max-width: 768px) {
+        width: 95%;
+    }
 }
 
 .leftSidebar {
@@ -46,6 +58,7 @@ aside {
     justify-content: center;
     gap: .5rem;
     padding: .5rem 0;
+    border-radius: 10px;
     & a {
         padding: .2rem .5rem;
     }

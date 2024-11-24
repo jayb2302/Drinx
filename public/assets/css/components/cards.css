@@ -120,14 +120,18 @@
     & a :hover {
         color: var(--text-primary);
     }
+    & p {
+        margin: 0;
+        text-overflow: ellipsis;
+    }
+    @media screen and (max-width: 768px) {
+       display: none;
+        
+    } 
 }
+
 
 .stickyCard 
-
-.stickyCard p {
-    margin: 0;
-    text-overflow: ellipsis;
-}
 
 .stickyMediaWrapper {
     display: flex;

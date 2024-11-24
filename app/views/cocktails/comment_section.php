@@ -71,7 +71,7 @@
                                 <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $reply->getUserId() || AuthController::isAdmin())): ?>
                                     <form action="/comments/<?= $reply->getCommentId() ?>/delete" method="POST"
                                         onsubmit="return confirm('Are you sure you want to delete this reply?');">
-                                        <button type="submit" class="menuItem">🗑️</button>
+                                        <button type="submit" class="delete">🗑️</button>
                                     </form>
                                 <?php endif; ?>
                             </div>
