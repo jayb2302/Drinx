@@ -90,6 +90,11 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
                 <!-- Display the like count -->
             </div>
             <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
+            <div class="orderby">
+                    <?php foreach ($tags ?? [] as $tag): ?>
+                        <span class="tag"><?= htmlspecialchars($tag['name']) ?></span>
+                    <?php endforeach; ?>
+                </div>
             <p><strong>Difficulty:</strong> <?= htmlspecialchars($cocktail->getDifficultyName() ?? 'Not specified') ?>
             </p>
             <p><?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?></p>
