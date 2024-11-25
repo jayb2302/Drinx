@@ -12,17 +12,14 @@ export function initializeSticky() {
                         <div class="stickyCard">
                             <h2>📌 Sticky Cocktail</h2>
                             <div class="stickyMediaWrapper">
-                                <a href="/cocktails/${data.id}-${encodeURIComponent(data.title)}">
-                                    <img src="${data.image}" 
-                                         alt="${data.title}" class="cocktail-image">
-                                </a>
+                                    <img src="${data.image}" alt="${data.title}" class="cocktail-image">
                             </div>
                             <div class="stickyContent">
-                                <h3 class="cocktail-title">
-                                    <a href="/cocktails/${data.id}-${encodeURIComponent(data.title)}">
+                                <a href="/cocktails/${data.id}-${encodeURIComponent(data.title)}">
+                                    <h3 class="cocktail-title">
                                         ${data.title}
-                                    </a>
-                                </h3>
+                                    </h3>
+                                </a>
                                 <p class="cocktail-description">${data.description}</p>
                             </div>
                         </div>
