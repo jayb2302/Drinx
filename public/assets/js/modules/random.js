@@ -1,24 +1,41 @@
-///// Random
 export function initializeRandomCocktail() {
-    const cocktailContainer = document.querySelector('.aboutContainer');
-    if (!cocktailContainer) return;
+    const cocktailContainer = document.querySelector('.randomRecipe');
+    const randomButton = document.querySelector('.randomRecipeButton');
+
+    if (!randomButton) return; // Ensure the button exists
+
+    // Create audio objects for hover and click
+    const hoverSound = new Audio('/assets/sounds/ShakeThat.mp3');
+    const clickSound = new Audio('/assets/sounds/Shuffling.mp3');
+
+    // Play hover sound on mouseover
+    randomButton.addEventListener('mouseover', () => {
+        console.log('Hover event triggered'); // Debugging log
+        hoverSound.currentTime = 0; // Reset sound to the beginning
+        hoverSound.play().catch(err => {
+            console.error('Hover sound play failed:', err);
+        });
+    });
+
+    // Play click sound and fetch random cocktail on button click
+    randomButton.addEventListener('click', event => {
+        event.preventDefault(); // Prevent default link behavior
+        clickSound.currentTime = 0; // Reset sound to the beginning
+        clickSound.play().catch(err => {
+            console.error('Click sound play failed:', err);
+        });
+
+        fetchRandomCocktail(); // Fetch and display the random cocktail
+    });
+    if (!cocktailContainer || !randomButton) return; // Ensure elements exist
 
     function updateCocktailContent({ title, image, description, id }) {
         cocktailContainer.innerHTML = `
-            <h1 class="aboutHeading">Welcome to Drinx,</h1>
-            <h3 class="aboutIntro">The cocktail library that’s got social flair!</h3>
-            <p class="aboutDescription">Cheers to your next masterpiece — let’s make it one for the books!</p>
-            <div class="recipeContainer">
-                <div class="recipeCard">
+            <div class="recipeCard" style="background-image: url('/uploads/cocktails/${image}');">
+                <div class"recipeInfo">
                     <h3>${title}</h3>
-                    <div>
-                        <img src="/uploads/cocktails/${image}" alt="Random Cocktail Image" class="cocktailImage">
-                        <p>${description}</p>
-                        <a href="/cocktails/${id}-${encodeURIComponent(title)}" class="viewRecipe">View Recipe</a>
-                    </div>
-                </div>
-                <div class="randomButton">
-                    <a href="#" class="randomRecipeButton">Shake It Up!</a>
+                    <small>${description}</small>
+                    <a href="/cocktails/${id}-${encodeURIComponent(title)}" class="viewRecipe">View Recipe</a>
                 </div>
             </div>
         `;
@@ -38,10 +55,9 @@ export function initializeRandomCocktail() {
         cocktailContainer.innerHTML = `<p>${message}</p>`;
     }
 
-    cocktailContainer.addEventListener('click', event => {
-        if (event.target.classList.contains('randomRecipeButton')) {
-            event.preventDefault();
-            fetchRandomCocktail();
-        }
+    // Attach click event listener to the "Shake it" button
+    randomButton.addEventListener('click', event => {
+        event.preventDefault(); // Prevent default link behavior
+        fetchRandomCocktail(); // Fetch and display the random cocktail
     });
 }
