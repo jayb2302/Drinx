@@ -13,47 +13,29 @@ class CocktailController
     private $userService;
 
 
-    public function __construct()
-    {
+    public function __construct(
+        CocktailService $cocktailService,
+        IngredientService $ingredientService,
+        StepService $stepService,
+        DifficultyRepository $difficultyRepository,
+        CommentService $commentService,
+        LikeService $likeService,
+        TagRepository $tagRepository,
+        UserService $userService
+    ) {
+        $this->cocktailService = $cocktailService;
+        $this->ingredientService = $ingredientService;
+        $this->stepService = $stepService;
+        $this->difficultyRepository = $difficultyRepository;
+        $this->commentService = $commentService;
+        $this->likeService = $likeService;
+        $this->tagRepository = $tagRepository;
+        $this->userService = $userService;
+
+        // Start session if not already started
         if (session_status() === PHP_SESSION_NONE) {
-            session_start(); // Start session if not already started
+            session_start();
         }
-
-        $db = Database::getConnection();  // Get the database connection
-
-        // Initialize repositories
-        $cocktailRepository = new CocktailRepository($db);
-        $categoryRepository = new CategoryRepository($db);
-        $ingredientRepository = new IngredientRepository($db);
-        $stepRepository = new StepRepository($db);
-        $tagRepository = new TagRepository($db);
-        $this->difficultyRepository = new DifficultyRepository($db);
-        $commentRepository = new CommentRepository($db);
-        $likeRepository = new LikeRepository($db);
-        $this->likeService = new LikeService(new LikeRepository($db));
-        $userRepository = new UserRepository($db);
-        $userService = new UserService($userRepository);
-
-        // Initialize services    
-        $unitRepository = new UnitRepository($db);
-        $this->ingredientService = new IngredientService($ingredientRepository, $unitRepository);
-        $this->stepService = new StepService($stepRepository);
-        $this->commentService = new CommentService($commentRepository, $userService);
-        $this->userService = new UserService(new UserRepository($db));
-
-
-        // Initialize the CocktailService with services and repositories
-        $this->cocktailService = new CocktailService(
-            $cocktailRepository,
-            $categoryRepository,
-            $this->ingredientService,
-            $this->stepService,
-            $tagRepository,
-            $this->difficultyRepository,
-            $likeRepository,
-            $userRepository,
-            $commentRepository
-        );
     }
 
     private function redirect($url)
@@ -123,7 +105,7 @@ class CocktailController
             $cocktailData = [
                 'user_id' => $_SESSION['user']['id'],
                 'title' => sanitize($_POST['title']),
-                'description' => sanitize($_POST['description']),
+                'description' => sanitizeTrim($_POST['description']),
                 'image' => $image,
                 'category_id' => intval($_POST['category_id']),
                 'difficulty_id' => intval($_POST['difficulty_id'])
@@ -198,7 +180,7 @@ class CocktailController
 
         $cocktailData = [
             'title' => sanitize($_POST['title']),
-            'description' => sanitize($_POST['description']),
+            'description' => sanitizeTrim($_POST['description']),
             'category_id' => intval($_POST['category_id']),
             'difficulty_id' => intval($_POST['difficulty_id']),
             'image' => $image ?: $cocktail->getImage(),
