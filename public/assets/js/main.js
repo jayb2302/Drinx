@@ -11,7 +11,7 @@ import { initializeCocktail } from './modules/cocktail.js';
 import { initializeIngredients } from './modules/ingredients.js';
 import { initializeTags } from './modules/tags.js';
 import { initializeUserManagement } from './modules/user-management.js';
-
+import { initializeImageValidation } from './modules/image-handler.js';
 document.addEventListener('DOMContentLoaded', function () {
     const pageType = window.pageType || document.querySelector('meta[name="page-type"]')?.content;
 
@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         case 'profile':
             // Initialize profile page features
             initializeProfile();
+            initializeImageValidation('profile_picture', 'image-preview', 'file-error');
             break;
 
         case 'admin':
@@ -44,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
             initializeCocktail();
             initializeComments();
             initializeLikes();
+            initializeImageValidation('image', 'cocktail-image-preview', 'cocktail-file-error');
             break;
 
         default:
