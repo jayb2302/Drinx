@@ -28,6 +28,7 @@ if ($action) {
             'AdminController' => $adminController,
             'TagController' => $tagController,
             'IngredientController' => $ingredientController,
+            'UserController' => $userController,
         ];
 
         if (isset($controllers[$controllerClass])) {

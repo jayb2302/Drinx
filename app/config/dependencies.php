@@ -78,7 +78,9 @@ $cocktailController = new CocktailController(
     $commentService,
     $likeService,
     $tagRepository,
-    $userService
+    $userService,
+    $imageService
+
 );
 
 $authController = new AuthController();

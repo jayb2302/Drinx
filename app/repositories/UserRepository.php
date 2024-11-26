@@ -193,11 +193,22 @@ class UserRepository
     // Update profile information
     public function updateProfile($userId, $firstName, $lastName, $bio, $profilePicture)
     {
-        $stmt = $this->db->prepare("
-            UPDATE user_profile 
-            SET first_name = :first_name, last_name = :last_name, bio = :bio, profile_picture = :profile_picture 
-            WHERE user_id = :user_id
-        ");
+        $query = "
+        UPDATE user_profile 
+        SET first_name = :first_name, 
+            last_name = :last_name, 
+            bio = :bio";
+
+        // Append profile_picture only if it's provided
+        if ($profilePicture !== null) {
+            $query .= ", profile_picture = :profile_picture";
+        }
+
+        $query .= " WHERE user_id = :user_id";
+
+        $stmt = $this->db->prepare($query);
+
+        // Bind required parameters
         $stmt->bindParam(':first_name', $firstName);
         $stmt->bindParam(':last_name', $lastName);
         $stmt->bindParam(':bio', $bio);

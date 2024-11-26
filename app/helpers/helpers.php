@@ -43,7 +43,9 @@ function asset($path) {
 function sanitize($input) {
     return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
-
+function sanitizeTrim($input) {
+    return is_string($input) ? trim($input) : $input;
+}
 // Function to validate and sanitize numeric input
 function sanitizeNumber($input) {
     if (is_numeric($input)) {
