@@ -1,5 +1,5 @@
 <footer class="footer bg-light">
-    <div class="container">
+    <div class="">
         <span class="text-muted">© 2024 Drinx. All rights reserved.</span>
     </div>
 </footer>

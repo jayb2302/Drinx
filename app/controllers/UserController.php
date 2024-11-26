@@ -1,16 +1,5 @@
 <?php
-require_once __DIR__ . '/../services/UserService.php';
-require_once __DIR__ . '/../services/CocktailService.php';
-require_once __DIR__ . '/../services/BadgeService.php';
-require_once __DIR__ . '/../repositories/CocktailRepository.php';
-require_once __DIR__ . '/../repositories/CategoryRepository.php';
-require_once __DIR__ . '/../repositories/IngredientRepository.php';
-require_once __DIR__ . '/../repositories/StepRepository.php';
-require_once __DIR__ . '/../repositories/TagRepository.php';
-require_once __DIR__ . '/../repositories/DifficultyRepository.php';
-require_once __DIR__ . '/../repositories/UnitRepository.php';  // Add this
-require_once __DIR__ . '/../services/IngredientService.php';   // Add this
-require_once __DIR__ . '/../services/StepService.php';         // Add this
+require_once __DIR__ . '/../config/dependencies.php';
 
 class UserController
 {
@@ -54,7 +43,7 @@ class UserController
         );
 
         $this->userService = new UserService();
-        $this->badgeService = new BadgeService();
+        // $this->badgeService = new BadgeService();
     }
 
     // Show the user profile
@@ -73,7 +62,7 @@ class UserController
             error_log('Profile not found for User ID: ' . $profileUserId);
         }
         $userRecipes = $this->cocktailService->getUserRecipes($profileUserId);
-        $userBadges = $this->badgeService->getUserBadges($profileUserId);
+        // $userBadges = $this->badgeService->getUserBadges($profileUserId);
         $profileStats = $this->userService->getUserStats($profileUserId);
         $isFollowing = $this->userService->isFollowing($loggedInUserId, $profileUserId); // Check if current user is following the profile user
 
@@ -240,7 +229,7 @@ class UserController
         $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
 
         $userRecipes = $this->cocktailService->getUserRecipes( $profileUserId);
-        $userBadges = $this->badgeService->getUserBadges( $profileUserId);
+            // $userBadges = $this->badgeService->getUserBadges( $profileUserId);
         $profileStats = $this->userService->getUserStats( $profileUserId);
 
         // Pass the profile data to the view

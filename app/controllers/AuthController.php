@@ -50,7 +50,6 @@ class AuthController
     public function showLogin()
     {
         return require_once __DIR__ . '/../views/auth/login.php';
-
     }
     // Show the registration form
     public function showRegister()
@@ -66,6 +65,12 @@ class AuthController
             $username = sanitize($_POST['username']);
             $email = sanitize($_POST['email']);
             $password = trim($_POST['password']); // Trim password
+            // Validate password
+            if (!validatePassword($password, $errors)) {
+                $_SESSION['error'] = implode('<br>', $errors);
+                header("Location: /register");
+                exit();
+            }
 
             try {
                 if ($this->userService->registerUser($username, $email, $password, 1)) {
@@ -155,5 +160,4 @@ class AuthController
 
         return $user;
     }
-
 }

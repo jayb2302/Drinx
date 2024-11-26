@@ -63,7 +63,40 @@ function redirect($path) {
 function setErrorMessage($message) {
     $_SESSION['error'] = $message;
 }
+
+function formatDate($datetime, $format = 'd.M Y H:i') {
+    try {
+        $date = new DateTime($datetime);
+        return $date->format($format);
+    } catch (Exception $e) {
+        return 'Unknown date';
+    }
+}
+
 function generateCocktailSlug($title) {
     // Replace spaces with hyphens, and convert the title to lowercase
     return strtolower(str_replace(' ', '-', $title));
+}
+
+function validatePassword($password, &$errors)
+{
+    $requirements = [];
+    if (strlen($password) < 8) {
+        $requirements[] = "at least 8 characters";
+    }
+    if (!preg_match('/[A-Z]/', $password)) {
+        $requirements[] = "one uppercase letter";
+    }
+    if (!preg_match('/[a-z]/', $password)) {
+        $requirements[] = "one lowercase letter";
+    }
+    if (!preg_match('/[0-9]/', $password)) {
+        $requirements[] = "one number";
+    }
+
+    if (!empty($requirements)) {
+        $errors[] = "Password must include: " . implode(', ', $requirements) . ".";
+    }
+
+    return empty($errors); // Return true if no errors
 }

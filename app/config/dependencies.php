@@ -55,7 +55,7 @@ $adminService = new AdminService(
 $ingredientService = new IngredientService($ingredientRepository, $unitRepository);
 $stepService = new StepService($stepRepository);
 $likeService = new LikeService($likeRepository);
-$userService = new UserService();
+$userService = new UserService($userRepository);
 $commentService = new CommentService($commentRepository, $userService);
 $cocktailService = new CocktailService(
     $cocktailRepository,
@@ -70,6 +70,17 @@ $cocktailService = new CocktailService(
 );
 
 // Controllers
+$cocktailController = new CocktailController(
+    $cocktailService,
+    $ingredientService,
+    $stepService,
+    $difficultyRepository,
+    $commentService,
+    $likeService,
+    $tagRepository,
+    $userService
+);
+
 $authController = new AuthController();
 $homeController = new HomeController(
     $cocktailService, 
@@ -81,9 +92,9 @@ $homeController = new HomeController(
     $tagRepository
 );
 
-
 $adminController = new AdminController($adminService, $authController, $cocktailService);
 $commentController = new CommentController($commentService, $cocktailService);
+$likeController = new LikeController($likeService);
 $tagController = new TagController($tagRepository);
 $ingredientController = new IngredientController($ingredientRepository, $tagRepository);
 $searchController = new SearchController($userService, $cocktailService);

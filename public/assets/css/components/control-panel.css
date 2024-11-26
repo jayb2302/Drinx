@@ -1,34 +1,29 @@
 /* Control Panel Styling */
 .controlPanel {
-    background-color: var(--nav-background);
+    background-color: var(--card-linear-gradient);
     color: var(--text-primary);
-    padding: 0 1rem;
     font-family: var(--font-body);
     & div {
-        background-color: var(--background);
+        background: var(--card-linear-gradient);
         border-radius: 10px;
     }
-}
-
-/* Profile Header with Display Name and Logout */
-.control-profile-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.display-name {
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: var(--accent-primary);
-}
-
-.logout-icon {
-    font-size: 1.2rem;
-    color: var(--accent-primary);
-    text-decoration: none;
-    cursor: pointer;
+    & .control-profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        & .display-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+        & .logout-icon {
+            font-size: 1.2rem;
+            color: var(--accent-primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+    }
 }
 
 .control-profile-info {
@@ -36,15 +31,15 @@
     margin-bottom: 1.5rem;
     background-color: var(--background);
     border-radius: 8px 8px 0 0;
-}
-
-.follow-stats  {
-    color: var(--text-primary);
-    border-radius: 10px;
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--accent-primary);
-    padding: .5rem 1rem;
+    .follow-stats  {
+        color: var(--text-primary);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: var(--accent-primary);
+        padding: .5rem 1rem;
+    }
 }
 
 .control-user-picture {
@@ -66,30 +61,6 @@
     font-size: 0.9rem;
     color: var(--text-primary);
     margin: 0;
-}
-
-/* Control Buttons */
-.control-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.button-primary {
-    background-color: var(--button-primary);
-    color: var(--button-secondary);
-    padding: 0.7rem;
-    border: none;
-    border-radius: 10px;
-    text-align: center;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-.button-primary:hover {
-    background-color: var(--button-hover);
 }
 
 .followers {
@@ -120,7 +91,6 @@
 
 .recent-activity li {
     background-color: var(--card-background-hover);
-    margin-bottom: 0.5rem;
     padding: 0.5rem;
     border-radius: 4px;
     color: var(--accent-primary);
