@@ -54,6 +54,9 @@ function sanitizeNumber($input) {
     }
     return null; 
 }
+function sanitizeTrim($input) {
+    return is_string($input) ? trim($input) : $input;
+}
 
 // Function to redirect to a given path
 function redirect($path) {
@@ -61,7 +64,7 @@ function redirect($path) {
     exit();
 }
 
-// Optional: If you want to retain error handling but manage it from AuthController, you can remove this
+//If you want to retain error handling but manage it from AuthController, you can remove this
 function setErrorMessage($message) {
     $_SESSION['error'] = $message;
 }

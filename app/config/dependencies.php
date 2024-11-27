@@ -84,7 +84,6 @@ $cocktailController = new CocktailController(
     $tagRepository,
     $userService,
     $imageService
-
 );
 
 $authController = new AuthController();
@@ -102,7 +101,6 @@ $userController = new UserController(
     $cocktailService,
     $imageService
 );
-
 
 $adminController = new AdminController($adminService, $authController, $cocktailService);
 $commentController = new CommentController($commentService, $cocktailService);

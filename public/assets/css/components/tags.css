@@ -96,7 +96,7 @@
 /* Buttons for Edit and Delete */
 .button-secondary, .button-error {
     padding: 5px 10px;
-    font-size: 0.8rem;
+    font-size: 1rem;
     border: none;
     border-radius: 3px;
     cursor: pointer;
@@ -106,10 +106,6 @@
 .button-secondary {
     background-color: var(--button-secondary);
     color: var(--text-secondary);
-}
-
-.button-secondary:hover {
-    background-color: var(--accent-hover);
 }
 
 .button-error {

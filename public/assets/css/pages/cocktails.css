@@ -16,7 +16,7 @@
   flex-direction: row-reverse;
   flex-wrap: wrap;
   align-items: flex-start; 
-  justify-content: center; /* Center the cards */
+  justify-content: center; 
   background-color: var(--background-primary);
   gap: 2rem; 
   overflow: auto;
@@ -64,16 +64,7 @@ aside .cocktailActions {
   width: 100%;
   margin: 0;
 }
-.cocktailImage {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 40dvh;
-  & img {
-    object-fit: cover;
-    object-position: center;
-  }
-}
+
 .cocktailGrid {
   height: 100%;
   display: grid;
@@ -104,6 +95,21 @@ h1 {
   position: relative;
   overflow: auto;
   padding: 0 1rem;
+
+  & .recipeHeader {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  & .recipeImage {
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+    & img {
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px 8px 0 0;
+    }
+  }
 }
 
 .recipeContent {
@@ -113,12 +119,7 @@ h1 {
   margin-bottom: 20px;
 }
 
-.recipeHeader {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-bottom: 5%;
-}
+
 
 .orderby {
   width: 100%;
@@ -140,7 +141,8 @@ a {
 }
 
 a:hover {
-  color: var(--accent-primary); 
+  color: var(--accent-primary);
+  background-color: var(--button-primary); 
 }
 
 .tag{

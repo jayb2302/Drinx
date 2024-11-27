@@ -13,7 +13,6 @@ class CocktailController
     private $userService;
     private $imageService;
 
-
     public function __construct(
         CocktailService $cocktailService,
         IngredientService $ingredientService,
@@ -34,6 +33,7 @@ class CocktailController
         $this->tagRepository = $tagRepository;
         $this->userService = $userService;
         $this->imageService = $imageService;
+
 
         // Start session if not already started
         if (session_status() === PHP_SESSION_NONE) {

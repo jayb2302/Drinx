@@ -1,39 +1,39 @@
-$(function () {
-    // Toggle Ingredient Management visibility
-    $("#toggleIngredientManagementButton").click(function () {
-        $("#ingredientManagement").slideToggle();
-    });
+// $(function () {
+//     // Toggle Ingredient Management visibility
+//     $("#toggleIngredientManagementButton").click(function () {
+//         $("#ingredientManagement").slideToggle();
+//     });
 
-    // Initialize Assign Tag Dialog
-    $("#assignTagDialog").dialog({
-        autoOpen: false,
-        modal: true,
-        buttons: {
-            "Assign Tag": handleAssignTag,
-            Cancel: function () {
-                $(this).dialog("close");
-            }
-        }
-    });
+//     // Initialize Assign Tag Dialog
+//     $("#assignTagDialog").dialog({
+//         autoOpen: false,
+//         modal: true,
+//         buttons: {
+//             "Assign Tag": handleAssignTag,
+//             Cancel: function () {
+//                 $(this).dialog("close");
+//             }
+//         }
+//     });
 
-    // Initialize Add Ingredient Modal
-    console.log("Initializing Add Ingredient Modal");
-    $("#addIngredientDialog").dialog({
-        autoOpen: false,
-        modal: true,
-        buttons: {
-            "Add Ingredient": handleAddIngredient, // Ensure this function is defined
-            Cancel: function () {
-                $(this).dialog("close");
-                $("#ingredientNameInput").val(""); // Clear input field
-            }
-        }
-    });
+//     // Initialize Add Ingredient Modal
+//     console.log("Initializing Add Ingredient Modal");
+//     $("#addIngredientDialog").dialog({
+//         autoOpen: false,
+//         modal: true,
+//         buttons: {
+//             "Add Ingredient": handleAddIngredient, // Ensure this function is defined
+//             Cancel: function () {
+//                 $(this).dialog("close");
+//                 $("#ingredientNameInput").val(""); // Clear input field
+//             }
+//         }
+//     });
 
-    // Open Add Ingredient Modal
-    $("#openAddIngredientButton").click(function () {
-        $("#addIngredientDialog").dialog("open");
-    });
+//     // Open Add Ingredient Modal
+//     $("#openAddIngredientButton").click(function () {
+//         $("#addIngredientDialog").dialog("open");
+//     });
 
     // // Handle adding a new ingredient
     // function handleAddIngredient() {
@@ -429,20 +429,20 @@ $(function () {
     //         }
     //     });
     // }
-    function updateIngredientTagInList(ingredientId, tagId) {
-        console.log('Updating ingredient tag:', ingredientId, tagId); // Debug log
-        const ingredientItem = document.querySelector(`#ingredientList li[data-ingredient-id='${ingredientId}']`);
+//     function updateIngredientTagInList(ingredientId, tagId) {
+//         console.log('Updating ingredient tag:', ingredientId, tagId); // Debug log
+//         const ingredientItem = document.querySelector(`#ingredientList li[data-ingredient-id='${ingredientId}']`);
     
-        if (ingredientItem) {
-            const tagElement = ingredientItem.querySelector("span:nth-child(2)");
-            if (tagElement) {
-                const tagName = $("#tag option:selected").text();
-                const categoryName = $("#tag option:selected").closest("optgroup").attr("label");
-                tagElement.textContent = `${tagName} (${categoryName || 'No category'})`;
-            }
-        } else {
-            console.log('Ingredient not found in the list:', ingredientId); // Debug log
-        }
-    }
+//         if (ingredientItem) {
+//             const tagElement = ingredientItem.querySelector("span:nth-child(2)");
+//             if (tagElement) {
+//                 const tagName = $("#tag option:selected").text();
+//                 const categoryName = $("#tag option:selected").closest("optgroup").attr("label");
+//                 tagElement.textContent = `${tagName} (${categoryName || 'No category'})`;
+//             }
+//         } else {
+//             console.log('Ingredient not found in the list:', ingredientId); // Debug log
+//         }
+//     }
     
-});
+// });

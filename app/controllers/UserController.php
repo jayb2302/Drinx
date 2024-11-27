@@ -5,7 +5,7 @@ class UserController
 {
     private $userService;
     private $cocktailService;
-    // private $badgeService;
+    private $badgeService;
     private $imageService;
 
     public function __construct(
@@ -206,10 +206,10 @@ class UserController
         // Check if current user is following the profile user
         $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
 
-        $userRecipes = $this->cocktailService->getUserRecipes($profileUserId);
-        // $userBadges = $this->badgeService->getUserBadges($profileUserId);
-        $profileStats = $this->userService->getUserStats($profileUserId);
-
+        $userRecipes = $this->cocktailService->getUserRecipes( $profileUserId);
+        // $userBadges = $this->badgeService->getUserBadges( $profileUserId);
+        $profileStats = $this->userService->getUserStats( $profileUserId);
+      
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
     }

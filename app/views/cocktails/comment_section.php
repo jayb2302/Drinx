@@ -2,14 +2,22 @@
     <h2 class="">Comments</h2>
     <!-- Top-level Comment Form -->
     <?php if (AuthController::isLoggedIn() && $currentUser->canComment()): ?>
-        <h3 class="commentHeading">New Comment</h3>
-        <form id="TopLevelCommentForm"
+        <div class="top-level-comment">
+            <h3 class="commentHeading">New Comment</h3>
+            <form id="TopLevelCommentForm"
             action="/cocktails/<?= $cocktail->getCocktailId() ?>-<?= urlencode($cocktail->getTitle()) ?>/comments"
             method="POST">
-            <textarea name="commentText" placeholder="Write your comment here..." required></textarea>
+            <textarea 
+            id="commentText" 
+            name="commentText" 
+            placeholder="Write your comment here..." 
+            rows="4" 
+            required
+        ></textarea>
             <input type="hidden" name="cocktailTitle" value="<?= htmlspecialchars($cocktail->getTitle()) ?>">
             <button type="submit">Submit</button>
         </form>
+        </div>
     <?php else: ?>
         <p class="loginPrompt">Please <a href="/login">log in</a> to add a comment.</p>
     <?php endif; ?>
@@ -25,7 +33,7 @@
                         <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture"
                             class="creatorPicture">
                     <?php endif; ?>
-                    
+
                     <p>
                         <strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong> <br>
                         <small><?= htmlspecialchars(formatDate($comment->getCreatedAt())) ?></small>
@@ -38,13 +46,12 @@
                                 <button type="button" class="menuItem editCommentButton"
                                     data-comment-id="<?= $comment->getCommentId() ?>">🖊️</button>
                                 <form action="/comments/<?= $comment->getCommentId() ?>/delete" method="POST">
-                                    <button type="submit" class="menuItem">🗑️</button>
+                                    <button type="submit" class="delete">🗑️</button>
                                 </form>
                             </div>
                         </div>
                     <?php else: ?>
-
-                        <?php endif; ?>
+                    <?php endif; ?>
                 </div>
                 <!-- Inline edit form (initially hidden) -->
                 <form id="editForm-<?= $comment->getCommentId() ?>" class="editCommentForm hidden"
@@ -66,7 +73,7 @@
                                 <p><strong><?= htmlspecialchars($reply->getUsername() ?? 'Unknown User') ?>:</strong></p>
                                 <p><?= htmlspecialchars($reply->getCommentText() ?? 'No reply text available') ?></p>
                                 <p class="comment-date">
-                                <small> <?= htmlspecialchars(formatDate($reply->getCreatedAt())) ?></small>
+                                  <small> <?= htmlspecialchars(formatDate($reply->getCreatedAt())) ?></small>
                                 </p>
 
                                 <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $reply->getUserId() || AuthController::isAdmin())): ?>

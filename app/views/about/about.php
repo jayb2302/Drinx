@@ -11,7 +11,10 @@
     <?php endif; ?>
     <div class="aboutContainer">
         <div class="buttonContainer">
-            <a href="#" class="randomRecipeButton">Shake it</a>
+            <a href="#" class="randomRecipeButton">🍸 Let us Shake it</a>
+        </div>
+        <div class="randomRecipe">
+            <!-- Random cocktail will appear here -->
         </div>
         <div class="randomRecipe">
             <!-- Random cocktail will appear here -->
