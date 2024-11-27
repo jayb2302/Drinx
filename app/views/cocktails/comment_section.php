@@ -27,8 +27,8 @@
                     <?php endif; ?>
                     
                     <p>
-                        <strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong>
-                        <small><?= htmlspecialchars($comment->getCreatedAt() ?? 'Unknown date') ?></small>
+                        <strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong> <br>
+                        <small><?= htmlspecialchars(formatDate($comment->getCreatedAt())) ?></small>
                     </p>
                     <!-- Dots Menu for Edit/Delete -->
                     <?php if (AuthController::isLoggedIn() && ($currentUser->canEditComment($comment->getUserId()) || AuthController::isAdmin())): ?>
@@ -65,8 +65,9 @@
                             <div class="reply">
                                 <p><strong><?= htmlspecialchars($reply->getUsername() ?? 'Unknown User') ?>:</strong></p>
                                 <p><?= htmlspecialchars($reply->getCommentText() ?? 'No reply text available') ?></p>
-                                <p class="comment-date"><small>Posted on
-                                        <?= htmlspecialchars($reply->getCreatedAt() ?? 'Unknown date') ?></small></p>
+                                <p class="comment-date">
+                                <small> <?= htmlspecialchars(formatDate($reply->getCreatedAt())) ?></small>
+                                </p>
 
                                 <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $reply->getUserId() || AuthController::isAdmin())): ?>
                                     <form action="/comments/<?= $reply->getCommentId() ?>/delete" method="POST"

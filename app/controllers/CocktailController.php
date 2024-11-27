@@ -11,49 +11,34 @@ class CocktailController
     private $likeService;
     private $tagRepository;
     private $userService;
+    private $imageService;
 
 
-    public function __construct()
-    {
+    public function __construct(
+        CocktailService $cocktailService,
+        IngredientService $ingredientService,
+        StepService $stepService,
+        DifficultyRepository $difficultyRepository,
+        CommentService $commentService,
+        LikeService $likeService,
+        TagRepository $tagRepository,
+        UserService $userService,
+        ImageService $imageService
+    ) {
+        $this->cocktailService = $cocktailService;
+        $this->ingredientService = $ingredientService;
+        $this->stepService = $stepService;
+        $this->difficultyRepository = $difficultyRepository;
+        $this->commentService = $commentService;
+        $this->likeService = $likeService;
+        $this->tagRepository = $tagRepository;
+        $this->userService = $userService;
+        $this->imageService = $imageService;
+
+        // Start session if not already started
         if (session_status() === PHP_SESSION_NONE) {
-            session_start(); // Start session if not already started
+            session_start();
         }
-
-        $db = Database::getConnection();  // Get the database connection
-
-        // Initialize repositories
-        $cocktailRepository = new CocktailRepository($db);
-        $categoryRepository = new CategoryRepository($db);
-        $ingredientRepository = new IngredientRepository($db);
-        $stepRepository = new StepRepository($db);
-        $tagRepository = new TagRepository($db);
-        $this->difficultyRepository = new DifficultyRepository($db);
-        $commentRepository = new CommentRepository($db);
-        $likeRepository = new LikeRepository($db);
-        $this->likeService = new LikeService(new LikeRepository($db));
-        $userRepository = new UserRepository($db);
-        $userService = new UserService($userRepository);
-
-        // Initialize services    
-        $unitRepository = new UnitRepository($db);
-        $this->ingredientService = new IngredientService($ingredientRepository, $unitRepository);
-        $this->stepService = new StepService($stepRepository);
-        $this->commentService = new CommentService($commentRepository, $userService);
-        $this->userService = new UserService(new UserRepository($db));
-
-
-        // Initialize the CocktailService with services and repositories
-        $this->cocktailService = new CocktailService(
-            $cocktailRepository,
-            $categoryRepository,
-            $this->ingredientService,
-            $this->stepService,
-            $tagRepository,
-            $this->difficultyRepository,
-            $likeRepository,
-            $userRepository,
-            $commentRepository
-        );
     }
 
     private function redirect($url)
@@ -123,7 +108,7 @@ class CocktailController
             $cocktailData = [
                 'user_id' => $_SESSION['user']['id'],
                 'title' => sanitize($_POST['title']),
-                'description' => sanitize($_POST['description']),
+                'description' => sanitizeTrim($_POST['description']),
                 'image' => $image,
                 'category_id' => intval($_POST['category_id']),
                 'difficulty_id' => intval($_POST['difficulty_id'])
@@ -198,7 +183,7 @@ class CocktailController
 
         $cocktailData = [
             'title' => sanitize($_POST['title']),
-            'description' => sanitize($_POST['description']),
+            'description' => sanitizeTrim($_POST['description']),
             'category_id' => intval($_POST['category_id']),
             'difficulty_id' => intval($_POST['difficulty_id']),
             'image' => $image ?: $cocktail->getImage(),
@@ -318,35 +303,35 @@ class CocktailController
     // Handle image upload for new cocktails
     private function handleImageUpload($file, &$errors)
     {
-        if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
-            // Sanitize and validate the original filename
-            $image = sanitize($file['name']);
-            $fileExtension = strtolower(pathinfo($image, PATHINFO_EXTENSION));
-
-            // Check the file extension
-            $allowedTypes = ['jpeg', 'jpg', 'png', 'webp'];
-            if (!in_array($fileExtension, $allowedTypes)) {
-                $errors[] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
-                return null; // Exit if file type is not allowed
+        try {
+            // Validate if a file is uploaded
+            if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+                throw new \Exception("No valid file uploaded.");
             }
-
-            // Generate a unique filename to avoid conflicts
-            $image = bin2hex(random_bytes(8)) . '.' . $fileExtension;
-            $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
-            $target_file = $target_dir . $image;
-
-            // Move the uploaded file to the target directory
-            if (!move_uploaded_file($file['tmp_name'], $target_file)) {
-                $errors[] = "There was an error uploading the image.";
-                return null;
-            }
-
-            // Return the unique filename for storing in the database
-            return $image;
+    
+            // Set the target directory for cocktail images
+            $targetDir = __DIR__ . '/../../public/uploads/cocktails/';
+    
+            // Generate a unique file name for the uploaded image
+            $uniqueFileName = uniqid() . '.webp';
+            $targetPath = $targetDir . $uniqueFileName;
+    
+            // Set the desired dimensions for the cocktail image
+            $width = 1280; // Example width
+            $height = 720; // Example height
+    
+            // Process the image using the ImageService
+            $this->imageService->processImage($file, $width, $height, $targetPath);
+    
+            // Return the unique file name to store in the database
+            return $uniqueFileName;
+        } catch (\Exception $e) {
+            // Capture and log any errors
+            $errors[] = "Failed to upload image: " . $e->getMessage();
+            return null;
         }
-
-        return null; // Return null if no image was uploaded
     }
+    
 
     // Handle image update for editing cocktails
     private function handleImageUpdate($file, $cocktail, &$errors)

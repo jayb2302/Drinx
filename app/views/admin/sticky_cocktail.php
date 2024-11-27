@@ -9,6 +9,7 @@ $stickyCocktail = $cocktailService->getStickyCocktail();
 if ($stickyCocktail) {
     $cocktailId = htmlspecialchars($stickyCocktail->getCocktailId());
     $cocktailTitle = urlencode($stickyCocktail->getTitle());
+    
     $cocktailLink = "/cocktails/{$cocktailId}-{$cocktailTitle}";
 
     echo json_encode([

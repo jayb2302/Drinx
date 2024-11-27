@@ -33,6 +33,8 @@ class CocktailRepository
             $tags,
             $data['like_count'] ?? 0,
             $data['difficulty_name'] ?? null,
+            $data['created_at'] ?? null, 
+        $data['updated_at'] ?? null 
         );
     }
 

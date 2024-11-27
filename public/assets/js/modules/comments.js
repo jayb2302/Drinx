@@ -1,4 +1,3 @@
-///// Comments
 export function initializeComments() {
     const commentsSection = document.querySelector('.commentsSection');
 
@@ -53,7 +52,7 @@ export function initializeComments() {
         const target = event.target;
 
         // Handle delete comment/reply
-        if (target.matches('.menuItem') && target.textContent.includes('🗑️')) {
+        if (target.matches('.delete') && target.textContent.includes('🗑️')) {
             event.preventDefault();
             const form = target.closest('form');
             if (!form) {

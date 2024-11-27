@@ -43,7 +43,9 @@ function asset($path) {
 function sanitize($input) {
     return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
-
+function sanitizeTrim($input) {
+    return is_string($input) ? trim($input) : $input;
+}
 // Function to validate and sanitize numeric input
 function sanitizeNumber($input) {
     if (is_numeric($input)) {
@@ -63,7 +65,40 @@ function redirect($path) {
 function setErrorMessage($message) {
     $_SESSION['error'] = $message;
 }
+
+function formatDate($datetime, $format = 'd.M Y H:i') {
+    try {
+        $date = new DateTime($datetime);
+        return $date->format($format);
+    } catch (Exception $e) {
+        return 'Unknown date';
+    }
+}
+
 function generateCocktailSlug($title) {
     // Replace spaces with hyphens, and convert the title to lowercase
     return strtolower(str_replace(' ', '-', $title));
+}
+
+function validatePassword($password, &$errors)
+{
+    $requirements = [];
+    if (strlen($password) < 8) {
+        $requirements[] = "at least 8 characters";
+    }
+    if (!preg_match('/[A-Z]/', $password)) {
+        $requirements[] = "one uppercase letter";
+    }
+    if (!preg_match('/[a-z]/', $password)) {
+        $requirements[] = "one lowercase letter";
+    }
+    if (!preg_match('/[0-9]/', $password)) {
+        $requirements[] = "one number";
+    }
+
+    if (!empty($requirements)) {
+        $errors[] = "Password must include: " . implode(', ', $requirements) . ".";
+    }
+
+    return empty($errors); // Return true if no errors
 }

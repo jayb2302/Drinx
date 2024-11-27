@@ -14,7 +14,9 @@ class Cocktail
     private $steps = [];
     private $tags = [];
     private $likeCount = 0;
-    private $difficulty_name; 
+    private $difficulty_name;
+    private $createdAt; 
+    private $updatedAt;
 
     public $commentCount = 0;
     public $comments = [];
@@ -33,7 +35,9 @@ class Cocktail
         array $steps = [], 
         array $tags = [], 
         $likeCount = 0,
-        $difficulty_name = null
+        $difficulty_name = null,
+        $createdAt = null,
+        $updatedAt = null 
     ) {
         $this->cocktail_id = $cocktail_id;
         $this->user_id = $user_id;
@@ -48,6 +52,8 @@ class Cocktail
         $this->tags = $tags; 
         $this->likeCount = $likeCount; 
         $this->difficulty_name = $difficulty_name;
+        $this->createdAt = $createdAt; 
+        $this->updatedAt = $updatedAt;
     }
     // Getter and setter for user_id
     public function getUserId()
@@ -64,6 +70,16 @@ class Cocktail
     public function getCocktailId()
     {
         return $this->cocktail_id;
+    }
+    
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 
     public function getTitle()

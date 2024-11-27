@@ -25,10 +25,10 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $totalLikes = $this->cocktailService->getLikesForCocktail($cocktail->getCocktailId());
 
         // Get comment count
-        $commentCount = $cocktail->getCommentCount(); // Fetch the comment count from the object
+        $commentCount = $cocktail->getCommentCount();
 
         // Get top-level comments
-        $comments = $cocktail->getComments(); // Fetch the comments fr
+        $comments = $cocktail->getComments();
 
         // Creator Info
         $creator = $this->userService->getUserWithProfile($cocktailUserId);
@@ -42,8 +42,8 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
             <article class="cocktailCard">
                 <!-- User Info Section -->
                 <div class="creatorInfo">
-                    <img src="/uploads/users/<?= htmlspecialchars($creatorPicture) ?>" alt="<?= htmlspecialchars($creatorName) ?>'s Profile Picture" class="creatorPicture">
                     <a href="/profile/<?= urlencode($creatorName) ?>" title="View <?= htmlspecialchars($creatorName) ?>'s profile">
+                        <img src="/uploads/users/<?= htmlspecialchars($creatorPicture) ?>" alt="<?= htmlspecialchars($creatorName) ?>'s Profile Picture" class="creatorPicture">
                         @<?= htmlspecialchars($creatorName) ?>
                     </a>
                 </div>
@@ -84,27 +84,30 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                         <p>Please log in to like this cocktail.</p>
                         <button onclick="closeLoginPopup()">Close</button>
                     </div>
-
                 </div>
-
-                <!-- Cocktail Image and Title -->
-                <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
-                    <img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= $cocktailTitle ?>" class="cocktailImage">
-                    <div class="cocktailInfo">
-                        <h3><?= ucwords(strtolower($cocktailTitle)) ?> <?= $totalLikes ?>♥️ </h3>
-                    </div>
-                </a>
                 <div class="orderby">
                     <?php foreach ($tags ?? [] as $tag): ?>
                         <span class="tag"><?= htmlspecialchars($tag['name']) ?></span>
                     <?php endforeach; ?>
                 </div>
+                <!-- Cocktail Image and Title -->
+                <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
+                    <img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= $cocktailTitle ?>" class="cocktailImage">
+                    <div class="cocktailTitle">
+                        <h3><?= ucwords(strtolower($cocktailTitle)) ?></h3>
+                    </div>
+                </a>
+                <div class="cocktailMeta">
+                    <span><?= $totalLikes ?>♥️ <?= $cocktail->commentCount ?> 💬</span>
+                    <span><?= formatDate($cocktail->getCreatedAt() ?? 'Unknown date') ?> 📅</span>
+                </div>
+
+                <p><?= htmlspecialchars($cocktail->getDescription()) ?></p>
 
                 <!-- Comment Count and Recent Comments -->
                 <div class="commentSection">
                     <?php if ($cocktail->commentCount > 0): ?>
                         <div class="recentComments">
-                            <p class="commentCount"> <?= $cocktail->commentCount ?> comments</p>
                             <ul>
                                 <?php foreach ($cocktail->comments as $comment): ?>
                                     <li class="commentBox">
@@ -120,7 +123,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                                                 <!-- Display the username of the comment creator -->
                                                 <p><strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong></p>
 
-                                                <!-- Optionally add dots menu for edit/delete if user is logged in and is the comment creator or an admin -->
+                                                <!-- Menu for edit/delete if user is logged in and is the comment creator or an admin -->
                                                 <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $comment->getUserId() || AuthController::isAdmin())): ?>
                                                     <div class="dotsMenu">
                                                         <button class="dotsButton">⋮</button>
@@ -138,14 +141,16 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                                             <p><?= htmlspecialchars($comment->getCommentText() ?? 'No comment text available') ?></p>
 
                                             <!-- Display the comment creation date -->
-                                            <p class="commentDate"><small><?= htmlspecialchars($comment->getCreatedAt() ?? 'Unknown date') ?></small></p>
+                                            <p class="commentDate">
+                                                <small><?= htmlspecialchars($comment->getCreatedAt() ?? 'Unknown date') ?></small>
+                                            </p>
                                         </div>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
                     <?php else: ?>
-                        <p class="commentCount">No comments yet.</p>
+
                     <?php endif; ?>
                 </div>
             </article>

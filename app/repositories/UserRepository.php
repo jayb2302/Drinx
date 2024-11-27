@@ -44,7 +44,7 @@ class UserRepository
             ORDER BY recipe_count DESC
             LIMIT 1
         ";
-    
+
         $result = $this->db->query($query)->fetch(PDO::FETCH_ASSOC);
         if ($result) {
             $user = new User();
@@ -54,7 +54,7 @@ class UserRepository
             $user->setRecipeCount($result['recipe_count']);
             return $user;
         }
-    
+
         return null; // No top creator found
     }
 
@@ -193,18 +193,35 @@ class UserRepository
     // Update profile information
     public function updateProfile($userId, $firstName, $lastName, $bio, $profilePicture)
     {
-        $stmt = $this->db->prepare("
-            UPDATE user_profile 
-            SET first_name = :first_name, last_name = :last_name, bio = :bio, profile_picture = :profile_picture 
-            WHERE user_id = :user_id
-        ");
+        $query = "
+        UPDATE user_profile 
+        SET first_name = :first_name, 
+            last_name = :last_name, 
+            bio = :bio";
+
+        // Append profile_picture only if it's provided
+        if ($profilePicture !== null) {
+            $query .= ", profile_picture = :profile_picture";
+        }
+
+        $query .= " WHERE user_id = :user_id";
+
+        $stmt = $this->db->prepare($query);
+
+        // Bind required parameters
         $stmt->bindParam(':first_name', $firstName);
         $stmt->bindParam(':last_name', $lastName);
         $stmt->bindParam(':bio', $bio);
-        $stmt->bindParam(':profile_picture', $profilePicture);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+
+        // Bind profile_picture only if it's provided
+        if ($profilePicture !== null) {
+            $stmt->bindParam(':profile_picture', $profilePicture);
+        }
+
         return $stmt->execute();
     }
+
     // Helper function to map DB result to User object
     private function mapToUser($result)
     {
@@ -264,7 +281,8 @@ class UserRepository
         }
         return null;
     }
-    public function searchUsers($query) {
+    public function searchUsers($query)
+    {
         $stmt = $this->db->prepare("
             SELECT u.user_id, u.username, 
                    COALESCE(p.profile_picture, 'user-default.svg') AS profile_picture
@@ -276,7 +294,8 @@ class UserRepository
         $stmt->execute(['query' => '%' . $query . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return users as an associative array
     }
-    public function searchAllUsers($query = null) {
+    public function searchAllUsers($query = null)
+    {
         $sql = "
             SELECT u.user_id, u.username, u.email, u.account_status_id,
                    CASE 
@@ -289,17 +308,17 @@ class UserRepository
             FROM users u
             LEFT JOIN user_profile p ON u.user_id = p.user_id
         ";
-        
+
         // Add filtering if a query is provided
         if ($query) {
             $sql .= " WHERE u.username LIKE :query";
         }
-    
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($query ? ['query' => "%$query%"] : []);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     // Method to follow a user
     public function followUser($userId, $followedUserId)
     {
@@ -334,7 +353,7 @@ class UserRepository
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM follows WHERE user_id = :user_id");
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
-        return (int)$stmt->fetchColumn();
+        return (int) $stmt->fetchColumn();
     }
 
     // Count the number of followers a user has
@@ -343,7 +362,7 @@ class UserRepository
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM follows WHERE followed_user_id = :user_id");
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
-        return (int)$stmt->fetchColumn();
+        return (int) $stmt->fetchColumn();
     }
 
     // Update a user's account status

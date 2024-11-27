@@ -1,50 +1,66 @@
-.content-wrapper {
+.container {
     display: flex;
     flex-direction: row;
-    padding: .5 .1rem;
+    padding: 0;
+    width: 100%;
+    height: calc(100vh - 5rem);
     @media screen and (max-width: 768px) {
         flex-direction: column;
-        
     }
-}
-
-main {
-    width: clamp(90vw, 90%, 80vw);
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    gap: 20px;
-    border-radius: 10px;
-    @media screen and (max-width: 768px) {
-        width: 100%;
+    & .container__main {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        border-radius: 10px;
+        justify-content: center;
+        @media screen and (max-width: 768px) {
+            width: 100%;
+        }
     }
-}
-
-aside {
-    width: clamp(30vw, 10%, 90vw);
-    color: var(--text-secondary);
-    @media screen and (max-width: 768px) {
-        width: 95%;
+    & .container__left {
+        display: flex;
+        flex-direction: column;
+        background: var(--card-radial-gradient);
+        color: var(--text-secondary);
+        min-width: 20dvw;
+        padding: 0 1rem;
+        max-height: 95dvh;
+        gap: 1rem;
+        @media screen and (max-width: 768px) {
+            width: 100%;
+        }
     }
-}
-
-.leftSidebar {
-    background-color: var(--nav-background);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 0 1rem;
+    & .container__right{
+        min-width: 20dvw;
+        max-height: 95dvh;
+        background: var(--card-radial-gradient);    
+        color: var(--text-secondary);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 0 1rem;
+    }
 }
 
 .category-sidebar {
-    background-color: var(--background);
+    background: var(--card-radial-gradient);
     padding: .5rem 1rem;
     color: var(--text-primary);
     border-radius: 10px;
-    margin-bottom: 1rem;
+    padding-bottom: 1.5rem;
+    & h3 {
+        color: var(--accent-primary);
+        letter-spacing: .2rem;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
     & a {
         color: var(--text-primary);
+        background: var(--lcard-linear-gradient);
+        display: inline-block;
         padding-left: .5rem;
+        width: calc(100% - .5rem);
+        font-size: 1.1rem;
     }
     & a:hover {
         color: var(--accent-primary);
@@ -62,12 +78,6 @@ aside {
     & a {
         padding: .2rem .5rem;
     }
-}
-
-aside h3 {
-    color: var(--accent-primary);
-    letter-spacing: .2rem;
-    font-size: 1.5rem;
 }
 
 .sidebar {
