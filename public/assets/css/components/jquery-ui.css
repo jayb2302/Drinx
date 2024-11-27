@@ -6,7 +6,7 @@ body .ui-dialog {
     width: 100%;
 }
 body label {
-    color: var(--text-secondary); 
+    color: var(--text-primary); 
     font-size: 1rem;            
 }
 

@@ -1,5 +1,5 @@
-<?php 
-$page='profile';
+<?php
+$page = 'profile';
 include_once __DIR__ . '/../layout/header.php'; ?>
 <?php
 // Display any error messages (optional)
@@ -30,13 +30,13 @@ if (isset($_SESSION['success'])) {
     <div class="profile-picture">
         <?php if ($profile->getProfilePicture()): ?>
             <img class="" src="<?= asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>"
-            alt="Profile picture of <?= htmlspecialchars($profile->getUsername()); ?>" class="profile-img">
+                alt="Profile picture of <?= htmlspecialchars($profile->getUsername()); ?>" class="profile-img">
         <?php else: ?>
             <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture" class="profile-img">
         <?php endif; ?>
         <h2>
             <?= htmlspecialchars($profile->getFirstName() ?? 'No First Name') . ' ' . htmlspecialchars($profile->getLastName() ?? 'No Last Name'); ?>
-        </h2>        
+        </h2>
         <p>@ <?= htmlspecialchars($profile->getUsername() ?? 'Unknown'); ?></p>
     </div>
 
@@ -44,98 +44,105 @@ if (isset($_SESSION['success'])) {
     <div class="profile-info">
         <p class="bio"><?= htmlspecialchars($profile->getBio() ?? 'This user has not set a bio yet.'); ?></p>
         <!-- User's Badges Section -->
-<div class="profile-badges">
-    <h3>Achievements</h3>
-    <?php if (!empty($userBadges)): ?>
-        <div class="badge-grid">
-            <?php foreach ($userBadges as $badge): ?>
-                <div class="badge-card">
-                    <img src="<?= asset('uploads/badges/' . htmlspecialchars($badge['badge_image'])); ?>"
-                        alt="<?= htmlspecialchars($badge['badge_name']); ?>" class="badge-img">
-                    <p><?= htmlspecialchars($badge['badge_name']); ?></p>
+        <div class="profile-badges">
+            <h3>Achievements</h3>
+            <?php if (!empty($userBadges)): ?>
+                <div class="badge-grid">
+                    <?php foreach ($userBadges as $badge): ?>
+                        <div class="badge-card">
+                            <img src="<?= asset('uploads/badges/' . htmlspecialchars($badge['badge_image'])); ?>"
+                                alt="<?= htmlspecialchars($badge['badge_name']); ?>" class="badge-img">
+                            <p><?= htmlspecialchars($badge['badge_name']); ?></p>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
+            <?php else: ?>
+                <p>No badges earned yet.</p>
+            <?php endif; ?>
         </div>
-    <?php else: ?>
-        <p>No badges earned yet.</p>
-    <?php endif; ?>
-</div>
 
-<!-- Social Profile Statistics (Optional) -->
-<div class="profile-stats">
-    <h3>Statistics</h3>
-    <ul>
-        <li>Total Recipes: <?= count($userRecipes); ?></li>
-        <li>Likes Received: <?= $profileStats['likes_received'] ?? 0; ?></li>
-        <li>Comments Received: <?= $profileStats['comments_received'] ?? 0; ?></li>
-    </ul>
-</div>
+        <!-- Social Profile Statistics (Optional) -->
+        <div class="profile-stats">
+            <h3>Statistics</h3>
+            <ul>
+                <li>Total Recipes: <?= count($userRecipes); ?></li>
+                <li>Likes Received: <?= $profileStats['likes_received'] ?? 0; ?></li>
+                <li>Comments Received: <?= $profileStats['comments_received'] ?? 0; ?></li>
+            </ul>
+        </div>
     </div>
+    <!-- Edit-Delete Section -->
+    <div class="edit-delete">
+        <!-- Edit Profile Button - Only show if user is viewing their own profile -->
+        <?php if ($userId === $profileUserId): ?>
+            <a id="edit-profile-button" class="button-secondary">
+                <span>
+                Edit Profile
+                </span>
+            </a>
 
-    <!-- Edit Profile Button - Only show if user is viewing their own profile -->
-    <?php if ($userId === $profileUserId): ?>
-        <a id="edit-profile-button" class="btn btn-primary" >Edit Profile</a>
 
-        <!-- Profile Edit Form - Only show if user is viewing their own profile -->
-        <div id="edit-profile-form" style="display:none;">
-            <?php include __DIR__ . '/form.php'; ?>
+            <!-- Profile Edit Form - Only show if user is viewing their own profile -->
+            <div id="edit-profile-form" style="display:none;">
+                <?php include __DIR__ . '/form.php'; ?>
+            </div>
+        <?php endif; ?>
+        <div class="delete-account-section">
+            <button id="deleteAccountButton" class="button-secondary">Delete Account</button>
+
+            <div id="deleteConfirmSection" style="display:none;">
+                <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
+
+                <form action="/profile/delete" method="POST">
+                    <label for="password">Confirm Password:</label>
+                    <input type="password" name="password" required>
+                    <button type="submit" class="confirm-delete">Confirm Deletion</button>
+                </form>
+
+                <!-- Display any error messages related to deletion -->
+                <?php if (isset($_SESSION['error'])): ?>
+                    <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); ?></div>
+                    <?php unset($_SESSION['error']); ?>
+                <?php endif; ?>
+            </div>
         </div>
-    <?php endif; ?>
 
-
+    </div>
 </div>
 <!-- Recipe Section -->
 <div class="user-recipes">
-        <h3>My Recipes</h3>
-        <?php if (!empty($userRecipes)): ?>
-            <div class="recipe-container">
-                <?php foreach ($userRecipes as $recipe): ?>
-                    <article class="recipe-card">
-                        <!-- Show the Edit button if the logged-in user is the owner of the recipe -->
-                        <?php if (isset($loggedInUserId) && $loggedInUserId === $recipe->getUserId()): ?>
-                            <button>
-                                <a href="/?action=edit&cocktail_id=<?= htmlspecialchars($recipe->getCocktailId()) ?>"
-                                    class="text-blue-500 hover:underline">Edit Cocktail</a>
-                            </button>
-                        <?php endif; ?>
+    <h3>My Recipes</h3>
+    <?php if (!empty($userRecipes)): ?>
+        <div class="recipe-container">
+            <?php foreach ($userRecipes as $recipe): ?>
+                <article class="recipe-card">
+                    <!-- Show the Edit button if the logged-in user is the owner of the recipe -->
+                    <?php if (isset($loggedInUserId) && $loggedInUserId === $recipe->getUserId()): ?>
+                        <button>
+                            <a href="/?action=edit&cocktail_id=<?= htmlspecialchars($recipe->getCocktailId()) ?>"
+                                class="text-blue-500 hover:underline">Edit Cocktail</a>
+                        </button>
+                    <?php endif; ?>
 
 
-                        <a href="/cocktails/<?= htmlspecialchars($recipe->getCocktailId() ?? '0') ?>-<?= urlencode($recipe->getTitle() ?? 'Untitled Cocktail') ?>">
-                            <img src="<?= asset('/../uploads/cocktails/' . htmlspecialchars($recipe->getImage() ?? 'default-image.svg')); ?>"
-                                alt="<?= htmlspecialchars($recipe->getTitle() ?? 'Cocktail Image') ?>" class="cocktailImage">
-                        </a>
+                    <a href="/cocktails/<?= htmlspecialchars($recipe->getCocktailId() ?? '0') ?>-<?= urlencode($recipe->getTitle() ?? 'Untitled Cocktail') ?>">
+                        <img src="<?= asset('/../uploads/cocktails/' . htmlspecialchars($recipe->getImage() ?? 'default-image.svg')); ?>"
+                            alt="<?= htmlspecialchars($recipe->getTitle() ?? 'Cocktail Image') ?>" class="cocktailImage">
+                    </a>
 
-                        <!-- Cocktail Info -->
-                        <div class="cocktailInfo">
-                            <h3><?= htmlspecialchars($recipe->getTitle()); ?></h3>
-                        </div>
-                    </article>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <p>No recipes uploaded yet.</p>
-        <?php endif; ?>
-    </div>
-<!-- Delete Account Button -->
- <?php if ($userId === $profileUserId):?>
-<div class="delete-account-section">
-    <button id="deleteAccountButton">Delete Account</button>
-
-    <div id="deleteConfirmSection" style="display:none;">
-        <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
-
-        <form action="/profile/delete" method="POST">
-            <label for="password">Confirm Password:</label>
-            <input type="password" name="password" required>
-            <button type="submit" class="confirm-delete">Confirm Deletion</button>
-        </form>
-
-        <!-- Display any error messages related to deletion -->
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); ?></div>
-            <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
-    </div>
+                    <!-- Cocktail Info -->
+                    <div class="cocktailInfo">
+                        <h3><?= htmlspecialchars($recipe->getTitle()); ?></h3>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p>No recipes uploaded yet.</p>
+    <?php endif; ?>
 </div>
+<!-- Delete Account Button -->
+<?php if ($userId === $profileUserId): ?>
+
 <?php endif; ?>
 <?php include_once __DIR__ . '/../layout/footer.php'; ?>

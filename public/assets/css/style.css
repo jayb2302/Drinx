@@ -55,6 +55,8 @@
   --card-linear-gradient: linear-gradient(347deg, rgba(242,242,242,1) 0%, rgba(224,224,224,1) 70%);
   --lcard-linear-gradient: linear-gradient(347deg, rgba(224,224,224,1) 0%, rgba(242,242,242,1) 70%);
   
+  --base-padding: 1rem; 
+  --border-radius: clamp(0.5rem, calc(var(--base-padding) * 0.5), 1rem);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -112,7 +114,7 @@ h6 {
 }
 
 input {
-  background-color: var(--button-primary-transparent);
+  background-color: var(--surface);
 }
 
 a {

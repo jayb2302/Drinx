@@ -9,28 +9,51 @@
         padding: 0.5rem 1rem;
         border-radius: 10px;
     }
+    & .edit-delete {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
 }
 .user-recipes {
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
     justify-content: center;
-    margin: 0 2rem ;
+    margin: 0;
     padding: 1rem;
     border-radius: 1rem;
     background-color: var(--accent-primary);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: auto;
-    margin-bottom: 10%;
+    white-space: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    scroll-behavior: smooth;
     & .recipe-container {
         display: flex;
         flex-direction: row;
-        align-items: center;
+        justify-content: flex-start;
         gap: 1rem;
         justify-content: space-evenly;
         border-radius: 1rem;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: auto;
+        white-space: nowrap;
+        scroll-behavior: smooth;
+        overflow: hidden;
+        & .recipe-card {
+            flex: 0 0 auto;
+            width: 20vw;
+            max-width: 300px;
+            background-color: var(--card-background);
+            padding: 0.5rem;
+            border-radius: .5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            & img {
+                width: 100%;
+                aspect-ratio: 4/3;
+            }
+        }
     }
 }
 

@@ -3,6 +3,7 @@
     background-color: var(--card-linear-gradient);
     color: var(--text-primary);
     font-family: var(--font-body);
+    padding: var(--base-padding);
     & div {
         background: var(--card-linear-gradient);
         border-radius: 10px;

@@ -75,7 +75,7 @@
             <?php if (AuthController::isLoggedIn() && $currentUser->canAddCocktail($currentUser->getId())): ?>
                     <a href="/cocktails/add" class="button-secondary">
                         <span>
-                            Share Cocktail
+                            Share New Cocktail
                         </span>
                     </a>
             <?php endif; ?>

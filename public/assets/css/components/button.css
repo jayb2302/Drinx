@@ -25,6 +25,7 @@ button {
         font-size: 1.2rem;
         & :hover {
             background-color: var(--card-background);
+            color: var(--text-primary);
         }
     }
     &  .delete {
@@ -46,7 +47,7 @@ button {
     & .button-secondary {
         display: inline-block;
         align-items: stretch;
-        padding: 10px 15px;
+        padding: var(--base-padding);
         border: 1px solid var(--border);
         border-radius: 10px;
         cursor: pointer;
@@ -103,16 +104,16 @@ button {
 
 .randomRecipeButton {
     width: 100%;
-    padding: 0.8rem 1.5rem;
+    padding: .5rem;
     background-color: var(--accent-primary);
-    color: var(--background);
+    color: var(--text-primary);
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     font-size: 1rem;
     border: none;
     border-radius: 0.3rem;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
-    font-family: var(--font-body);
+    font-family: var(--font-display);
     font-weight: bold;
 }
 

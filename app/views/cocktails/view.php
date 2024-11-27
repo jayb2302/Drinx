@@ -37,6 +37,7 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
 
         <div class="recipeContainer">
             <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
+            <!-- Creator Info -->
             <div class="creatorInfo">
                 <?php if ($creator->getProfilePicture()): ?>
                     <img class="creatorPicture"
@@ -51,12 +52,14 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
                 </a>
                 </p>
             </div>
-
+            
+            <!-- Tags -->
             <div class="orderby">
                 <p class="tag font-semibold"><?= htmlspecialchars($category['name'] ?? 'Unknown') ?></p>
             </div>
 
-            <div class="cocktailImage">
+            <!-- Image -->
+            <div class="recipeImage">
                 <?php if ($cocktail->getImage()): ?>
                     <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>"
                         alt="<?= htmlspecialchars($cocktail->getTitle()) ?>" class="mb-4 cocktailImage">
@@ -83,8 +86,8 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
                 <?php endif; ?>
                 <!-- Display the like count -->
             </div>
+
             <!-- Cocktail Details -->
-            <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
             <div class="orderby">
                 <?php foreach ($tags ?? [] as $tag): ?>
                     <span class="tag"><?= htmlspecialchars($tag['name']) ?></span>
@@ -92,16 +95,18 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
             </div>
             <p><strong>Difficulty:</strong> <?= htmlspecialchars($cocktail->getDifficultyName() ?? 'Not specified') ?>
             </p>
-            <p><?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?></p>
-
-            <h2 class="text-2xl font-semibold mt-6 mb-2">Ingredients</h2>
+            <p>
+                <?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?>
+            </p>
+            <!-- Ingredients -->
+            <h2 class="">Ingredients</h2>
             <ul class="list-disc ml-5">
                 <?php if (!empty($processedIngredients)): ?>
                     <?php foreach ($processedIngredients as $ingredient): ?>
                         <li>
-                            <?= htmlspecialchars($ingredient['name']) ?>:
                             <?= htmlspecialchars($ingredient['quantity']) ?>
                             <?= htmlspecialchars($ingredient['unit']) ?>
+                            <?= htmlspecialchars($ingredient['name']) ?>:
                         </li>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -109,7 +114,8 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
                 <?php endif; ?>
             </ul>
 
-            <h2 class="text-2xl font-semibold mt-6 mb-2">Preparation Steps</h2>
+            <!-- Preparation Steps -->
+            <h2 class="">Preparation Steps</h2>
             <ol class="list-decimal ml-5">
                 <?php if (!empty($steps)): ?>
                     <?php foreach ($steps as $step): ?>
@@ -122,7 +128,7 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
         </div>
     </main>
 
-    <aside class="container__right">
+    <aside class="container__comments">
         <div class="cocktailActions">
             <?php if (AuthController::isLoggedIn() && ($currentUser->canEditCocktail($cocktail->getUserId()) || AuthController::isAdmin())): ?>
                 <button id="editCocktailButton" class="primary"> 🖊️ </button>

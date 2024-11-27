@@ -11,10 +11,12 @@ import { initializeCocktail } from './modules/cocktail.js';
 import { initializeIngredients } from './modules/ingredients.js';
 import { initializeTags } from './modules/tags.js';
 import { initializeUserManagement } from './modules/user-management.js';
+import { initializeSidebars } from './modules/sidebars.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     const pageType = window.pageType || document.querySelector('meta[name="page-type"]')?.content;
 
+    initializeSidebars();
     initializeSearch();
     switch (pageType) {
         case 'home':

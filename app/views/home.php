@@ -1,7 +1,7 @@
 <?php
 $metaTitle = "Drinx - Cocktail Library";
 $pageTitle = "Drip, Drop, Drinx";
-$page="home";
+$page = "home";
 
 include __DIR__ . '/layout/header.php';
 
@@ -30,7 +30,8 @@ $cocktailId = $matches[1] ?? null;
     <?php endforeach; ?>
 <?php endif; ?>
 <div class="container">
-<aside class="container__left">
+    <aside class="container__left">
+        <button id="toggle-left" class="toggle-button" aria-expanded="true">◀</button>
         <?php include __DIR__ . '/cocktails/categories.php'; ?>
         <?php if (isset($stickyCocktail) && is_object($stickyCocktail)): ?>
             <div class="stickyContainer">
@@ -80,11 +81,13 @@ $cocktailId = $matches[1] ?? null;
         ?>
     </main>
     <nav class="container__right">
+    <button id="toggle-right" class="toggle-button" aria-expanded="true">▶</button>
+
         <?php
         $userProfile = $userProfile ?? null;
         include __DIR__ . '/layout/control_panel.php'; ?>
         <?php
-            include __DIR__ . '/about/about.php';
+        include __DIR__ . '/about/about.php';
         ?>
     </nav>
 </div>
