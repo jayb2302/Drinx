@@ -16,5 +16,8 @@
         <div class="randomRecipe">
             <!-- Random cocktail will appear here -->
         </div>
+        <div class="randomRecipe">
+            <!-- Random cocktail will appear here -->
+        </div>
     </div>
 </section>

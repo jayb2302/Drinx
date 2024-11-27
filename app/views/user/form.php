@@ -21,10 +21,10 @@
         <div class="form-group">
             <label for="profile_picture">Profile Picture</label>
             <input type="file" name="profile_picture" id="profile_picture">
-            <?php if ($profile->getProfilePicture()): ?>
-                <img src="<?= asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>"
-                    alt="Profile picture of <?= htmlspecialchars($profile->getUsername()); ?>"
-                    width="100"> <?php endif; ?>
+            <span id="file-error" style="color: red; display: none;"></span>
+            <img id="image-preview" src="<?= $profile->getProfilePicture() ? asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())) : ''; ?>"
+                 alt="Profile Picture Preview"
+                 style="display: <?= $profile->getProfilePicture() ? 'block' : 'none'; ?>; width: 100px;">
         </div>
         <button type="submit" class="btn btn-success">Save Changes</button>
     </form>

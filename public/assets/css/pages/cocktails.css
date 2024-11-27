@@ -95,6 +95,7 @@ h1 {
   position: relative;
   overflow: auto;
   padding: 0 1rem;
+
   & .recipeHeader {
     display: flex;
     flex-direction: column;

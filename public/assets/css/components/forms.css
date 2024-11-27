@@ -1,8 +1,67 @@
-/* General Reset for Box Sizing */
 *,
 *::before,
 *::after {
     box-sizing: border-box;
+
+/* Form container styling */
+form {
+  display: flex;
+  flex-direction: column;
+  padding: .2 rem .5rem;
+  background-color: var(--card-background);
+}
+.form-container {
+  background-color: var(--background);
+  color: var(--text-primary);
+  padding: 0 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-body);
+  margin: auto;
+}
+
+/* Form heading */
+.form-container h2 {
+  color: var(--accent-primary);
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  text-align: start;
+  margin-bottom: 1rem;
+}
+
+/* Form group styling */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+/* Labels */
+.form-group label {
+  display: block;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+textarea {
+  background-color: var(--card-background);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  resize: none;
+  width: 100%;
+}
+
+/* Input fields and textareas */
+input[type="text"],
+input[type="number"],
+select {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background-color: var(--surface);
+  margin-bottom: 1rem;
+  transition: border-color 0.2s ease;
 }
 
 /* General Form Styling */

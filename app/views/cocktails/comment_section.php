@@ -73,7 +73,7 @@
                                 <p><strong><?= htmlspecialchars($reply->getUsername() ?? 'Unknown User') ?>:</strong></p>
                                 <p><?= htmlspecialchars($reply->getCommentText() ?? 'No reply text available') ?></p>
                                 <p class="comment-date">
-                                    <small> <?= htmlspecialchars(formatDate($reply->getCreatedAt())) ?></small>
+                                  <small> <?= htmlspecialchars(formatDate($reply->getCreatedAt())) ?></small>
                                 </p>
 
                                 <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $reply->getUserId() || AuthController::isAdmin())): ?>

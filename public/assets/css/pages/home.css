@@ -102,7 +102,7 @@
 
 .category-sidebar {
     background: var(--card-radial-gradient);
-    padding: 0.5rem 1rem;
+    padding: .5rem 1rem;
     color: var(--text-primary);
     border-radius: 10px;
     padding-bottom: 1.5rem;
@@ -116,8 +116,8 @@
         color: var(--text-primary);
         background: var(--lcard-linear-gradient);
         display: inline-block;
-        padding-left: 0.5rem;
-        width: calc(100% - 0.5rem);
+        padding-left: .5rem;
+        width: calc(100% - .5rem);
         font-size: 1.1rem;
     }
     & a:hover {

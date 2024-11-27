@@ -6,44 +6,18 @@ class UserController
     private $userService;
     private $cocktailService;
     private $badgeService;
+    private $imageService;
 
-    public function __construct()
-    {
-        $dbConnection = Database::getConnection(); // Assuming you have a method to get DB connection
-
-        // Initialize repositories
-        $cocktailRepository = new CocktailRepository($dbConnection);
-        $categoryRepository = new CategoryRepository($dbConnection);
-        $ingredientRepository = new IngredientRepository($dbConnection);
-        $stepRepository = new StepRepository($dbConnection);
-        $tagRepository = new TagRepository($dbConnection);
-        $difficultyRepository = new DifficultyRepository($dbConnection);
-        $unitRepository = new UnitRepository($dbConnection);  // Instantiate UnitRepository
-        $likeRepository = new LikeRepository($dbConnection);
-        $userRepository = new UserRepository($dbConnection);
-        $commentRepository = new CommentRepository($dbConnection);  // Instantiate CommentRepository
-
-
-        // Initialize services
-        $ingredientService = new IngredientService($ingredientRepository, $unitRepository);  // Use service instead of repository
-        $stepService = new StepService($stepRepository);  // Use service instead of repository
-
-        // Pass repositories and services into CocktailService
-        $this->cocktailService = new CocktailService(
-            $cocktailRepository,
-            $categoryRepository,
-            $ingredientService,   // Pass IngredientService
-            $stepService,         // Pass StepService
-            $tagRepository,
-            $difficultyRepository,
-            $likeRepository,
-            $userRepository,
-            $commentRepository
-
-        );
-
-        $this->userService = new UserService();
-        // $this->badgeService = new BadgeService();
+    public function __construct(
+        UserService $userService,
+        CocktailService $cocktailService,
+        ImageService $imageService,
+        // BadgeService $badgeService,
+    ) {
+        $this->userService = $userService;
+        $this->cocktailService = $cocktailService;
+        $this->imageService = $imageService;
+        // $this->badgeService = $badgeService;
     }
 
     // Show the user profile
@@ -52,7 +26,8 @@ class UserController
         if (!AuthController::isLoggedIn()) {
             redirect('login');
         }
-        $loggedInUserId = $_SESSION['user']['id'] ?? null;
+        $userId = $_SESSION['user']['id'] ?? null; // Use null coalescing operator to avoid undefined error
+        $loggedInUserId = $userId;
 
         // Fetch user profile data with user ID
         $profile = $this->userService->getUserWithProfile($profileUserId);
@@ -120,71 +95,74 @@ class UserController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userId = $_SESSION['user']['id'];
+
+            // Fetch the user's current username
+            $user = $this->userService->getUserById($userId);
+            $username = $user->getUsername(); // Ensure this method exists in the User model
+            $currentProfilePicture = $user->getProfilePicture(); // Get the current profile picture
+
             $firstName = sanitize($_POST['first_name']);
             $lastName = sanitize($_POST['last_name']);
             $bio = sanitize($_POST['bio']);
 
             // Handle file upload if a new profile picture is uploaded
-            $profilePicture = null;
+            $profilePicture = $currentProfilePicture;
+            // Handle file upload if a new profile picture is uploaded
             if (!empty($_FILES['profile_picture']['name'])) {
-                $profilePicture = $this->uploadProfilePicture($_FILES['profile_picture']);
-                if (!$profilePicture) {
-                    // Handle the error from uploadProfilePicture if needed
+                $uploadedPicture = $this->uploadProfilePicture($_FILES['profile_picture']);
+                if ($uploadedPicture) {
+                    $profilePicture = $uploadedPicture; // Use the new profile picture
+                } else {
                     $_SESSION['error'] = "Failed to upload profile picture.";
-                    redirect('profile/' . $_SESSION['user']['id']); // Redirect back to the profile
-                    return; // Exit the method
+                    redirect("profile/$username");
+                    return; // Exit to avoid overwriting the current picture
                 }
             }
-            $userId = $_SESSION['user']['id'];
+
             // Call the service to update the profile
             if ($this->userService->updateUserProfile($userId, $firstName, $lastName, $bio, $profilePicture)) {
                 $_SESSION['success'] = "Profile updated successfully.";
-
-                // Fetch the updated user information to get the username
-                $updatedUser = $this->userService->getUserById($userId);
-                $username = $updatedUser->getUsername(); // Assuming getUsername() retrieves the username
-
-                // Redirect to the profile using the username
-                redirect("profile/$username");
+                redirect("profile/$username"); // Redirect to the username-based profile page
             } else {
                 $_SESSION['error'] = "Failed to update profile.";
+                redirect("profile/$username"); // Redirect back to the profile
             }
-
-            // If there was an error, redirect back to the profile
-            redirect("profile/$userId"); // Fallback to user ID in case of failure
         }
     }
+
 
     private function uploadProfilePicture($file)
     {
-        $targetDir = __DIR__ . '/../../public/uploads/users/';
+        try {
+            if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+                throw new \Exception("No valid file uploaded.");
+            }
+            // Validate file size
+            if ($file['size'] > $this->imageService->maxFileSize) {
+                throw new \Exception("The file size exceeds the allowed limit of 5MB.");
+            }
 
-        // Step 1: Sanitize and validate the original filename
-        $fileName = sanitize($file['name']);
-        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            // Generate a unique file name
+            $uniqueFileName = uniqid() . '.webp';
+            $targetPath = __DIR__ . '/../../public/uploads/users/' . $uniqueFileName;
 
-        // Step 2: Check if the file extension is allowed
-        $allowedTypes = ['jpeg', 'jpg', 'png', 'webp'];
-        if (!in_array($fileExtension, $allowedTypes)) {
-            $_SESSION['error'] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
-            return null; // Exit if the file type is not allowed
+            $width = 400; // Set your desired width
+            $height = 400; // Set your desired height
+            // Process and save the image
+            $this->imageService->processImage($file, $width, $height, $targetPath);
+            return $uniqueFileName; // Return the unique file name
+        } catch (\Exception $e) {
+            $_SESSION['error'] = "Failed to upload profile picture: " . $e->getMessage();
+
+            // Optional: Log the detailed error for debugging
+            // error_log("Profile picture upload error: " . $e->getMessage());
+
+            return null; // Return null if image processing fails
         }
-
-        // Step 3: Generate a unique filename to avoid conflicts
-        $uniqueFileName = bin2hex(random_bytes(8)) . '.' . $fileExtension;
-        $targetFile = $targetDir . $uniqueFileName;
-
-        // Step 4: Move the uploaded file to the target directory
-        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-            return $uniqueFileName; // Return the unique filename for storage in the database
-        }
-
-        // Return null if the upload failed
-        $_SESSION['error'] = "Failed to upload profile picture.";
-        return null;
     }
 
-    // 5. Change user password
+
     public function changePassword()
     {
         if (!AuthController::isLoggedIn()) {
@@ -229,9 +207,9 @@ class UserController
         $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
 
         $userRecipes = $this->cocktailService->getUserRecipes( $profileUserId);
-            // $userBadges = $this->badgeService->getUserBadges( $profileUserId);
+        // $userBadges = $this->badgeService->getUserBadges( $profileUserId);
         $profileStats = $this->userService->getUserStats( $profileUserId);
-
+      
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
     }

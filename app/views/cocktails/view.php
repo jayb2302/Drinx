@@ -45,7 +45,7 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
                         alt="Profile picture of <?= htmlspecialchars($creator->getUsername()); ?>">
                 <?php else: ?>
                     <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture"
-                        class="creator-picture">
+                        class="creatorPicture">
                 <?php endif; ?>
                 <a href="/profile/<?= htmlspecialchars($creator->getUsername()); ?>">
                     <?= htmlspecialchars($creator->getFirstName() ?? $creator->getUsername()); ?>
@@ -87,7 +87,6 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
                 <!-- Display the like count -->
             </div>
 
-            <!-- Cocktail Details -->
             <div class="orderby">
                 <?php foreach ($tags ?? [] as $tag): ?>
                     <span class="tag"><?= htmlspecialchars($tag['name']) ?></span>

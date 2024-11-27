@@ -11,6 +11,7 @@ class CocktailController
     private $likeService;
     private $tagRepository;
     private $userService;
+    private $imageService;
 
     public function __construct(
         CocktailService $cocktailService,
@@ -20,7 +21,8 @@ class CocktailController
         CommentService $commentService,
         LikeService $likeService,
         TagRepository $tagRepository,
-        UserService $userService
+        UserService $userService,
+        ImageService $imageService
     ) {
         $this->cocktailService = $cocktailService;
         $this->ingredientService = $ingredientService;
@@ -30,6 +32,8 @@ class CocktailController
         $this->likeService = $likeService;
         $this->tagRepository = $tagRepository;
         $this->userService = $userService;
+        $this->imageService = $imageService;
+
 
         // Start session if not already started
         if (session_status() === PHP_SESSION_NONE) {
@@ -299,35 +303,35 @@ class CocktailController
     // Handle image upload for new cocktails
     private function handleImageUpload($file, &$errors)
     {
-        if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
-            // Sanitize and validate the original filename
-            $image = sanitize($file['name']);
-            $fileExtension = strtolower(pathinfo($image, PATHINFO_EXTENSION));
-
-            // Check the file extension
-            $allowedTypes = ['jpeg', 'jpg', 'png', 'webp'];
-            if (!in_array($fileExtension, $allowedTypes)) {
-                $errors[] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
-                return null; // Exit if file type is not allowed
+        try {
+            // Validate if a file is uploaded
+            if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+                throw new \Exception("No valid file uploaded.");
             }
-
-            // Generate a unique filename to avoid conflicts
-            $image = bin2hex(random_bytes(8)) . '.' . $fileExtension;
-            $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
-            $target_file = $target_dir . $image;
-
-            // Move the uploaded file to the target directory
-            if (!move_uploaded_file($file['tmp_name'], $target_file)) {
-                $errors[] = "There was an error uploading the image.";
-                return null;
-            }
-
-            // Return the unique filename for storing in the database
-            return $image;
+    
+            // Set the target directory for cocktail images
+            $targetDir = __DIR__ . '/../../public/uploads/cocktails/';
+    
+            // Generate a unique file name for the uploaded image
+            $uniqueFileName = uniqid() . '.webp';
+            $targetPath = $targetDir . $uniqueFileName;
+    
+            // Set the desired dimensions for the cocktail image
+            $width = 1280; // Example width
+            $height = 720; // Example height
+    
+            // Process the image using the ImageService
+            $this->imageService->processImage($file, $width, $height, $targetPath);
+    
+            // Return the unique file name to store in the database
+            return $uniqueFileName;
+        } catch (\Exception $e) {
+            // Capture and log any errors
+            $errors[] = "Failed to upload image: " . $e->getMessage();
+            return null;
         }
-
-        return null; // Return null if no image was uploaded
     }
+    
 
     // Handle image update for editing cocktails
     private function handleImageUpdate($file, $cocktail, &$errors)
