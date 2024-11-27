@@ -12,7 +12,6 @@ class CocktailController
     private $tagRepository;
     private $userService;
 
-
     public function __construct(
         CocktailService $cocktailService,
         IngredientService $ingredientService,
