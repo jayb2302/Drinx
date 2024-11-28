@@ -64,24 +64,26 @@ require_once __DIR__ . '/../layout/header.php';
                 <?php endforeach; ?>
             </div>
         </div>
-        <div class="dashboard-navigation">
-            <button class="button" onclick="toggleSection('userManagement')">User</button>
-            <button class="button" onclick="toggleSection('tagsManagement')">Tags</button>
-            <button class="button" onclick="toggleSection('ingredientManagement')">Ingredient</button>
-        </div>
+         <!-- Navigation -->
+         <nav class="dashboard-navigation">
+            <button class="button admin-toggle-button" data-target="userManagement">User</button>
+            <button class="button admin-toggle-button" data-target="tagsManagement">Tags</button>
+            <button class="button admin-toggle-button" data-target="ingredientManagement">Ingredient</button>
+        </nav>
 
-        <div id="userManagement" class="admin-section" style="display: none;">
+        <!-- Sections -->
+        <section id="userManagement" class="admin-section" style="display: none;">
             <?php include __DIR__ . '/manage_users.php'; ?>
-        </div>
-        <div id="tagsManagement" class="admin-section" style="display: none;">
+        </section>
+        <section id="tagsManagement" class="admin-section" style="display: none;">
             <?php include __DIR__ . '/manage_tags.php'; ?>
-        </div>
-        <div id="ingredientManagement" class="admin-section" style="display: none;">
+        </section>
+        <section id="ingredientManagement" class="admin-section" style="display: none;">
             <?php include __DIR__ . '/manage_ingredients.php'; ?>
-        </div>
+        </section>
     <?php endif; ?>
 
-    <script>
+    <!-- <script>
         function toggleSection(sectionId) {
             // Hide all admin sections
             document.querySelectorAll('.admin-section').forEach(section => {
@@ -94,5 +96,5 @@ require_once __DIR__ . '/../layout/header.php';
                 selectedSection.style.display = 'block';
             }
         }
-    </script>
+    </script> -->
     <?php require_once __DIR__ . '/../layout/footer.php'; ?>
