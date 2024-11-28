@@ -54,9 +54,6 @@ function sanitizeNumber($input) {
     }
     return null; 
 }
-function sanitizeTrim($input) {
-    return is_string($input) ? trim($input) : $input;
-}
 
 // Function to redirect to a given path
 function redirect($path) {
