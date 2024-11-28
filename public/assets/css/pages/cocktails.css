@@ -22,12 +22,13 @@
   overflow: auto;
   height: 80dvh;
 }
-aside .cocktailActions {
+ .cocktailActions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   gap: .5rem;
 }
+
 .cocktailContainer {
   display: flex;
   flex-wrap: wrap;
@@ -37,15 +38,33 @@ aside .cocktailActions {
   background-color: var(--background);
   padding: .1rem .2rem;
 }
-.container {
-  width: auto;
+
+.recipe__container {
   display: flex;
-  flex-direction: column;
-  padding: 20px; 
+  flex-direction: row;
   border-radius: 8px; 
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
-  position: relative;
-  bottom: 0;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    
+  }
+  & .recipe__main {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: var(--base-padding);
+    flex-grow: 1;
+    @media screen and (max-width: 768px) {
+      width: 100%;
+    }
+  }
+  & .container__comments {
+    display: flex;
+    gap: 1rem;
+    @media screen and (max-width: 768px) {
+      width: 100%;
+    }
+  }
 }
 
 .formContainer {
@@ -59,10 +78,11 @@ aside .cocktailActions {
   position: relative;
 }
 .title {
-  background-color: var(--button-primary-transparent);
+  border-bottom: 1px solid var(--border);
   border-radius: 8px;
   width: 100%;
   margin: 0;
+  color: var(--text-primary);
 }
 
 .cocktailGrid {
@@ -91,23 +111,49 @@ h1 {
 
 .recipeContainer {
   display: flex;
-  flex-direction: column;
   position: relative;
   overflow: auto;
-  padding: 0 1rem;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--base-padding);
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
 
   & .recipeHeader {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
+  & .recipeInstructions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 45%;
+    & li {
+      margin-bottom: .5rem;
+    }
+    @media screen and (max-width: 768px) {
+      width: 90vw;
+    }
+  }
   & .recipeImage {
-    object-fit: cover;
+    width: 45%;
     border-radius: 8px 8px 0 0;
     & img {
-      height: 200px;
+      width: 100%;
       object-fit: cover;
       border-radius: 8px 8px 0 0;
+    }
+    & p {
+      margin: 0;
+      
+      padding: var(--base-padding);
+      background-color: var(--background);
+      border-radius: 0 0 8px 8px;
+    }
+    @media screen and (max-width: 768px) {
+      width: 100%;
     }
   }
 }
@@ -127,10 +173,20 @@ h1 {
   color: var(--text-primary);
 }
 
+.recipe-category {
+  display: flex;
+  gap: 1rem;
+  color: var(--text-primary);
+  & select {
+    background-color: var(--button-primary);
+    color: var(--text-secondary);
+  }
+}
+
 
 /* Ingredient and step lists */
 ul, ol {
-  padding-left: 20px;
+  padding-left: 1rem;
   margin-bottom: 20px; 
 }
 
@@ -142,7 +198,6 @@ a {
 
 a:hover {
   color: var(--accent-primary);
-  background-color: var(--button-primary); 
 }
 
 .tag{

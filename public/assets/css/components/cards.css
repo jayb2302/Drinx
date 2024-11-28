@@ -39,7 +39,7 @@
         background: var(--card-linear-gradient);
         border-radius: 8px 8px 0 0;
         padding: .5rem;
-        color: var(--accent-primary);
+        color: var(--text-primary);
         & h3 {
             letter-spacing: .2rem;
         }
@@ -77,8 +77,12 @@
     & .cocktailImage {
         width: 100%;
         object-fit: contain;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid var(--accent-primary);
         border-radius: 6px 6px 0 0;
+    }
+    & p {
+        text-align: start;
+        padding-left: .5rem;
     }
 }
 

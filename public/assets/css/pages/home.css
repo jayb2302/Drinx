@@ -119,10 +119,13 @@
         padding-left: .5rem;
         width: calc(100% - .5rem);
         font-size: 1.1rem;
-    }
-    & a:hover {
-        color: var(--accent-primary);
-    }
+        & :hover {
+            color: var(--accent-primary);
+        }
+        &:active {
+         background-color: (--accent-hover);
+        }
+    } 
 }
 
 .sort-options {

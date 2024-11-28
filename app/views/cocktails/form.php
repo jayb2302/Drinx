@@ -1,16 +1,23 @@
 <div class="form-container">
     <h1><?= $isEditing ? 'Edit' : 'Add' ?> Cocktail Recipe</h1>
-   
-    <form action="/cocktails/<?= $isEditing ? 'update/' . $cocktail->getCocktailId() : 'store' ?>" method="post" enctype="multipart/form-data">
-    <div class="form-group">
 
-        <label for="image">Cocktail Image</label>
-        <input type="file" name="image" id="image" accept="image/*" <?= $isEditing ? '' : 'required' ?>>
-        <?php if ($isEditing && $cocktail->getImage()): ?>
-            <p>Current Image:</p>
-            <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>" alt="Current Image" style="width:100px;">
+    <form action="/cocktails/<?= $isEditing ? 'update/' . $cocktail->getCocktailId() : 'store' ?>" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+
+            <label for="image">Image</label>
+            <input type="file" name="image" id="image" accept="image/*" <?= $isEditing ? '' : 'required' ?>>
+            <span id="cocktail-file-error" style="color: red; display: none;"></span>
+            <?php if ($isEditing && $cocktail->getImage()): ?>
+                <span>Current Image:</span>
+                <!-- <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>" alt="Current Image" style="width:100px;"> -->
+                <img id="cocktail-image-preview"
+                    src="<?= $isEditing && $cocktail->getImage() ? '/uploads/cocktails/' . htmlspecialchars($cocktail->getImage()) : ''; ?>"
+                    alt="Cocktail Image Preview"
+                    style="display: <?= $isEditing && $cocktail->getImage() ? 'block' : 'none'; ?>; width: 100px;">
+                
             <?php endif; ?>
-        </div>    
+
+        </div>
         <div class="recipeHeader">
             <div class="form-group">
                 <label for="title">Cocktail Name</label>
@@ -46,17 +53,7 @@
             </select>
         </div>
 
-        <label for="image">Image</label>
-        <input type="file" name="image" id="image" accept="image/*" <?= $isEditing ? '' : 'required' ?>>
-        <span id="cocktail-file-error" style="color: red; display: none;"></span>
-        <img id="cocktail-image-preview" 
-            src="<?= $isEditing && $cocktail->getImage() ? '/uploads/cocktails/' . htmlspecialchars($cocktail->getImage()) : ''; ?>" 
-            alt="Cocktail Image Preview" 
-            style="display: <?= $isEditing && $cocktail->getImage() ? 'block' : 'none'; ?>; width: 100px;">
-        <?php if ($isEditing && $cocktail->getImage()): ?>
-            <p>Current Image:</p>
-            <!-- <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>" alt="Current Image" style="width:100px;"> -->
-        <?php endif; ?>
+
 
         <h3>Ingredients</h3>
         <div id="ingredientsContainer" class="ingredientsContainer">
@@ -152,11 +149,11 @@
         </div>
         <button type="button" id="addStepButton">New Step</button>
         <?php if (AuthController::isAdmin()): ?>
-        <div class="sticky-cocktail">
-            <input type="checkbox" name="isSticky" id="isSticky" value="1" <?= $isEditing && $cocktail->isSticky() ? 'checked' : '' ?>>
-            <label for="isSticky">is it Sticky?</label>
-        </div>
-    <?php endif; ?> 
+            <div class="sticky-cocktail">
+                <input type="checkbox" name="isSticky" id="isSticky" value="1" <?= $isEditing && $cocktail->isSticky() ? 'checked' : '' ?>>
+                <label for="isSticky">is it Sticky?</label>
+            </div>
+        <?php endif; ?>
 
         <div class="submit-container">
             <button type="submit">Submit</button>

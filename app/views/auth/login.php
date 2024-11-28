@@ -27,8 +27,9 @@
 
         <button type="submit" class="secondary">Login</button>
     </form>
-    <button class="secondary">
-
-        <a href="/register" class="secondary">Register</a>
-    </button>
+    <a href="/register" class="button-secondary">
+        <span class="">
+        Register
+    </span>
+    </a>
 </div>

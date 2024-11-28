@@ -8,6 +8,7 @@ header {
     padding: .5rem 1rem;
     color: var(--text-secondary);
     z-index: 1000;
+    gap: 1rem;
     & .nav-links {
         display: flex; 
     }

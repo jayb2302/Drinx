@@ -1,72 +1,12 @@
+/* General Reset for Box Sizing */
 *,
 *::before,
 *::after {
     box-sizing: border-box;
-
-/* Form container styling */
-form {
-  display: flex;
-  flex-direction: column;
-  padding: .2 rem .5rem;
-  background-color: var(--card-background);
-}
-.form-container {
-  background-color: var(--background);
-  color: var(--text-primary);
-  padding: 0 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: var(--font-body);
-  margin: auto;
-}
-
-/* Form heading */
-.form-container h2 {
-  color: var(--accent-primary);
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  text-align: start;
-  margin-bottom: 1rem;
-}
-
-/* Form group styling */
-.form-group {
-  margin-bottom: 1rem;
-}
-
-/* Labels */
-.form-group label {
-  display: block;
-  font-weight: bold;
-  color: var(--text-primary);
-  margin-bottom: 0.3rem;
-}
-
-textarea {
-  background-color: var(--card-background);
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  resize: none;
-  width: 100%;
-}
-
-/* Input fields and textareas */
-input[type="text"],
-input[type="number"],
-select {
-  padding: 0.5rem;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-family: var(--font-body);
-  color: var(--text-primary);
-  background-color: var(--surface);
-  margin-bottom: 1rem;
-  transition: border-color 0.2s ease;
 }
 
 /* General Form Styling */
 form {
-    padding: 2% 5%;
     background-color: var(--card-background);
     & .submit-container {
         display: flex;
@@ -171,10 +111,10 @@ form {
 /* Buttons */
 button,
 input[type="submit"] {
-    background-color: var(--accent-primary);
-    color: var(--text-primary);
+    background-color: var(--button-primary);
+    color: var(--text-secondary);
     font-weight: bold;
-    padding: 0.5rem 1.5rem;
+    padding: var(--button-padding);
     border: none;
     border-radius: 0.4rem;
     cursor: pointer;
@@ -197,7 +137,7 @@ input[type="submit"] {
     transition: background-color 0.2s ease;
     justify-content: flex-end;
     text-align: start;
-  margin-bottom: .5rem;
+  margin: 1rem 0;
   width: clamp(150px, 20vw, 200px);
 
     &:hover {
@@ -239,7 +179,6 @@ input[type="submit"] {
         & input,
         & select,
         & textarea {
-            
             font-size: 1rem;
             border: 0.1rem solid #ccc;
             border-radius: 0.4rem;
@@ -247,9 +186,9 @@ input[type="submit"] {
         }
 
         & textarea {
-            resize: vertical; /* Allow resizing but within limits */
-            min-height: 5vh; /* Minimum height */
-            max-height: 20vh; /* Maximum height */
+            resize: vertical; 
+            min-height: 10vh; 
+            max-height: 20vh; 
         }
 
         & .ingredient-name-container {
@@ -275,10 +214,10 @@ input[type="submit"] {
         & .delete-step-button {
             position: absolute;
             top: .5rem;
-            right: .5rem;
+            right: -.5rem;
             background: none;
             border: none;
-            font-size: 1rem;
+            font-size: .8rem;
             color: var(--error);
             cursor: pointer;
 

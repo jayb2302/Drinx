@@ -50,7 +50,8 @@ export function initializeSortAndCategories() {
                     wrapper.innerHTML = data.content;
     
                     // console.log('Cocktails content updated, reinitializing functionality...');
-    
+                        wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
                     // Update active sort option
                     updateSortIndicator();
     

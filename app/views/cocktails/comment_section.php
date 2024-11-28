@@ -91,7 +91,7 @@
                 <?php if (AuthController::isLoggedIn()): ?>
                     <button class="replyButton" data-comment-id="<?= $comment->getCommentId() ?>">Reply</button>
                     <div id="replyForm-<?= $comment->getCommentId() ?>" class="replyForm hidden">
-                        <form action="/comments/<?= $comment->getCommentId() ?>/reply" method="POST">
+                        <form class="replyCommentForm" action="/comments/<?= $comment->getCommentId() ?>/reply" method="POST">
                             <textarea name="comment" placeholder="Write your reply here..." required></textarea>
                             <input type="hidden" name="parent_comment_id" value="<?= $comment->getCommentId() ?>">
                             <input type="hidden" name="cocktail_id" value="<?= $cocktailId ?>">
