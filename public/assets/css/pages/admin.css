@@ -9,57 +9,58 @@
     color: var(--text-secondary);
     font-family: var(--font-body);
     margin-bottom: 15%;
+    & h1 {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        color: var(--text-primary);
+        text-align: start;
+     }
 }
-.admin-container h1 {
-   font-family: var(--font-display);
-   font-size: 2.5rem;
-   color: var(--accent-primary);
-   text-align: start;
-}
+
 .admin-dashboard {
     padding: 1rem;
     background: var(--card-background);
     color: var(--text-primary);
     border-radius: 0.5rem;
     font-family: var(--font-body);
-    width: calc(100% - 2rem);
-}
+    & .dashboard-stats {
+        display: flex;
+        justify-content: flex-start;
+        background-color: var(--card-background);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        padding: 1rem 0;
+        scroll-behavior: smooth;
+        & :hover {
+            overflow-x: auto; /* Keep horizontal scroll visible on hover */
+        }
+    }
+    & .dashboard-navigation {
+        display: flex;
+        gap: .5rem;
+        margin-bottom: 2rem;
+     & .button {
+        flex: 1;
+        background: var(--button-primary-transparent);
+        color: var(--text-primary);
+        padding: 0.5rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    }
 
-.dashboard-navigation {
-    display: flex;
-    gap: .5rem;
-    margin-bottom: 2rem;
- & .button {
-    flex: 1;
-    background: var(--button-primary-transparent);
-    color: var(--text-primary);
-    padding: 0.5rem;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
 }
 
 .dashboard-navigation .button:hover {
     background: var(--button-hover);
 }
-.dashboard-stats {
-    display: flex;
-    justify-content: flex-start;
-    background-color: var(--card-background);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    padding: 1rem 0;
-    scroll-behavior: smooth;
-}
-.dashboard-stats:hover {
-    overflow-x: auto; /* Keep horizontal scroll visible on hover */
-}
+
 .stats-scroll {
     display: flex;
     gap: 1rem;
@@ -76,6 +77,21 @@
     text-align: center;
     padding: .5rem;
     background-color: var(--card-background);
+    position: relative;
+    & .stat-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        & .stat-icon {
+            position: absolute;
+            object-fit: cover;
+            font-size: 2rem;
+            color: var(--accent-primary);
+            bottom: .5rem;
+            mix-blend-mode: screen;
+        }
+    }
 }
 /* Animation */
 @keyframes scrollLeft {
@@ -92,17 +108,8 @@
     animation-play-state: paused;
 }
 
-.stat-icon {
-    font-size: 2rem;
-    color: var(--accent-primary);
-}
 
-.stat-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-}
+
 
 .stat-title {
     font-size: 1rem;
@@ -113,7 +120,8 @@
 .stat-value {
     font-size: 1.25rem;
     font-weight: bold;
-    color: var(--accent-secondary);
+    letter-spacing: .1rem;
+    color: var(--text-primary);
 }
 .dashboard-stats::-webkit-scrollbar {
     height: 8px;

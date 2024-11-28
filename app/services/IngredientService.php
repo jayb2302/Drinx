@@ -3,11 +3,18 @@ class IngredientService
 {
     private $ingredientRepository;
     private $unitRepository;
+    private $tagRepository;
 
-    public function __construct(IngredientRepository $ingredientRepository, UnitRepository $unitRepository)
+    public function __construct(IngredientRepository $ingredientRepository, UnitRepository $unitRepository, TagRepository $tagRepository)
     {
         $this->ingredientRepository = $ingredientRepository;
         $this->unitRepository = $unitRepository;
+        $this->tagRepository = $tagRepository;
+    }
+
+    // search ingredient 
+    public function searchIngredients($query) {
+        return $this->ingredientRepository->searchByName($query);
     }
 
     public function updateIngredients($cocktailId, $ingredients, $quantities, $units)
@@ -45,6 +52,25 @@ class IngredientService
     public function addIngredient($cocktailId, $ingredientName, $quantity, $unitId)
     {
         return $this->ingredientRepository->addIngredient($cocktailId, $ingredientName, $quantity, $unitId);
+    }
+
+    public function getIngredientsByTags()
+    {
+        $ingredientsGrouped = $this->ingredientRepository->getIngredientsGroupedByTags();
+        return $ingredientsGrouped;
+    }
+
+    // Fetch Uncategorized Ingredients
+    public function fetchUncategorizedIngredients($uncategorizedTag = 'Uncategorized')
+    {
+        return $this->ingredientRepository->fetchUncategorizedIngredients($uncategorizedTag);
+    }
+    public function assignTagToIngredient($ingredientId, $tagId)
+    {
+        if (!$this->tagRepository->doesTagExist($tagId)) {
+            throw new Exception("Invalid tag ID: $tagId");
+        }
+        $this->ingredientRepository->assignTag($ingredientId, $tagId);
     }
 
     public function processQuantities($quantities)
@@ -126,6 +152,7 @@ class IngredientService
     {
         return $this->ingredientRepository->getAllUnits();
     }
+
     public function clearIngredientsByCocktailId($cocktailId)
     {
         return $this->ingredientRepository->clearIngredientsByCocktailId($cocktailId);

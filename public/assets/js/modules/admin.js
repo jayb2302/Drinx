@@ -20,4 +20,26 @@ export function initializeAdmin() {
             toggleSection(targetSection);
         });
     });
+    document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', (e) => {
+            const accordionItem = header.parentElement;
+            const accordionBody = accordionItem.querySelector('.accordion-body');
+
+            if (accordionBody.style.display === 'block') {
+                accordionBody.style.display = 'none'; // Collapse
+                accordionItem.classList.remove('active'); // Remove active class
+            } else {
+                // Close all other open accordion items
+                document.querySelectorAll('.accordion-body').forEach(body => {
+                    body.style.display = 'none';
+                });
+                document.querySelectorAll('.accordion-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                accordionBody.style.display = 'block'; // Expand
+                accordionItem.classList.add('active'); // Add active class
+            }
+        });
+    });
 }

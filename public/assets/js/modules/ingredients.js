@@ -67,8 +67,8 @@ export function initializeIngredients() {
                 // Now check the response status and act accordingly
                 if (response.status === "success") {
                     alert(response.message);  // Show success message
-                    fetchUncategorizedIngredients();  // Refresh the ingredient list
                     $("#addIngredientDialog").dialog("close");  // Close modal if needed
+                    fetchUncategorizedIngredients();  // Refresh the ingredient list
                 } else {
                     alert(response.message || "Error adding ingredient.");
                 }
@@ -102,29 +102,54 @@ export function initializeIngredients() {
 
     // Handle editing ingredient name
     $(document).on("click", ".editIngredientButton", function () {
-        const ingredientId = $(this).data("ingredient-id");
-        const ingredientName = $(this).data("ingredient-name");
-
-        console.log("Ingredient ID:", ingredientId); // Check if the ingredient ID is valid
-        console.log("Ingredient Name:", ingredientName); // Check if the ingredient name is valid
-
+        const ingredientId = $(this).closest("li").data("ingredient-id");
+        const ingredientName = $(this).closest("li").find(".ingredient-name").text();
+    
         // Open a prompt or modal to edit the ingredient name
         const newIngredientName = prompt("Edit Ingredient Name", ingredientName);
-
+    
         if (newIngredientName && newIngredientName !== ingredientName) {
             $.ajax({
-                url: "/admin/ingredients/edit",  // Your backend endpoint to handle name update
+                url: "/admin/ingredients/edit",
                 method: "POST",
                 contentType: "application/json",
-                data: JSON.stringify({ ingredient_id: ingredientId, ingredient_name: newIngredientName }),
+                data: JSON.stringify({
+                    ingredient_id: ingredientId,
+                    ingredient_name: newIngredientName,
+                }),
                 success: function (response) {
-                    console.log("Response from server:", response); // Log the response to see what the server is returning
-                    fetchUncategorizedIngredients();  // Refresh the ingredient list (optional)
+                    console.log("Response from server:", response);
+    
+                    if (typeof response === "string") {
+                        try {
+                            response = JSON.parse(response);
+                        } catch (e) {
+                            console.error("Failed to parse response:", e);
+                            alert("Unexpected response format.");
+                            return;
+                        }
+                    }
+    
+                    if (response.status === "success") {
+                        alert(response.message || "Ingredient updated successfully.");
+    
+                        // Update the UI directly for uncategorized ingredients
+                        const $ingredientElement = $(
+                            `li[data-ingredient-id='${ingredientId}'] .ingredient-name`
+                        );
+                        $ingredientElement.text(newIngredientName);
+    
+                        // Alternatively, refresh the entire uncategorized list
+                        fetchUncategorizedIngredients();
+                    } else {
+                        alert(response.message || "Failed to update ingredient.");
+                    }
                 },
                 error: function (xhr, status, error) {
-                    console.error("Edit Ingredient Error:", error);
+                    console.error("AJAX Error:", error);
+                    console.log("Response Text:", xhr.responseText);
                     alert("An error occurred while updating the ingredient name.");
-                }
+                },
             });
         }
     });
@@ -167,15 +192,13 @@ export function initializeIngredients() {
             method: 'GET',
             dataType: 'json',
             success: function (response) {
-                try {
-                    if (response.status === 'success') {
-                        console.log("Fetched ingredients:", response.ingredients);
-                        renderUncategorizedIngredients(response.ingredients);
-                    } else {
-                        console.error('Error fetching ingredients:', response.message);
-                    }
-                } catch (e) {
-                    console.error('Error processing response:', e);
+                console.log("Fetched uncategorized ingredients:", response);
+    
+                if (response.status === 'success') {
+                    renderUncategorizedIngredients(response.ingredients);
+                } else {
+                    console.error('Error fetching ingredients:', response.message);
+                    alert(response.message || "Failed to fetch uncategorized ingredients.");
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -211,15 +234,15 @@ export function initializeIngredients() {
                 .text("🖊️")
                 .addClass("editIngredientButton")
                 .data("ingredient-id", ingredient.ingredient_id)
-                .data("ingredient-name", ingredient.name);
+                .data("ingredient-name", ingredient.ingredient_name);
     
             const $deleteButton = $("<button>")
                 .text("🗑️")
                 .addClass("deleteIngredientButton")
                 .data("ingredient-id", ingredient.ingredient_id);
     
+                $buttonsDiv.append($assignTagButton, $editButton, $deleteButton);
             $item.append($ingredientName, $buttonsDiv);
-            $buttonsDiv.append($assignTagButton, $editButton, $deleteButton);
             $list.append($item);
         });
     }

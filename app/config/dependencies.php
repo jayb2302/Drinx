@@ -56,7 +56,7 @@ $adminService = new AdminService(
 );
 // $badgeService = new BadgeService();
 $imageService = new ImageService();
-$ingredientService = new IngredientService($ingredientRepository, $unitRepository);
+$ingredientService = new IngredientService($ingredientRepository, $unitRepository, $tagRepository);
 $stepService = new StepService($stepRepository);
 $likeService = new LikeService($likeRepository);
 $userService = new UserService($userRepository);
@@ -102,9 +102,9 @@ $userController = new UserController(
     $imageService
 );
 
-$adminController = new AdminController($adminService, $authController, $cocktailService);
+$adminController = new AdminController($adminService, $authController, $cocktailService, $ingredientService);
 $commentController = new CommentController($commentService, $cocktailService);
 $likeController = new LikeController($likeService);
 $tagController = new TagController($tagRepository);
 $ingredientController = new IngredientController($ingredientRepository, $tagRepository);
-$searchController = new SearchController($userService, $cocktailService);
+$searchController = new SearchController($userService, $cocktailService, $ingredientService);
