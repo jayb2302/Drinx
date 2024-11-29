@@ -10,20 +10,19 @@ export function initializeSticky() {
                 if (stickyContainer && data.success) {
                     stickyContainer.innerHTML = `
                         <div class="stickyCard">
-                            <h2>📌 Sticky Cocktail</h2>
+                            <h2><i class="fa-solid fa-paperclip"></i> Sticky Cocktail</h2>
                             <div class="stickyMediaWrapper">
-                                    <img src="${data.image}" alt="${data.title}" class="cocktail-image">
+                                <img src="/uploads/cocktails/${data.image}" alt="${data.title}" class="cocktail-image">
                             </div>
                             <div class="stickyContent">
                                 <a href="/cocktails/${data.id}-${encodeURIComponent(data.title)}">
-                                    <h3 class="cocktail-title">
-                                        ${data.title}
-                                    </h3>
+                                    <h3 class="cocktail-title">${data.title}</h3>
                                 </a>
                                 <p class="cocktail-description">${data.description}</p>
                             </div>
                         </div>
                     `;
+                    console.log('Sticky cocktail updated:', data);
                 } else {
                     console.warn('No sticky cocktail found or returned:', data);
                 }
@@ -44,14 +43,16 @@ export function initializeSticky() {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            // Reset all sticky buttons
                             document.querySelectorAll('.set-sticky').forEach(btn => {
                                 btn.classList.remove('active');
-                                btn.textContent = '📌';
+                                btn.innerHTML = '<i class="fa-solid fa-paperclip"></i>';
                             });
 
+                            // Update the clicked button
                             if (data.is_sticky) {
                                 this.classList.add('active');
-                                this.textContent = '📌';
+                                this.innerHTML = '<i class="fa-solid fa-paperclip"></i>';
                             }
 
                             updateStickyCocktail();

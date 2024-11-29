@@ -55,8 +55,8 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                             data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
                             data-sticky-status="<?= $cocktail->isSticky() ? 'true' : 'false' ?>"
                             aria-pressed="<?= $cocktail->isSticky() ? 'true' : 'false' ?>"
-                            title="<?= $cocktail->isSticky() ? 'Remove Sticky' : '📌' ?>">
-                            <?= $cocktail->isSticky() ? '📌' : '📌' ?>
+                            title="<?= $cocktail->isSticky() ? 'Remove Sticky' : 'Mark as Sticky' ?>">
+                            <i class="<?= $cocktail->isSticky() ? 'fa-solid fa-paperclip' : 'fa-solid fa-paperclip' ?>"></i>
                         </button>
                     <?php endif; ?>
 
@@ -130,7 +130,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                                                         <small><?= formatDate($comment->getCreatedAt() ?? 'Unknown date') ?></small>
                                                     </p>
                                                 </div>
-                                                
+
                                                 <!-- Menu for edit/delete if user is logged in and is the comment creator or an admin -->
                                                 <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $comment->getUserId() || AuthController::isAdmin())): ?>
                                                     <div class="dotsMenu">
