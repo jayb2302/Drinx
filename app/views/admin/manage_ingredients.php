@@ -24,7 +24,7 @@
     <div id="ingredientManagement">
         <h2>Uncategorized Ingredients</h2>
         <!-- This will be dynamically populated by JS -->
-        <ul id="uncategorizedIngredients" class="ingredient-card">
+        <ol id="uncategorizedIngredients" class="ingredient-card">
             <!-- <li data-ingredient-id="23">
                 <span class="ingredient-name">Soda Water</span>
                 <div class="ingredient-buttons">
@@ -33,7 +33,7 @@
                     <button class="deleteIngredientButton">🗑️</button>
                 </div>
         </li> -->
-        </ul>
+        </ol>
         <div class="ingredient-section">
             <h2 class="section-title">Categorized Ingredients</h2>
             <?php if (!empty($categorizedIngredients['categorized'])): ?>

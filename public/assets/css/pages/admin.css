@@ -3,7 +3,7 @@
     justify-content: center;
     flex-direction: column;
     background-color: var(--card-background);
-    padding: .5rem 2rem;
+    padding: 0.5rem 2rem;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     color: var(--text-secondary);
@@ -14,7 +14,7 @@
         font-size: 2rem;
         color: var(--text-primary);
         text-align: start;
-     }
+    }
 }
 
 .admin-dashboard {
@@ -40,44 +40,35 @@
     }
     & .dashboard-navigation {
         display: flex;
-        gap: .5rem;
+        gap: 0.5rem;
         margin-bottom: 2rem;
-     & .button {
-        flex: 1;
-        background: var(--button-primary-transparent);
-        color: var(--text-primary);
-        padding: 0.5rem;
-        border: none;
-        border-radius: 0.5rem;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s;
+        & .button {
+            flex: 1;
+            background: var(--button-primary-transparent);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
     }
-    }
-
 }
 
 .dashboard-navigation .button:hover {
     background: var(--button-hover);
 }
-
-.stats-scroll {
-    display: flex;
-    gap: 1rem;
-    animation: scrollLeft 15s linear;
-    position: relative;
-    will-change: transform;
-}
-
 .stat-card {
-    flex: 0 0 auto; 
-    width: 150px; 
+    flex: 0 0 auto;
+    width: 150px;
     border-radius: 8px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
-    padding: .5rem;
+    padding: 0.5rem;
     background-color: var(--card-background);
     position: relative;
+    height: fit-content;
     & .stat-info {
         display: flex;
         flex-direction: column;
@@ -89,10 +80,36 @@
             font-size: 2rem;
             color: var(--accent-primary);
             bottom: .5rem;
-            mix-blend-mode: screen;
+            mix-blend-mode: overlay;
+            right: .5rem;
         }
     }
+
+    & .stat-title {
+        font-size: 1rem;
+        margin: 0;
+        color: var(--text-primary);
+    }
+
+    & .stat-value {
+        font-size: 1.25rem;
+        font-weight: bold;
+        letter-spacing: 0.1rem;
+        color: var(--text-primary);
+    }
 }
+
+.stats-scroll {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 1rem;
+    animation: scrollLeft 15s linear;
+    position: relative;
+    will-change: transform;
+    padding: 0 1rem;
+    overflow: hidden;
+}
+
 /* Animation */
 @keyframes scrollLeft {
     0% {
@@ -108,21 +125,6 @@
     animation-play-state: paused;
 }
 
-
-
-
-.stat-title {
-    font-size: 1rem;
-    margin: 0;
-    color: var(--text-primary);
-}
-
-.stat-value {
-    font-size: 1.25rem;
-    font-weight: bold;
-    letter-spacing: .1rem;
-    color: var(--text-primary);
-}
 .dashboard-stats::-webkit-scrollbar {
     height: 8px;
 }

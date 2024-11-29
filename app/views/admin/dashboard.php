@@ -12,14 +12,14 @@ require_once __DIR__ . '/../layout/header.php';
             <div class="stats-scroll">
                 <?php
                 $statItems = [
-                    ['icon' => '👤', 'value' => $stats['totalUsers'] ?? 'N/A', 'title' => 'Users'],
-                    ['icon' => '🍹', 'value' => $stats['totalCocktails'] ?? 'N/A', 'title' => 'Recipes'],
-                    ['icon' => '🏷️', 'value' => $stats['totalTags'] ?? 'N/A', 'title' => 'Tags'],
-                    ['icon' => '💬', 'value' => $stats['totalComments'] ?? 'N/A', 'title' => 'Comments'],
-                    ['icon' => '🍋', 'value' => $stats['mostUsedIngredient'] ?? 'N/A', 'title' => 'Top Ingredient'],
-                    ['icon' => '🔥', 'value' => $stats['mostPopularCocktail'] ?? 'N/A', 'title' => 'Popular Cocktail'],
-                    ['icon' => '📋', 'value' => $stats['unusedTags'] ?? 'N/A', 'title' => 'Unused Tags'],
-                    ['icon' => '❌', 'value' => $stats['cocktailsWithoutComments'] ?? 'N/A', 'title' => 'No Comments']
+                    ['icon' => 'fa-solid fa-user', 'value' => $stats['totalUsers'] ?? 'N/A', 'title' => 'Users'],
+                    ['icon' => 'fa-solid fa-martini-glass-citrus', 'value' => $stats['totalCocktails'] ?? 'N/A', 'title' => 'Recipes'],
+                    ['icon' => 'fa-solid fa-tags', 'value' => $stats['totalTags'] ?? 'N/A', 'title' => 'Tags'],
+                    ['icon' => 'fa-solid fa-comments', 'value' => $stats['totalComments'] ?? 'N/A', 'title' => 'Comments'],
+                    ['icon' => 'fa-solid fa-lemon', 'value' => $stats['mostUsedIngredient'] ?? 'N/A', 'title' => 'Top Ingredient'],
+                    ['icon' => 'fa-solid fa-fire', 'value' => $stats['mostPopularCocktail'] ?? 'N/A', 'title' => 'Popular Cocktail'],
+                    ['icon' => 'fa-solid fa-clipboard', 'value' => $stats['unusedTags'] ?? 'N/A', 'title' => 'Unused Tags'],
+                    ['icon' => 'fa-solid fa-circle-exclamation', 'value' => $stats['cocktailsWithoutComments'] ?? 'N/A', 'title' => 'No Comments']
                 ];
 
                 // Add Top Creator logic
@@ -34,14 +34,17 @@ require_once __DIR__ . '/../layout/header.php';
                     $statItems[] = [
                         'custom_html' => "
                     <div class='stat-card'>
+                        <div class='stat-info'>
+                            <h4 class='stat-title'>Top Creator</h4>
+                        </div>
                         <div class='stat-icon'>
                             <a href='/profile/{$username}' class='view-profile'>
                                 <img src='{$profilePicture}' class='profile-pic' alt='Profile picture of {$username}'>
                             </a>
                         </div>
                         <div class='stat-info'>
-                            <h4 class='stat-title'>Top Creator</h4>
-                            <span class='stat-value'>{$recipesCount}</span>
+                            <span class='stat-value'>{$username}</span>
+                            <span class='stat-value'>{$recipesCount} recipes</span>
                         </div>
                     </div>"
                     ];
@@ -55,9 +58,9 @@ require_once __DIR__ . '/../layout/header.php';
                 ?>
                         <div class="stat-card">
                             <div class="stat-info">
-                                <div class="stat-icon"><?= $statItem['icon']; ?></div>
                                 <h4 class="stat-title"><?= $statItem['title']; ?></h4>
-                                <span class="stat-value"><?= $statItem['value']; ?></span>
+                            <i class="stat-icon <?= htmlspecialchars($statItem['icon']); ?>"></i>
+                            <span class="stat-value"><?= $statItem['value']; ?></span>
                             </div>
                         </div>
                     <?php } ?>
@@ -65,12 +68,12 @@ require_once __DIR__ . '/../layout/header.php';
             </div>
         </div>
          <!-- Navigation -->
-         <nav class="dashboard-navigation">
+        <nav class="dashboard-navigation">
             <button class="button admin-toggle-button" data-target="userManagement">User</button>
             <button class="button admin-toggle-button" data-target="tagsManagement">Tags</button>
             <button class="button admin-toggle-button" data-target="ingredientManagement">Ingredient</button>
         </nav>
-
+        
         <!-- Sections -->
         <section id="userManagement" class="admin-section" style="display: none;">
             <?php include __DIR__ . '/manage_users.php'; ?>
@@ -82,19 +85,5 @@ require_once __DIR__ . '/../layout/header.php';
             <?php include __DIR__ . '/manage_ingredients.php'; ?>
         </section>
     <?php endif; ?>
-
-    <!-- <script>
-        function toggleSection(sectionId) {
-            // Hide all admin sections
-            document.querySelectorAll('.admin-section').forEach(section => {
-                section.style.display = 'none';
-            });
-
-            // Show the selected section
-            const selectedSection = document.getElementById(sectionId);
-            if (selectedSection) {
-                selectedSection.style.display = 'block';
-            }
-        }
-    </script> -->
+</div>
     <?php require_once __DIR__ . '/../layout/footer.php'; ?>
