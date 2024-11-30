@@ -12,12 +12,12 @@ class UserController
         UserService $userService,
         CocktailService $cocktailService,
         ImageService $imageService,
-        // BadgeService $badgeService,
+        BadgeService $badgeService,
     ) {
         $this->userService = $userService;
         $this->cocktailService = $cocktailService;
         $this->imageService = $imageService;
-        // $this->badgeService = $badgeService;
+        $this->badgeService = $badgeService;
     }
 
     // Show the user profile
@@ -37,7 +37,7 @@ class UserController
             error_log('Profile not found for User ID: ' . $profileUserId);
         }
         $userRecipes = $this->cocktailService->getUserRecipes($profileUserId);
-        // $userBadges = $this->badgeService->getUserBadges($profileUserId);
+        $badges = $this->badgeService->getUserBadges($profileUserId);
         $profileStats = $this->userService->getUserStats($profileUserId);
         $isFollowing = $this->userService->isFollowing($loggedInUserId, $profileUserId); // Check if current user is following the profile user
 
@@ -207,7 +207,7 @@ class UserController
         $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
 
         $userRecipes = $this->cocktailService->getUserRecipes( $profileUserId);
-        // $userBadges = $this->badgeService->getUserBadges( $profileUserId);
+        $userBadges = $this->badgeService->getUserBadges( $profileUserId);
         $profileStats = $this->userService->getUserStats( $profileUserId);
       
         // Pass the profile data to the view

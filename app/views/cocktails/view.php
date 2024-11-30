@@ -16,6 +16,14 @@ $units = $units ?? [];
 $totalLikes = $this->cocktailService->getLikeCount($cocktailId);
 $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
 ?>
+<?php if (isset($_SESSION['badge_notification'])): ?>
+    <?php error_log("Displaying badge notification: " . print_r($_SESSION['badge_notification'], true)); ?>
+    <div class="alert alert-success">
+        <h4><?= htmlspecialchars($_SESSION['badge_notification']['message']); ?></h4>
+        <p><?= htmlspecialchars($_SESSION['badge_notification']['badge_description']); ?></p>
+    </div>
+    <?php unset($_SESSION['badge_notification']); ?>
+<?php endif; ?>
 <?php if (isset($_SESSION['errors'])): ?>
     <div class="error-messages">
         <?php foreach ($_SESSION['errors'] as $error): ?>
@@ -24,6 +32,7 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
     </div>
     <?php unset($_SESSION['errors']); ?>
 <?php endif; ?>
+
 
 <div class="container">
     <main class="container__main">
@@ -52,7 +61,7 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
                 </a>
                 </p>
             </div>
-            
+
             <!-- Tags -->
             <div class="orderby">
                 <p class="tag font-semibold"><?= htmlspecialchars($category['name'] ?? 'Unknown') ?></p>
@@ -71,14 +80,13 @@ $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
             <!-- Like/Unlike Button -->
             <div class="like-section">
                 <?php if ($loggedInUserId): ?>
-                    <button class="like-button"
-                        data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
+                    <button class="like-button" data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
                         data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
                         <span class="like-icon">
                             <?= $cocktail->hasLiked ? '❤️' : '🤍' ?>
                         </span>
                     </button>
-                    <span class="like-count"><?= $totalLikes ?>  </span>
+                    <span class="like-count"><?= $totalLikes ?> </span>
                 <?php else: ?>
                     <button class="like-button" onclick="showLoginPopup(event)">
                         <span class="like-icon">🤍</span>

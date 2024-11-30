@@ -50,9 +50,9 @@ if (isset($_SESSION['success'])) {
                 <div class="badge-grid">
                     <?php foreach ($userBadges as $badge): ?>
                         <div class="badge-card">
-                            <img src="<?= asset('uploads/badges/' . htmlspecialchars($badge['badge_image'])); ?>"
-                                alt="<?= htmlspecialchars($badge['badge_name']); ?>" class="badge-img">
-                            <p><?= htmlspecialchars($badge['badge_name']); ?></p>
+                            <!-- <img src="<?= asset('uploads/badges/' . htmlspecialchars(string: $badge->getBadgeImage() ?? 'default-badge.svg')); ?>"
+                                alt="<?= htmlspecialchars($badge->getName()); ?>" class="badge-img"> -->
+                            <p title="<?= htmlspecialchars($badge->getDescription()); ?>"><?= htmlspecialchars($badge->getName()); ?></p>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -77,7 +77,7 @@ if (isset($_SESSION['success'])) {
         <?php if ($userId === $profileUserId): ?>
             <a id="edit-profile-button" class="button-secondary">
                 <span>
-                Edit Profile
+                    Edit Profile
                 </span>
             </a>
 
@@ -125,7 +125,8 @@ if (isset($_SESSION['success'])) {
                     <?php endif; ?>
 
 
-                    <a href="/cocktails/<?= htmlspecialchars($recipe->getCocktailId() ?? '0') ?>-<?= urlencode($recipe->getTitle() ?? 'Untitled Cocktail') ?>">
+                    <a
+                        href="/cocktails/<?= htmlspecialchars($recipe->getCocktailId() ?? '0') ?>-<?= urlencode($recipe->getTitle() ?? 'Untitled Cocktail') ?>">
                         <img src="<?= asset('/../uploads/cocktails/' . htmlspecialchars($recipe->getImage() ?? 'default-image.svg')); ?>"
                             alt="<?= htmlspecialchars($recipe->getTitle() ?? 'Cocktail Image') ?>" class="cocktailImage">
                     </a>

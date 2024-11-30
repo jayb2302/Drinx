@@ -243,4 +243,8 @@ class CocktailService
     {
         return $this->commentRepository->getCommentCountByCocktailId($cocktailId);
     }
+    public function getCocktailCountByUserId($userId)
+    {
+        return $this->cocktailRepository->getCocktailCountByUserId($userId);
+    }
 }
