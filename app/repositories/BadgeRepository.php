@@ -63,7 +63,7 @@ class BadgeRepository
         $stmt->execute();
 
         $result = $stmt->fetchColumn();
-        error_log("isBadgeAlreadyEarned: User ID: $userId, Badge ID: $badgeId, Result: $result");
+      //  error_log("isBadgeAlreadyEarned: User ID: $userId, Badge ID: $badgeId, Result: $result");
         return $result > 0;
     }
 
@@ -93,7 +93,7 @@ class BadgeRepository
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        error_log("findBadgeByCocktailCount: Cocktail Count: $cocktailCount | Badge: " . print_r($row, true));
+     //   error_log("findBadgeByCocktailCount: Cocktail Count: $cocktailCount | Badge: " . print_r($row, true));
         return $row ? new Badge($row['badge_id'], $row['name'], $row['description']) : null;
     }
     public function findBadgeByCocktailCount($cocktailCount)

@@ -32,7 +32,8 @@ if (isset($_SESSION['success'])) {
             <img class="" src="<?= asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>"
                 alt="Profile picture of <?= htmlspecialchars($profile->getUsername()); ?>" class="profile-img">
         <?php else: ?>
-            <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture" class="profile-img">
+            <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture"
+                class="profile-img">
         <?php endif; ?>
         <h2>
             <?= htmlspecialchars($profile->getFirstName() ?? 'No First Name') . ' ' . htmlspecialchars($profile->getLastName() ?? 'No Last Name'); ?>
@@ -52,12 +53,36 @@ if (isset($_SESSION['success'])) {
                         <div class="badge-card">
                             <!-- <img src="<?= asset('uploads/badges/' . htmlspecialchars(string: $badge->getBadgeImage() ?? 'default-badge.svg')); ?>"
                                 alt="<?= htmlspecialchars($badge->getName()); ?>" class="badge-img"> -->
-                            <p title="<?= htmlspecialchars($badge->getDescription()); ?>"><?= htmlspecialchars($badge->getName()); ?></p>
+                            <p title="<?= htmlspecialchars($badge->getDescription()); ?>">
+                                <?= htmlspecialchars($badge->getName()); ?>
+                            </p>
                         </div>
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
                 <p>No badges earned yet.</p>
+            <?php endif; ?>
+            <!-- Progress to next badge -->
+            <?php if ($userId === $profileUserId): ?>
+                <?php if (isset($progressData) && !empty($progressData['nextBadge'])): ?>
+                    <div class="badge-progress-container">
+                        <div class="badge-progress">
+                            <h4>Progress:</h4>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: <?= $progressData['progress']; ?>%;"></div>
+                            </div>
+                        </div>
+
+                        <p>
+                            <?= ($progressData['nextMilestone'] - $cocktailCount); ?> more
+                            cocktail<?= ($progressData['nextMilestone'] - $cocktailCount) > 1 ? 's' : ''; ?>
+                            to unlock <?= htmlspecialchars($progressData['nextBadge']->getName()); ?>.
+                        </p>
+
+                    </div>
+                <?php else: ?>
+                    <p>You have earned all available badges. Keep creating amazing cocktails!</p>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
 

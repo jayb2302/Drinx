@@ -41,6 +41,14 @@ class UserController
         $profileStats = $this->userService->getUserStats($profileUserId);
         $isFollowing = $this->userService->isFollowing($loggedInUserId, $profileUserId); // Check if current user is following the profile user
 
+        // Fetch cocktail count and progress to next badge
+        $cocktailCount = $this->cocktailService->getCocktailCountByUserId($profileUserId);
+        // error_log("Cocktail Count: $cocktailCount");
+
+        $progressData = $this->badgeService->getUserProgressToNextBadge($profileUserId, $cocktailCount);
+        // error_log("Progress Data: " . print_r($progressData, true));
+
+
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
     }
@@ -206,10 +214,17 @@ class UserController
         // Check if current user is following the profile user
         $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
 
-        $userRecipes = $this->cocktailService->getUserRecipes( $profileUserId);
-        $userBadges = $this->badgeService->getUserBadges( $profileUserId);
-        $profileStats = $this->userService->getUserStats( $profileUserId);
-      
+        $userRecipes = $this->cocktailService->getUserRecipes($profileUserId);
+        $userBadges = $this->badgeService->getUserBadges($profileUserId);
+        $profileStats = $this->userService->getUserStats($profileUserId);
+
+        // Fetch cocktail count and progress to next badge
+        $cocktailCount = $this->cocktailService->getCocktailCountByUserId($profileUserId);
+        // error_log("Cocktail Count: $cocktailCount");
+
+        $progressData = $this->badgeService->getUserProgressToNextBadge($profileUserId, $cocktailCount);
+        // error_log("Progress Data: " . print_r($progressData, true));
+
         // Pass the profile data to the view
         require_once __DIR__ . '/../views/user/profile.php';
     }

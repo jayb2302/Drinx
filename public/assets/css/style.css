@@ -16,6 +16,7 @@
 @import "../css/components/cards.css";
 @import "../css/components/ingredients.css";
 @import "../css/components/user-management.css";
+@import "../css/components/progress-bar.css";
 
 :root {
   /* Colors for Light Mode */
