@@ -12,6 +12,7 @@ class CocktailController
     private $tagRepository;
     private $userService;
     private $imageService;
+    private $badgeService;
 
     public function __construct(
         CocktailService $cocktailService,
@@ -22,7 +23,8 @@ class CocktailController
         LikeService $likeService,
         TagRepository $tagRepository,
         UserService $userService,
-        ImageService $imageService
+        ImageService $imageService,
+        BadgeService $badgeService
     ) {
         $this->cocktailService = $cocktailService;
         $this->ingredientService = $ingredientService;
@@ -33,6 +35,7 @@ class CocktailController
         $this->tagRepository = $tagRepository;
         $this->userService = $userService;
         $this->imageService = $imageService;
+        $this->badgeService = $badgeService;
 
 
         // Start session if not already started
@@ -126,6 +129,13 @@ class CocktailController
 
                 $parsedQuantities = $this->processQuantities($_POST['quantities']);
                 $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $parsedQuantities, $_POST['units']);
+
+                // Check for new badges and notify user
+                $userId = $_SESSION['user']['id'];
+                $cocktailCount = $this->cocktailService->getCocktailCountByUserId($userId); // Fetch the updated cocktail count
+                error_log("User ID: $userId | Cocktail Count: $cocktailCount");
+
+                $this->badgeService->checkAndNotifyNewBadge($userId, $cocktailCount); // Check for new badges
 
                 $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
             } catch (Exception $e) {
@@ -308,21 +318,21 @@ class CocktailController
             if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
                 throw new \Exception("No valid file uploaded.");
             }
-    
+
             // Set the target directory for cocktail images
             $targetDir = __DIR__ . '/../../public/uploads/cocktails/';
-    
+
             // Generate a unique file name for the uploaded image
             $uniqueFileName = uniqid() . '.webp';
             $targetPath = $targetDir . $uniqueFileName;
-    
+
             // Set the desired dimensions for the cocktail image
             $width = 1280; // Example width
             $height = 720; // Example height
-    
+
             // Process the image using the ImageService
             $this->imageService->processImage($file, $width, $height, $targetPath);
-    
+
             // Return the unique file name to store in the database
             return $uniqueFileName;
         } catch (\Exception $e) {
@@ -331,7 +341,7 @@ class CocktailController
             return null;
         }
     }
-    
+
 
     // Handle image update for editing cocktails
     private function handleImageUpdate($file, $cocktail, &$errors)

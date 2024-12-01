@@ -359,5 +359,13 @@ class CocktailRepository
         ");
         $stmt->execute();
         return $stmt->fetchColumn();
+    }    
+    
+    public function getCocktailCountByUserId($userId)
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM cocktails WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
 }

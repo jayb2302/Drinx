@@ -46,7 +46,7 @@
             </select>
         </div>
 
-        <label for="image">Image</label>
+        <!-- <label for="image">Image</label>
         <input type="file" name="image" id="image" accept="image/*" <?= $isEditing ? '' : 'required' ?>>
         <span id="cocktail-file-error" style="color: red; display: none;"></span>
         <img id="cocktail-image-preview" 
@@ -55,8 +55,8 @@
             style="display: <?= $isEditing && $cocktail->getImage() ? 'block' : 'none'; ?>; width: 100px;">
         <?php if ($isEditing && $cocktail->getImage()): ?>
             <p>Current Image:</p>
-            <!-- <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>" alt="Current Image" style="width:100px;"> -->
-        <?php endif; ?>
+             <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>" alt="Current Image" style="width:100px;"> 
+        <?php endif; ?> -->
 
         <h3>Ingredients</h3>
         <div id="ingredientsContainer" class="ingredientsContainer">

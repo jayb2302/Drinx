@@ -9,6 +9,7 @@ require_once __DIR__ . '/../repositories/UnitRepository.php';
 require_once __DIR__ . '/../repositories/LikeRepository.php';
 require_once __DIR__ . '/../repositories/CommentRepository.php';
 require_once __DIR__ . '/../repositories/UserRepository.php';
+
 // Services
 require_once __DIR__ . '/../services/AdminService.php';
 require_once __DIR__ . '/../services/IngredientService.php';
@@ -18,6 +19,7 @@ require_once __DIR__ . '/../services/UserService.php';
 require_once __DIR__ . '/../services/CommentService.php';
 require_once __DIR__ . '/../services/CocktailService.php';
 require_once __DIR__ . '/../services/ImageService.php';
+require_once __DIR__ . '/../services/BadgeService.php';
 
 // Controllers
 require_once __DIR__ . '/../controllers/TagController.php';
@@ -45,6 +47,7 @@ $unitRepository = new UnitRepository($db);
 $likeRepository = new LikeRepository($db);
 $commentRepository = new CommentRepository($db);
 $userRepository = new UserRepository($db);
+$badgeRepository = new BadgeRepository($db);
 
 // Services
 $adminService = new AdminService(
@@ -54,7 +57,7 @@ $adminService = new AdminService(
     $tagRepository,
     $commentRepository
 );
-// $badgeService = new BadgeService();
+$badgeService = new BadgeService($badgeRepository);
 $imageService = new ImageService();
 $ingredientService = new IngredientService($ingredientRepository, $unitRepository);
 $stepService = new StepService($stepRepository);
@@ -83,7 +86,8 @@ $cocktailController = new CocktailController(
     $likeService,
     $tagRepository,
     $userService,
-    $imageService
+    $imageService,
+    $badgeService
 );
 
 $authController = new AuthController();
@@ -99,7 +103,8 @@ $homeController = new HomeController(
 $userController = new UserController(
     $userService,
     $cocktailService,
-    $imageService
+    $imageService,
+    $badgeService
 );
 
 $adminController = new AdminController($adminService, $authController, $cocktailService);
