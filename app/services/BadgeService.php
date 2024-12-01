@@ -64,11 +64,7 @@ class BadgeService
             error_log("No badge found for User ID: $userId with Cocktail Count: $cocktailCount.");
         }
     }
-
-
-
-
-
+    
     // Send notification to the user
     private function sendBadgeNotification($userId, $badge): void
     {
@@ -82,6 +78,7 @@ class BadgeService
 
         // error_log("Badge notification set in session: " . print_r($_SESSION['badge_notification'], true));
     }
+    
     public function getUserProgressToNextBadge($userId, $cocktailCount)
     {
         // error_log("Calculating progress for User ID: $userId | Cocktail Count: $cocktailCount");
@@ -146,10 +143,6 @@ class BadgeService
         ];
     }
     
-    
-    
-
-
     // Helper to map badge ID to milestone thresholds (cocktail counts)
     private function getMilestoneThreshold($badgeId)
     {
@@ -168,6 +161,4 @@ class BadgeService
 
         return $thresholds[$badgeId] ?? 0; // Default to 0 if badge ID is not found
     }
-
-
 }
