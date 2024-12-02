@@ -20,32 +20,24 @@ export function initializeLikes() {
                 if (data.success) {
                     // Update the button state
                     likeButton.setAttribute('data-liked', data.action === 'like');
-                    likeButton.querySelector('.like-icon').textContent =
-                        data.action === 'like' ? '❤️' : '🤍';
+                    const likeIcon = likeButton.querySelector('.like-icon i');
+
+                    if (data.action === 'like') {
+                        likeIcon.classList.remove('fa-regular');
+                        likeIcon.classList.add('fa-solid');
+                    } else {
+                        likeIcon.classList.remove('fa-solid');
+                        likeIcon.classList.add('fa-regular');
+                    }
 
                     // Locate the like count element
-                    let likeCount = null;
-
-                    // Try finding the `.like-count` next to the `.like-icon`
-                    const likeIcon = likeButton.querySelector('.like-icon');
-                    if (likeIcon) {
-                        likeCount = likeIcon.nextElementSibling;
-                    }
-
-                    // If not found, try the broader context of the `.like-section`
-                    if (!likeCount) {
-                        const likeSection = likeButton.closest('.like-section');
-                        if (likeSection) {
-                            likeCount = likeSection.querySelector('.like-count');
-                        }
-                    }
-
-                    // Update the like count if found
+                    let likeCount = likeButton.querySelector('.like-count');
                     if (likeCount) {
                         likeCount.textContent = data.likeCount;
                     } else {
                         console.warn('.like-count not found for like button:', likeButton);
                     }
+
                     // Dispatch DOMUpdated event to notify other modules of the changes
                     document.dispatchEvent(new Event('Likes.DOMUpdated'));
                 } else {

@@ -66,17 +66,17 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                             <!-- If the user is logged in, show the like button -->
                             <button class="like-button" data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
                                 data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
-                                <span class="like-count">
-                                    <?= $totalLikes ?>
-                                </span>
+                                <span class="like-count"><?= $totalLikes ?></span>
                                 <span class="like-icon">
-                                    <?= $cocktail->hasLiked ? '❤️' : '🤍' ?>
+                                    <i class="<?= $cocktail->hasLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart' ?>"></i>
                                 </span>
                             </button>
                         <?php else: ?>
                             <!-- If the user is not logged in, show only the like count and a non-functional like button -->
                             <button class="like-button" onclick="showLoginPopup(event)" title="Log in to like this cocktail">
-                                <span class="like-icon">🤍</span>
+                                <span class="like-icon">
+                                    <i class="fa-regular fa-heart"></i>
+                                </span>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -100,8 +100,8 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                     </div>
                 </a>
                 <div class="cocktailMeta">
-                    <span><?= $totalLikes ?>♥️ <?= $cocktail->commentCount ?> 💬</span>
-                    <span>📅<?= formatDate($cocktail->getCreatedAt() ?? 'Unknown date') ?></span>
+                    <span><?= $totalLikes ?> <i class="fa-solid fa-heart"></i> <?= $cocktail->commentCount ?> <i class="fa-solid fa-comments"></i></span>
+                    <span><i class="fa-solid fa-calendar"></i> <?= formatDate($cocktail->getCreatedAt() ?? 'Unknown date') ?></span>
                 </div>
 
                 <p><?= htmlspecialchars($cocktail->getDescription()) ?></p>

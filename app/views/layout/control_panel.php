@@ -26,7 +26,7 @@
         <!-- Profile Header with Display Name and Logout Button -->
         <div class="control-profile-header">
             <span class="display-name"><?= $displayName; ?></span>
-            <a href="/logout" class="logout-icon">🚪</a>
+            <a href="/logout" class="logout-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
         </div>
 
         <!-- Profile Info with Follower and Following Counts -->

@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: flex-end;
     & .like-button {
-        color: var(--surface);
+        color: var(--text-primary);
         background-color: var(--card-background);
         border: none;
         padding: 8px 12px;
@@ -31,5 +31,5 @@
 
 .like-icon {
     font-size: 24px; 
-    color: red; 
+    color: var(--error); 
 }

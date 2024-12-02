@@ -68,7 +68,7 @@
     --surface: #1f1f1f;
     --nav-background: #1f1f1f;
     --text-primary: #f2f2f2;
-    --text-secondary: #1f1f1f;
+    --text-secondary: #f2f2f2;
     --text-link: #dcb404;
     --accent-primary: #dcb404;
     --accent-hover: #dcb404;
@@ -113,6 +113,7 @@ h6 {
   font-family: var(--font-display);
   letter-spacing: 0.03em;
   margin: 0;
+  text-wrap: balance;
 }
 
 input {

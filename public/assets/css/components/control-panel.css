@@ -20,7 +20,7 @@
         }
         & .logout-icon {
             font-size: 1.2rem;
-            color: var(--accent-primary);
+            color: var(--text-primary);
             text-decoration: none;
             cursor: pointer;
         }
