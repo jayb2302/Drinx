@@ -387,6 +387,7 @@ class CocktailController
     public function view($cocktailId, $action = 'view')
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+        $currentUser = $this->userService->getUserWithProfile($loggedInUserId);
         // Sanitize inputs
         $cocktailId = intval($cocktailId); // Sanitize ID
         $action = sanitize($action); // Sanitize action
