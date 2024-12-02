@@ -14,7 +14,7 @@
                     src="<?= $isEditing && $cocktail->getImage() ? '/uploads/cocktails/' . htmlspecialchars($cocktail->getImage()) : ''; ?>"
                     alt="Cocktail Image Preview"
                     style="display: <?= $isEditing && $cocktail->getImage() ? 'block' : 'none'; ?>; width: 100px;">
-                
+
             <?php endif; ?>
 
         </div>
@@ -61,7 +61,6 @@
                 <?php foreach ($ingredients as $i => $ingredient): ?>
                     <div class="ingredient-input">
                         <div class="ingredient-name-container">
-
                             <label for="ingredient<?= $i + 1 ?>">Ingredient <?= $i + 1 ?>:</label>
                             <input type="text" name="ingredients[]" id="ingredient<?= $i + 1 ?>"
                                 value="<?= htmlspecialchars($ingredient->getName()) ?>" list="ingredientList" required>
@@ -83,6 +82,9 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        <?php if (count($ingredients) > 1): ?> <!-- Only show delete button if more than one ingredient -->
+                            <button type="button" class="delete-ingredient-button">❌</button>
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
