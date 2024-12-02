@@ -5,13 +5,11 @@ class Badge {
     private $description;
     private $badgeImage; // Add this property if badges have associated images
 
-
     public function __construct($id, $name, $description, $badgeImage = null) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
         $this->badgeImage = $badgeImage;
-
     }
 
     public function getId() {

@@ -36,8 +36,8 @@ $cocktailId = $matches[1] ?? null;
         <?php if (isset($stickyCocktail) && is_object($stickyCocktail)): ?>
             <div class="stickyContainer">
                 <div class="stickyCard">
-                    <h2>📌Sticky Cocktail</h2>
-                    <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
+                    <h2> <i class="fa-solid fa-paperclip"></i> Sticky Cocktail</h2>
+                    <a href="/cocktails/<?= htmlspecialchars($stickyCocktail->getCocktailId()) ?>-<?= urlencode($stickyCocktail->getTitle()) ?>">
                         <h3 class="stickyTitle"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
                     </a>
                     <div class="stickyMediaWrapper">

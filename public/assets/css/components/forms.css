@@ -1,72 +1,12 @@
+/* General Reset for Box Sizing */
 *,
 *::before,
 *::after {
     box-sizing: border-box;
-
-/* Form container styling */
-form {
-  display: flex;
-  flex-direction: column;
-  padding: .2 rem .5rem;
-  background-color: var(--card-background);
-}
-.form-container {
-  background-color: var(--background);
-  color: var(--text-primary);
-  padding: 0 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: var(--font-body);
-  margin: auto;
-}
-
-/* Form heading */
-.form-container h2 {
-  color: var(--accent-primary);
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  text-align: start;
-  margin-bottom: 1rem;
-}
-
-/* Form group styling */
-.form-group {
-  margin-bottom: 1rem;
-}
-
-/* Labels */
-.form-group label {
-  display: block;
-  font-weight: bold;
-  color: var(--text-primary);
-  margin-bottom: 0.3rem;
-}
-
-textarea {
-  background-color: var(--card-background);
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  resize: none;
-  width: 100%;
-}
-
-/* Input fields and textareas */
-input[type="text"],
-input[type="number"],
-select {
-  padding: 0.5rem;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-family: var(--font-body);
-  color: var(--text-primary);
-  background-color: var(--surface);
-  margin-bottom: 1rem;
-  transition: border-color 0.2s ease;
 }
 
 /* General Form Styling */
 form {
-    padding: 2% 5%;
     background-color: var(--card-background);
     & .submit-container {
         display: flex;
@@ -154,27 +94,63 @@ form {
 
     & .sticky-cocktail {
         display: flex;
-        justify-content: flex-start;
-        gap: 1.5rem;
-        margin-bottom: 1.5rem;
+        justify-content: center;
+        gap: .5rem;
+        background: var(--lcard-linear-gradient);
+        box-shadow: 0 0.5 -1px rgba(0, 0, 0, 0.1);
+        padding: var(--button-padding);
         width: 100%;
-      & .sticky-cocktail input[type="checkbox"] {
+        border-radius: 5px;
+      
+        & input[type="checkbox"] {
           margin: 0; 
+          accent-color: var(--accent-primary);
+          cursor: pointer;
       }
+      & label {
+        position: relative;
+        cursor: pointer;
+
+        &::after {
+            content: "Set cocktail as sticky to feature it prominently.";
+            position: absolute;
+            top: calc(100% + 0.5rem); /* Position tooltip below the label */
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--background-secondary);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            white-space: nowrap; 
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.2s ease;
+            z-index: 10;
+        }
+
+        &:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
     }
     & input[type="file"] {
         margin-bottom: 1.5rem;
         padding: 1rem;
+        flex-grow: 1;
+        width: 100%;
     }
 }
 
 /* Buttons */
 button,
 input[type="submit"] {
-    background-color: var(--accent-primary);
-    color: var(--text-primary);
+    background-color: var(--button-primary);
+    color: var(--text-secondary);
     font-weight: bold;
-    padding: 0.5rem 1.5rem;
+    padding: var(--button-padding);
     border: none;
     border-radius: 0.4rem;
     cursor: pointer;
@@ -197,7 +173,7 @@ input[type="submit"] {
     transition: background-color 0.2s ease;
     justify-content: flex-end;
     text-align: start;
-  margin-bottom: .5rem;
+  margin: 1rem 0;
   width: clamp(150px, 20vw, 200px);
 
     &:hover {
@@ -239,7 +215,6 @@ input[type="submit"] {
         & input,
         & select,
         & textarea {
-            
             font-size: 1rem;
             border: 0.1rem solid #ccc;
             border-radius: 0.4rem;
@@ -247,20 +222,20 @@ input[type="submit"] {
         }
 
         & textarea {
-            resize: vertical; /* Allow resizing but within limits */
-            min-height: 5vh; /* Minimum height */
-            max-height: 20vh; /* Maximum height */
+            resize: vertical; 
+            min-height: 10vh; 
+            max-height: 20vh; 
         }
 
         & .ingredient-name-container {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: .5rem;
         }
 
         & .quantity-unit-container {
             display: flex;
-            gap: 1.5rem;
+            gap: .5rem;
 
             & .quantity-input,
             & .unit-input {
@@ -271,14 +246,14 @@ input[type="submit"] {
             }
         }
 
-        & .remove-ingredient-button,
+        & .delete-ingredient-button,
         & .delete-step-button {
             position: absolute;
             top: .5rem;
-            right: .5rem;
+            right: -.5rem;
             background: none;
             border: none;
-            font-size: 1rem;
+            font-size: .8rem;
             color: var(--error);
             cursor: pointer;
 

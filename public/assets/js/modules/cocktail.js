@@ -22,18 +22,17 @@ export function initializeCocktail() {
             const newIngredientDiv = `
                 <div class="ingredient-input" id="ingredientGroup${ingredientCount}">
                      <div class="ingredient-name-container">
-                        <label for="ingredient${ingredientCount}">${ingredientCount}:</label>
                         <input type="text" name="ingredients[]" id="ingredient${ingredientCount}" required>
                     </div>
-                    <div class="quantitiy-unit-container">
-                        <label for="quantity${ingredientCount}">Quantity:</label>
+                    <div class="quantity-unit-container">
+                        
                         <input type="number" name="quantities[]" id="quantity${ingredientCount}" step="any" required>                    
-                        <label for="unit${ingredientCount}">Unit:</label>
+                        
                         <select name="units[]" id="unit${ingredientCount}" required>
                             ${getUnitOptions()} <!-- Populate unit options dynamically -->
                         </select>
                     </div>
-                    <button type="button" class="remove-ingredient-button" data-ingredient-id="${ingredientCount}">❌</button>
+                    <button type="button" class="delete-ingredient-button" data-ingredient-id="${ingredientCount}">❌</button>
                 </div>
             `;
 
@@ -42,32 +41,41 @@ export function initializeCocktail() {
 
         // Delete ingredient functionality
         ingredientsContainer.addEventListener('click', (event) => {
-            if (event.target.classList.contains('remove-ingredient-button')) {
-                const deleteButton = event.target;
-                const ingredientGroup = deleteButton.closest('.ingredient-input');
+            if (event.target.classList.contains('delete-ingredient-button')) {
+                const ingredientGroup = event.target.closest('.ingredient-input');
                 if (ingredientGroup) {
                     ingredientGroup.remove();
-
-                    // Re-number remaining ingredients
-                    ingredientCount = 0;
-                    ingredientsContainer.querySelectorAll('.ingredient-input').forEach((ingredient, index) => {
-                        ingredientCount = index + 1;
-                        const label = ingredient.querySelector('label[for^="ingredient"]');
-                        const input = ingredient.querySelector('input[name="ingredients[]"]');
-                        const quantity = ingredient.querySelector('input[name="quantities[]"]');
-                        const unit = ingredient.querySelector('select[name="units[]"]');
-
-                        // Update ingredient number
-                        if (label) label.textContent = `${ingredientCount}:`;
-                        if (input) input.id = `ingredient${ingredientCount}`;
-                        if (quantity) quantity.id = `quantity${ingredientCount}`;
-                        if (unit) unit.id = `unit${ingredientCount}`;
-                    });
+                    renumberIngredients();
+                    updateDeleteButtonVisibility();
                 }
             }
         });
+        function renumberIngredients() {
+            ingredientsContainer.querySelectorAll('.ingredient-input').forEach((ingredient, index) => {
+                const ingredientNumber = index + 1;
+        
+                const label = ingredient.querySelector('label[for^="ingredient"]');
+                const input = ingredient.querySelector('input[name="ingredients[]"]');
+                const quantity = ingredient.querySelector('input[name="quantities[]"]');
+                const unit = ingredient.querySelector('select[name="units[]"]');
+        
+                // Update labels and IDs
+                if (label) label.textContent = `Ingredient ${ingredientNumber}:`;
+                if (input) input.id = `ingredient${ingredientNumber}`;
+                if (quantity) quantity.id = `quantity${ingredientNumber}`;
+                if (unit) unit.id = `unit${ingredientNumber}`;
+            });
+        }
+        function updateDeleteButtonVisibility() {
+            const deleteButtons = ingredientsContainer.querySelectorAll('.remove-ingredient-button');
+            deleteButtons.forEach(button => (button.style.display = 'inline')); // Show all delete buttons
+        
+            if (deleteButtons.length === 1) {
+                deleteButtons[0].style.display = 'none'; // Hide delete button if only one ingredient
+            }
+        }
+        updateDeleteButtonVisibility();
     }
-
     // Steps Section
     const stepsContainer = document.getElementById("stepsContainer");
     const addStepButton = document.getElementById("addStepButton");

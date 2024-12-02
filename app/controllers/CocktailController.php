@@ -319,8 +319,10 @@ class CocktailController
                 throw new \Exception("No valid file uploaded.");
             }
 
+
             // Set the target directory for cocktail images
             $targetDir = __DIR__ . '/../../public/uploads/cocktails/';
+
 
             // Generate a unique file name for the uploaded image
             $uniqueFileName = uniqid() . '.webp';
@@ -341,7 +343,6 @@ class CocktailController
             return null;
         }
     }
-
 
     // Handle image update for editing cocktails
     private function handleImageUpdate($file, $cocktail, &$errors)
@@ -386,33 +387,47 @@ class CocktailController
     public function view($cocktailId, $action = 'view')
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+        // Sanitize inputs
         $cocktailId = intval($cocktailId); // Sanitize ID
         $action = sanitize($action); // Sanitize action
-
-        $cocktail = $this->cocktailService->getCocktailById($cocktailId);
         $isEditing = ($action === 'edit');
+
+        // Fetch primary cocktail details
+        $cocktail = $this->cocktailService->getCocktailById($cocktailId);
+        if (!$cocktail) {
+            // Handle case where cocktail does not exist
+            http_response_code(404);
+            require_once __DIR__ . '/../views/errors/404.php';
+            return;
+        }
+        $cocktailTitle = $cocktail ? htmlspecialchars($cocktail->getTitle()) : 'Unknown Cocktail';
         // Check if user has liked the cocktail
         $cocktail->hasLiked = $loggedInUserId
             ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId)
             : false;
 
-        $creatorId = $cocktail->getUserId();
-        $creator = $this->userService->getUserWithProfile($creatorId);
-        // Fetch ingredients and convert quantities to fractions
+        $creator = $this->userService->getUserWithProfile($cocktail->getUserId());
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
-        $processedIngredients = [];
-        foreach ($ingredients as $ingredient) {
-            $processedIngredients[] = [
+        $processedIngredients = array_map(function ($ingredient) {
+            return [
                 'name' => $ingredient->getName(),
                 'quantity' => $this->ingredientService->convertDecimalToFraction($ingredient->getQuantity()),
                 'unit' => $ingredient->getUnitName(),
             ];
-        }
+        }, $ingredients);
 
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
-        $category = $this->cocktailService->getCategoryByCocktailId($cocktailId);
         $tags = $this->cocktailService->getCocktailTags($cocktailId);
         $categories = $this->cocktailService->getCategories();
+
+        $categoryName = 'Unknown Category';
+        foreach ($categories as $category) {
+            if ($category['category_id'] === $cocktail->getCategoryId()) {
+                $categoryName = $category['name'];
+                break;
+            }
+        }
+
         $units = $this->ingredientService->getAllUnits();
         $difficultyId = $cocktail->getDifficultyId();
         $difficulties = $this->difficultyRepository->getAllDifficulties();
@@ -421,10 +436,29 @@ class CocktailController
         // Fetch total likes for the cocktail
         $totalLikes = $this->likeService->getLikesForCocktail($cocktailId);
         $comments = $this->commentService->getCommentsWithReplies($cocktailId);
+        $viewData = compact(
+            'cocktail',
+            'creator',
+            'processedIngredients',
+            'steps',
+            'tags',
+            'categoryName',
+            'category',
+            'categories',
+            'units',
+            'difficulties',
+            'difficultyName',
+            'totalLikes',
+            'comments',
+            'loggedInUserId',
+            'isEditing'
+        );
 
         if ($isEditing) {
+            extract($viewData);
             require_once __DIR__ . '/../views/cocktails/form.php'; // Load the edit form
         } else {
+            extract($viewData);
             require_once __DIR__ . '/../views/cocktails/view.php'; // Load the view page
         }
     }

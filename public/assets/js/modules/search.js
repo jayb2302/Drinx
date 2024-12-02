@@ -34,12 +34,12 @@ export function initializeSearch() {
                 ? `/uploads/users/${encodeURIComponent(user.profile_picture)}`
                 : '/uploads/users/user-default.svg';
             container.append(`
-                <div class="user-suggestion">
-                    <a href="/profile/${encodeURIComponent(user.username)}">
+                <a href="/profile/${encodeURIComponent(user.username)}">
+                    <div class="user-suggestion">
                         <img src="${profilePicture}" alt="${user.username}'s profile picture" style="width: 40px; height: 40px;"/>
                         ${user.username}
-                    </a>
-                </div>
+                    </div>
+                </a>
             `);
         });
     }
@@ -49,12 +49,12 @@ export function initializeSearch() {
             const imagePath = cocktail.image ? `/uploads/cocktails/${cocktail.image}` : '/uploads/cocktails/default-image.webp';
             const urlTitle = encodeURIComponent(cocktail.title.replace(/\s+/g, '+'));
             container.append(`
-                <div class="cocktail-suggestion">
-                    <a href="/cocktails/${cocktail.cocktail_id}-${urlTitle}">
+                <a href="/cocktails/${cocktail.cocktail_id}-${urlTitle}">
+                    <div class="cocktail-suggestion">
                         <img src="${imagePath}" alt="${cocktail.title}" style="width: 40px; height: 40px;"/>
                         ${cocktail.title}
-                    </a>
-                </div>
+                    </div>
+                </a>
             `);
         });
     }

@@ -1,16 +1,23 @@
 <div class="form-container">
-    <h1><?= $isEditing ? 'Edit' : 'Add' ?> Cocktail Recipe</h1>
-   
-    <form action="/cocktails/<?= $isEditing ? 'update/' . $cocktail->getCocktailId() : 'store' ?>" method="post" enctype="multipart/form-data">
-    <div class="form-group">
 
-        <label for="image">Cocktail Image</label>
-        <input type="file" name="image" id="image" accept="image/*" <?= $isEditing ? '' : 'required' ?>>
-        <?php if ($isEditing && $cocktail->getImage()): ?>
-            <p>Current Image:</p>
-            <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>" alt="Current Image" style="width:100px;">
+    <form action="/cocktails/<?= $isEditing ? 'update/' . $cocktail->getCocktailId() : 'store' ?>" method="post" enctype="multipart/form-data">
+        <h1><?= $isEditing ? 'Edit' : 'Add' ?> Cocktail Recipe</h1>
+        <div class="form-group">
+
+            <label for="image">Cocktail Image</label>
+            <input type="file" name="image" id="image" accept="image/*" <?= $isEditing ? '' : 'required' ?>>
+            <span id="cocktail-file-error" style="color: red; display: none;"></span>
+            <?php if ($isEditing && $cocktail->getImage()): ?>
+                <span>Current Image:</span>
+                <!-- <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>" alt="Current Image" style="width:100px;"> -->
+                <img id="cocktail-image-preview"
+                    src="<?= $isEditing && $cocktail->getImage() ? '/uploads/cocktails/' . htmlspecialchars($cocktail->getImage()) : ''; ?>"
+                    alt="Cocktail Image Preview"
+                    style="display: <?= $isEditing && $cocktail->getImage() ? 'block' : 'none'; ?>; width: 100px;">
+
             <?php endif; ?>
-        </div>    
+
+        </div>
         <div class="recipeHeader">
             <div class="form-group">
                 <label for="title">Cocktail Name</label>
@@ -44,19 +51,17 @@
                     </option>
                 <?php endforeach; ?>
             </select>
+            <?php if (AuthController::isAdmin()): ?>
+                <div class="sticky-cocktail">
+                    <label for="isSticky" class="tooltip" data-tooltip="Mark this cocktail as sticky to feature it prominently.">
+                        <i class="fa-solid fa-paperclip"></i>
+                    </label>
+                    <input type="checkbox" name="isSticky" id="isSticky" value="1" <?= $isEditing && $cocktail->isSticky() ? 'checked' : '' ?>>
+                </div>
+            <?php endif; ?>
         </div>
 
-        <!-- <label for="image">Image</label>
-        <input type="file" name="image" id="image" accept="image/*" <?= $isEditing ? '' : 'required' ?>>
-        <span id="cocktail-file-error" style="color: red; display: none;"></span>
-        <img id="cocktail-image-preview" 
-            src="<?= $isEditing && $cocktail->getImage() ? '/uploads/cocktails/' . htmlspecialchars($cocktail->getImage()) : ''; ?>" 
-            alt="Cocktail Image Preview" 
-            style="display: <?= $isEditing && $cocktail->getImage() ? 'block' : 'none'; ?>; width: 100px;">
-        <?php if ($isEditing && $cocktail->getImage()): ?>
-            <p>Current Image:</p>
-             <img src="/uploads/cocktails/<?= htmlspecialchars($cocktail->getImage()) ?>" alt="Current Image" style="width:100px;"> 
-        <?php endif; ?> -->
+
 
         <h3>Ingredients</h3>
         <div id="ingredientsContainer" class="ingredientsContainer">
@@ -64,7 +69,6 @@
                 <?php foreach ($ingredients as $i => $ingredient): ?>
                     <div class="ingredient-input">
                         <div class="ingredient-name-container">
-
                             <label for="ingredient<?= $i + 1 ?>">Ingredient <?= $i + 1 ?>:</label>
                             <input type="text" name="ingredients[]" id="ingredient<?= $i + 1 ?>"
                                 value="<?= htmlspecialchars($ingredient->getName()) ?>" list="ingredientList" required>
@@ -86,6 +90,9 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        <?php if (count($ingredients) > 1): ?> <!-- Only show delete button if more than one ingredient -->
+                            <button type="button" class="delete-ingredient-button">❌</button>
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -151,12 +158,7 @@
             <?php endif; ?>
         </div>
         <button type="button" id="addStepButton">New Step</button>
-        <?php if (AuthController::isAdmin()): ?>
-        <div class="sticky-cocktail">
-            <input type="checkbox" name="isSticky" id="isSticky" value="1" <?= $isEditing && $cocktail->isSticky() ? 'checked' : '' ?>>
-            <label for="isSticky">is it Sticky?</label>
-        </div>
-    <?php endif; ?> 
+
 
         <div class="submit-container">
             <button type="submit">Submit</button>

@@ -12,16 +12,19 @@ class AdminController
     private $adminService;
     private $authController;
     private $cocktailService;
+    private $ingredientService;
 
     public function __construct(
         AdminService $adminService,
         AuthController $authController,
         CocktailService $cocktailService,
+        IngredientService $ingredientService
     ) {
         $dbConnection = Database::getConnection();
         $this->adminService = $adminService;
         $this->cocktailService = $cocktailService;
         $this->authController = $authController;
+        $this->ingredientService = $ingredientService;
     }
 
     public function dashboard()
@@ -36,10 +39,14 @@ class AdminController
     // Fetch the dashboard data, including tags
     $dashboardData = $this->adminService->getDashboardData();
 
+    
     // Extract data and add checks
     $stats = $dashboardData['stats'] ?? [];
     $users = $dashboardData['users'] ?? [];
     $cocktails = $dashboardData['cocktails'] ?? [];
+
+    $categorizedIngredients = $this->ingredientService->getIngredientsByTags();
+
     $groupedTags = $dashboardData['groupedTags'] ?? [];
     $categories = $dashboardData['tagCategories'] ?? [];
 
@@ -151,7 +158,11 @@ class AdminController
         }
         exit;
     }
-
+    public function manageIngredients()
+{
+    $categorizedIngredients = $this->ingredientService->getIngredientsByTags();
+    require_once __DIR__ . '/../views/admin/manage_ingredients.php';
+}
     // Manage Tags Page
     public function manageTags()
     {

@@ -1,9 +1,12 @@
+/* Pages */
 @import "../css/pages/cocktails.css";
 @import "../css/pages/footer.css";
 @import "../css/pages/profile.css";
 @import "../css/pages/about.css";
 @import "../css/pages/home.css";
 @import "../css/pages/admin.css";
+
+/* Components */
 @import "../css/components/jquery-ui.css";
 @import "../css/components/tags.css";
 @import "../css/components/control-panel.css";
@@ -17,6 +20,7 @@
 @import "../css/components/ingredients.css";
 @import "../css/components/user-management.css";
 @import "../css/components/progress-bar.css";
+@import "../css/components/icons.css";
 
 :root {
   /* Colors for Light Mode */
@@ -56,7 +60,8 @@
   --card-linear-gradient: linear-gradient(347deg, rgba(242,242,242,1) 0%, rgba(224,224,224,1) 70%);
   --lcard-linear-gradient: linear-gradient(347deg, rgba(224,224,224,1) 0%, rgba(242,242,242,1) 70%);
   
-  --base-padding: 1rem; 
+  --button-padding: .5rem 1rem;
+  --base-padding: .5rem 1rem; 
   --border-radius: clamp(0.5rem, calc(var(--base-padding) * 0.5), 1rem);
 }
 
@@ -67,7 +72,7 @@
     --surface: #1f1f1f;
     --nav-background: #1f1f1f;
     --text-primary: #f2f2f2;
-    --text-secondary: #bec6cf;
+    --text-secondary: #f2f2f2;
     --text-link: #dcb404;
     --accent-primary: #dcb404;
     --accent-hover: #dcb404;
@@ -112,6 +117,7 @@ h6 {
   font-family: var(--font-display);
   letter-spacing: 0.03em;
   margin: 0;
+  text-wrap: balance;
 }
 
 input {

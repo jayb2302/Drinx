@@ -19,7 +19,7 @@ class TagRepository
         ORDER BY tag_categories.category_name, tags.name";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function countTags()
@@ -135,18 +135,17 @@ class TagRepository
     public function addTagToCocktail($cocktailId, $tagName)
     {
         try {
-            // Check if tag exists by name
+            // Check if the tag exists
             $tag = $this->getTagByName($tagName);
             if (!$tag) {
-                // If the tag doesn't exist, insert it with 'Uncategorized'
-                $this->save($tagName, null, null);  
-                $tag = $this->getTagByName($tagName); 
+                // Create the tag if it doesn't exist
+                $this->save($tagName, null);
+                $tag = $this->getTagByName($tagName);
             }
 
-            // Insert the tag ID into cocktail_tags
+            // Insert the tag into the cocktail_tags table
             $sql = "INSERT IGNORE INTO cocktail_tags (cocktail_id, tag_id) VALUES (:cocktail_id, :tag_id)";
             $stmt = $this->db->prepare($sql);
-
             return $stmt->execute([
                 'cocktail_id' => $cocktailId,
                 'tag_id' => $tag['tag_id']

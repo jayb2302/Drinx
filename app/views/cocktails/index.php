@@ -55,8 +55,8 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                             data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
                             data-sticky-status="<?= $cocktail->isSticky() ? 'true' : 'false' ?>"
                             aria-pressed="<?= $cocktail->isSticky() ? 'true' : 'false' ?>"
-                            title="<?= $cocktail->isSticky() ? 'Remove Sticky' : '📌' ?>">
-                            <?= $cocktail->isSticky() ? '📌' : '📌' ?>
+                            title="<?= $cocktail->isSticky() ? 'Remove Sticky' : 'Mark as Sticky' ?>">
+                            <i class="<?= $cocktail->isSticky() ? 'fa-solid fa-paperclip' : 'fa-solid fa-paperclip' ?>"></i>
                         </button>
                     <?php endif; ?>
 
@@ -66,15 +66,17 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                             <!-- If the user is logged in, show the like button -->
                             <button class="like-button" data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
                                 data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
-                                <?= $totalLikes ?>
+                                <span class="like-count"><?= $totalLikes ?></span>
                                 <span class="like-icon">
-                                    <?= $cocktail->hasLiked ? '❤️' : '🤍' ?>
+                                    <i class="<?= $cocktail->hasLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart' ?>"></i>
                                 </span>
                             </button>
                         <?php else: ?>
                             <!-- If the user is not logged in, show only the like count and a non-functional like button -->
                             <button class="like-button" onclick="showLoginPopup(event)" title="Log in to like this cocktail">
-                                <span class="like-icon">🤍</span>
+                                <span class="like-icon">
+                                    <i class="fa-regular fa-heart"></i>
+                                </span>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -98,8 +100,8 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                     </div>
                 </a>
                 <div class="cocktailMeta">
-                    <span><?= $totalLikes ?>♥️ <?= $cocktail->commentCount ?> 💬</span>
-                    <span><?= formatDate($cocktail->getCreatedAt() ?? 'Unknown date') ?> 📅</span>
+                    <span><?= $totalLikes ?> <i class="fa-solid fa-heart"></i> <?= $cocktail->commentCount ?> <i class="fa-solid fa-comments"></i></span>
+                    <span><i class="fa-solid fa-calendar"></i> <?= formatDate($cocktail->getCreatedAt() ?? 'Unknown date') ?></span>
                 </div>
 
                 <p><?= htmlspecialchars($cocktail->getDescription()) ?></p>
@@ -121,7 +123,13 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                                                     <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture" class="creatorPicture">
                                                 <?php endif; ?>
                                                 <!-- Display the username of the comment creator -->
-                                                <p><strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong></p>
+                                                <div class="userCommented">
+                                                    <p><strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong></p>
+                                                    <!-- Display the comment creation date -->
+                                                    <p class="commentDate">
+                                                        <small><?= formatDate($comment->getCreatedAt() ?? 'Unknown date') ?></small>
+                                                    </p>
+                                                </div>
 
                                                 <!-- Menu for edit/delete if user is logged in and is the comment creator or an admin -->
                                                 <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $comment->getUserId() || AuthController::isAdmin())): ?>
@@ -140,10 +148,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                                             <!-- Display the comment text -->
                                             <p><?= htmlspecialchars($comment->getCommentText() ?? 'No comment text available') ?></p>
 
-                                            <!-- Display the comment creation date -->
-                                            <p class="commentDate">
-                                                <small><?= htmlspecialchars($comment->getCreatedAt() ?? 'Unknown date') ?></small>
-                                            </p>
+
                                         </div>
                                     </li>
                                 <?php endforeach; ?>

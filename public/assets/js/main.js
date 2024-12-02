@@ -6,7 +6,7 @@ import { initializeSticky } from './modules/sticky.js';
 import { initializeRandomCocktail } from './modules/random.js';
 import { initializeSortAndCategories } from './modules/sort-category.js';
 import { initializeComments } from './modules/comments.js';
-// import { initializeAdmin } from './modules/admin.js';
+import { initializeAdmin } from './modules/admin.js';
 import { initializeCocktail } from './modules/cocktail.js';
 import { initializeIngredients } from './modules/ingredients.js';
 import { initializeTags } from './modules/tags.js';
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         case 'admin':
             // Initialize admin panel features
-            // initializeAdmin();
+            initializeAdmin();
             initializeIngredients();
             initializeTags();
             initializeUserManagement();

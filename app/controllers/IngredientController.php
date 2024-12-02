@@ -1,19 +1,32 @@
 <?php
 class IngredientController
 {
-    private $ingredientRepository;
-    private $tagRepository;
+    private $ingredientService;
+    private $tagService;
 
-    public function __construct($ingredientRepository, $tagRepository)
+    public function __construct($ingredientService, $tagService)
     {
-        $this->ingredientRepository = $ingredientRepository;
-        $this->tagRepository = $tagRepository;
+        $this->ingredientService = $ingredientService;
+        $this->tagService = $tagService;
     }
 
+    public function manageIngredients()
+    {
+        $ingredientsWithTags = $this->ingredientService->getIngredientsByTags();
+    
+        // Debugging: Output the data to ensure it's populated correctly
+        error_log(print_r($ingredientsWithTags, true)); // Logs to server logs
+        echo '<pre>';
+        print_r($ingredientsWithTags); // Displays data in the browser
+        echo '</pre>';
+        die(); // Stops execution for debugging
+    
+        require_once __DIR__ . '/../views/ingredients/manage_ingredients.php';
+    }
     public function getUncategorizedIngredients()
     {
         try {
-            $uncategorized = $this->ingredientRepository->fetchUncategorizedIngredients();
+            $uncategorized = $this->ingredientService->fetchUncategorizedIngredients();
 
             if (!empty($uncategorized)) {
                 header('Content-Type: application/json');
@@ -48,7 +61,7 @@ class IngredientController
             }
 
             // Ensure ingredient exists
-            if (!$this->ingredientRepository->doesIngredientExist($ingredientId)) {
+            if (!$this->ingredientService->doesIngredientExist($ingredientId)) {
                 http_response_code(404);
                 error_log("Ingredient not found: $ingredientId");
                 echo json_encode(['status' => 'error', 'message' => 'Ingredient not found.']);
@@ -56,7 +69,7 @@ class IngredientController
             }
 
             // Ensure tag exists
-            if (!$this->tagRepository->doesTagExist($tagId)) {
+            if (!$this->tagService->doesTagExist($tagId)) {
                 http_response_code(404);
                 error_log("Tag not found: $tagId");
                 echo json_encode(['status' => 'error', 'message' => 'Tag not found.']);
@@ -64,7 +77,7 @@ class IngredientController
             }
 
             // Assign the tag
-            $result = $this->ingredientRepository->assignTag($ingredientId, $tagId);
+            $result = $this->ingredientService->assignTag($ingredientId, $tagId);
 
             if ($result) {
                 echo json_encode(['status' => 'success', 'message' => 'Tag assigned successfully.']);
@@ -80,8 +93,6 @@ class IngredientController
         }
     }
 
-    
-
     public function createIngredient()
     {
         try {
@@ -96,7 +107,7 @@ class IngredientController
             }
 
             // Check if ingredient already exists by name
-            $ingredientId = $this->ingredientRepository->getIngredientIdByName($ingredientName);
+            $ingredientId = $this->ingredientService->getIngredientIdByName($ingredientName);
 
             if ($ingredientId) {
                 // If the ingredient already exists, send an error
@@ -106,13 +117,13 @@ class IngredientController
             }
 
             // Create the new ingredient
-            $ingredientId = $this->ingredientRepository->createIngredient($ingredientName);
+            $ingredientId = $this->ingredientService->createIngredient($ingredientName);
 
             if ($ingredientId) {
-               
+
 
                 // Assign the "Uncategorized" tag
-            
+
 
                 // Return success response
                 echo json_encode(['status' => 'success', 'message' => 'Ingredient added successfully.', 'ingredient_id' => $ingredientId]);
@@ -139,7 +150,7 @@ class IngredientController
                 return;
             }
 
-            $result = $this->ingredientRepository->updateIngredientName($ingredientId, $ingredientName);
+            $result = $this->ingredientService->updateIngredientName($ingredientId, $ingredientName);
 
             if ($result) {
                 echo json_encode(['status' => 'success', 'message' => 'Ingredient name updated successfully.']);
@@ -165,7 +176,7 @@ class IngredientController
             }
 
             // Call the repository to delete the ingredient
-            $result = $this->ingredientRepository->deleteIngredient($ingredientId);
+            $result = $this->ingredientService->deleteIngredient($ingredientId);
 
             // Return the response based on the result
             if ($result) {
