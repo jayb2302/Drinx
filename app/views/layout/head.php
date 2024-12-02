@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) : 'Default Title' ?></title>
+    <title><?= isset($metaTitle) ? htmlspecialchars($metaTitle) : 'Default Title' ?></title>
+
     <meta name="description" content="<?= isset($metaTitle) ? htmlspecialchars($metaTitle) : 'Default meta description' ?>">
     <meta name="page-type" content="<?= htmlspecialchars($page ?? '') ?>">
     <!-- Icons -->
