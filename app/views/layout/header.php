@@ -2,9 +2,6 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-$authController = new AuthController();
-$currentUser = $authController->getCurrentUser();
-
 ?>
 <header class="header">
     <a class="header-brand" href="<?php echo url('/'); ?>">
