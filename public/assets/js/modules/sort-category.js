@@ -46,16 +46,21 @@ export function initializeSortAndCategories() {
             })
             .then(data => {
                 const wrapper = document.querySelector('.wrapper');
+    
                 if (wrapper) {
+                    // Update content
                     wrapper.innerHTML = data.content;
     
-                    // console.log('Cocktails content updated, reinitializing functionality...');
-                        wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
+                    // Scroll to the top of the wrapper
+                    wrapper.scrollTo({ top: 0, behavior: 'smooth' });
+    
+                    // Optional: log scroll position for debugging
+                    console.log('Scroll position reset to:', wrapper.scrollTop);
+    
                     // Update active sort option
                     updateSortIndicator();
     
-                    // Dispatch a DOMUpdated event for all modules to reinitialize
+                    // Reinitialize dynamic events or modules
                     document.dispatchEvent(new Event('Drinx.DOMUpdated'));
                 } else {
                     console.error('Wrapper element not found!');
