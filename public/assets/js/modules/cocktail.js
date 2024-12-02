@@ -22,13 +22,12 @@ export function initializeCocktail() {
             const newIngredientDiv = `
                 <div class="ingredient-input" id="ingredientGroup${ingredientCount}">
                      <div class="ingredient-name-container">
-                        <label for="ingredient${ingredientCount}">${ingredientCount}:</label>
                         <input type="text" name="ingredients[]" id="ingredient${ingredientCount}" required>
                     </div>
-                    <div class="quantitiy-unit-container">
-                        <label for="quantity${ingredientCount}">Quantity:</label>
+                    <div class="quantity-unit-container">
+                        
                         <input type="number" name="quantities[]" id="quantity${ingredientCount}" step="any" required>                    
-                        <label for="unit${ingredientCount}">Unit:</label>
+                        
                         <select name="units[]" id="unit${ingredientCount}" required>
                             ${getUnitOptions()} <!-- Populate unit options dynamically -->
                         </select>
@@ -75,8 +74,8 @@ export function initializeCocktail() {
                 deleteButtons[0].style.display = 'none'; // Hide delete button if only one ingredient
             }
         }
+        updateDeleteButtonVisibility();
     }
-    updateDeleteButtonVisibility();
     // Steps Section
     const stepsContainer = document.getElementById("stepsContainer");
     const addStepButton = document.getElementById("addStepButton");

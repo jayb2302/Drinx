@@ -1,10 +1,10 @@
 <div class="form-container">
-    <h1><?= $isEditing ? 'Edit' : 'Add' ?> Cocktail Recipe</h1>
 
     <form action="/cocktails/<?= $isEditing ? 'update/' . $cocktail->getCocktailId() : 'store' ?>" method="post" enctype="multipart/form-data">
+        <h1><?= $isEditing ? 'Edit' : 'Add' ?> Cocktail Recipe</h1>
         <div class="form-group">
 
-            <label for="image">Image</label>
+            <label for="image">Cocktail Image</label>
             <input type="file" name="image" id="image" accept="image/*" <?= $isEditing ? '' : 'required' ?>>
             <span id="cocktail-file-error" style="color: red; display: none;"></span>
             <?php if ($isEditing && $cocktail->getImage()): ?>
@@ -51,6 +51,14 @@
                     </option>
                 <?php endforeach; ?>
             </select>
+            <?php if (AuthController::isAdmin()): ?>
+                <div class="sticky-cocktail">
+                    <label for="isSticky" class="tooltip" data-tooltip="Mark this cocktail as sticky to feature it prominently.">
+                        <i class="fa-solid fa-paperclip"></i>
+                    </label>
+                    <input type="checkbox" name="isSticky" id="isSticky" value="1" <?= $isEditing && $cocktail->isSticky() ? 'checked' : '' ?>>
+                </div>
+            <?php endif; ?>
         </div>
 
 
@@ -150,12 +158,7 @@
             <?php endif; ?>
         </div>
         <button type="button" id="addStepButton">New Step</button>
-        <?php if (AuthController::isAdmin()): ?>
-            <div class="sticky-cocktail">
-                <input type="checkbox" name="isSticky" id="isSticky" value="1" <?= $isEditing && $cocktail->isSticky() ? 'checked' : '' ?>>
-                <label for="isSticky">is it Sticky?</label>
-            </div>
-        <?php endif; ?>
+
 
         <div class="submit-container">
             <button type="submit">Submit</button>

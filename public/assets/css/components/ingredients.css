@@ -106,10 +106,11 @@ select {
     background-color: var(--surface);
     color: var(--text-primary);
     border: 1px solid var(--border);
-    padding: 8px;
+    padding: var(--button-padding);
     border-radius: 5px;
     display: flex;
     flex-direction: column;
+    
 }
 
 input:focus,

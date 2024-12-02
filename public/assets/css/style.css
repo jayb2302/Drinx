@@ -1,9 +1,12 @@
+/* Pages */
 @import "../css/pages/cocktails.css";
 @import "../css/pages/footer.css";
 @import "../css/pages/profile.css";
 @import "../css/pages/about.css";
 @import "../css/pages/home.css";
 @import "../css/pages/admin.css";
+
+/* Components */
 @import "../css/components/jquery-ui.css";
 @import "../css/components/tags.css";
 @import "../css/components/control-panel.css";
@@ -17,6 +20,7 @@
 @import "../css/components/ingredients.css";
 @import "../css/components/user-management.css";
 @import "../css/components/progress-bar.css";
+@import "../css/components/icons.css";
 
 :root {
   /* Colors for Light Mode */
