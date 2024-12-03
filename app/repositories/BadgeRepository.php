@@ -1,13 +1,13 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../models/Badge.php';
 
 class BadgeRepository
 {
     private $db;
 
-    public function __construct($dbConnection)
+    public function __construct($db)
     {
-        $this->db = $dbConnection;
+        $this->db = $db;
     }
 
     // Fetch badges earned by a specific user

@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Cocktail.php';
 require_once __DIR__ . '/../models/Ingredient.php';
 require_once __DIR__ . '/../models/Step.php';
@@ -8,7 +7,8 @@ class CocktailRepository
 {
     private $db;
 
-    public function __construct($db) {
+    public function __construct($db) 
+    {
         $this->db = $db;
     }
 

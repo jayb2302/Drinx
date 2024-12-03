@@ -1,15 +1,12 @@
 <?php
-require_once __DIR__ . '/../config/dependencies.php';
-require_once __DIR__ . '/../models/Badge.php';
-require_once __DIR__ . '/../repositories/BadgeRepository.php';
-
 
 class BadgeService
 {
     private $badgeRepository;
 
-    public function __construct($badgeRepository)
-    {
+    public function __construct(
+        BadgeRepository $badgeRepository = null
+    ) {
         $this->badgeRepository = $badgeRepository;
     }
 
@@ -79,7 +76,7 @@ class BadgeService
         // error_log("Badge notification set in session: " . print_r($_SESSION['badge_notification'], true));
     }
     
-    public function getUserProgressToNextBadge($userId, $cocktailCount)
+    public function getUserProgressToNextBadge($profileUserId, $cocktailCount)
     {
         // error_log("Calculating progress for User ID: $userId | Cocktail Count: $cocktailCount");
     

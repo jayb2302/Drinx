@@ -3,8 +3,9 @@ class LikeController
 {
     private $likeService;
 
-    public function __construct(LikeService $likeService)
-    {
+    public function __construct(
+        LikeService $likeService
+    ) {
         $this->likeService = $likeService;
     }
     public function toggleLike($cocktailId)

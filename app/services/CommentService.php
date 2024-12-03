@@ -4,8 +4,10 @@ class CommentService
     private $commentRepository;
     private $userService;
 
-    public function __construct(CommentRepository $commentRepository, UserService $userService)
-    {
+    public function __construct(
+        CommentRepository $commentRepository,
+        UserService $userService
+    ) {
         $this->commentRepository = $commentRepository;
         $this->userService = $userService;
     }

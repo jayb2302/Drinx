@@ -2,8 +2,8 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-$authController = new AuthController();
-$currentUser = $authController->getCurrentUser();
+// $authController = new AuthController();
+// $currentUser = $authController->getCurrentUser();
 
 ?>
 <header class="header">

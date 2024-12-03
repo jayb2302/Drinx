@@ -1,13 +1,12 @@
 <?php
-require_once __DIR__ . '/../repositories/StepRepository.php';
-
-
 
 class StepController {
-    private $stepRepository;
+    private $stepService;
 
-    public function __construct($dbConnection) {
-        $this->stepRepository = new StepRepository($dbConnection);  
+    public function __construct(
+        StepService $stepService
+    ) {
+        $this->stepService = $stepService;
     }
 
     public function addStep() {
@@ -16,7 +15,7 @@ class StepController {
             $step_number = intval($_POST['step_number']);
             $instruction = sanitize($_POST['step_instruction']); 
 
-            $this->stepRepository->addStep($cocktail_id, $step_number, $instruction);
+            $this->stepService->addStep($cocktail_id, $step_number, $instruction);
 
             // Redirect back to the cocktail view page
             header('Location: /cocktails/view?id=' . $cocktail_id);

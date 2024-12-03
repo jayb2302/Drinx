@@ -37,7 +37,7 @@ class BaseController {
         $commentRepository = new CommentRepository($dbConnection);
 
         // Instantiate Services
-        $ingredientService = new IngredientService($ingredientRepository, $unitRepository);
+        $ingredientService = new IngredientService($ingredientRepository, $unitRepository, $tagRepository);
         $stepService = new StepService($stepRepository); // Pass only StepRepository if that is all that is needed
         $tagRepository = new TagRepository($dbConnection);
         $difficultyRepository = new DifficultyRepository($dbConnection);

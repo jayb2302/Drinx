@@ -4,7 +4,10 @@ class IngredientController
     private $ingredientService;
     private $tagService;
 
-    public function __construct($ingredientService, $tagService)
+    public function __construct(
+        IngredientService $ingredientService,
+        TagService $tagService
+    )
     {
         $this->ingredientService = $ingredientService;
         $this->tagService = $tagService;
@@ -15,13 +18,13 @@ class IngredientController
         $ingredientsWithTags = $this->ingredientService->getIngredientsByTags();
     
         // Debugging: Output the data to ensure it's populated correctly
-        error_log(print_r($ingredientsWithTags, true)); // Logs to server logs
+        // error_log(print_r($ingredientsWithTags, true)); // Logs to server logs
         echo '<pre>';
         print_r($ingredientsWithTags); // Displays data in the browser
         echo '</pre>';
-        die(); // Stops execution for debugging
+        //die(); // Stops execution for debugging
     
-        require_once __DIR__ . '/../views/ingredients/manage_ingredients.php';
+        require_once __DIR__ . '/../views/admin/manage_ingredients.php';
     }
     public function getUncategorizedIngredients()
     {

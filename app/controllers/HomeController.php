@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/../config/dependencies.php';
 
 class HomeController
 {
@@ -7,32 +6,24 @@ class HomeController
     private $ingredientService;
     private $likeService;
     private $userService;
-    private $categoryRepository;
-    private $difficultyRepository;
-    private $tagRepository;
 
     public function __construct(
         CocktailService $cocktailService,
         IngredientService $ingredientService,
         LikeService $likeService,
         UserService $userService,
-        CategoryRepository $categoryRepository,
-        DifficultyRepository $difficultyRepository,
-        TagRepository $tagRepository
     ) {
         $this->cocktailService = $cocktailService;
         $this->ingredientService = $ingredientService;
         $this->likeService = $likeService;
         $this->userService = $userService;
-        $this->categoryRepository = $categoryRepository;
-        $this->difficultyRepository = $difficultyRepository;
-        $this->tagRepository = $tagRepository;
     }
 
     public function index($categoryName = null, $sortOption = 'recent')
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $isAdmin = $_SESSION['user']['is_admin'] ?? false;
+        $currentUser = $this->userService->getUserWithProfile($loggedInUserId);
         $cocktails = $this->cocktailService->getAllCocktails();
         $user = $_SESSION['user'] ?? null; 
 
@@ -56,7 +47,7 @@ class HomeController
         // Fetch cocktails globally or by category
         if ($categoryName) {
             $categoryName = str_replace('-', ' ', urldecode($categoryName));
-            $categoryId = $this->categoryRepository->getCategoryIdByName($categoryName);
+            $categoryId = $this->cocktailService->getCategoryIdByName($categoryName);
             if (!$categoryId) {
                 http_response_code(404);
                 echo "Category not found.";
@@ -81,7 +72,7 @@ class HomeController
         $randomCocktail = $this->cocktailService->getRandomCocktail();
         $stickyCocktail = $this->cocktailService->getStickyCocktail();
         $units = $this->ingredientService->getAllUnits();
-        $difficulties = $this->difficultyRepository->getAllDifficulties();
+        $difficulties = $this->cocktailService->getAllDifficulties();
         
         // Add 'hasLiked' status to each cocktail if the user is logged in
         foreach ($cocktails as $cocktail) {

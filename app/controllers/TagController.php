@@ -1,16 +1,17 @@
 <?php
 class TagController
 {
-    private $tagRepository;
+    private $tagService;
 
-    public function __construct(TagRepository $tagRepository)
+    public function __construct(
+        TagService $tagService)
     {
-        $this->tagRepository = $tagRepository;
+        $this->tagService = $tagService;
     }
     
     public function getAllTags()
     {
-        $tags = $this->tagRepository->getAllTags();
+        $tags = $this->tagService->getAllTags();
         $this->jsonResponse(
             $tags ? 'success' : 'error',
             $tags ? 'Tags retrieved successfully.' : 'No tags found.',
@@ -21,7 +22,7 @@ class TagController
 
     public function getTagById($tagId)
     {
-        $tag = $this->tagRepository->getTagById($tagId);
+        $tag = $this->tagService->getTagById($tagId);
         $this->jsonResponse(
             $tag ? 'success' : 'error',
             $tag ? 'Tag retrieved successfully.' : 'Tag not found.',
@@ -43,7 +44,7 @@ class TagController
             $this->jsonResponse('error', 'Tag name and category are required.', [], 400);
         }
 
-        $result = $this->tagRepository->save($tagName, $tagCategoryId, $tagId);
+        $result = $this->tagService->save($tagName, $tagCategoryId, $tagId);
 
         $this->jsonResponse(
             $result ? 'success' : 'error',
@@ -55,9 +56,9 @@ class TagController
     
     public function editTag($tagId)
     {
-        $editTag = $this->tagRepository->getTagById($tagId);
-        $tags = $this->groupTagsByCategory($this->tagRepository->getAllTags());
-        $tagCategories = $this->tagRepository->getAllTagCategories();
+        $editTag = $this->tagService->getTagById($tagId);
+        $tags = $this->groupTagsByCategory($this->tagService->getAllTags());
+        $tagCategories = $this->tagService->getAllTagCategories();
 
         require_once __DIR__ . '/../views/admin/manage_tags.php';
     }
@@ -73,7 +74,7 @@ class TagController
             $this->jsonResponse('error', 'Invalid tag ID.', [], 400);
         }
 
-        $result = $this->tagRepository->deleteTag($tagId);
+        $result = $this->tagService->deleteTag($tagId);
 
         $this->jsonResponse(
             $result ? 'success' : 'error',

@@ -5,9 +5,9 @@ class UserRepository
 {
     private $db;
 
-    public function __construct($dbConnection)
+    public function __construct($db)
     {
-        $this->db = $dbConnection;
+        $this->db = $db;
     }
     // Get all users
     public function getAllUsers()

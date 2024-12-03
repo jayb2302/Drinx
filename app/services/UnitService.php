@@ -2,7 +2,9 @@
 class UnitService {
     private $unitRepository;
 
-    public function __construct($unitRepository) {
+    public function __construct(
+        UnitRepository $unitRepository
+    ) {
         $this->unitRepository = $unitRepository;
     }
 

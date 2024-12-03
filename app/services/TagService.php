@@ -4,8 +4,10 @@ class TagService
     private $tagRepository;
     private $ingredientRepository;
 
-    public function __construct(TagRepository $tagRepository, IngredientRepository $ingredientRepository)
-    {
+    public function __construct(
+        TagRepository $tagRepository,
+        IngredientRepository $ingredientRepository
+    ) {
         $this->tagRepository = $tagRepository;
         $this->ingredientRepository = $ingredientRepository;
     }
@@ -25,7 +27,7 @@ class TagService
 
             // Loop through ingredients and assign tags
             foreach ($ingredients as $ingredient) {
-                $ingredientName = strtolower($ingredient['name']);
+                $ingredientName = strtolower($ingredient->getName());
                 foreach ($tagMapping as $tagName => $ingredientKeywords) {
                     if (in_array($ingredientName, $ingredientKeywords)) {
                         $this->tagRepository->addTagToCocktail($cocktailId, $tagName);
@@ -36,4 +38,29 @@ class TagService
             throw new Exception("Error assigning tags by ingredients: " . $e->getMessage());
         }
     }
+    public function getAllTags ()
+    {
+        return $this->tagRepository->getAllTags();
+    }
+    public function getAllTagCategories ()
+    {
+        return $this->tagRepository->getAllTagCategories();
+    }
+    public function getTagById ($tagId)
+    {
+        return $this->tagRepository->getTagById($tagId);
+    }
+    public function save ($tagName, $tagCategoryId, $tagId = null)
+    {
+        return $this->tagRepository->save($tagName, $tagCategoryId, $tagId);
+    }
+    public function deleteTag ($tagId)
+    {
+        return $this->tagRepository->deleteTag($tagId);
+    }
+    public function doesTagExist ($tagId)
+    {
+        return $this->tagRepository->doesTagExist($tagId);
+    }
+    
 }

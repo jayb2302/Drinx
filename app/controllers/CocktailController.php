@@ -1,15 +1,12 @@
 <?php
-require_once __DIR__ . '/../config/dependencies.php';
 
 class CocktailController
 {
     private $cocktailService;
     private $ingredientService;
     private $stepService;
-    private $difficultyRepository;
     private $commentService;
     private $likeService;
-    private $tagRepository;
     private $userService;
     private $imageService;
     private $badgeService;
@@ -18,24 +15,18 @@ class CocktailController
         CocktailService $cocktailService,
         IngredientService $ingredientService,
         StepService $stepService,
-        DifficultyRepository $difficultyRepository,
         CommentService $commentService,
         LikeService $likeService,
-        TagRepository $tagRepository,
         UserService $userService,
         ImageService $imageService,
-        BadgeService $badgeService
     ) {
         $this->cocktailService = $cocktailService;
         $this->ingredientService = $ingredientService;
         $this->stepService = $stepService;
-        $this->difficultyRepository = $difficultyRepository;
         $this->commentService = $commentService;
         $this->likeService = $likeService;
-        $this->tagRepository = $tagRepository;
         $this->userService = $userService;
         $this->imageService = $imageService;
-        $this->badgeService = $badgeService;
 
 
         // Start session if not already started
@@ -80,7 +71,7 @@ class CocktailController
         // Fetch necessary data for the form (categories, units)
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
-        $difficulties = $this->difficultyRepository->getAllDifficulties();
+        $difficulties = $this->cocktailService->getAllDifficulties();
 
         $isEditing = false;
         // Pass the necessary data to the view
@@ -135,7 +126,7 @@ class CocktailController
                 $cocktailCount = $this->cocktailService->getCocktailCountByUserId($userId); // Fetch the updated cocktail count
                 error_log("User ID: $userId | Cocktail Count: $cocktailCount");
 
-                $this->badgeService->checkAndNotifyNewBadge($userId, $cocktailCount); // Check for new badges
+                $this->userService->checkAndNotifyNewBadge($userId, $cocktailCount); // Check for new badges
 
                 $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
             } catch (Exception $e) {
@@ -163,9 +154,9 @@ class CocktailController
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
         $difficultyId = $cocktail->getDifficultyId();
-        $difficultyName = $this->difficultyRepository->getDifficultyNameById($difficultyId);
+        $difficultyName = $this->cocktailService->getDifficultyNameById($difficultyId);
 
-        $difficulties = $this->difficultyRepository->getAllDifficulties();
+        $difficulties = $this->cocktailService->getAllDifficulties();
         $isEditing = true;
 
         // Pass the variables to the view
@@ -387,6 +378,8 @@ class CocktailController
     public function view($cocktailId, $action = 'view')
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+        $currentUser = $this->userService->getUserWithProfile($loggedInUserId);
+
         // Sanitize inputs
         $cocktailId = intval($cocktailId); // Sanitize ID
         $action = sanitize($action); // Sanitize action
@@ -430,8 +423,8 @@ class CocktailController
 
         $units = $this->ingredientService->getAllUnits();
         $difficultyId = $cocktail->getDifficultyId();
-        $difficulties = $this->difficultyRepository->getAllDifficulties();
-        $difficultyName = $this->difficultyRepository->getDifficultyNameById($cocktail->getDifficultyId());
+        $difficulties = $this->cocktailService->getAllDifficulties();
+        $difficultyName = $this->cocktailService->getDifficultyNameById($cocktail->getDifficultyId());
 
         // Fetch total likes for the cocktail
         $totalLikes = $this->likeService->getLikesForCocktail($cocktailId);

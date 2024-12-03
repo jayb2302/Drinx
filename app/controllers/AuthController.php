@@ -1,13 +1,13 @@
 <?php
-require_once __DIR__ . '/../services/UserService.php';
 
-class AuthController
-{
+class AuthController{
     private $userService;
 
-    public function __construct()
+    public function __construct(
+        UserService $userService
+    )
     {
-        $this->userService = new UserService();
+        $this->userService = $userService;
     }
 
     // Handle user authentication
@@ -145,7 +145,7 @@ class AuthController
         return isset($_SESSION['user']) && $_SESSION['user']['is_admin'];
     }
 
-    public function getCurrentUser()
+    public static function getCurrentUser()
     {
         if (!isset($_SESSION['user'])) {
             return null;

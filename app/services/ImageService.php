@@ -6,8 +6,10 @@ class ImageService
     public $maxFileSize; // in bytes
     private $imageQuality; // WebP quality (0-100)
 
-    public function __construct($maxFileSize = 5242880, $imageQuality = 80)
-    {
+    public function __construct(
+        $maxFileSize = 5242880, 
+        $imageQuality = 80
+    ) {
         $this->maxFileSize = $maxFileSize;
         $this->imageQuality = $imageQuality;
     }
