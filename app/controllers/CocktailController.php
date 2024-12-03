@@ -14,6 +14,9 @@ class CocktailController
     private $imageService;
     private $badgeService;
 
+    // Maximum description length
+    private const MAX_DESCRIPTION_LENGTH = 500; 
+
     public function __construct(
         CocktailService $cocktailService,
         IngredientService $ingredientService,
@@ -95,6 +98,10 @@ class CocktailController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = $this->validateCocktailInput($_POST);
 
+            $description = sanitizeTrim($_POST['description']);
+            if (strlen($description) > self::MAX_DESCRIPTION_LENGTH) {
+                $errors[] = "Description cannot exceed " . self::MAX_DESCRIPTION_LENGTH . " characters.";
+            }
             // Log validation errors
             error_log("Validation errors: " . print_r($errors, true));
 
@@ -111,7 +118,7 @@ class CocktailController
             $cocktailData = [
                 'user_id' => $_SESSION['user']['id'],
                 'title' => sanitize($_POST['title']),
-                'description' => sanitizeTrim($_POST['description']),
+                'description' => substr($description, 0, self::MAX_DESCRIPTION_LENGTH), // Enforce length
                 'image' => $image,
                 'category_id' => intval($_POST['category_id']),
                 'difficulty_id' => intval($_POST['difficulty_id'])
@@ -292,6 +299,11 @@ class CocktailController
         // Validate title length (optional: adjust as needed)
         if (!empty($data['title']) && strlen($data['title']) > 255) {
             $errors[] = "Title cannot be more than 255 characters.";
+        }
+
+        // Validate description length (new addition)
+        if (!empty($data['description']) && strlen($data['description']) > 500) { // Adjust length as needed
+            $errors[] = "Description cannot be more than 500 characters.";
         }
 
         // Check category_id and difficulty_id for valid integers

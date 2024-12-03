@@ -102,3 +102,16 @@ function validatePassword($password, &$errors)
 
     return empty($errors); // Return true if no errors
 }
+
+// Helper function to get the first sentence of a description
+function getFirstSentence($description) {
+    if (empty(trim($description))) {
+        return ''; // Return an empty string if the description is empty or whitespace
+    }
+
+    // Split the description into sentences using punctuation as delimiters
+    $sentences = preg_split('/(?<=[.?!])\s+/', $description, -1, PREG_SPLIT_NO_EMPTY);
+
+    // Return the first sentence or fallback to the trimmed description
+    return $sentences[0] ?? trim($description);
+}
