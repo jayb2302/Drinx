@@ -10,6 +10,7 @@ if ($stickyCocktail) {
     $cocktailId = htmlspecialchars($stickyCocktail->getCocktailId());
     $cocktailTitle = htmlspecialchars($stickyCocktail->getTitle());
     $cocktailDescription = htmlspecialchars($stickyCocktail->getDescription());
+    $firstSentence = getFirstSentence($cocktailDescription); 
     $cocktailImage = $stickyCocktail->getImage();
 
     if (!empty($cocktailImage)) {
@@ -24,7 +25,7 @@ if ($stickyCocktail) {
         'success' => true,
         'id' => $cocktailId,
         'title' => $cocktailTitle,
-        'description' => $cocktailDescription,
+        'description' => $firstSentence,
         'image' => $cocktailImage,
         'link' => $cocktailLink,
     ]);

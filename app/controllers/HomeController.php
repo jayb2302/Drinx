@@ -31,8 +31,10 @@ class HomeController
 
     public function index($categoryName = null, $sortOption = 'recent')
     {
+       
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
-        $isAdmin = $_SESSION['user']['is_admin'] ?? false;
+        $isAdmin = $_SESSION['user']['is_admin'] ?? false; // Initialize $isAdmin
+        $currentUser = $this->userService->getUserWithProfile($loggedInUserId);
         $cocktails = $this->cocktailService->getAllCocktails();
         $user = $_SESSION['user'] ?? null; 
 

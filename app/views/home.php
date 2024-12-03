@@ -44,7 +44,9 @@ $cocktailId = $matches[1] ?? null;
                         <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>" alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
                     </div>
                     <div class="stickyContent">
-                        <p class="stickyDescription"><?php echo htmlspecialchars($stickyCocktail->getDescription()); ?></p>
+                    <p class="sticky-description">
+                    <?= htmlspecialchars(getFirstSentence($stickyCocktail->getDescription())); ?>
+                </p>
                     </div>
                 </div>
             </div>

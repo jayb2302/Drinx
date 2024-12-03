@@ -13,15 +13,15 @@ include_once __DIR__ . '/../../helpers/helpers.php';
     </div>
     <?php unset($_SESSION['badge_notification']); ?>
 <?php endif; ?>
+
 <?php if (isset($_SESSION['errors'])): ?>
-    <div class="error-messages">
+    <ul class="error-messages">
         <?php foreach ($_SESSION['errors'] as $error): ?>
-            <p><?= htmlspecialchars($error) ?></p>
+            <li><?= htmlspecialchars($error); ?></li>
         <?php endforeach; ?>
-    </div>
+    </ul>
     <?php unset($_SESSION['errors']); ?>
 <?php endif; ?>
-
 <div class="recipe__container">
     <main class="recipe__main">
         <div class="cocktailActions">
@@ -46,22 +46,24 @@ include_once __DIR__ . '/../../helpers/helpers.php';
 
         <!-- Like/Unlike Button -->
         <div class="like-section">
-            <?php if ($loggedInUserId): ?>
-                <button class="like-button"
-                    data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
-                    data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
-                    <span class="like-icon">
-                        <?= $cocktail->hasLiked ? '❤️' : '🤍' ?>
-                    </span>
-                </button>
-                <span class="like-count"><?= $totalLikes ?>  </span>
-            <?php else: ?>
-                <button class="like-button" onclick="showLoginPopup(event)">
-                    <span class="like-icon">🤍</span>
-                </button>
-            <?php endif; ?>
-            <!-- Display the like count -->
-        </div>
+    <?php if ($loggedInUserId): ?>
+        <button class="like-button"
+            data-cocktail-id="<?= htmlspecialchars($cocktail->getCocktailId()) ?>"
+            data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
+            <span class="like-icon">
+                <i class="<?= $cocktail->hasLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart' ?>"></i>
+            </span>
+            <span class="like-count"><?= htmlspecialchars($totalLikes) ?></span>
+        </button>
+    <?php else: ?>
+        <button class="like-button" onclick="showLoginPopup(event)">
+            <span class="like-icon">
+                <i class="fa-regular fa-heart"></i>
+            </span>
+        </button>
+        <span class="like-count"><?= htmlspecialchars($totalLikes) ?></span>
+    <?php endif; ?>
+</div>
         <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
         <!-- Creator Info -->
         <div class="creatorInfo">
