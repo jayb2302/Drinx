@@ -37,7 +37,7 @@ class HomeController
         $currentUser = $this->userService->getUserWithProfile($loggedInUserId);
         $cocktails = $this->cocktailService->getAllCocktails();
         $user = $_SESSION['user'] ?? null; 
-
+        $data['csrf_token'] = $_SESSION['csrf_token'] ?? '';
         // Pass data to the view
         $data = [
             'cocktails' => $cocktails,

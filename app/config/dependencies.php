@@ -90,7 +90,7 @@ $cocktailController = new CocktailController(
     $badgeService
 );
 
-$authController = new AuthController();
+$authController = new AuthController($userService);
 $homeController = new HomeController(
     $cocktailService, 
     $ingredientService, 

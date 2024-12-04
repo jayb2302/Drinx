@@ -15,7 +15,7 @@ class CocktailController
     private $badgeService;
 
     // Maximum description length
-    private const MAX_DESCRIPTION_LENGTH = 500; 
+    private const MAX_DESCRIPTION_LENGTH = 500;
 
     public function __construct(
         CocktailService $cocktailService,
@@ -96,6 +96,15 @@ class CocktailController
         $this->ensureLoggedIn();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrfToken = $_POST['csrf_token'] ?? '';
+            $sessionToken = $_SESSION['csrf_token'] ?? '';
+
+            // Validate the CSRF token
+            if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+                http_response_code(403);
+                echo json_encode(['error' => 'Invalid or missing CSRF token.']);
+                exit;
+            }
             $errors = $this->validateCocktailInput($_POST);
 
             $description = sanitizeTrim($_POST['description']);
@@ -532,6 +541,16 @@ class CocktailController
     // Delete a cocktail (only for the owner or admin)
     public function delete($cocktailId)
     {
+        $csrfToken = $_POST['csrf_token'] ?? '';
+        $sessionToken = $_SESSION['csrf_token'] ?? '';
+
+        // Validate the CSRF token
+        if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Invalid or missing CSRF token.']);
+            exit;
+        }
+
         $cocktailId = intval($cocktailId); // Sanitize ID
         $this->ensureLoggedIn(); // Ensure the user is logged in
 
@@ -539,7 +558,7 @@ class CocktailController
 
         // Only allow the owner or an admin to delete the cocktail
         if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
-            $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
+            $this->redirect('/cocktails');
         }
 
         // Delete the cocktail
