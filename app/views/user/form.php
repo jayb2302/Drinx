@@ -1,5 +1,6 @@
 <div class="form-container">
     <form action="/profile/update" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()); ?>" />
         <!-- First Name -->
         <div class="form-group">
             <label for="first_name">First Name</label>

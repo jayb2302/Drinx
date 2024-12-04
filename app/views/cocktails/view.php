@@ -30,6 +30,7 @@ include_once __DIR__ . '/../../helpers/helpers.php';
                 <!-- Delete Button -->
                 <form action="/cocktails/delete/<?= $cocktail->getCocktailId() ?>" method="post"
                     onsubmit="return confirm('Are you sure you want to delete this cocktail?');">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
                     <button type="submit" class="delete">🗑️</button>
                 </form>
             <?php endif; ?>

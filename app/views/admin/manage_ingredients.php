@@ -2,19 +2,19 @@
     <h1 class="admin-control-tile">Manage Ingredients</h1>
     <!-- Search Bar -->
     <div class="ingredient-search-bar">
-    <input
-        type="text"
-        id="ingredientSearchInput"
-        placeholder="Search ingredients..."
-    />
-    <div id="ingredientSearchResults" class="search-results"></div>
-</div>
+        <input
+            type="text"
+            id="ingredientSearchInput"
+            placeholder="Search ingredients..." />
+        <div id="ingredientSearchResults" class="search-results"></div>
+    </div>
     <!-- Button to open the Add New Ingredient Modal -->
     <button id="openAddIngredientButton">Add Ingredient</button>
 
     <!-- Add New Ingredient Modal -->
     <div id="addIngredientDialog" title="Add Ingredient" style="display: none;">
         <form id="addIngredientForm">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']); ?>">
             <label for="ingredientNameInput">Ingredient Name:</label>
             <input type="text" id="ingredientNameInput" name="ingredient_name" required />
         </form>
@@ -68,9 +68,10 @@
     <!-- Tag Assignment Dialog -->
     <div id="assignTagDialog" title="Assign Tag" style="display: none;">
         <div id="assignTagCard">
-
             <form id="assignTagForm">
-                <input type="hidden" id="ingredientId" name="ingredient_id">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()); ?>" />
+            <input type="hidden" id="ingredientId" name="ingredient_id">
+
                 <!-- Display Ingredient Name here -->
                 <p><strong>Ingredient: </strong><span id="ingredientName"></span></p>
                 <label for="tag">Select Tag:</label>

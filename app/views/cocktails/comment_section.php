@@ -46,6 +46,7 @@
                                 <button type="button" class="menuItem editCommentButton"
                                     data-comment-id="<?= $comment->getCommentId() ?>">🖊️</button>
                                 <form action="/comments/<?= $comment->getCommentId() ?>/delete" method="POST">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
                                     <button type="submit" class="delete">🗑️</button>
                                 </form>
                             </div>
@@ -56,6 +57,7 @@
                 <!-- Inline edit form (initially hidden) -->
                 <form id="editForm-<?= $comment->getCommentId() ?>" class="editCommentForm hidden"
                     action="/comments/<?= $comment->getCommentId() ?>/edit" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
                     <textarea name="commentText"><?= htmlspecialchars($comment->getCommentText()) ?></textarea>
                     <button type="submit">Save</button>
                     <button type="button" class="cancelEditButton">Cancel</button>
@@ -92,7 +94,8 @@
                     <button class="replyButton" data-comment-id="<?= $comment->getCommentId() ?>">Reply</button>
                     <div id="replyForm-<?= $comment->getCommentId() ?>" class="replyForm hidden">
                         <form class="replyCommentForm" action="/comments/<?= $comment->getCommentId() ?>/reply" method="POST">
-                            <textarea name="comment" placeholder="Write your reply here..." required></textarea>
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">    
+                        <textarea name="comment" placeholder="Write your reply here..." required></textarea>
                             <input type="hidden" name="parent_comment_id" value="<?= $comment->getCommentId() ?>">
                             <input type="hidden" name="cocktail_id" value="<?= $cocktailId ?>">
                             <input type="hidden" name="cocktailTitle" value="<?= htmlspecialchars($cocktail->getTitle()) ?>">
