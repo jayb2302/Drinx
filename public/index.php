@@ -7,6 +7,9 @@ require_once __DIR__ . '/../router.php';
 require_once __DIR__ . '/../routes.php';
 require_once __DIR__ . '/../app/config/dependencies.php';
 
+// Generate CSRF Token
+generateCsrfToken();
+
 // Resolve the current request URI
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $action = $router->resolve($requestUri);
@@ -29,6 +32,7 @@ if ($action) {
             'TagController' => $tagController,
             'IngredientController' => $ingredientController,
             'UserController' => $userController,
+            'AuthController' => $authController,
         ];
 
         if (isset($controllers[$controllerClass])) {
