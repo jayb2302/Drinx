@@ -23,7 +23,9 @@ class AdminService
 
     public function getAllUsers()
     {
+        
         return $this->userRepository->getAllUsers();
+        
     }
 
     public function updateUserStatus($userId, $statusId)

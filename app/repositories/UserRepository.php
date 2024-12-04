@@ -12,7 +12,7 @@ class UserRepository
     // Get all users
     public function getAllUsers()
     {
-        $stmt = $this->db->query("SELECT * FROM users");
+        $stmt = $this->db->query("SELECT * FROM users WHERE is_admin = 0"); // Exclude admin users
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $users = [];
@@ -307,11 +307,12 @@ class UserRepository
                    COALESCE(p.profile_picture, 'user-default.svg') AS profile_picture
             FROM users u
             LEFT JOIN user_profile p ON u.user_id = p.user_id
-        ";
+        WHERE u.is_admin = 0  -- Exclude admin users
+    ";
 
         // Add filtering if a query is provided
         if ($query) {
-            $sql .= " WHERE u.username LIKE :query";
+            $sql .= " AND u.username LIKE :query";
         }
 
         $stmt = $this->db->prepare($sql);
@@ -408,5 +409,4 @@ class UserRepository
         $user->setAccountStatusName($result['account_status']);
         return $user;
     }
-
 }
