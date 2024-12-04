@@ -1,8 +1,13 @@
 ///// Sticky
 export function initializeSticky() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     function updateStickyCocktail() {
         fetch('/admin/sticky-cocktail', {
-            headers: { 'Content-Type': 'application/json' },
+            method: 'GET',  
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken  
+            },
         })
             .then(response => response.json())
             .then(data => {
@@ -37,8 +42,14 @@ export function initializeSticky() {
 
                 fetch('/admin/toggle-sticky', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cocktail_id: cocktailId }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken // Pass CSRF token in the header for POST request
+                    },
+                    body: JSON.stringify({
+                        cocktail_id: cocktailId,
+                        csrf_token: csrfToken // Pass CSRF token in the body too
+                    }),
                 })
                     .then(response => response.json())
                     .then(data => {

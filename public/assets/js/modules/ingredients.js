@@ -1,4 +1,5 @@
 export function initializeIngredients() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     // Toggle Ingredient Management visibility
     $("#toggleIngredientManagementButton").click(function () {
         $("#ingredientManagement").slideToggle();
@@ -38,6 +39,7 @@ export function initializeIngredients() {
     // Handle adding a new ingredient
     function handleAddIngredient(event) {
         event.preventDefault();
+        
         const ingredientName = $("#ingredientNameInput").val().trim();
 
         if (!ingredientName) {
@@ -48,8 +50,11 @@ export function initializeIngredients() {
         $.ajax({
             url: "/admin/ingredients/create",
             method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
             contentType: "application/json",
-            data: JSON.stringify({ ingredient_name: ingredientName }),
+            data: JSON.stringify({ ingredient_name: ingredientName, csrf_token: csrfToken }),
             success: function (response) {
                 console.log("Server Response:", response);  // Log the raw response
                 
@@ -113,9 +118,13 @@ export function initializeIngredients() {
                 url: "/admin/ingredients/edit",
                 method: "POST",
                 contentType: "application/json",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                },
                 data: JSON.stringify({
                     ingredient_id: ingredientId,
                     ingredient_name: newIngredientName,
+                    csrf_token: csrfToken,
                 }),
                 success: function (response) {
                     console.log("Response from server:", response);
@@ -155,17 +164,20 @@ export function initializeIngredients() {
     });
     $(document).on("click", ".deleteIngredientButton", function () {
         const ingredientId = $(this).data("ingredient-id");
-
+    
         // Confirm deletion
         if (confirm("Are you sure you want to delete this ingredient?")) {
             $.ajax({
-                url: "/admin/ingredients/delete",  // Your backend endpoint to delete the ingredient
+                url: "/admin/ingredients/delete",  // Backend endpoint to delete the ingredient
                 method: "POST",
                 contentType: "application/json",
-                data: JSON.stringify({ ingredient_id: ingredientId }),
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,  
+                },
+                data: JSON.stringify({ ingredient_id: ingredientId, csrf_token: csrfToken }), // Send ingredient ID in the request body
                 success: function (response) {
                     console.log("Delete response:", response);  // Log the response
-
+    
                     // Ensure response is parsed correctly (if it's a string, parse it)
                     if (typeof response === "string") {
                         try {
@@ -176,7 +188,17 @@ export function initializeIngredients() {
                             return;
                         }
                     }
-                    fetchUncategorizedIngredients(); 
+    
+                    if (response.status === "success") {
+                        alert(response.message); // Show success message
+                        // Remove the deleted ingredient from the list
+                        $(`li[data-ingredient-id='${ingredientId}']`).remove();
+    
+                        // Optionally, you can re-fetch the categorized ingredients after deletion
+                        fetchCategorizedIngredients();  // Call the function to re-fetch the ingredients
+                    } else {
+                        alert(response.message || "Failed to delete ingredient.");
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error("Delete Ingredient Error:", error);
@@ -251,44 +273,50 @@ export function initializeIngredients() {
     // Fetch tags with categories
     function fetchTagsWithCategories(callback) {
         $.ajax({
-            url: "/admin/tags", // Correct route for fetching tags
+            url: "/admin/tags",  
             method: "GET",
-            dataType: "json", // Expecting JSON response
+            dataType: "json",  
             success: function (response) {
-                // Check if the response has a success status and tags
+                // Check if the response has a success status and contains groupedTags
                 if (response.status === "success" && response.groupedTags) {
                     console.log("Tags fetched:", response.groupedTags);
-
+        
                     const $dropdown = $("#tag");
-                    $dropdown.empty(); // Clear existing options
-
-                    // Group tags by category
-                    const groupedTags = response.groupedTags; // Already grouped by category
-
-                    // Populate the dropdown with optgroups
-                    for (const category in groupedTags) {
-                        const $optgroup = $("<optgroup>").attr("label", category); // Label as the category name
-
-                        // Iterate over each tag in the category and add it as an option
-                        groupedTags[category].forEach(tag => {
-                            $optgroup.append(
-                                $("<option>")
-                                    .val(tag.tag_id) // Set tag ID as the value
-                                    .text(tag.name) // Set tag name as the text
-                            );
-                        });
-
-                        $dropdown.append($optgroup); // Append the optgroup to the dropdown
+                    $dropdown.empty();  
+        
+                    // Check if there are grouped tags, otherwise show a fallback message
+                    if (Object.keys(response.groupedTags).length === 0) {
+                        $dropdown.append("<option>No tags available</option>");
+                        return;
                     }
-
-                    if (callback) callback(); // Trigger callback if provided
+        
+                    // Populate the dropdown with optgroups based on categories
+                    for (const category in response.groupedTags) {
+                        const $optgroup = $("<optgroup>").attr("label", category);  // Label as the category name
+        
+                        // If the category has no tags, add a placeholder
+                        if (response.groupedTags[category].length === 0) {
+                            $optgroup.append($("<option>").text("No tags available"));
+                        } else {
+                            response.groupedTags[category].forEach(tag => {
+                                $optgroup.append(
+                                    $("<option>").val(tag.tag_id)  
+                                                 .text(tag.name)    
+                                );
+                            });
+                        }
+        
+                        $dropdown.append($optgroup);  
+                    }
+        
+                    if (callback) callback();  // Trigger callback if provided
                 } else {
                     alert(response.message || "Failed to fetch tags.");
                 }
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching tags:", error);
-                console.log("Raw response:", xhr.responseText); // Debug raw response
+                console.log("Raw response:", xhr.responseText);  // Log the raw response from the server
             }
         });
     }
@@ -296,19 +324,22 @@ export function initializeIngredients() {
     function handleAssignTag() {
         const ingredientId = $("#ingredientId").val();
         const tagId = $("#tag").val();
-
-        console.log("Assigning Tag - Ingredient ID:", ingredientId, "Tag ID:", tagId);
+        
+        console.log("Assigning Tag - Ingredient ID:", ingredientId, "Tag ID:", tagId, "CSRF Token:", csrfToken);
 
         if (!ingredientId || !tagId) {
             alert("Please select a valid tag.");
             return;
         }
-
+        
         $.ajax({
             url: "/admin/ingredients/assign-tag",
             method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            },
             contentType: "application/json",
-            data: JSON.stringify({ ingredient_id: ingredientId, tag_id: tagId }),
+            data: JSON.stringify({ ingredient_id: ingredientId, tag_id: tagId, csrf_token: csrfToken }),
             success: function (response) {
                 console.log("Assign Tag Response:", response);
 
@@ -318,6 +349,7 @@ export function initializeIngredients() {
                         response = JSON.parse(response); // Parse if it's a string
                     } catch (e) {
                         console.error("Failed to parse response:", e);
+                        console.error("AJAX Assign Tag Error:", error);
                         alert("An unexpected error occurred while processing the response.");
                         return;
                     }
