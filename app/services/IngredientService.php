@@ -65,6 +65,7 @@ class IngredientService
     {
         return $this->ingredientRepository->fetchUncategorizedIngredients($uncategorizedTag);
     }
+    
     public function assignTagToIngredient($ingredientId, $tagId)
     {
         if (!$this->tagRepository->doesTagExist($tagId)) {

@@ -37,31 +37,31 @@
         <div class="ingredient-section">
             <h2 class="section-title">Categorized Ingredients</h2>
             <?php if (!empty($categorizedIngredients['categorized'])): ?>
-                <div class="accordion">
-                    <?php foreach ($categorizedIngredients['categorized'] as $tagName => $ingredients): ?>
-                        <div class="accordion-item">
-                            <button class="accordion-header">
-                                <h3><?= htmlspecialchars($tagName); ?> <span class="ingredient-count">(<?= count($ingredients); ?>)</span></h3>
-                            </button>
-                            <div class="accordion-body">
-                                <ul class="ingredient-list">
-                                    <?php foreach ($ingredients as $ingredient): ?>
-                                        <li data-ingredient-id="<?= htmlspecialchars($ingredient['ingredient_id']); ?>">
-                                            <span class="ingredient-name"><?= htmlspecialchars($ingredient['ingredient_name']); ?></span>
-                                            <div class="ingredient-actions">
-                                                <button class="editIngredientButton">🖊️ </button>
-                                                <button class="deleteIngredientButton">🗑️ </button>
-                                            </div>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
+        <div class="accordion">
+            <?php foreach ($categorizedIngredients['categorized'] as $tagName => $ingredients): ?>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <h3><?= htmlspecialchars($tagName); ?> <span class="ingredient-count">(<?= count($ingredients); ?>)</span></h3>
+                    </button>
+                    <div class="accordion-body">
+                        <ul class="ingredient-list">
+                            <?php foreach ($ingredients as $ingredient): ?>
+                                <li data-ingredient-id="<?= htmlspecialchars($ingredient['ingredient_id']); ?>"> <!-- Correctly setting ingredient_id -->
+                                    <span class="ingredient-name"><?= htmlspecialchars($ingredient['ingredient_name']); ?></span>
+                                    <div class="ingredient-actions">
+                                        <button class="editIngredientButton">🖊️ </button>
+                                        <button class="deleteIngredientButton">🗑️ </button>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
                 </div>
-            <?php else: ?>
-                <p>No categorized ingredients found.</p>
-            <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p>No categorized ingredients found.</p>
+    <?php endif; ?>
         </div>
     </div>
 

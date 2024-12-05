@@ -163,18 +163,19 @@ export function initializeIngredients() {
         }
     });
     $(document).on("click", ".deleteIngredientButton", function () {
-        const ingredientId = $(this).data("ingredient-id");
+        // Get the ingredient ID from the clicked button's parent <li> element
+        const ingredientId = $(this).closest("li").data("ingredient-id");
     
         // Confirm deletion
         if (confirm("Are you sure you want to delete this ingredient?")) {
             $.ajax({
-                url: "/admin/ingredients/delete",  // Backend endpoint to delete the ingredient
+                url: "/admin/ingredients/delete",  // Your backend endpoint to delete the ingredient
                 method: "POST",
                 contentType: "application/json",
                 headers: {
-                    "X-CSRF-TOKEN": csrfToken,  
+                    "X-CSRF-TOKEN": csrfToken,  // Add CSRF token
                 },
-                data: JSON.stringify({ ingredient_id: ingredientId, csrf_token: csrfToken }), // Send ingredient ID in the request body
+                data: JSON.stringify({ ingredient_id: ingredientId, csrf_token: csrfToken }),  // Send ingredient ID and CSRF token
                 success: function (response) {
                     console.log("Delete response:", response);  // Log the response
     
@@ -191,11 +192,13 @@ export function initializeIngredients() {
     
                     if (response.status === "success") {
                         alert(response.message); // Show success message
-                        // Remove the deleted ingredient from the list
+    
+                        // Remove the deleted ingredient from the list dynamically
                         $(`li[data-ingredient-id='${ingredientId}']`).remove();
     
-                        // Optionally, you can re-fetch the categorized ingredients after deletion
-                        fetchCategorizedIngredients();  // Call the function to re-fetch the ingredients
+                        // Optionally, re-fetch categorized and uncategorized ingredients after deletion
+                        fetchUncategorizedIngredients();  // If you want to re-fetch uncategorized
+                        fetchCategorizedIngredients();    // If you want to re-fetch categorized ingredients
                     } else {
                         alert(response.message || "Failed to delete ingredient.");
                     }
@@ -207,6 +210,46 @@ export function initializeIngredients() {
             });
         }
     });
+    
+    // Fetch Categorized Ingredients after deletion (optional)
+    function fetchCategorizedIngredients() {
+        $.ajax({
+            url: '/admin/ingredients/categorized',  // Adjust the URL to match your backend endpoint
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    renderCategorizedIngredients(response.ingredients);
+                } else {
+                    console.error('Error fetching categorized ingredients:', response.message);
+                    alert(response.message || "Failed to fetch categorized ingredients.");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('Error fetching categorized ingredients:', errorThrown);
+            }
+        });
+    }
+    
+    // Fetch Uncategorised Ingredients after deletion (optional)
+    function fetchUncategorizedIngredients() {
+        $.ajax({
+            url: '/admin/ingredients/uncategorized',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    renderUncategorizedIngredients(response.ingredients);
+                } else {
+                    console.error('Error fetching uncategorized ingredients:', response.message);
+                    alert(response.message || "Failed to fetch uncategorized ingredients.");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('Error fetching uncategorized ingredients:', errorThrown);
+            }
+        });
+    }
 
     function fetchUncategorizedIngredients() {
         $.ajax({
