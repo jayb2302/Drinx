@@ -80,7 +80,7 @@ export function initializeComments() {
 
                 const data = await response.json();
                 if (data.success) {
-                    newCommentsSection.outerHTML = data.html;
+                    commentsSection.innerHTML = data.html;
                     document.dispatchEvent(new Event('Drinx.DOMUpdated'));
                 } else {
                     alert(data.error || 'Failed to delete comment.');
@@ -143,27 +143,31 @@ export function initializeComments() {
 
             formData.append('csrf_token', csrfToken);
             try {
-                const response = await fetch(event.target.action, {
+                const response = await fetch(form.action, {
                     method: 'POST',
                     body: formData,
                     headers: { 'Accept': 'application/json' },
                 });
-
-                if (!response.ok) {
-                    console.error("Edit request failed with status:", response.status);
-                    alert('Failed to edit comment. Please try again.');
+    
+                // Validate JSON response
+                const contentType = response.headers.get('Content-Type');
+                if (!response.ok || !contentType || !contentType.includes('application/json')) {
+                    const rawText = await response.text();
+                    console.error('Unexpected Response:', rawText);
+                    alert('Failed to delete comment. Please try again.');
                     return;
                 }
-
+    
                 const data = await response.json();
                 if (data.success) {
                     newCommentsSection.outerHTML = data.html;
                     document.dispatchEvent(new Event('Drinx.DOMUpdated'));
                 } else {
-                    alert(data.error || 'Failed to edit comment.');
+                    alert(data.error || 'Failed to delete comment.');
                 }
             } catch (error) {
-                console.error('Error editing comment:', error);
+                console.error('Error deleting comment:', error);
+                alert('An unexpected error occurred. Please refresh the page.');
             }
         }
     });

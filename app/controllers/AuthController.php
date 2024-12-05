@@ -1,16 +1,16 @@
 <?php
 require_once __DIR__ . '/../helpers/helpers.php';
 class AuthController{
+    private $authService;
     private $userService;
-    private static $authService;
 
     public function __construct(
-        UserService $userService,
-        AuthService $authService
+        AuthService $authService,
+        UserService $userService
     )
     {
+        $this->authService = $authService;
         $this->userService = $userService;
-        self::$authService = $authService;
     }
 
     // Handle user authentication
@@ -150,18 +150,18 @@ class AuthController{
     }
 
     // Check if the user is logged in
-    public static function isAdmin()
+    public function isAdmin()
     {
-        return self::$authService->isAdmin();
+        return $this->authService->isAdmin();
     }
 
-    public static function isLoggedIn()
+    public function isLoggedIn()
     {
-        return self::$authService->isLoggedIn();
+        return $this->authService->isLoggedIn();
     }
 
-    public static function getCurrentUser()
+    public function getCurrentUser()
     {
-        return self::$authService->getCurrentUser();
+        return $this->authService->getCurrentUser();
     }
 }

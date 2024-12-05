@@ -121,8 +121,8 @@ $cocktailController = new CocktailController(
 );
 
 $authController = new AuthController(
-    $userService,
     $authService,
+    $userService
 );
 $homeController = new HomeController(
     $authService,
@@ -153,21 +153,12 @@ $commentController = new CommentController(
     $commentService,
 );
 $likeController = new LikeController(
-    $authService,
-    $userService,
-    $cocktailService,
     $likeService
 );
 $tagController = new TagController(
-    $authService,
-    $userService,
-    $cocktailService,
     $tagService,
 );
 $ingredientController = new IngredientController(
-    $authService,
-    $userService,
-    $cocktailService,
     $ingredientService, 
     $tagService,
 );
@@ -177,8 +168,5 @@ $searchController = new SearchController(
     $cocktailService,
 );
 $stepController = new StepController(
-    $authService,
-    $userService,
-    $cocktailService,
     $stepService,
 );

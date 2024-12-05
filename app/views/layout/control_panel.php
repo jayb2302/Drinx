@@ -39,7 +39,8 @@
 
         <!-- Control Buttons Section -->
         <div class="control-buttons">
-            <?php if (AuthController::isLoggedIn()): ?>
+            
+            <?php if ($authController->isLoggedIn()): ?>
                 <a href="/profile/<?= htmlspecialchars($username); ?>" class="button-secondary" >
                     <span >
                         My Profile
@@ -66,7 +67,7 @@
             <?php endif; ?>
 
             <!-- Link to Add New Cocktail (only for logged-in users) -->
-            <?php if (AuthController::isLoggedIn() && $currentUser->canAddCocktail($currentUser->getId())): ?>
+            <?php if ($authController->isLoggedIn() && $currentUser->canAddCocktail($currentUser->getId())): ?>
                     <a href="/cocktails/add" class="button-secondary">
                         <span>
                             Share New Cocktail

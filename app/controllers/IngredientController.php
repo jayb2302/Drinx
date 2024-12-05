@@ -1,19 +1,13 @@
 <?php
-require_once 'BaseController.php';
-
-class IngredientController extends BaseController
+class IngredientController 
 {
     private $ingredientService;
     private $tagService;
 
     public function __construct(
-        AuthService $authService,
-        UserService $userService,
-        CocktailService $cocktailService,
         IngredientService $ingredientService,
         TagService $tagService
     ) {
-        parent::__construct($authService, $userService, $cocktailService);
         $this->ingredientService = $ingredientService;
         $this->tagService = $tagService;
     }

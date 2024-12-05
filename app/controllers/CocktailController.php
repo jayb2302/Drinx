@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../config/dependencies.php';
 require_once 'BaseController.php';
 
 class CocktailController extends BaseController
@@ -49,6 +50,7 @@ class CocktailController extends BaseController
         $cocktails = $this->cocktailService->getAllCocktails();
         $categories = $this->cocktailService->getCategories();
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+        
 
         // Pass `hasLiked` status to the view for each cocktail
         foreach ($cocktails as $cocktail) {
@@ -402,6 +404,7 @@ class CocktailController extends BaseController
     public function view($cocktailId, $action = 'view')
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+        $authController = new AuthController($this->authService, $this->userService);
         $currentUser = $this->userService->getUserWithProfile($loggedInUserId);
         // Sanitize inputs
         $cocktailId = intval($cocktailId); // Sanitize ID

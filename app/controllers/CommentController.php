@@ -1,6 +1,5 @@
 <?php
-require_once 'BaseController.php';
-
+require_once __DIR__ . '/BaseController.php';
 class CommentController extends BaseController
 {
     private $commentService;
@@ -42,11 +41,11 @@ class CommentController extends BaseController
 
             // Fetch updated cocktail and comments
             $cocktail = $this->cocktailService->getCocktailById($cocktailId);
-            $comments = $this->commentService->getCommentsWithReplies($cocktailId); 
-            $currentUser = $this->authService->getCurrentUser(); 
-
+            $comments = $this->commentService->getCommentsWithReplies($cocktailId);
+            $currentUser = $this->authService->getCurrentUser();
             // Render the entire comment section
             ob_start();
+            $authController = new AuthController($this->authService, $this->userService);
             require __DIR__ . '/../views/cocktails/comment_section.php';
             $commentsHtml = ob_get_clean();
 
@@ -57,7 +56,6 @@ class CommentController extends BaseController
             error_log($e->getMessage());
             http_response_code(500); // Internal Server Error
             echo json_encode(['error' => 'An unexpected error occurred.']);
-
         }
         exit();
     }
@@ -101,8 +99,8 @@ class CommentController extends BaseController
             // Return the updated comments section HTML
             ob_start();
             $cocktail = $this->cocktailService->getCocktailById($cocktailId); // Assuming you have a method to get cocktail info
-                $currentUser = $this->authService->getCurrentUser(); 
-                $comments = $updatedComments;
+            $currentUser = $this->authService->getCurrentUser();
+            $comments = $updatedComments;
             require __DIR__ . '/../views/cocktails/comment_section.php';
             $updatedCommentsHtml = ob_get_clean();
 
@@ -117,7 +115,13 @@ class CommentController extends BaseController
     }
     public function delete($commentId)
     {
+
         $comment = $this->commentService->getCommentById($commentId);
+        if (!$comment) {
+            http_response_code(404); // Not Found
+            echo json_encode(['error' => 'Comment not found.']);
+            exit();
+        }
         if ($_SESSION['user']['id'] !== $comment->getUserId() && !$this->authService->isAdmin()) {
             http_response_code(403); // Forbidden
             echo json_encode(['error' => 'You are not authorized to delete this comment.']);
@@ -133,17 +137,20 @@ class CommentController extends BaseController
             // Fetch updated comments and render the section
             $cocktail = $this->cocktailService->getCocktailById($cocktailId);
             $comments = $this->commentService->getCommentsWithReplies($cocktailId);
-            $currentUser = $this->authService->getCurrentUser(); 
-
+            $currentUser = $this->authService->getCurrentUser();
+            $authController = new AuthController($this->authService, $this->userService);
 
             ob_start();
             require __DIR__ . '/../views/cocktails/comment_section.php';
             $commentsHtml = ob_get_clean();
 
             header('Content-Type: application/json');
-            echo json_encode(['success' => true, 'html' => $commentsHtml]); // Send full HTML
+            echo json_encode([
+                'success' => true,
+                'html' => $commentsHtml,
+            ]);
         } catch (Exception $e) {
-            error_log($e->getMessage());
+            
             http_response_code(500); // Internal Server Error
             echo json_encode(['error' => 'An unexpected error occurred.']);
         }
@@ -167,7 +174,7 @@ class CommentController extends BaseController
                 // Fetch updated cocktail and comments
                 $cocktail = $this->cocktailService->getCocktailById($cocktailId);
                 $comments = $this->commentService->getCommentsWithReplies($cocktailId);
-                $currentUser = $this->authService->getCurrentUser(); 
+                $currentUser = $this->authService->getCurrentUser();
 
 
                 // Render the entire comments section

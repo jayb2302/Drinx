@@ -1,22 +1,21 @@
 <div class="commentsSection">
     <h2 class="">Comments</h2>
     <!-- Top-level Comment Form -->
-    <?php if (AuthController::isLoggedIn() && $currentUser->canComment()): ?>
+    <?php if ($authController->isLoggedIn() && $currentUser->canComment()): ?>
         <div class="top-level-comment">
             <h3 class="commentHeading">New Comment</h3>
             <form id="TopLevelCommentForm"
-            action="/cocktails/<?= $cocktail->getCocktailId() ?>-<?= urlencode($cocktail->getTitle()) ?>/comments"
-            method="POST">
-            <textarea 
-            id="commentText" 
-            name="commentText" 
-            placeholder="Write your comment here..." 
-            rows="4" 
-            required
-        ></textarea>
-            <input type="hidden" name="cocktailTitle" value="<?= htmlspecialchars($cocktail->getTitle()) ?>">
-            <button type="submit">Submit</button>
-        </form>
+                action="/cocktails/<?= $cocktail->getCocktailId() ?>-<?= urlencode($cocktail->getTitle()) ?>/comments"
+                method="POST">
+                <textarea
+                    id="commentText"
+                    name="commentText"
+                    placeholder="Write your comment here..."
+                    rows="4"
+                    required></textarea>
+                <input type="hidden" name="cocktailTitle" value="<?= htmlspecialchars($cocktail->getTitle()) ?>">
+                <button type="submit">Submit</button>
+            </form>
         </div>
     <?php else: ?>
         <p class="loginPrompt">Please <a href="/login">log in</a> to add a comment.</p>
@@ -39,7 +38,7 @@
                         <small><?= htmlspecialchars(formatDate($comment->getCreatedAt())) ?></small>
                     </p>
                     <!-- Dots Menu for Edit/Delete -->
-                    <?php if (AuthController::isLoggedIn() && ($currentUser->canEditComment($comment->getUserId()) || AuthController::isAdmin())): ?>
+                    <?php if ($authController->isLoggedIn() && ($currentUser->canEditComment($comment->getUserId()) || $authController->isAdmin())): ?>
                         <div class="dotsMenu">
                             <button class="dotsButton">⋮</button>
                             <div class="menu hidden">
@@ -75,12 +74,13 @@
                                 <p><strong><?= htmlspecialchars($reply->getUsername() ?? 'Unknown User') ?>:</strong></p>
                                 <p><?= htmlspecialchars($reply->getCommentText() ?? 'No reply text available') ?></p>
                                 <p class="comment-date">
-                                  <small> <?= htmlspecialchars(formatDate($reply->getCreatedAt())) ?></small>
+                                    <small> <?= htmlspecialchars(formatDate($reply->getCreatedAt())) ?></small>
                                 </p>
 
-                                <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $reply->getUserId() || AuthController::isAdmin())): ?>
+                                <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $reply->getUserId() || $authController->isAdmin())): ?>
                                     <form action="/comments/<?= $reply->getCommentId() ?>/delete" method="POST"
                                         onsubmit="return confirm('Are you sure you want to delete this reply?');">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
                                         <button type="submit" class="delete">🗑️</button>
                                     </form>
                                 <?php endif; ?>
@@ -90,12 +90,12 @@
                 <?php endif; ?>
 
                 <!-- Reply Form -->
-                <?php if (AuthController::isLoggedIn()): ?>
+                <?php if ($authController->isLoggedIn()): ?>
                     <button class="replyButton" data-comment-id="<?= $comment->getCommentId() ?>">Reply</button>
                     <div id="replyForm-<?= $comment->getCommentId() ?>" class="replyForm hidden">
                         <form class="replyCommentForm" action="/comments/<?= $comment->getCommentId() ?>/reply" method="POST">
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">    
-                        <textarea name="comment" placeholder="Write your reply here..." required></textarea>
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
+                            <textarea name="comment" placeholder="Write your reply here..." required></textarea>
                             <input type="hidden" name="parent_comment_id" value="<?= $comment->getCommentId() ?>">
                             <input type="hidden" name="cocktail_id" value="<?= $cocktailId ?>">
                             <input type="hidden" name="cocktailTitle" value="<?= htmlspecialchars($cocktail->getTitle()) ?>">

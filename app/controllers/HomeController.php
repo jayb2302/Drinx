@@ -23,6 +23,7 @@ class HomeController extends BaseController
        
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $isAdmin = $_SESSION['user']['is_admin'] ?? false;
+        $authController = new AuthController($this->authService, $this->userService);
         $currentUser = $this->userService->getUserWithProfile($loggedInUserId);
         $cocktails = $this->cocktailService->getAllCocktails();
         $user = $_SESSION['user'] ?? null; 

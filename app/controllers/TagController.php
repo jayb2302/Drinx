@@ -1,17 +1,13 @@
 <?php
-require_once 'BaseController.php';
-
-class TagController extends BaseController
+class TagController 
 {
     private $tagService;
 
     public function __construct(
-        AuthService $authService,
-        UserService $userService,
-        CocktailService $cocktailService,
+        
         TagService $tagService
     ) {
-        parent::__construct($authService, $userService, $cocktailService);
+
         $this->tagService = $tagService;
     }
 
@@ -41,7 +37,7 @@ class TagController extends BaseController
     public function saveTag()
     {
         // Check if the user is an admin
-        if (!$this->authService->isAdmin()) {
+        if (!isset($_SESSION['user']['id']) || !$_SESSION['user']['is_admin']) {
             http_response_code(403);
             echo json_encode(['error' => 'You do not have permission to perform this action.']);
             exit();

@@ -53,7 +53,7 @@
                     </option>
                 <?php endforeach; ?>
             </select>
-            <?php if (AuthController::isAdmin()): ?>
+            <?php if ($authController->isAdmin()): ?>
                 <div class="sticky-cocktail">
                     <label for="isSticky" class="tooltip" data-tooltip="Mark this cocktail as sticky to feature it prominently.">
                         <i class="fa-solid fa-paperclip"></i>

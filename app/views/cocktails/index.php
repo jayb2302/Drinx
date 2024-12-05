@@ -132,7 +132,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                                                 </div>
 
                                                 <!-- Menu for edit/delete if user is logged in and is the comment creator or an admin -->
-                                                <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $comment->getUserId() || AuthController::isAdmin())): ?>
+                                                <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $comment->getUserId() || $authController->isAdmin())): ?>
                                                     <div class="dotsMenu">
                                                         <button class="dotsButton">⋮</button>
                                                         <div class="menu hidden">
