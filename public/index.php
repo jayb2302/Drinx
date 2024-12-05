@@ -16,9 +16,8 @@ $action = $router->resolve($requestUri);
 
 if ($action) {
     // Unpack the action array
-    $controllerAction = $action[0]; // This should be the controller
-    $params = $action[1]; // This should be the parameters
-
+    $controllerAction = $action[0]; 
+    $params = $action[1]; 
     if (is_array($controllerAction) && count($controllerAction) === 2) {
         [$controllerClass, $method] = $controllerAction; // Unpack controller class and method
 

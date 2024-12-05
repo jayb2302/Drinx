@@ -47,24 +47,24 @@ include_once __DIR__ . '/../../helpers/helpers.php';
 
         <!-- Like/Unlike Button -->
         <div class="like-section">
-    <?php if ($loggedInUserId): ?>
-        <button class="like-button"
-            data-cocktail-id="<?= htmlspecialchars($cocktail->getCocktailId()) ?>"
-            data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
-            <span class="like-icon">
-                <i class="<?= $cocktail->hasLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart' ?>"></i>
-            </span>
-            <span class="like-count"><?= htmlspecialchars($totalLikes) ?></span>
-        </button>
-    <?php else: ?>
-        <button class="like-button" onclick="showLoginPopup(event)">
-            <span class="like-icon">
-                <i class="fa-regular fa-heart"></i>
-            </span>
-        </button>
-        <span class="like-count"><?= htmlspecialchars($totalLikes) ?></span>
-    <?php endif; ?>
-</div>
+            <?php if ($loggedInUserId): ?>
+                <button class="like-button"
+                    data-cocktail-id="<?= htmlspecialchars($cocktail->getCocktailId()) ?>"
+                    data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
+                    <span class="like-icon">
+                        <i class="<?= $cocktail->hasLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart' ?>"></i>
+                    </span>
+                    <span class="like-count"><?= htmlspecialchars($totalLikes) ?></span>
+                </button>
+            <?php else: ?>
+                <button class="like-button" onclick="showLoginPopup(event)">
+                    <span class="like-icon">
+                        <i class="fa-regular fa-heart"></i>
+                    </span>
+                </button>
+                <span class="like-count"><?= htmlspecialchars($totalLikes) ?></span>
+            <?php endif; ?>
+        </div>
         <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
         <!-- Creator Info -->
         <div class="creatorInfo">
@@ -141,8 +141,6 @@ include_once __DIR__ . '/../../helpers/helpers.php';
                 </ol>
             </div>
         </div>
-
-
     </main>
 
     <aside class="container__comments">

@@ -163,21 +163,20 @@ export function initializeIngredients() {
         }
     });
     $(document).on("click", ".deleteIngredientButton", function () {
-        // Get the ingredient ID from the clicked button's parent <li> element
         const ingredientId = $(this).closest("li").data("ingredient-id");
     
         // Confirm deletion
         if (confirm("Are you sure you want to delete this ingredient?")) {
             $.ajax({
-                url: "/admin/ingredients/delete",  // Your backend endpoint to delete the ingredient
+                url: "/admin/ingredients/delete",  
                 method: "POST",
                 contentType: "application/json",
                 headers: {
-                    "X-CSRF-TOKEN": csrfToken,  // Add CSRF token
+                    "X-CSRF-TOKEN": csrfToken,  
                 },
-                data: JSON.stringify({ ingredient_id: ingredientId, csrf_token: csrfToken }),  // Send ingredient ID and CSRF token
+                data: JSON.stringify({ ingredient_id: ingredientId, csrf_token: csrfToken }), 
                 success: function (response) {
-                    console.log("Delete response:", response);  // Log the response
+                    console.log("Delete response:", response);  
     
                     // Ensure response is parsed correctly (if it's a string, parse it)
                     if (typeof response === "string") {
@@ -196,7 +195,7 @@ export function initializeIngredients() {
                         // Remove the deleted ingredient from the list dynamically
                         $(`li[data-ingredient-id='${ingredientId}']`).remove();
     
-                        // Optionally, re-fetch categorized and uncategorized ingredients after deletion
+                        // Alternatively, re-fetch the ingredients
                         fetchUncategorizedIngredients();  // If you want to re-fetch uncategorized
                         fetchCategorizedIngredients();    // If you want to re-fetch categorized ingredients
                     } else {
@@ -211,10 +210,10 @@ export function initializeIngredients() {
         }
     });
     
-    // Fetch Categorized Ingredients after deletion (optional)
+    // Fetch Categorized Ingredients after deletion 
     function fetchCategorizedIngredients() {
         $.ajax({
-            url: '/admin/ingredients/categorized',  // Adjust the URL to match your backend endpoint
+            url: '/admin/ingredients/categorized',  
             method: 'GET',
             dataType: 'json',
             success: function (response) {
@@ -231,7 +230,7 @@ export function initializeIngredients() {
         });
     }
     
-    // Fetch Uncategorised Ingredients after deletion (optional)
+    // Fetch Uncategorised Ingredients after deletion 
     function fetchUncategorizedIngredients() {
         $.ajax({
             url: '/admin/ingredients/uncategorized',

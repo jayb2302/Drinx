@@ -4,7 +4,7 @@ export function initializeTags() {
     const $tagDialog = $("#tagDialog");
     const $notificationDialog = $("#notificationDialog");
 
-    
+
     // Toggle Tag Management 
     $("#toggleTagsManagementButton").on("click", function () {
         $tagsManagement.slideToggle();
@@ -12,7 +12,7 @@ export function initializeTags() {
 
     // Initialize Tag Dialog
     $tagDialog.dialog({
-        autoOpen: false, // Dialog is not open by default
+        autoOpen: false, 
         modal: true,
         buttons: {
             Save: function () {
@@ -90,7 +90,6 @@ export function initializeTags() {
         ? { tag_id: tagId, tag_name: tagName, tag_category_id: tagCategoryId, csrf_token: csrfToken }
         : { tag_name: tagName, tag_category_id: tagCategoryId, csrf_token: csrfToken };
     
-
         $.ajax({
             url: url,
             method: "POST",
@@ -183,9 +182,8 @@ export function initializeTags() {
         const tagId = $button.data("tag-id");
         const tagName = $button.data("tag-name");
     
-        // Get the CSRF token from the meta tag or any other method you use to set the token
-        const csrfToken = $('meta[name="csrf-token"]').attr('content'); // Assuming you store it in the <meta> tag
-    
+        // Get the CSRF token from the meta tag
+        const csrfToken = $('meta[name="csrf-token"]').attr('content'); 
         if (confirm(`Are you sure you want to delete the tag "${tagName}"?`)) {
             const data = {
                 tag_id: tagId,
@@ -196,7 +194,7 @@ export function initializeTags() {
             $.ajax({
                 url: '/admin/tag/delete',
                 method: "POST",
-                data: JSON.stringify(data), // Send the FormData with the CSRF token and tag ID
+                data: JSON.stringify(data), // Convert the data to a JSON string
                 success: function (response) {
                     try {
                         const jsonResponse = typeof response === "string" ? JSON.parse(response) : response;
