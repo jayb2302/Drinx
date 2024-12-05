@@ -2,6 +2,7 @@ export function initializeUserManagement() {
     const userSearchInput = document.getElementById("userSearch");
     const userTableBody = document.getElementById("userTableBody");
     let sortOrder = 1; // Initialize sorting order
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');  // CSRF Token
 
     function sanitizeHTML(str) {
         const temp = document.createElement("div");
@@ -12,6 +13,7 @@ export function initializeUserManagement() {
     function renderUsers(users) {
         userTableBody.innerHTML = ""; // Clear table
         users.forEach(user => {
+            
             const profileImage = user.profile_picture && user.profile_picture !== "user-default.svg" 
                 ? `/uploads/users/${encodeURIComponent(user.profile_picture)}`
                 : "/uploads/users/user-default.svg";
@@ -86,6 +88,7 @@ export function initializeUserManagement() {
                 const formData = new FormData(this);
                 const row = this.closest("tr");
 
+                formData.append('csrf_token', csrfToken);
                 fetch("/admin/update-status", {
                     method: "POST",
                     body: formData,

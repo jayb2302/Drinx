@@ -14,6 +14,12 @@ class AuthController{
     public function authenticate()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrfToken = $_POST['csrf_token'] ?? '';
+            if (!validateCsrfToken($csrfToken)) {
+                $_SESSION['error'] = "Invalid CSRF token.";
+                header("Location: /login");
+                exit();
+            }
             $email = sanitize($_POST['email']);
             $password = trim($_POST['password']);
 
@@ -31,7 +37,7 @@ class AuthController{
                     'id' => $user->getId(),
                     'username' => $user->getUsername(),
                     'is_admin' => $user->isAdmin(),
-                    'account_status' => $user->getAccountStatusId(), // Store the actual status ID
+                    'account_status' => $user->getAccountStatusId(), 
                 ];
 
                 // Redirect to the home page after successful login
@@ -49,19 +55,26 @@ class AuthController{
     // Show the login form
     public function showLogin()
     {
+        $csrfToken = generateCsrfToken();
         return require_once __DIR__ . '/../views/auth/login.php';
     }
     // Show the registration form
     public function showRegister()
     {
+        $csrfToken = generateCsrfToken();
         return require_once __DIR__ . '/../views/auth/register.php';
     }
-
 
     // Handle user registration
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrfToken = $_POST['csrf_token'] ?? '';
+            if (!validateCsrfToken($csrfToken)) {
+                $_SESSION['error'] = "Invalid CSRF token.";
+                header("Location: /login");
+                exit();
+            }
             $username = sanitize($_POST['username']);
             $email = sanitize($_POST['email']);
             $password = trim($_POST['password']); // Trim password
@@ -81,7 +94,7 @@ class AuthController{
                 }
             } catch (PDOException $e) {
                 // Check if the error is a duplicate entry for username or email
-                if ($e->getCode() == 23000) { // Integrity constraint violation (duplicate entry)
+                if ($e->getCode() == 23000) { 
                     // Check which field is causing the issue
                     if (strpos($e->getMessage(), 'username') !== false) {
                         $_SESSION['error'] = "The username '$username' is already taken. Please choose another one.";
@@ -157,7 +170,7 @@ class AuthController{
         $user->setUsername($_SESSION['user']['username']);
         $user->setIsAdmin($_SESSION['user']['is_admin']);
         $user->setAccountStatusId($_SESSION['user']['account_status']);
-
+        
         return $user;
     }
 }

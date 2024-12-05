@@ -1,13 +1,4 @@
 <?php
-// Helper function to get the first sentence of a description
-function getFirstSentence($description) {
-    if (empty($description)) {
-        return ''; // Return an empty string if no description is provided
-    }
-    $sentences = preg_split('/(?<=[.?!])\s+/', $description); // Split by sentence-ending punctuation
-    return $sentences[0] ?? $description; // Return the first sentence or the full description as fallback
-}
-
 // Ensure $cocktail is set
 if (isset($cocktail) && $cocktail) {
     echo '<div class="recipe-wrapper">';  // Container for styling

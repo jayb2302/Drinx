@@ -7,15 +7,17 @@ require_once __DIR__ . '/../router.php';
 require_once __DIR__ . '/../routes.php';
 require_once __DIR__ . '/../app/config/dependencies.php';
 
+// Generate CSRF Token
+generateCsrfToken();
+
 // Resolve the current request URI
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $action = $router->resolve($requestUri);
 
 if ($action) {
     // Unpack the action array
-    $controllerAction = $action[0]; // This should be the controller
-    $params = $action[1]; // This should be the parameters
-
+    $controllerAction = $action[0]; 
+    $params = $action[1]; 
     if (is_array($controllerAction) && count($controllerAction) === 2) {
         [$controllerClass, $method] = $controllerAction; // Unpack controller class and method
 

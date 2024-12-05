@@ -23,7 +23,9 @@ class AdminService
 
     public function getAllUsers()
     {
+        
         return $this->userRepository->getAllUsers();
+        
     }
 
     public function updateUserStatus($userId, $statusId)
@@ -53,6 +55,22 @@ class AdminService
         }
         return $grouped;
     }
+
+    public function getCategorizedIngredients()
+{
+    try {
+        $categorizedIngredients = $this->ingredientRepository->getIngredientsGroupedByTags();
+        echo json_encode([
+            'status' => 'success',
+            'ingredients' => $categorizedIngredients
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to fetch categorized ingredients.'
+        ]);
+    }
+}
     public function getDashboardData()
     {
         // Fetch stats for the dashboard
@@ -89,6 +107,7 @@ class AdminService
             'tagCategories' => $tagCategories,
         ];
     }
+
     public function getDashboardStats()
     {
         // Get the top creator (user with most recipes)

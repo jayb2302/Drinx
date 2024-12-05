@@ -8,13 +8,18 @@ export function initializeComments() {
     // Clear existing event listeners to avoid duplicates
     const newCommentsSection = commentsSection.cloneNode(true);
     commentsSection.replaceWith(newCommentsSection);
-    
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
     // Top-level comment submission
     const commentForm = newCommentsSection.querySelector('#TopLevelCommentForm');
     if (commentForm) {
         commentForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const formData = new FormData(commentForm);
+
+            // Add CSRF token to the form data
+            formData.append('csrf_token', csrfToken);
 
             try {
                 const response = await fetch(commentForm.action, {
@@ -63,9 +68,13 @@ export function initializeComments() {
             const confirmed = confirm('Are you sure you want to delete this?');
             if (!confirmed) return;
 
+            const formData = new FormData(form);
+            formData.append('csrf_token', csrfToken);
+
             try {
                 const response = await fetch(form.action, {
                     method: 'POST',
+                    body: formData,
                     headers: { 'Accept': 'application/json' },
                 });
 
@@ -104,6 +113,8 @@ export function initializeComments() {
             event.preventDefault();
             const formData = new FormData(event.target);
 
+            formData.append('csrf_token', csrfToken);
+
             try {
                 const response = await fetch(event.target.action, {
                     method: 'POST',
@@ -130,6 +141,7 @@ export function initializeComments() {
             event.preventDefault();
             const formData = new FormData(event.target);
 
+            formData.append('csrf_token', csrfToken);
             try {
                 const response = await fetch(event.target.action, {
                     method: 'POST',

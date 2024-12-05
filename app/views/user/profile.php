@@ -16,14 +16,16 @@ if (isset($_SESSION['success'])) {
 ?>
 
 <!-- User Profile Header -->
-<?php if (isset($isFollowing) && $isFollowing): ?>
-    <form action="/user/unfollow/<?= htmlspecialchars($profileUserId); ?>" method="POST">
-        <button type="submit" class="btn btn-danger">Unfollow</button>
-    </form>
-<?php else: ?>
-    <form action="/user/follow/<?= htmlspecialchars($profileUserId); ?>" method="POST">
-        <button type="submit" class="btn btn-primary">Follow</button>
-    </form>
+<?php if ($userId !== $profileUserId): ?> <!-- Only show follow/unfollow buttons if viewing another user's profile -->
+    <?php if (isset($isFollowing) && $isFollowing): ?>
+        <form action="/user/unfollow/<?= htmlspecialchars($profileUserId); ?>" method="POST">
+            <button type="submit" class="btn btn-danger">Unfollow</button>
+        </form>
+    <?php else: ?>
+        <form action="/user/follow/<?= htmlspecialchars($profileUserId); ?>" method="POST">
+            <button type="submit" class="btn btn-primary">Follow</button>
+        </form>
+    <?php endif; ?>
 <?php endif; ?>
 <div class="profile-header">
     <!-- Profile Picture -->
@@ -97,21 +99,20 @@ if (isset($_SESSION['success'])) {
         </div>
     </div>
     <!-- Edit-Delete Section -->
+    <?php if ($userId === $profileUserId): ?>
     <div class="edit-delete">
         <!-- Edit Profile Button - Only show if user is viewing their own profile -->
-        <?php if ($userId === $profileUserId): ?>
             <a id="edit-profile-button" class="button-secondary">
                 <span>
                     Edit Profile
                 </span>
             </a>
 
-
             <!-- Profile Edit Form - Only show if user is viewing their own profile -->
             <div id="edit-profile-form" style="display:none;">
                 <?php include __DIR__ . '/form.php'; ?>
             </div>
-        <?php endif; ?>
+ 
         <div class="delete-account-section">
             <button id="deleteAccountButton" class="button-secondary">Delete Account</button>
 
@@ -131,8 +132,8 @@ if (isset($_SESSION['success'])) {
                 <?php endif; ?>
             </div>
         </div>
-
     </div>
+    <?php endif; ?>
 </div>
 <!-- Recipe Section -->
 <div class="user-recipes">
@@ -148,7 +149,6 @@ if (isset($_SESSION['success'])) {
                                 class="text-blue-500 hover:underline">Edit Cocktail</a>
                         </button>
                     <?php endif; ?>
-
 
                     <a
                         href="/cocktails/<?= htmlspecialchars($recipe->getCocktailId() ?? '0') ?>-<?= urlencode($recipe->getTitle() ?? 'Untitled Cocktail') ?>">

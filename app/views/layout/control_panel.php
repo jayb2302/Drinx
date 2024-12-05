@@ -5,20 +5,14 @@
         // Determine display name
         $firstName = $userProfile->getFirstName() ?? null;
         $lastName = $userProfile->getLastName() ?? null;
-    
-        // If userProfile doesn't provide name, fallback to database query
-        if (!$firstName || !$lastName) {
-            $profile = $profileRepository->findByUserId($_SESSION['user']['user_id']);
-            $firstName = $profile->getFirstName() ?? null;
-            $lastName = $profile->getLastName() ?? null;
-        }
-        $username = htmlspecialchars($_SESSION['user']['username'] ?? 'User'); // Fallback to "User" if username is missing
+        $username = htmlspecialchars($userProfile->getUsername() ?? 'User'); // Fallback to "User" if username is missing
 
+        // Display name: Use first and last name, or fall back to username
         $displayName = ($firstName && $lastName)
-        ? htmlspecialchars($firstName) . ' ' . htmlspecialchars($lastName)
-        : $username;
+            ? htmlspecialchars($firstName) . ' ' . htmlspecialchars($lastName)
+            : $username;
 
-        // Fetch follower and following counts from $userProfile
+        // Fetch follower and following counts
         $followersCount = $userProfile->getFollowersCount() ?? 0;
         $followingCount = $userProfile->getFollowingCount() ?? 0;
         ?>

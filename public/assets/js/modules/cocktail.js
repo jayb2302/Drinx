@@ -9,6 +9,16 @@ export function initializeCocktail() {
             }
         });
     }
+
+    const descriptionInput = document.getElementById('description');
+    const charCount = document.getElementById('charCount'); 
+
+    if (descriptionInput && charCount) {
+        descriptionInput.addEventListener('input', function () {
+            const remaining = 500 - descriptionInput.value.length;
+            charCount.textContent = `${remaining} characters remaining`;
+        });
+    }
     // Ingredients Section
     const ingredientsContainer = document.getElementById('ingredientsContainer');
     const addIngredientButton = document.getElementById('addIngredientButton');

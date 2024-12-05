@@ -102,3 +102,33 @@ function validatePassword($password, &$errors)
 
     return empty($errors); // Return true if no errors
 }
+
+// Helper function to get the first sentence of a description
+function getFirstSentence($description) {
+    if (empty(trim($description))) {
+        return ''; // Return an empty string if the description is empty or whitespace
+    }
+
+    // Split the description into sentences using punctuation as delimiters
+    $sentences = preg_split('/(?<=[.?!])\s+/', $description, -1, PREG_SPLIT_NO_EMPTY);
+
+    // Return the first sentence or fallback to the trimmed description
+    return $sentences[0] ?? trim($description);
+}
+
+function generateCsrfToken() {
+    if (!isset($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));  
+        error_log("Generated CSRF Token: " . $_SESSION['csrf_token']);
+    }
+    return $_SESSION['csrf_token']; 
+}
+
+function validateCsrfToken($token)
+{
+    $isValid = isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+    if ($isValid) {
+        unset($_SESSION['csrf_token']); 
+    }
+    return $isValid;
+}

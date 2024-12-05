@@ -16,15 +16,15 @@ class IngredientController
     public function manageIngredients()
     {
         $ingredientsWithTags = $this->ingredientService->getIngredientsByTags();
-    
+
         // Debugging: Output the data to ensure it's populated correctly
         // error_log(print_r($ingredientsWithTags, true)); // Logs to server logs
         echo '<pre>';
         print_r($ingredientsWithTags); // Displays data in the browser
         echo '</pre>';
-        //die(); // Stops execution for debugging
-    
-        require_once __DIR__ . '/../views/admin/manage_ingredients.php';
+        die(); // Stops execution for debugging
+
+        require_once __DIR__ . '/../views/ingredients/manage_ingredients.php';
     }
     public function getUncategorizedIngredients()
     {
@@ -47,14 +47,22 @@ class IngredientController
     // Assign a tag to an ingredient
     public function assignTag()
     {
+      
         try {
             $data = json_decode(file_get_contents('php://input'), true);
+            $csrfToken = $data['csrf_token'] ?? '';
+            $sessionToken = $_SESSION['csrf_token'] ?? '';
+        
+            // Validate CSRF token
+            if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+                http_response_code(403);
+                echo json_encode(['status' => 'error', 'message' => 'Invalid or missing CSRF token.']);
+                return;
+            }
             $ingredientId = $data['ingredient_id'] ?? null;
             $ingredientName = trim($data['ingredient_name'] ?? '');
             $tagId = $data['tag_id'] ?? null;
 
-            // Debugging log
-            error_log("Assigning Tag - Ingredient ID: $ingredientId, Tag ID: $tagId");
 
             if (!$ingredientId || !$tagId) {
                 http_response_code(400);
@@ -100,6 +108,16 @@ class IngredientController
     {
         try {
             $data = json_decode(file_get_contents('php://input'), true);
+            
+            $csrfToken = $data['csrf_token'] ?? '';
+            $sessionToken = $_SESSION['csrf_token'] ?? '';
+
+            if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+                http_response_code(403);
+                echo json_encode(['status' => 'error', 'message' => 'Invalid or missing CSRF token.']);
+                return;
+            }
+
             $ingredientName = trim($data['ingredient_name'] ?? '');
 
             // Check if ingredient name is empty
@@ -123,11 +141,6 @@ class IngredientController
             $ingredientId = $this->ingredientService->createIngredient($ingredientName);
 
             if ($ingredientId) {
-
-
-                // Assign the "Uncategorized" tag
-
-
                 // Return success response
                 echo json_encode(['status' => 'success', 'message' => 'Ingredient added successfully.', 'ingredient_id' => $ingredientId]);
             } else {
