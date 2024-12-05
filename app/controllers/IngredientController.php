@@ -1,14 +1,19 @@
 <?php
-class IngredientController
+require_once 'BaseController.php';
+
+class IngredientController extends BaseController
 {
     private $ingredientService;
     private $tagService;
 
     public function __construct(
+        AuthService $authService,
+        UserService $userService,
+        CocktailService $cocktailService,
         IngredientService $ingredientService,
         TagService $tagService
-    )
-    {
+    ) {
+        parent::__construct($authService, $userService, $cocktailService);
         $this->ingredientService = $ingredientService;
         $this->tagService = $tagService;
     }
@@ -22,7 +27,7 @@ class IngredientController
         echo '<pre>';
         print_r($ingredientsWithTags); // Displays data in the browser
         echo '</pre>';
-        die(); // Stops execution for debugging
+        // die(); // Stops execution for debugging
 
         require_once __DIR__ . '/../views/ingredients/manage_ingredients.php';
     }

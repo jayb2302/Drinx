@@ -1,15 +1,18 @@
 <?php
-class CommentController
+require_once 'BaseController.php';
+
+class CommentController extends BaseController
 {
     private $commentService;
-    private $cocktailService;
 
     public function __construct(
-        CommentService $commentService, 
-        CocktailService $cocktailService
+        AuthService $authService,
+        UserService $userService,
+        CocktailService $cocktailService,
+        CommentService $commentService
     ) {
+        parent::__construct($authService, $userService, $cocktailService);
         $this->commentService = $commentService;
-        $this->cocktailService = $cocktailService;
     }
 
     // Add a comment or reply
@@ -39,10 +42,8 @@ class CommentController
 
             // Fetch updated cocktail and comments
             $cocktail = $this->cocktailService->getCocktailById($cocktailId);
-            $comments = $this->commentService->getCommentsWithReplies($cocktailId);
-            $userService = new UserService(); 
-            $authController = new AuthController($userService); 
-            $currentUser = $authController->getCurrentUser(); 
+            $comments = $this->commentService->getCommentsWithReplies($cocktailId); 
+            $currentUser = $this->authService->getCurrentUser(); 
 
             // Render the entire comment section
             ob_start();
@@ -75,7 +76,7 @@ class CommentController
             exit();
         }
         // Ensure the user owns the comment or is an admin
-        if ($_SESSION['user']['id'] !== $comment->getUserId() && !AuthController::isAdmin()) {
+        if ($_SESSION['user']['id'] !== $comment->getUserId() && !$this->authService->isAdmin()) {
             error_log("User not authorized to edit comment ID: $commentId");
             http_response_code(403); // Forbidden
             echo json_encode(['error' => 'You are not authorized to edit this comment.']);
@@ -100,10 +101,8 @@ class CommentController
             // Return the updated comments section HTML
             ob_start();
             $cocktail = $this->cocktailService->getCocktailById($cocktailId); // Assuming you have a method to get cocktail info
-            $userService = new UserService(); // Assuming you have a UserService class
-                $authController = new AuthController($userService);
-                $currentUser = (new AuthController($userService))->getCurrentUser(); // Ensure current user is available
-            $comments = $updatedComments;
+                $currentUser = $this->authService->getCurrentUser(); 
+                $comments = $updatedComments;
             require __DIR__ . '/../views/cocktails/comment_section.php';
             $updatedCommentsHtml = ob_get_clean();
 
@@ -119,7 +118,7 @@ class CommentController
     public function delete($commentId)
     {
         $comment = $this->commentService->getCommentById($commentId);
-        if ($_SESSION['user']['id'] !== $comment->getUserId() && !AuthController::isAdmin()) {
+        if ($_SESSION['user']['id'] !== $comment->getUserId() && !$this->authService->isAdmin()) {
             http_response_code(403); // Forbidden
             echo json_encode(['error' => 'You are not authorized to delete this comment.']);
             exit();
@@ -134,9 +133,8 @@ class CommentController
             // Fetch updated comments and render the section
             $cocktail = $this->cocktailService->getCocktailById($cocktailId);
             $comments = $this->commentService->getCommentsWithReplies($cocktailId);
-            $userService = new UserService(); // Assuming you have a UserService class
-                $authController = new AuthController($userService);
-                $currentUser = (new AuthController($userService))->getCurrentUser();
+            $currentUser = $this->authService->getCurrentUser(); 
+
 
             ob_start();
             require __DIR__ . '/../views/cocktails/comment_section.php';
@@ -169,9 +167,8 @@ class CommentController
                 // Fetch updated cocktail and comments
                 $cocktail = $this->cocktailService->getCocktailById($cocktailId);
                 $comments = $this->commentService->getCommentsWithReplies($cocktailId);
-                $userService = new UserService(); // Assuming you have a UserService class
-                $authController = new AuthController($userService);
-                $currentUser = (new AuthController($userService))->getCurrentUser();
+                $currentUser = $this->authService->getCurrentUser(); 
+
 
                 // Render the entire comments section
                 ob_start();

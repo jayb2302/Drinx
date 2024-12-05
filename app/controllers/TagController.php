@@ -1,12 +1,17 @@
 <?php
-require_once __DIR__ . '/../config/dependencies.php';
-class TagController
+require_once 'BaseController.php';
+
+class TagController extends BaseController
 {
     private $tagService;
 
     public function __construct(
-        TagService $tagService)
-    {
+        AuthService $authService,
+        UserService $userService,
+        CocktailService $cocktailService,
+        TagService $tagService
+    ) {
+        parent::__construct($authService, $userService, $cocktailService);
         $this->tagService = $tagService;
     }
 
@@ -36,7 +41,7 @@ class TagController
     public function saveTag()
     {
         // Check if the user is an admin
-        if (!AuthController::isAdmin()) {
+        if (!$this->authService->isAdmin()) {
             http_response_code(403);
             echo json_encode(['error' => 'You do not have permission to perform this action.']);
             exit();

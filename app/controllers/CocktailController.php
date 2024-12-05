@@ -1,13 +1,12 @@
 <?php
+require_once 'BaseController.php';
 
-class CocktailController
+class CocktailController extends BaseController
 {
-    private $cocktailService;
     private $ingredientService;
     private $stepService;
     private $commentService;
     private $likeService;
-    private $userService;
     private $imageService;
     private $badgeService;
 
@@ -15,24 +14,23 @@ class CocktailController
     private const MAX_DESCRIPTION_LENGTH = 500;
 
     public function __construct(
+        AuthService $authService,
+        UserService $userService,
         CocktailService $cocktailService,
         IngredientService $ingredientService,
         StepService $stepService,
         CommentService $commentService,
         LikeService $likeService,
-        UserService $userService,
         ImageService $imageService,
     ) {
-        $this->cocktailService = $cocktailService;
+        parent::__construct($authService, $userService, $cocktailService);
         $this->ingredientService = $ingredientService;
         $this->stepService = $stepService;
         $this->commentService = $commentService;
         $this->likeService = $likeService;
-        $this->userService = $userService;
         $this->imageService = $imageService;
 
-
-        // Start session if not already started
+        // Ensure session is started
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -160,10 +158,14 @@ class CocktailController
 
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
+        // Get the current user
+        $currentUser = $this->authService->getCurrentUser();
+    
         // Only allow the owner or an admin to edit the cocktail
-        if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
+        if ($cocktail->getUserId() !== $currentUser->getId() && !$this->authService->isAdmin()) {
             $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
         }
+    
 
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
@@ -184,9 +186,10 @@ class CocktailController
         $this->ensureLoggedIn();
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
-        if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
-            $this->redirect('/cocktails');
+        if ($cocktail->getUserId() !== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
+            $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
         }
+        
 
         $errors = $this->validateCocktailInput($_POST);
         $image = $this->handleImageUpdate($_FILES['image'], $cocktail, $errors);
@@ -247,7 +250,7 @@ class CocktailController
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
         // Only allow the owner or an admin to delete the step
-        if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
+        if ($cocktail->getUserId() !== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
             $this->redirect('/cocktails/' . $cocktailId); // Redirect if the user doesn't have permission
         }
 
@@ -368,15 +371,15 @@ class CocktailController
     // Ensure user is logged in
     private function ensureLoggedIn()
     {
-        if (!AuthController::isLoggedIn()) {
-            $this->redirect('login');
+        if (!$this->authService->isLoggedIn()) {
+            $this->redirect('/login'); // Redirect to login if not logged in
         }
     }
 
     // Ensure user has permission to edit or delete
     private function ensureUserHasPermission($cocktailUserId)
     {
-        if ($cocktailUserId !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
+        if ($cocktailUserId !== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
             $this->redirect('/cocktails');
         }
     }
@@ -548,7 +551,7 @@ class CocktailController
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
         // Only allow the owner or an admin to delete the cocktail
-        if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
+        if ($cocktail->getUserId()!== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
             $this->redirect('/cocktails');
         }
 

@@ -1,22 +1,21 @@
 <?php
+require_once 'BaseController.php';
 
-class HomeController
+class HomeController extends BaseController
 {
-    private $cocktailService;
     private $ingredientService;
     private $likeService;
-    private $userService;
 
     public function __construct(
+        AuthService $authService,
+        UserService $userService,
         CocktailService $cocktailService,
         IngredientService $ingredientService,
-        LikeService $likeService,
-        UserService $userService,
+        LikeService $likeService
     ) {
-        $this->cocktailService = $cocktailService;
+        parent::__construct($authService, $userService, $cocktailService);
         $this->ingredientService = $ingredientService;
         $this->likeService = $likeService;
-        $this->userService = $userService;
     }
 
     public function index($categoryName = null, $sortOption = 'recent')

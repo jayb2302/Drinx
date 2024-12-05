@@ -1,13 +1,16 @@
 <?php
-
+require_once __DIR__ . '/../helpers/helpers.php';
 class AuthController{
     private $userService;
+    private static $authService;
 
     public function __construct(
-        UserService $userService
+        UserService $userService,
+        AuthService $authService
     )
     {
         $this->userService = $userService;
+        self::$authService = $authService;
     }
 
     // Handle user authentication
@@ -147,30 +150,18 @@ class AuthController{
     }
 
     // Check if the user is logged in
-    public static function isLoggedIn()
-    {
-        return isset($_SESSION['user']);
-    }
-
-    // Check if the current user is an admin
     public static function isAdmin()
     {
-        return isset($_SESSION['user']) && $_SESSION['user']['is_admin'];
+        return self::$authService->isAdmin();
+    }
+
+    public static function isLoggedIn()
+    {
+        return self::$authService->isLoggedIn();
     }
 
     public static function getCurrentUser()
     {
-        if (!isset($_SESSION['user'])) {
-            return null;
-        }
-
-        // Retrieve user data from the session
-        $user = new User();
-        $user->setId($_SESSION['user']['id']);
-        $user->setUsername($_SESSION['user']['username']);
-        $user->setIsAdmin($_SESSION['user']['is_admin']);
-        $user->setAccountStatusId($_SESSION['user']['account_status']);
-        
-        return $user;
+        return self::$authService->getCurrentUser();
     }
 }

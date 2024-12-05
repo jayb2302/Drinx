@@ -1,20 +1,19 @@
 <?php
+require_once 'BaseController.php';
 
-class UserController
+class UserController extends BaseController
 {
-    private $userService;
-    private $cocktailService;
-    private $badgeService;
     private $imageService;
+    private $badgeService;
 
     public function __construct(
+        AuthService $authService,
         UserService $userService,
         CocktailService $cocktailService,
         ImageService $imageService,
-        BadgeService $badgeService,
+        BadgeService $badgeService
     ) {
-        $this->userService = $userService;
-        $this->cocktailService = $cocktailService;
+        parent::__construct($authService, $userService, $cocktailService);
         $this->imageService = $imageService;
         $this->badgeService = $badgeService;
     }
@@ -22,7 +21,7 @@ class UserController
     // Show the user profile
     public function profile($profileUserId)
     {
-        if (!AuthController::isLoggedIn()) {
+        if (!$this->authService->isAdmin()) {
             redirect('login');
         }
         $userId = $_SESSION['user']['id'] ?? null; // Use null coalescing operator to avoid undefined error
@@ -55,7 +54,7 @@ class UserController
     // Show user settings
     public function settings()
     {
-        if (!AuthController::isLoggedIn()) {
+        if (!$this->authService->isLoggedIn()) {
             redirect('login');  // Redirect to login if not logged in
         }
 
@@ -66,7 +65,7 @@ class UserController
     // Delete user account
     public function deleteAccount()
     {
-        if (!AuthController::isLoggedIn()) {
+        if (!$this->authService->isLoggedIn()) {
             redirect('login');
         }
 
@@ -97,7 +96,7 @@ class UserController
     // Update user profile (username, email)
     public function updateProfile()
     {
-        if (!AuthController::isLoggedIn()) {
+        if (!$this->authService->isLoggedIn()) {
             redirect('login');
         }
 
@@ -172,7 +171,7 @@ class UserController
 
     public function changePassword()
     {
-        if (!AuthController::isLoggedIn()) {
+        if (!$this->authService->isLoggedIn()) {
             redirect('login');  // Redirect to login if not logged in
         }
 
@@ -193,7 +192,7 @@ class UserController
 
     public function profileByUsername($username)
     {
-        if (!AuthController::isLoggedIn()) {
+        if (!$this->authService->isLoggedIn()) {
             redirect('login');
         }
         $username = sanitize($username);
@@ -231,7 +230,7 @@ class UserController
     // Follow a user
     public function follow($followedUserId)
     {
-        if (!AuthController::isLoggedIn()) {
+        if (!$this->authService->isLoggedIn()) {
             redirect('login');
         }
 
@@ -259,7 +258,7 @@ class UserController
     // Unfollow a user
     public function unfollow($followedUserId)
     {
-        if (!AuthController::isLoggedIn()) {
+        if (!$this->authService->isLoggedIn()) {
             redirect('login');
         }
 

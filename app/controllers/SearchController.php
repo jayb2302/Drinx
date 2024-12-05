@@ -1,16 +1,14 @@
 <?php
+require_once 'BaseController.php';
 
-
-class SearchController {
-    private $cocktailService;
-    private $userService;
-
+class SearchController extends BaseController
+{
     public function __construct(
-        UserService $userService, 
-        CocktailService $cocktailService,
+        AuthService $authService,
+        UserService $userService,
+        CocktailService $cocktailService
     ) {
-        $this->userService = $userService;
-        $this->cocktailService = $cocktailService;
+        parent::__construct($authService, $userService, $cocktailService);
     }
 
     public function search() {
