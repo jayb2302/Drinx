@@ -13,7 +13,15 @@ import { initializeTags } from './modules/tags.js';
 import { initializeUserManagement } from './modules/user-management.js';
 import { initializeSidebars } from './modules/sidebars.js';
 import { initializeImageValidation } from './modules/image-handler.js';
+// Fetch CSRF token from the meta tag
+const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
+// Set up AJAX requests to include CSRF token globally
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-Token': csrfToken
+    }
+});
 document.addEventListener('DOMContentLoaded', function () {
     const pageType = window.pageType || document.querySelector('meta[name="page-type"]')?.content;
 

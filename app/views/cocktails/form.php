@@ -1,6 +1,8 @@
 <div class="form-container">
-
     <form action="/cocktails/<?= $isEditing ? 'update/' . $cocktail->getCocktailId() : 'store' ?>" method="post" enctype="multipart/form-data">
+       
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>">
+
         <h1><?= $isEditing ? 'Edit' : 'Add' ?> Cocktail Recipe</h1>
         <div class="form-group">
 
@@ -27,7 +29,7 @@
 
             <div class="form-group">
                 <label for="description">Description</label>
-                <textarea name="description" id="description" required> <?= $isEditing ? sanitizeTrim($cocktail->getDescription()) : '' ?> </textarea>
+                <textarea name="description" maxlength="500" id="description" required> <?= $isEditing && $cocktail->getDescription() ? sanitizeTrim($cocktail->getDescription()) : '' ?> </textarea>
             </div>
         </div>
         <!-- Category and Difficulty -->
@@ -60,8 +62,6 @@
                 </div>
             <?php endif; ?>
         </div>
-
-
 
         <h3>Ingredients</h3>
         <div id="ingredientsContainer" class="ingredientsContainer">

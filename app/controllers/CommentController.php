@@ -38,7 +38,9 @@ class CommentController
             // Fetch updated cocktail and comments
             $cocktail = $this->cocktailService->getCocktailById($cocktailId);
             $comments = $this->commentService->getCommentsWithReplies($cocktailId);
-            $currentUser = (new AuthController())->getCurrentUser(); // Ensure current user is available
+            $userService = new UserService(); 
+            $authController = new AuthController($userService); 
+            $currentUser = $authController->getCurrentUser(); 
 
             // Render the entire comment section
             ob_start();
@@ -96,7 +98,9 @@ class CommentController
             // Return the updated comments section HTML
             ob_start();
             $cocktail = $this->cocktailService->getCocktailById($cocktailId); // Assuming you have a method to get cocktail info
-            $currentUser = (new AuthController())->getCurrentUser(); // Ensure current user is available
+            $userService = new UserService(); // Assuming you have a UserService class
+                $authController = new AuthController($userService);
+                $currentUser = (new AuthController($userService))->getCurrentUser(); // Ensure current user is available
             $comments = $updatedComments;
             require __DIR__ . '/../views/cocktails/comment_section.php';
             $updatedCommentsHtml = ob_get_clean();
@@ -128,7 +132,9 @@ class CommentController
             // Fetch updated comments and render the section
             $cocktail = $this->cocktailService->getCocktailById($cocktailId);
             $comments = $this->commentService->getCommentsWithReplies($cocktailId);
-            $currentUser = (new AuthController())->getCurrentUser();
+            $userService = new UserService(); // Assuming you have a UserService class
+                $authController = new AuthController($userService);
+                $currentUser = (new AuthController($userService))->getCurrentUser();
 
             ob_start();
             require __DIR__ . '/../views/cocktails/comment_section.php';
@@ -161,7 +167,9 @@ class CommentController
                 // Fetch updated cocktail and comments
                 $cocktail = $this->cocktailService->getCocktailById($cocktailId);
                 $comments = $this->commentService->getCommentsWithReplies($cocktailId);
-                $currentUser = (new AuthController())->getCurrentUser();
+                $userService = new UserService(); // Assuming you have a UserService class
+                $authController = new AuthController($userService);
+                $currentUser = (new AuthController($userService))->getCurrentUser();
 
                 // Render the entire comments section
                 ob_start();

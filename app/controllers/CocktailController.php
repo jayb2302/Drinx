@@ -14,6 +14,9 @@ class CocktailController
     private $imageService;
     private $badgeService;
 
+    // Maximum description length
+    private const MAX_DESCRIPTION_LENGTH = 500;
+
     public function __construct(
         CocktailService $cocktailService,
         IngredientService $ingredientService,
@@ -93,8 +96,21 @@ class CocktailController
         $this->ensureLoggedIn();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrfToken = $_POST['csrf_token'] ?? '';
+            $sessionToken = $_SESSION['csrf_token'] ?? '';
+
+            // Validate the CSRF token
+            if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+                http_response_code(403);
+                echo json_encode(['error' => 'Invalid or missing CSRF token.']);
+                exit;
+            }
             $errors = $this->validateCocktailInput($_POST);
 
+            $description = sanitizeTrim($_POST['description']);
+            if (strlen($description) > self::MAX_DESCRIPTION_LENGTH) {
+                $errors[] = "Description cannot exceed " . self::MAX_DESCRIPTION_LENGTH . " characters.";
+            }
             // Log validation errors
             error_log("Validation errors: " . print_r($errors, true));
 
@@ -111,7 +127,7 @@ class CocktailController
             $cocktailData = [
                 'user_id' => $_SESSION['user']['id'],
                 'title' => sanitize($_POST['title']),
-                'description' => sanitizeTrim($_POST['description']),
+                'description' => substr($description, 0, self::MAX_DESCRIPTION_LENGTH), // Enforce length
                 'image' => $image,
                 'category_id' => intval($_POST['category_id']),
                 'difficulty_id' => intval($_POST['difficulty_id'])
@@ -294,6 +310,11 @@ class CocktailController
             $errors[] = "Title cannot be more than 255 characters.";
         }
 
+        // Validate description length (new addition)
+        if (!empty($data['description']) && strlen($data['description']) > 500) { // Adjust length as needed
+            $errors[] = "Description cannot be more than 500 characters.";
+        }
+
         // Check category_id and difficulty_id for valid integers
         if (isset($data['category_id']) && !filter_var($data['category_id'], FILTER_VALIDATE_INT)) {
             $errors[] = "Category must be a valid integer.";
@@ -387,6 +408,7 @@ class CocktailController
     public function view($cocktailId, $action = 'view')
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+        $currentUser = $this->userService->getUserWithProfile($loggedInUserId);
         // Sanitize inputs
         $cocktailId = intval($cocktailId); // Sanitize ID
         $action = sanitize($action); // Sanitize action
@@ -519,6 +541,16 @@ class CocktailController
     // Delete a cocktail (only for the owner or admin)
     public function delete($cocktailId)
     {
+        $csrfToken = $_POST['csrf_token'] ?? '';
+        $sessionToken = $_SESSION['csrf_token'] ?? '';
+
+        // Validate the CSRF token
+        if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Invalid or missing CSRF token.']);
+            exit;
+        }
+
         $cocktailId = intval($cocktailId); // Sanitize ID
         $this->ensureLoggedIn(); // Ensure the user is logged in
 
@@ -526,7 +558,7 @@ class CocktailController
 
         // Only allow the owner or an admin to delete the cocktail
         if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
-            $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
+            $this->redirect('/cocktails');
         }
 
         // Delete the cocktail
