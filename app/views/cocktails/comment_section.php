@@ -3,7 +3,6 @@
     <!-- Top-level Comment Form -->
     <?php if ($authController->isLoggedIn() && $currentUser->canComment()): ?>
         <div class="top-level-comment">
-            <h3 class="commentHeading">New Comment</h3>
             <form id="TopLevelCommentForm"
                 action="/cocktails/<?= $cocktail->getCocktailId() ?>-<?= urlencode($cocktail->getTitle()) ?>/comments"
                 method="POST">
@@ -34,20 +33,20 @@
                             class="creatorPicture">
                     <?php endif; ?>
 
-                    <p>
+                    <span>
                         <strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong> <br>
                         <small><?= htmlspecialchars(formatDate($comment->getCreatedAt())) ?></small>
-                    </p>
+                    </span>
                     <!-- Dots Menu for Edit/Delete -->
                     <?php if ($authController->isLoggedIn() && ($currentUser->canEditComment($comment->getUserId()) || $authController->isAdmin())): ?>
                         <div class="dotsMenu">
                             <button class="dotsButton">⋮</button>
                             <div class="menu hidden">
                                 <button type="button" class="menuItem editCommentButton"
-                                    data-comment-id="<?= $comment->getCommentId() ?>">🖊️</button>
+                                    data-comment-id="<?= $comment->getCommentId() ?>"> <i class="fa-solid fa-pencil"></i> </button>
                                 <form action="/comments/<?= $comment->getCommentId() ?>/delete" method="POST">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
-                                    <button type="submit" class="delete">🗑️</button>
+                                    <button type="submit" class="delete"> <i class="fa-solid fa-trash"></i> </button>
                                 </form>
                             </div>
                         </div>
@@ -62,8 +61,7 @@
                     <button type="submit">Save</button>
                     <button type="button" class="cancelEditButton">Cancel</button>
                 </form>
-
-                </p>
+                
                 <p><?= htmlspecialchars($comment->getCommentText() ?? 'No comment text available') ?></p>
                 <!-- Display comment text here -->
 

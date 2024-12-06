@@ -1,6 +1,5 @@
 <div class="controlPanel">
     <?php if ($userProfile): ?>
-        <!-- Profile Header with Display Name and Logout -->
         <?php
         // Determine display name
         $firstName = $userProfile->getFirstName() ?? null;

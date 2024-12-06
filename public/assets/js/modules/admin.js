@@ -12,6 +12,8 @@ export function initializeAdmin() {
             selectedSection.style.display = 'block';
         }
     }
+    const defaultSectionId = 'userManagement';
+    toggleSection(defaultSectionId);
       // Attach toggleSection function to buttons or links
       document.querySelectorAll('.admin-toggle-button').forEach(button => {
         button.addEventListener('click', (e) => {

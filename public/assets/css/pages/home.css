@@ -103,14 +103,13 @@
 
 
 .category-sidebar {
-    background: var(--card-radial-gradient);
+    /* background: var(--card-radial-gradient); */
     padding: .5rem 1rem;
     color: var(--text-primary);
     border-radius: 10px;
     padding-bottom: 1.5rem;
     & h3 {
         color: var(--text-primary);
-        letter-spacing: 0.2rem;
         font-size: 1.5rem;
         margin-bottom: 1rem;
     }

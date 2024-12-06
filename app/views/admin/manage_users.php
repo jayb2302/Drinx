@@ -5,7 +5,7 @@
     <table class="manage-users">
         <thead>
             <tr>
-                <th>Profiles</th>
+                <th></th>
                 <th data-sort="username" class="sortable">Username <span class="sort-indicator"></span></th>
                 <th data-sort="email" class="sortable">Email <span class="sort-indicator"></span></th>
                 <th data-sort="status" class="sortable">Account Status <span class="sort-indicator"></span></th>
