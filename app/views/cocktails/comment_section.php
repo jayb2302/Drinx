@@ -1,5 +1,5 @@
 <div class="commentsSection">
-    <h2 class="">Comments</h2>
+    <h2 class=""> <i class="fa-brands fa-slideshare"></i> Bar Talk</h2>
     <!-- Top-level Comment Form -->
     <?php if ($authController->isLoggedIn() && $currentUser->canComment()): ?>
         <div class="top-level-comment">
