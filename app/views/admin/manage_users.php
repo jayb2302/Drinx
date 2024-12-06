@@ -5,7 +5,7 @@
     <table class="manage-users">
         <thead>
             <tr>
-                <th>Profiles</th>
+                <th></th>
                 <th data-sort="username" class="sortable">Username <span class="sort-indicator"></span></th>
                 <th data-sort="email" class="sortable">Email <span class="sort-indicator"></span></th>
                 <th data-sort="status" class="sortable">Account Status <span class="sort-indicator"></span></th>
@@ -34,7 +34,7 @@
                             <option value="2" <?= $user->getAccountStatusId() == 2 ? 'selected' : '' ?>>🟡</option>
                             <option value="3" <?= $user->getAccountStatusId() == 3 ? 'selected' : '' ?>>🔴</option>
                         </select>
-                        <button class="button" type="submit">Update Status</button>
+                        <button class="button" type="submit">Update</button>
                     </form>
                 </td>
             </tr>

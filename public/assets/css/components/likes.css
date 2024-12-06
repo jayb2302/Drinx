@@ -1,13 +1,9 @@
-
-
-
-
 .like-section {
-    background-color: var(--nav-background);
+    background: var(--lcard-linear-gradient);
     color: var(--accent-primary);
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
     & .like-button {
         color: var(--text-primary);
         background-color: var(--card-background);

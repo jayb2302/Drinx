@@ -1,12 +1,18 @@
-<?php 
+<?php
 $metaTitle = "Drinx - Cocktail Library";
 $pageTitle = "Drinx - Admin Dashboard";
-$page="admin";
-require_once __DIR__ . '/../layout/header.php'; 
+$page = "admin";
+require_once __DIR__ . '/../layout/header.php';
 ?>
 <!-- Admin Dashboard Navigation -->
 <?php if ($_SESSION['user']['is_admin'] ?? false): ?>
     <div class="admin-dashboard">
+        <!-- Navigation -->
+        <nav class="dashboard-navigation">
+            <button class="button admin-toggle-button" data-target="userManagement">User</button>
+            <button class="button admin-toggle-button" data-target="tagsManagement">Tags</button>
+            <button class="button admin-toggle-button" data-target="ingredientManagement">Ingredient</button>
+        </nav>
         <!-- Stats Section -->
         <div class="dashboard-stats">
             <div class="stats-scroll">
@@ -59,21 +65,15 @@ require_once __DIR__ . '/../layout/header.php';
                         <div class="stat-card">
                             <div class="stat-info">
                                 <h4 class="stat-title"><?= $statItem['title']; ?></h4>
-                            <i class="stat-icon <?= htmlspecialchars($statItem['icon']); ?>"></i>
-                            <span class="stat-value"><?= $statItem['value']; ?></span>
+                                <i class="stat-icon <?= htmlspecialchars($statItem['icon']); ?>"></i>
+                                <span class="stat-value"><?= $statItem['value']; ?></span>
                             </div>
                         </div>
                     <?php } ?>
                 <?php endforeach; ?>
             </div>
         </div>
-         <!-- Navigation -->
-        <nav class="dashboard-navigation">
-            <button class="button admin-toggle-button" data-target="userManagement">User</button>
-            <button class="button admin-toggle-button" data-target="tagsManagement">Tags</button>
-            <button class="button admin-toggle-button" data-target="ingredientManagement">Ingredient</button>
-        </nav>
-        
+
         <!-- Sections -->
         <section id="userManagement" class="admin-section" style="display: none;">
             <?php include __DIR__ . '/manage_users.php'; ?>
@@ -85,5 +85,5 @@ require_once __DIR__ . '/../layout/header.php';
             <?php include __DIR__ . '/manage_ingredients.php'; ?>
         </section>
     <?php endif; ?>
-</div>
+    </div>
     <?php require_once __DIR__ . '/../layout/footer.php'; ?>

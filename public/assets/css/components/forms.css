@@ -7,7 +7,7 @@
 
 /* General Form Styling */
 form {
-    background-color: var(--card-background);
+    
     & .submit-container {
         display: flex;
         justify-content: flex-end;
@@ -53,7 +53,8 @@ form {
     }
     & .form-group {
         margin-bottom: .5rem;
-
+        display: flex;
+        flex-direction: column;
         & label {
             display: block;
             font-family: var(--font-display);
@@ -66,21 +67,14 @@ form {
         & input[type="number"],
         & select,
         & textarea {
-            padding: 1rem;
+            padding: .5rem;
             border: 0.1rem solid var(--border);
             border-radius: 0.2rem;
             font-family: var(--font-body);
             color: var(--text-primary);
-            background-color: var(--background);
-            transition: border-color 0.2s ease;
-            width: 100%;
-            max-width: 100%; 
-        }
-
-        & textarea {
-            resize: vertical; 
-            min-height: 5vh; 
-            max-height: 25vh; 
+            background: var(--card-linear-gradient);
+            resize: vertical;
+            
         }
 
         & input[type="text"]:focus,
@@ -91,7 +85,18 @@ form {
             outline: none;
         }
     }
-
+    textarea {
+        height: 2rem;
+        overflow: hidden;
+        font-family: var(--font-body);
+        box-sizing: border-box;
+        transition: height 0.5s;
+        
+        &:focus{
+            height: 8rem;
+            overflow: auto;
+        }  
+    }
     & .sticky-cocktail {
         display: flex;
         justify-content: center;
@@ -114,7 +119,7 @@ form {
         &::after {
             content: "Set cocktail as sticky to feature it prominently.";
             position: absolute;
-            top: calc(100% + 0.5rem); /* Position tooltip below the label */
+            top: calc(100% + 0.5rem); 
             left: 50%;
             transform: translateX(-50%);
             background: var(--background-secondary);
@@ -261,5 +266,13 @@ input[type="submit"] {
                 color: var(--error);
             }
         }
+    }
+}
+
+.editCommentForm {
+    display: flex;
+    flex-direction: column;
+    & textare {
+        flex-grow: 1;
     }
 }

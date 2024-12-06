@@ -112,25 +112,10 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                                                 <?php endif; ?>
                                                 <!-- Display the username of the comment creator -->
                                                 <div class="userCommented">
-                                                    <p><strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong></p>
-                                                    <!-- Display the comment creation date -->
-                                                    <p class="commentDate">
-                                                        <small><?= formatDate($comment->getCreatedAt() ?? 'Unknown date') ?></small>
-                                                    </p>
+                                                    <strong><?= htmlspecialchars($comment->getUsername() ?? 'Unknown User') ?>:</strong>
+                                                    <br>
+                                                    <small class="commentDate"><?= formatDate($comment->getCreatedAt() ?? 'Unknown date') ?></small>
                                                 </div>
-
-                                                <!-- Menu for edit/delete if user is logged in and is the comment creator or an admin -->
-                                                <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $comment->getUserId() || $authController->isAdmin())): ?>
-                                                    <div class="dotsMenu">
-                                                        <button class="dotsButton">⋮</button>
-                                                        <div class="menu hidden">
-                                                            <button type="button" class="menuItem editCommentButton" data-comment-id="<?= $comment->getCommentId() ?>">🖊️</button>
-                                                            <form action="/comments/<?= $comment->getCommentId() ?>/delete" method="POST">
-                                                                <button type="submit" class="menuItem">🗑️</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                <?php endif; ?>
                                             </div>
                                             <!-- Display the comment text -->
                                             <p><?= htmlspecialchars($comment->getCommentText() ?? 'No comment text available') ?></p>

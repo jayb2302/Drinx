@@ -31,7 +31,6 @@ export function initializeComments() {
             if (data.new_csrf) {
                 updateCsrfToken(data.new_csrf);
             }
-
             return data;
         } catch (error) {
             console.error('Error parsing response:', error, rawText);
@@ -72,60 +71,61 @@ export function initializeComments() {
         });
     }
 
-    // Event delegation for dynamically added elements
-    newCommentsSection.addEventListener('click', async (event) => {
-        const target = event.target;
-
-        // Handle delete comment/reply
-        if (target.matches('.delete') && target.textContent.includes('🗑️')) {
-            event.preventDefault();
-            const form = target.closest('form');
-            if (!form) {
-                console.error("Delete form not found.");
-                return;
-            }
-
-            const confirmed = confirm('Are you sure you want to delete this?');
-            if (!confirmed) return;
-
-            const formData = new FormData(form);
-            formData.append('csrf_token', csrfMetaTag.getAttribute('content'));
-
-            try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'Accept': 'application/json' },
-                });
-
-                const data = await handleServerResponse(response);
-                if (data.success) {
-                    newCommentsSection.outerHTML = data.html;
-                    document.dispatchEvent(new Event('Drinx.DOMUpdated'));
-                } else {
-                    alert(data.error || 'Failed to delete comment.');
-                }
-            } catch (error) {
-                console.error('Error deleting comment:', error);
-            }
+newCommentsSection.addEventListener('click', async (event) => {
+    let target = event.target;
+    // Ensure the target is the delete button, even if the icon inside is clicked
+    if (target.matches('.delete *')) {
+        target = target.closest('.delete');
+    }
+    if (target && target.matches('.delete')) {
+        event.preventDefault(); // Prevent default form submission
+        const form = target.closest('form');
+        if (!form) {
+            console.error("Delete form not found.");
+            return;
         }
 
-        // Handle reply button toggle
-        if (target.matches('.replyButton')) {
-            const replyForm = newCommentsSection.querySelector(`#replyForm-${target.dataset.commentId}`);
-            if (replyForm) {
-                replyForm.classList.toggle('hidden');
-            }
-        }
+        const confirmed = confirm('Are you sure you want to delete this?');
+        if (!confirmed) return;
 
-        // Handle dots menu toggle
-        if (target.matches('.dotsButton')) {
-            const menu = target.nextElementSibling;
-            if (menu) {
-                menu.classList.toggle('hidden');
+        const formData = new FormData(form);
+        formData.append('csrf_token', csrfMetaTag.getAttribute('content'));
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' },
+            });
+
+            const data = await handleServerResponse(response);
+            if (data.success) {
+                newCommentsSection.outerHTML = data.html;
+                document.dispatchEvent(new Event('Drinx.DOMUpdated'));
+            } else {
+                alert(data.error || 'Failed to delete comment.');
             }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
         }
-    });
+    }
+
+    // Handle reply button toggle
+    if (target.matches('.replyButton')) {
+        const replyForm = newCommentsSection.querySelector(`#replyForm-${target.dataset.commentId}`);
+        if (replyForm) {
+            replyForm.classList.toggle('hidden');
+        }
+    }
+
+    // Handle dots menu toggle
+    if (target.matches('.dotsButton')) {
+        const menu = target.nextElementSibling;
+        if (menu) {
+            menu.classList.toggle('hidden');
+        }
+    }
+});
 
     // Handle reply submission
     newCommentsSection.addEventListener('submit', async (event) => {

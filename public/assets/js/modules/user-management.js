@@ -45,7 +45,7 @@ export function initializeUserManagement() {
                             <option value="2" ${user.account_status_id == 2 ? "selected" : ""}>🟡</option>
                             <option value="3" ${user.account_status_id == 3 ? "selected" : ""}>🔴</option>
                         </select>
-                        <button class="button" type="submit">Update Status</button>
+                        <button class="button" type="submit">Update</button>
                     </form>
                 </td>
             `;

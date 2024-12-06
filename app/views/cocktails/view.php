@@ -26,12 +26,12 @@ include_once __DIR__ . '/../../helpers/helpers.php';
     <main class="recipe__main">
         <div class="cocktailActions">
             <?php if ($authController->isLoggedIn() && ($currentUser->canEditCocktail($cocktail->getUserId()) || $authController->isAdmin())):?>
-                <button id="editCocktailButton" class="primary"> 🖊️ </button>
+                <button id="editCocktailButton" class="primary"> <i class="fa-solid fa-pencil"></i> </button>
                 <!-- Delete Button -->
                 <form action="/cocktails/delete/<?= $cocktail->getCocktailId() ?>" method="post"
                     onsubmit="return confirm('Are you sure you want to delete this cocktail?');">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
-                    <button type="submit" class="delete">🗑️</button>
+                    <button type="submit" class="delete"> <i class="fa-solid fa-trash"></i> </button>
                 </form>
             <?php endif; ?>
             <a href="/" class="button-secondary">Back</a>
@@ -47,6 +47,12 @@ include_once __DIR__ . '/../../helpers/helpers.php';
 
         <!-- Like/Unlike Button -->
         <div class="like-section">
+             <!-- Category -->
+        <div class="recipe-category">
+            <p class="category font-semibold">
+                <?= htmlspecialchars($categoryName) ?>
+            </p>
+        </div>
             <?php if ($loggedInUserId): ?>
                 <button class="like-button"
                     data-cocktail-id="<?= htmlspecialchars($cocktail->getCocktailId()) ?>"
@@ -76,17 +82,14 @@ include_once __DIR__ . '/../../helpers/helpers.php';
                 <img src="<?= asset('/../uploads/users/user-default.svg'); ?>" alt="Default Profile Picture"
                     class="creatorPicture">
             <?php endif; ?>
-            <a href="/profile/<?= htmlspecialchars($creator->getUsername()); ?>">
-                <?= htmlspecialchars($creator->getFirstName() ?? $creator->getUsername()); ?>
-            </a>
-            </p>
+            <div class="creatorDetails">
+                <a href="/profile/<?= htmlspecialchars($creator->getUsername()); ?>">
+                    <?= htmlspecialchars($creator->getFirstName() ?? $creator->getUsername()); ?>
+                </a>
+                <span><i class="fa-solid fa-calendar"></i> <?= formatDate($cocktail->getCreatedAt() ?? 'Unknown date') ?></span>
+            </div>
         </div>
-        <!-- Tags -->
-        <div class="recipe-category">
-            <p class="tag font-semibold">
-                <?= htmlspecialchars($categoryName) ?>
-            </p>
-        </div>
+       
         <div class="recipeContainer">
             <!-- Image -->
             <div class="recipeImage">
