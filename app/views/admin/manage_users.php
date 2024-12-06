@@ -34,7 +34,7 @@
                             <option value="2" <?= $user->getAccountStatusId() == 2 ? 'selected' : '' ?>>🟡</option>
                             <option value="3" <?= $user->getAccountStatusId() == 3 ? 'selected' : '' ?>>🔴</option>
                         </select>
-                        <button class="button" type="submit">Update Status</button>
+                        <button class="button" type="submit">Update</button>
                     </form>
                 </td>
             </tr>

@@ -45,8 +45,8 @@
         margin-bottom: 2rem;
         & .button {
             flex: 1;
-            background: var(--button-primary-transparent);
-            color: var(--text-primary);
+            background: var(--button-primary);
+            color: var(--text-secondary);
             padding: 0.5rem;
             border: none;
             border-radius: 0.5rem;
