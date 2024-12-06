@@ -25,7 +25,7 @@ include_once __DIR__ . '/../../helpers/helpers.php';
 <div class="recipe__container">
     <main class="recipe__main">
         <div class="cocktailActions">
-            <?php if (AuthController::isLoggedIn() && ($currentUser->canEditCocktail($cocktail->getUserId()) || AuthController::isAdmin())): ?>
+            <?php if ($authController->isLoggedIn() && ($currentUser->canEditCocktail($cocktail->getUserId()) || $authController->isAdmin())):?>
                 <button id="editCocktailButton" class="primary"> 🖊️ </button>
                 <!-- Delete Button -->
                 <form action="/cocktails/delete/<?= $cocktail->getCocktailId() ?>" method="post"

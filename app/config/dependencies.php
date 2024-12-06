@@ -9,6 +9,7 @@ require_once __DIR__ . '/../repositories/UnitRepository.php';
 require_once __DIR__ . '/../repositories/LikeRepository.php';
 require_once __DIR__ . '/../repositories/CommentRepository.php';
 require_once __DIR__ . '/../repositories/UserRepository.php';
+require_once __DIR__ . '/../repositories/BadgeRepository.php';
 
 // Services
 require_once __DIR__ . '/../services/AdminService.php';
@@ -20,6 +21,10 @@ require_once __DIR__ . '/../services/CommentService.php';
 require_once __DIR__ . '/../services/CocktailService.php';
 require_once __DIR__ . '/../services/ImageService.php';
 require_once __DIR__ . '/../services/BadgeService.php';
+require_once __DIR__ . '/../services/TagService.php';
+require_once __DIR__ . '/../services/UnitService.php';
+require_once __DIR__ . '/../services/AuthService.php';
+
 
 // Controllers
 require_once __DIR__ . '/../controllers/TagController.php';
@@ -32,6 +37,7 @@ require_once __DIR__ . '/../controllers/UserController.php';
 require_once __DIR__ . '/../controllers/CocktailController.php';
 require_once __DIR__ . '/../controllers/CommentController.php';
 require_once __DIR__ . '/../controllers/LikeController.php';
+require_once __DIR__ . '/../controllers/StepController.php';
 
 // Database connection
 $db = Database::getConnection();
@@ -50,6 +56,9 @@ $userRepository = new UserRepository($db);
 $badgeRepository = new BadgeRepository($db);
 
 // Services
+$authService = new AuthService(
+    $userRepository
+);
 $adminService = new AdminService(
     $userRepository,
     $cocktailRepository,
@@ -57,13 +66,29 @@ $adminService = new AdminService(
     $tagRepository,
     $commentRepository
 );
-$badgeService = new BadgeService($badgeRepository);
+$badgeService = new BadgeService(
+    $badgeRepository
+);
 $imageService = new ImageService();
-$ingredientService = new IngredientService($ingredientRepository, $unitRepository, $tagRepository);
-$stepService = new StepService($stepRepository);
-$likeService = new LikeService($likeRepository);
-$userService = new UserService($userRepository);
-$commentService = new CommentService($commentRepository, $userService);
+$ingredientService = new IngredientService(
+    $ingredientRepository,
+    $unitRepository, 
+    $tagRepository
+);
+$stepService = new StepService(
+    $stepRepository
+);
+$likeService = new LikeService(
+    $likeRepository
+);
+$userService = new UserService(
+    $userRepository,
+    $badgeService
+);
+$commentService = new CommentService(
+    $commentRepository, 
+    $userService
+);
 $cocktailService = new CocktailService(
     $cocktailRepository,
     $categoryRepository,
@@ -75,41 +100,73 @@ $cocktailService = new CocktailService(
     $userRepository,
     $commentRepository,
 );
+$tagService = new TagService(
+    $tagRepository,
+    $ingredientRepository
+);
+$unitService = new UnitService(
+    $unitRepository
+);
 
 // Controllers
 $cocktailController = new CocktailController(
+    $authService,
+    $userService,
     $cocktailService,
     $ingredientService,
     $stepService,
-    $difficultyRepository,
     $commentService,
     $likeService,
-    $tagRepository,
-    $userService,
     $imageService,
-    $badgeService
 );
 
-$authController = new AuthController($userService);
+$authController = new AuthController(
+    $authService,
+    $userService
+);
 $homeController = new HomeController(
+    $authService,
+    $userService, 
     $cocktailService, 
     $ingredientService, 
     $likeService, 
-    $userService, 
-    $categoryRepository, 
-    $difficultyRepository, 
-    $tagRepository,
 );
 $userController = new UserController(
-    $userService,
-    $cocktailService,
+    $authService,
+    $userService, 
+    $cocktailService, 
     $imageService,
     $badgeService
 );
 
-$adminController = new AdminController($adminService, $authController, $cocktailService, $ingredientService);
-$commentController = new CommentController($commentService, $cocktailService);
-$likeController = new LikeController($likeService);
-$tagController = new TagController($tagRepository);
-$ingredientController = new IngredientController($ingredientRepository, $tagRepository);
-$searchController = new SearchController($userService, $cocktailService, $ingredientService);
+$adminController = new AdminController(
+    $authService,
+    $userService, 
+    $cocktailService, 
+    $adminService, 
+    $ingredientService
+);
+$commentController = new CommentController(
+    $authService,
+    $userService,
+    $cocktailService, 
+    $commentService,
+);
+$likeController = new LikeController(
+    $likeService,
+);
+$tagController = new TagController(
+    $authService,
+    $tagService,
+);
+$ingredientController = new IngredientController(
+    $ingredientService, 
+    $tagService,
+);
+$searchController = new SearchController(
+    $userService,
+    $cocktailService,
+);
+$stepController = new StepController(
+    $stepService,
+);

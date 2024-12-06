@@ -1,14 +1,18 @@
 <?php
-require_once __DIR__ . '/../repositories/UserRepository.php';
 
 class UserService
 {
     private $userRepository;
+    private $badgeService;
 
-    public function __construct(UserRepository $userRepository = null)
-    {
+    public function __construct(
+        UserRepository $userRepository = null,
+        BadgeService $badgeService
+    ) {
         $this->userRepository = $userRepository ?? new UserRepository(Database::getConnection());
+        $this->badgeService = $badgeService;
     }
+
 
     public function authenticateUser($email, $password)
     {
@@ -193,4 +197,15 @@ class UserService
     {
         return $this->userRepository->updateAccountStatus($userId, $statusId);
     }
+
+    // badges
+    public function checkAndNotifyNewBadge($userId, $cocktailCount)
+    {
+        $this->badgeService->checkAndNotifyNewBadge($userId, $cocktailCount);
+    }
+    public function getUserProgressToNextBadge($profileUserId, $cocktailCount)
+    {
+        return $this->badgeService->getUserProgressToNextBadge($profileUserId, $cocktailCount);
+    }
+
 }

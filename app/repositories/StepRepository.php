@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../models/Step.php';
 class StepRepository
 {
     private $db;

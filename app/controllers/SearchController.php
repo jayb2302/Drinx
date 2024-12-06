@@ -1,14 +1,13 @@
 <?php
-require_once __DIR__ . '/../services/UserService.php';
-require_once __DIR__ . '/../services/CocktailService.php';
+require_once 'BaseController.php';
 
-class SearchController {
-    private $cocktailService;
-    private $userService;
-
-    public function __construct(UserService $userService, CocktailService $cocktailService) {
-        $this->userService = $userService;
-        $this->cocktailService = $cocktailService;
+class SearchController extends BaseController
+{
+    public function __construct(
+        UserService $userService,
+        CocktailService $cocktailService
+    ) {
+        parent::__construct(null,$userService, $cocktailService);
     }
 
     public function search() {

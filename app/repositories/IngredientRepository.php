@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../models/Ingredient.php';
 class IngredientRepository
 {
     private $db;

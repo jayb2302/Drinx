@@ -3,8 +3,9 @@ class LikeService
 {
     private $likeRepository;
 
-    public function __construct(LikeRepository $likeRepository)
-    {
+    public function __construct(
+        LikeRepository $likeRepository
+    ) {
         $this->likeRepository = $likeRepository;
     }
 

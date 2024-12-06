@@ -5,8 +5,11 @@ class IngredientService
     private $unitRepository;
     private $tagRepository;
 
-    public function __construct(IngredientRepository $ingredientRepository, UnitRepository $unitRepository, TagRepository $tagRepository)
-    {
+    public function __construct(
+        IngredientRepository $ingredientRepository,
+        UnitRepository $unitRepository,
+        TagRepository $tagRepository
+    ) {
         $this->ingredientRepository = $ingredientRepository;
         $this->unitRepository = $unitRepository;
         $this->tagRepository = $tagRepository;
@@ -37,6 +40,10 @@ class IngredientService
             // Add the ingredient to the cocktail via the service
             $this->addIngredient($cocktailId, $ingredientId, $quantity, $unitId);
         }
+    }
+    public function updateIngredientName($ingredientId, $ingredientName)
+    {
+        return $this->ingredientRepository->updateIngredientName($ingredientId, $ingredientName);
     }
 
     public function getIngredientIdByName($ingredientName)
@@ -162,5 +169,13 @@ class IngredientService
     public function deleteIngredient($ingredientId)
     {
         return $this->ingredientRepository->deleteIngredient($ingredientId);
+    }
+    public function doesIngredientExist($ingredientId)
+    {
+        return $this->ingredientRepository->doesIngredientExist($ingredientId);
+    }
+    public function assignTag($ingredientId, $tagId)
+    {
+        return $this->ingredientRepository->assignTag($ingredientId, $tagId);
     }
 }

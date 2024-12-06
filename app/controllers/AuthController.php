@@ -1,13 +1,12 @@
 <?php
-require_once __DIR__ . '/../config/dependencies.php';
-
-class AuthController
+require_once __DIR__ . '/../helpers/helpers.php';
+class AuthController extends BaseController
 {
-    private $userService;
-
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
+    public function __construct(
+        AuthService $authService,
+        UserService $userService,
+    ) {
+        parent::__construct($authService, $userService);
     }
 
     // Handle user authentication
@@ -37,7 +36,7 @@ class AuthController
                     'id' => $user->getId(),
                     'username' => $user->getUsername(),
                     'is_admin' => $user->isAdmin(),
-                    'account_status' => $user->getAccountStatusId(), 
+                    'account_status' => $user->getAccountStatusId(),
                 ];
 
                 // Redirect to the home page after successful login
@@ -94,7 +93,7 @@ class AuthController
                 }
             } catch (PDOException $e) {
                 // Check if the error is a duplicate entry for username or email
-                if ($e->getCode() == 23000) { 
+                if ($e->getCode() == 23000) {
                     // Check which field is causing the issue
                     if (strpos($e->getMessage(), 'username') !== false) {
                         $_SESSION['error'] = "The username '$username' is already taken. Please choose another one.";
@@ -145,32 +144,20 @@ class AuthController
         header("Location: /");
         exit();
     }
-
+    
     // Check if the user is logged in
-    public static function isLoggedIn()
+    public function isAdmin()
     {
-        return isset($_SESSION['user']);
+        return $this->authService->isAdmin();
     }
 
-    // Check if the current user is an admin
-    public static function isAdmin()
+    public function isLoggedIn()
     {
-        return isset($_SESSION['user']) && $_SESSION['user']['is_admin'];
+        return $this->authService->isLoggedIn();
     }
 
     public function getCurrentUser()
     {
-        if (!isset($_SESSION['user'])) {
-            return null;
-        }
-
-        // Retrieve user data from the session
-        $user = new User();
-        $user->setId($_SESSION['user']['id']);
-        $user->setUsername($_SESSION['user']['username']);
-        $user->setIsAdmin($_SESSION['user']['is_admin']);
-        $user->setAccountStatusId($_SESSION['user']['account_status']);
-        
-        return $user;
+        return $this->authService->getCurrentUser();
     }
 }

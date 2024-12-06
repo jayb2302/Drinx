@@ -32,6 +32,7 @@ if ($action) {
             'IngredientController' => $ingredientController,
             'UserController' => $userController,
             'AuthController' => $authController,
+            'StepController' => $stepController,
         ];
 
         if (isset($controllers[$controllerClass])) {
