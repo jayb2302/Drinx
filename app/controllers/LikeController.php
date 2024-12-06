@@ -1,17 +1,13 @@
 <?php
 require_once 'BaseController.php';
 
-class LikeController extends BaseController
+class LikeController 
 {
     private $likeService;
 
     public function __construct(
-        AuthService $authService,
-        UserService $userService,
-        CocktailService $cocktailService,
         LikeService $likeService
     ) {
-        parent::__construct($authService, $userService, $cocktailService);
         $this->likeService = $likeService;
     }
     public function toggleLike($cocktailId)

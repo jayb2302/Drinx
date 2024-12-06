@@ -7,11 +7,9 @@ class TagController extends BaseController
 
     public function __construct(
         AuthService $authService,
-        UserService $userService,
-        CocktailService $cocktailService,
         TagService $tagService
     ) {
-        parent::__construct($authService, $userService, $cocktailService);
+        parent::__construct($authService);
         $this->tagService = $tagService;
     }
 

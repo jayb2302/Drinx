@@ -4,11 +4,10 @@ require_once 'BaseController.php';
 class SearchController extends BaseController
 {
     public function __construct(
-        AuthService $authService,
         UserService $userService,
         CocktailService $cocktailService
     ) {
-        parent::__construct($authService, $userService, $cocktailService);
+        parent::__construct(null,$userService, $cocktailService);
     }
 
     public function search() {

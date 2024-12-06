@@ -22,7 +22,7 @@ class AdminController extends BaseController
 
 
         // Check if the user is an admin
-        if (empty($_SESSION['user']['is_admin'])) {
+        if (!$this->authService->isAdmin()) {
             http_response_code(403);
             echo "Access denied.";
             exit();
@@ -117,7 +117,7 @@ class AdminController extends BaseController
     {
         header('Content-Type: application/json');
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user']['is_admin']) && $_SESSION['user']['is_admin']) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $this->authService->isAdmin()) {
             $csrfToken = $_POST['csrf_token'] ?? '';
             $sessionToken = $_SESSION['csrf_token'] ?? '';
 

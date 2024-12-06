@@ -5,7 +5,6 @@ if (isset($isStandalone) && $isStandalone) {
 }
 $metaTitle = "Cocktails";
 $pageTitle = "Cocktails";
-
 // Start the session (if not already started)
 $loggedInUserId = $_SESSION['user']['id'] ?? null;
 ?>
@@ -14,7 +13,6 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
 <?php
 // echo password_hash('12345678', PASSWORD_BCRYPT); 
 ?>
-
 <?php if (!empty($cocktails)): ?>
     <?php foreach ($cocktails as $cocktail): ?>
         <?php
@@ -23,21 +21,16 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $imagePath = !empty($imageSrc) ? "/uploads/cocktails/$imageSrc" : '/uploads/cocktails/default-image.webp';
         $cocktailTitle = htmlspecialchars($cocktail->getTitle() ?? 'Unknown Cocktail');
         $totalLikes = $this->cocktailService->getLikesForCocktail($cocktail->getCocktailId());
-
         // Get comment count
         $commentCount = $cocktail->getCommentCount();
-
         // Get top-level comments
         $comments = $cocktail->getComments();
-
         // Creator Info
         $creator = $this->userService->getUserWithProfile($cocktailUserId);
         $creatorName = htmlspecialchars($creator->getUsername() ?? 'Unknown User');
         $creatorPicture = htmlspecialchars($creator->getProfilePicture() ?? 'user-default.svg');
         $tags = $this->cocktailService->getTagsForCocktail($cocktail->getCocktailId());
-
         ?>
-
         <div class="cocktailContainer">
             <article class="cocktailCard">
                 <!-- User Info Section -->
@@ -47,7 +40,6 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                         @<?= htmlspecialchars($creatorName) ?>
                     </a>
                 </div>
-
                 <!-- Cocktail Card Content -->
                 <div class="buttonWrapper">
                     <?php if ($_SESSION['user']['is_admin'] ?? false): ?>
@@ -59,7 +51,6 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                             <i class="<?= $cocktail->isSticky() ? 'fa-solid fa-paperclip' : 'fa-solid fa-paperclip' ?>"></i>
                         </button>
                     <?php endif; ?>
-
                     <div class="like-section">
                         <!-- Display the like count for all users -->
                         <?php if ($loggedInUserId): ?>
@@ -80,7 +71,6 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                             </button>
                         <?php endif; ?>
                     </div>
-
                     <!-- Hidden login popup -->
                     <div id="loginPopup" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background-color:#fff; padding:20px; border:1px solid #ccc; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index:1000;">
                         <p>Please log in to like this cocktail.</p>
@@ -103,9 +93,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                     <span><?= $totalLikes ?> <i class="fa-solid fa-heart"></i> <?= $cocktail->commentCount ?> <i class="fa-solid fa-comments"></i></span>
                     <span><i class="fa-solid fa-calendar"></i> <?= formatDate($cocktail->getCreatedAt() ?? 'Unknown date') ?></span>
                 </div>
-
                 <p><?= htmlspecialchars($cocktail->getDescription()) ?></p>
-
                 <!-- Comment Count and Recent Comments -->
                 <div class="commentSection">
                     <?php if ($cocktail->commentCount > 0): ?>
@@ -132,7 +120,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                                                 </div>
 
                                                 <!-- Menu for edit/delete if user is logged in and is the comment creator or an admin -->
-                                                <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $comment->getUserId() || AuthController::isAdmin())): ?>
+                                                <?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] === $comment->getUserId() || $authController->isAdmin())): ?>
                                                     <div class="dotsMenu">
                                                         <button class="dotsButton">⋮</button>
                                                         <div class="menu hidden">
@@ -144,24 +132,19 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                                                     </div>
                                                 <?php endif; ?>
                                             </div>
-
                                             <!-- Display the comment text -->
                                             <p><?= htmlspecialchars($comment->getCommentText() ?? 'No comment text available') ?></p>
-
-
                                         </div>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
                     <?php else: ?>
-
                     <?php endif; ?>
                 </div>
             </article>
         </div>
     <?php endforeach; ?>
-
 <?php else: ?>
     <p>No cocktails available.</p>
 <?php endif; ?>

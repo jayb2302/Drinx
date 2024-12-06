@@ -10,9 +10,9 @@ class BaseController
     protected $cocktailService;
 
     public function __construct(
-        AuthService $authService,
-        UserService $userService,
-        CocktailService $cocktailService,
+        ?AuthService $authService = null,
+        ?UserService $userService = null,
+        ?CocktailService $cocktailService = null,
     ) {
         $this->authService = $authService;
         $this->userService = $userService;

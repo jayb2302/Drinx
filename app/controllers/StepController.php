@@ -1,17 +1,12 @@
 <?php
 require_once 'BaseController.php';
 
-class StepController extends BaseController
-{
+class StepController {
     private $stepService;
 
     public function __construct(
-        AuthService $authService,
-        UserService $userService,
-        CocktailService $cocktailService,
         StepService $stepService
     ) {
-        parent::__construct($authService, $userService, $cocktailService);
         $this->stepService = $stepService;
     }
 

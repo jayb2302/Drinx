@@ -1,16 +1,12 @@
 <?php
 require_once __DIR__ . '/../helpers/helpers.php';
-class AuthController{
-    private $userService;
-    private static $authService;
-
+class AuthController extends BaseController
+{
     public function __construct(
+        AuthService $authService,
         UserService $userService,
-        AuthService $authService
-    )
-    {
-        $this->userService = $userService;
-        self::$authService = $authService;
+    ) {
+        parent::__construct($authService, $userService);
     }
 
     // Handle user authentication
@@ -40,7 +36,7 @@ class AuthController{
                     'id' => $user->getId(),
                     'username' => $user->getUsername(),
                     'is_admin' => $user->isAdmin(),
-                    'account_status' => $user->getAccountStatusId(), 
+                    'account_status' => $user->getAccountStatusId(),
                 ];
 
                 // Redirect to the home page after successful login
@@ -97,7 +93,7 @@ class AuthController{
                 }
             } catch (PDOException $e) {
                 // Check if the error is a duplicate entry for username or email
-                if ($e->getCode() == 23000) { 
+                if ($e->getCode() == 23000) {
                     // Check which field is causing the issue
                     if (strpos($e->getMessage(), 'username') !== false) {
                         $_SESSION['error'] = "The username '$username' is already taken. Please choose another one.";
@@ -148,20 +144,20 @@ class AuthController{
         header("Location: /");
         exit();
     }
-
+    
     // Check if the user is logged in
-    public static function isAdmin()
+    public function isAdmin()
     {
-        return self::$authService->isAdmin();
+        return $this->authService->isAdmin();
     }
 
-    public static function isLoggedIn()
+    public function isLoggedIn()
     {
-        return self::$authService->isLoggedIn();
+        return $this->authService->isLoggedIn();
     }
 
-    public static function getCurrentUser()
+    public function getCurrentUser()
     {
-        return self::$authService->getCurrentUser();
+        return $this->authService->getCurrentUser();
     }
 }

@@ -14,14 +14,15 @@ class AuthService{
         // Check if the user is logged in
         public function isLoggedIn()
         {
-            return isset($_SESSION['user']);
+            return isset($_SESSION['user']['id']);
         }
     
         // Check if the current user is an admin
-        public function isAdmin()
+        public function isAdmin(): int
         {
-            return isset($_SESSION['user']) && $_SESSION['user']['is_admin'];
+            return $this->isLoggedIn() && $_SESSION['user']['is_admin'] === 1;
         }
+        
     
         public function getCurrentUser()
         {

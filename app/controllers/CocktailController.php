@@ -35,7 +35,7 @@ class CocktailController extends BaseController
             session_start();
         }
     }
-
+    
     private function redirect($url)
     {
         header("Location: $url");
@@ -402,6 +402,7 @@ class CocktailController extends BaseController
     public function view($cocktailId, $action = 'view')
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+        $authController = new AuthController($this->authService, $this->userService);
         $currentUser = $this->userService->getUserWithProfile($loggedInUserId);
         // Sanitize inputs
         $cocktailId = intval($cocktailId); // Sanitize ID
