@@ -4,13 +4,16 @@ class UserService
 {
     private $userRepository;
     private $badgeService;
+    private $socialsService;
 
     public function __construct(
         UserRepository $userRepository = null,
-        BadgeService $badgeService
+        BadgeService $badgeService,
+        SocialsService $socialsService
     ) {
         $this->userRepository = $userRepository ?? new UserRepository(Database::getConnection());
         $this->badgeService = $badgeService;
+        $this->socialsService = $socialsService;
     }
 
 
@@ -208,4 +211,22 @@ class UserService
         return $this->badgeService->getUserProgressToNextBadge($profileUserId, $cocktailCount);
     }
 
+    // social Media
+    public function getAllPlatforms()
+    {
+        return $this->socialsService->getAllPlatforms();
+    }
+    public function getUserSocialLinks($userId) {
+        return $this->socialsService->getUserSocialLinks($userId);
+    }
+    public function updateUserSocialLink($userId, $platformId, $url) {
+        return $this->socialsService->updateSocialLink($userId, $platformId, $url);
+    }
+    public function deleteUserSocialLink( $userId, $platformId) {
+        return $this->socialsService->deleteSocialLink($userId, $platformId);
+    }
+    public function getSocialFormData($userId)
+    {
+        return $this->socialsService->getSocialFormData($userId);
+    }
 }
