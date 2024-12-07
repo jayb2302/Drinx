@@ -1,8 +1,9 @@
 <section class="aboutSection">
     <?php if (!isset($_SESSION['user'])): ?>
-        <button class="button-secondary">
-            <a href="/login">Login</a>
-        </button>
+        
+            <a href="/login" class="button-secondary">
+                <span>Login</span>
+            </a>
         <div class="aboutContainer">
             <h1 class="aboutHeading">Welcome to Drinx,</h1>
             <h3 class="aboutIntro">The cocktail library that’s got social flair!</h3>

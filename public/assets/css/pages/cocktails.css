@@ -205,12 +205,17 @@ a:hover {
   color: var(--accent-primary);
 }
 
+
 .tag{
   background-color: var(--accent-primary); 
   color: var(--text-primary); 
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
   padding: var(--tag-padding); 
-  border-radius: var(--border-radius); 
+  border-radius: var(--button-radius); 
+  & .dark {
+    color: var(--text-secondary);
+  }
+  
 }
 
 /* Responsive adjustments */
