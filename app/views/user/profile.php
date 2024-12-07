@@ -1,5 +1,7 @@
 <?php
 $page = 'profile';
+//profile name is the title
+$metaTitle = htmlspecialchars($profile->getFirstName() ?? 'User Profile');
 include_once __DIR__ . '/../layout/header.php'; ?>
 <?php
 // Display any error messages (optional)

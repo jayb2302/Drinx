@@ -5,12 +5,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   
+
     <meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?? ''; ?>">
     <title><?= isset($metaTitle) ? htmlspecialchars($metaTitle) : 'Default Title' ?></title>
 
     <meta name="description" content="<?= isset($metaTitle) ? htmlspecialchars($metaTitle) : 'Default meta description' ?>">
     <meta name="page-type" content="<?= htmlspecialchars($page ?? '') ?>">
+    <!-- Saved Theme -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                // Set a data attribute for icon visibility based on theme
+                if (savedTheme === 'dark') {
+                    document.documentElement.setAttribute('data-icon', 'moon');
+                } else {
+                    document.documentElement.setAttribute('data-icon', 'sun');
+                }
+            }
+        })();
+    </script>
     <!-- Icons -->
     <link rel="icon" href="<?= asset('assets/brand/LogoIdea.svg'); ?>" type="image/x-icon">
     <!-- CSS -->

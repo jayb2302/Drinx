@@ -14,6 +14,7 @@ import { initializeUserManagement } from './modules/user-management.js';
 import { initializeSidebars } from './modules/sidebars.js';
 import { initializeImageValidation } from './modules/image-handler.js';
 import { initializeSocialMedia } from './modules/socials.js';
+import { initializeThemeSwitcher } from './modules/theme.js';
 // Fetch CSRF token from the meta tag
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     initializeSidebars();
     initializeSearch();
+    initializeThemeSwitcher();
     switch (pageType) {
         case 'home':
             // Initialize features for the home page

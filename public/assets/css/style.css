@@ -67,15 +67,15 @@
   --lcard-linear-gradient: linear-gradient(347deg, rgba(224,224,224,1) 0%, rgba(242,242,242,1) 70%);
   --card-linear-gradient-50: linear-gradient(347deg, rgba(224,224,224,0.8) 0%, rgba(242,242,242,0.8) 70%);
   
-
+  --logo-color: #705e00;
   --button-padding: .5rem .8rem;
   --tag-padding: .2rem .5rem;
   --base-padding: .5rem 1rem; 
   --border-radius: clamp(0.5rem, calc(var(--base-padding) * 0.5), 1rem);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+
+  :root[data-theme="dark"] {
     /* Colors for Dark Mode */
     --background: #1f1f1f;
     --surface: #1f1f1f;
@@ -90,6 +90,8 @@
     --comment-text: #f2f2f2dc;
     --card-background: #1f1f1feb;
     --card-background-hover: #858e98;
+
+    --logo-color: #fad325;
     --button-primary: #bec6cf;
     --button-primary-transparent: #1f1f1fdc;
     --button-secondary: #1f1f1f;
@@ -113,7 +115,6 @@
     --card-linear-gradient-50: linear-gradient(347deg, rgba(48,56,65,0.8) 0%, rgba(28,33,38,0.8) 70%);
   }
 
-}
 body {
   background-color: var(--background);
   color: var(--text-primary);
@@ -122,6 +123,9 @@ body {
   margin: 0;
 }
 
+.logo {
+  color: var(--logo-color);
+}
 
 h1,
 h2,
