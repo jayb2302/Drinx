@@ -1,181 +1,181 @@
 <?php
-class CommentController
+require_once __DIR__ . '/BaseController.php';
+
+class CommentController extends BaseController
 {
     private $commentService;
-    private $cocktailService;
 
-    public function __construct(CommentService $commentService, CocktailService $cocktailService)
-    {
+    public function __construct(
+        AuthService $authService,
+        UserService $userService,
+        CocktailService $cocktailService,
+        CommentService $commentService
+    ) {
+        parent::__construct($authService, $userService, $cocktailService);
         $this->commentService = $commentService;
-        $this->cocktailService = $cocktailService;
     }
 
     // Add a comment or reply
     public function addComment($cocktailId)
     {
-        // Ensure user is logged in
-        $userId = $_SESSION['user']['id'] ?? null;
-        if (!$userId) {
-            http_response_code(401); // Unauthorized
-            echo json_encode(['error' => 'You must be logged in to comment.']);
-            exit();
+        $this->prepareJsonResponse();
+
+        if (!$this->validateCsrfToken()) {
+            $this->respondWithError('Invalid CSRF token.', 403);
         }
 
-        // Get comment data from POST
+        $userId = $_SESSION['user']['id'] ?? null;
+        if (!$userId) {
+            $this->respondWithError('You must be logged in to comment.', 401);
+        }
+
         $commentText = sanitize($_POST['commentText'] ?? '');
         $parentCommentId = isset($_POST['parent_comment_id']) ? sanitize($_POST['parent_comment_id']) : null;
 
         if (empty($commentText)) {
-            http_response_code(400); // Bad Request
-            echo json_encode(['error' => 'Comment cannot be empty.']);
-            exit();
+            $this->respondWithError('Comment cannot be empty.', 400);
         }
 
         try {
-            // Add the comment
             $this->commentService->addComment($userId, $cocktailId, $commentText, $parentCommentId);
-
-            // Fetch updated cocktail and comments
-            $cocktail = $this->cocktailService->getCocktailById($cocktailId);
-            $comments = $this->commentService->getCommentsWithReplies($cocktailId);
-            $currentUser = (new AuthController())->getCurrentUser(); // Ensure current user is available
-
-            // Render the entire comment section
-            ob_start();
-            require __DIR__ . '/../views/cocktails/comment_section.php';
-            $commentsHtml = ob_get_clean();
-
-            // Return JSON response
-            header('Content-Type: application/json');
-            echo json_encode(['success' => true, 'html' => $commentsHtml]);
+            $this->renderCommentsSection($cocktailId);
         } catch (Exception $e) {
-            error_log($e->getMessage());
-            http_response_code(500); // Internal Server Error
-            echo json_encode(['error' => 'An unexpected error occurred.']);
-
+            // error_log($e->getMessage());
+            $this->respondWithError('An unexpected error occurred.', 500);
         }
-        exit();
     }
 
     // Edit comment
     public function edit($commentId)
     {
-        error_log("Editing comment with ID: $commentId");
-        header('Content-Type: application/json');
+        $this->prepareJsonResponse();
+
+        if (!$this->validateCsrfToken()) {
+            $this->respondWithError('Invalid CSRF token.', 403);
+        }
+
         $comment = $this->commentService->getCommentById($commentId);
-
         if (!$comment) {
-            error_log("Comment with ID $commentId not found.");
-            http_response_code(404);
-            echo json_encode(['error' => 'Comment not found.']);
-            exit();
+            $this->respondWithError('Comment not found.', 404);
         }
-        // Ensure the user owns the comment or is an admin
-        if ($_SESSION['user']['id'] !== $comment->getUserId() && !AuthController::isAdmin()) {
-            error_log("User not authorized to edit comment ID: $commentId");
-            http_response_code(403); // Forbidden
-            echo json_encode(['error' => 'You are not authorized to edit this comment.']);
-            exit();
+
+        if ($_SESSION['user']['id'] !== $comment->getUserId() && !$this->authService->isAdmin()) {
+            $this->respondWithError('You are not authorized to edit this comment.', 403);
         }
+
+        $newCommentText = sanitize($_POST['commentText'] ?? '');
+        if (empty($newCommentText)) {
+            $this->respondWithError('Comment text cannot be empty.', 400);
+        }
+
         try {
-            $newCommentText = sanitize($_POST['commentText'] ?? '');
-            if (empty($newCommentText)) {
-                error_log("Comment text is empty for comment ID: $commentId");
-                http_response_code(400); // Bad Request
-                echo json_encode(['error' => 'Comment text cannot be empty.']);
-                exit();
-            }
-            // Update the comment
-            error_log("Updating comment ID: $commentId with new text: $newCommentText");
             $this->commentService->updateComment($commentId, $newCommentText);
-
-            // Fetch updated comments for the entire section
-            $cocktailId = $comment->getCocktailId();
-            $updatedComments = $this->commentService->getCommentsWithReplies($cocktailId);
-
-            // Return the updated comments section HTML
-            ob_start();
-            $cocktail = $this->cocktailService->getCocktailById($cocktailId); // Assuming you have a method to get cocktail info
-            $currentUser = (new AuthController())->getCurrentUser(); // Ensure current user is available
-            $comments = $updatedComments;
-            require __DIR__ . '/../views/cocktails/comment_section.php';
-            $updatedCommentsHtml = ob_get_clean();
-
-            error_log("Successfully edited comment ID: $commentId");
-            echo json_encode(['success' => true, 'html' => $updatedCommentsHtml]);
+            $this->renderCommentsSection($comment->getCocktailId());
         } catch (Exception $e) {
-            error_log($e->getMessage());
-            http_response_code(500); // Internal Server Error
-            echo json_encode(['error' => 'An unexpected error occurred.']);
+            // error_log($e->getMessage());
+            $this->respondWithError('An unexpected error occurred.', 500);
         }
-        exit();
     }
+
+    // Delete comment
     public function delete($commentId)
     {
+        // error_log("Delete method called with comment ID: $commentId"); // Add this log
+        $this->prepareJsonResponse();
+    
+        if (!$this->validateCsrfToken()) {
+            // error_log("CSRF token validation failed.");
+            $this->respondWithError('Invalid CSRF token.', 403);
+        }
+    
         $comment = $this->commentService->getCommentById($commentId);
-        if ($_SESSION['user']['id'] !== $comment->getUserId() && !AuthController::isAdmin()) {
-            http_response_code(403); // Forbidden
-            echo json_encode(['error' => 'You are not authorized to delete this comment.']);
-            exit();
+        if (!$comment) {
+            // error_log("Comment not found for ID: $commentId");
+            $this->respondWithError('Comment not found.', 404);
         }
+    
+        if ($_SESSION['user']['id'] !== $comment->getUserId() && !$this->authService->isAdmin()) {
+            // error_log("Authorization failed for user ID: {$_SESSION['user']['id']}");
+            $this->respondWithError('You are not authorized to delete this comment.', 403);
+        }
+    
         try {
-            // Get cocktail ID before deletion
             $cocktailId = $comment->getCocktailId();
-
-            // Delete the comment
+            // error_log("Attempting to delete comment ID: $commentId for cocktail ID: $cocktailId");
             $this->commentService->deleteComment($commentId);
-
-            // Fetch updated comments and render the section
-            $cocktail = $this->cocktailService->getCocktailById($cocktailId);
-            $comments = $this->commentService->getCommentsWithReplies($cocktailId);
-            $currentUser = (new AuthController())->getCurrentUser();
-
-            ob_start();
-            require __DIR__ . '/../views/cocktails/comment_section.php';
-            $commentsHtml = ob_get_clean();
-
-            header('Content-Type: application/json');
-            echo json_encode(['success' => true, 'html' => $commentsHtml]); // Send full HTML
+    
+            // error_log("Comment ID $commentId deleted successfully.");
+            $this->renderCommentsSection($cocktailId);
         } catch (Exception $e) {
-            error_log($e->getMessage());
-            http_response_code(500); // Internal Server Error
-            echo json_encode(['error' => 'An unexpected error occurred.']);
+            // error_log("Error deleting comment ID $commentId: " . $e->getMessage());
+            $this->respondWithError('An unexpected error occurred.', 500);
         }
-        exit();
     }
+    
+    
+
+    // Add a reply to a comment
     public function reply($commentId)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $userId = $_SESSION['user']['id'] ?? null;
-            $commentText = sanitize($_POST['comment'] ?? '');
-            $cocktailId = sanitize($_POST['cocktail_id'] ?? null);
-            if (!$userId || !$commentText || !$cocktailId) {
-                http_response_code(400); // Bad Request
-                echo json_encode(['error' => 'Invalid input.']);
-                exit();
-            }
-            try {
-                // Add reply to the database
-                $this->commentService->addComment($userId, $cocktailId, $commentText, $commentId);
+        $this->prepareJsonResponse();
 
-                // Fetch updated cocktail and comments
-                $cocktail = $this->cocktailService->getCocktailById($cocktailId);
-                $comments = $this->commentService->getCommentsWithReplies($cocktailId);
-                $currentUser = (new AuthController())->getCurrentUser();
-
-                // Render the entire comments section
-                ob_start();
-                require __DIR__ . '/../views/cocktails/comment_section.php';
-                $commentsHtml = ob_get_clean();
-
-                header('Content-Type: application/json');
-                echo json_encode(['success' => true, 'html' => $commentsHtml]);
-            } catch (Exception $e) {
-                error_log($e->getMessage());
-                http_response_code(500); // Internal Server Error
-                echo json_encode(['error' => 'An unexpected error occurred.']);
-            }
-            exit();
+        if (!$this->validateCsrfToken()) {
+            $this->respondWithError('Invalid CSRF token.', 403);
         }
+
+        $userId = $_SESSION['user']['id'] ?? null;
+        $commentText = sanitize($_POST['comment'] ?? '');
+        $cocktailId = sanitize($_POST['cocktail_id'] ?? '');
+
+        if (!$userId || !$commentText || !$cocktailId) {
+            $this->respondWithError('Invalid input.', 400);
+        }
+
+        try {
+            $this->commentService->addComment($userId, $cocktailId, $commentText, $commentId);
+            $this->renderCommentsSection($cocktailId);
+        } catch (Exception $e) {
+            // error_log($e->getMessage());
+            $this->respondWithError('An unexpected error occurred.', 500);
+        }
+    }
+
+    // Helper methods
+    private function prepareJsonResponse()
+    {
+        ob_clean(); // Clear any output buffer
+        header('Content-Type: application/json');
+    }
+
+    private function validateCsrfToken()
+    {
+        $csrfToken = $_POST['csrf_token'] ?? '';
+        return validateCsrfToken($csrfToken);
+    }
+
+    private function respondWithError($message, $statusCode)
+    {
+        http_response_code($statusCode);
+        echo json_encode(['error' => $message]);
+        exit();
+    }
+
+    private function renderCommentsSection($cocktailId)
+    {
+        $cocktail = $this->cocktailService->getCocktailById($cocktailId);
+        $comments = $this->commentService->getCommentsWithReplies($cocktailId);
+        $currentUser = $this->authService->getCurrentUser();
+        $authController = new AuthController($this->authService, $this->userService);
+
+        ob_start();
+        require __DIR__ . '/../views/cocktails/comment_section.php';
+        $commentsHtml = ob_get_clean();
+
+        echo json_encode([
+            'success' => true,
+            'html' => $commentsHtml,
+            'new_csrf' => generateCsrfToken(),
+        ]);
+        exit();
     }
 }

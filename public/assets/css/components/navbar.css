@@ -1,15 +1,15 @@
-nav {
+header {
     display: flex;
     justify-content: space-between;
     align-items: center; 
     position: sticky;
     top:0; 
-    background-color: var(--nav-background); 
+    background: var(--lcard-linear-gradient); 
     padding: .5rem 1rem;
     color: var(--text-secondary);
     z-index: 1000;
-}
-
-.nav-links {
-    display: flex; 
+    gap: 1rem;
+    & .nav-links {
+        display: flex; 
+    }
 }

@@ -1,6 +1,18 @@
 .search-container {
     position: relative; 
-    width: calc(100% - 5%);
+    width: clamp(300px, 95vw, 1200px);
+    & .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        color: var(--text-primary);
+        background-color: var(--card-background); 
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        z-index: 1100; 
+        width: 100%;
+        display: none;
+    }
 }
 
 #searchInput {
@@ -10,18 +22,7 @@
     color: var(--text-primary);
 }
 
-.search-results {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    color: var(--text-primary);
-    background-color: var(--card-background); 
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    z-index: 1000; 
-    width: 100%;
-    display: none;
-}
+
 
 .search-results div {
     padding: 10px;

@@ -1,9 +1,21 @@
 ///// Profile
 export function initializeProfile() {
-    document.getElementById('edit-profile-button')?.addEventListener('click', () => {
-        const form = document.getElementById('edit-profile-form');
+    const editButton = document.getElementById('edit-profile-button');
+    const form = document.getElementById('edit-profile-form');
+    const closeButton = document.getElementById('close-form-button');
+    
+    // Toggle form visibility when edit button is clicked
+    editButton?.addEventListener('click', (e) => {
+        e.preventDefault();
         if (form) {
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+        }
+    });
+
+    // Close form when close button inside form is clicked
+    closeButton?.addEventListener('click', () => {
+        if (form) {
+            form.style.display = 'none';
         }
     });
 

@@ -1,14 +1,21 @@
 <?php
-require_once __DIR__ . '/../repositories/UserRepository.php';
 
 class UserService
 {
     private $userRepository;
+    private $badgeService;
+    private $socialLinkService;
 
-    public function __construct(UserRepository $userRepository = null)
-    {
+    public function __construct(
+        UserRepository $userRepository = null,
+        BadgeService $badgeService,
+        SocialLinkService $socialLinkService
+    ) {
         $this->userRepository = $userRepository ?? new UserRepository(Database::getConnection());
+        $this->badgeService = $badgeService;
+        $this->socialLinkService = $socialLinkService;
     }
+
 
     public function authenticateUser($email, $password)
     {
@@ -174,13 +181,13 @@ class UserService
     public function getUserWithFollowCounts($userId)
     {
         $user = $this->userRepository->findByIdWithProfile($userId); // Fetch the user object
-
+    
         if ($user) {
-            // Set the following and followers count on the User object
-            $user->setFollowingCount($this->getFollowingCount($userId));
-            $user->setFollowersCount($this->getFollowersCount($userId));
+            // Fetch and set the counts
+            $user->setFollowingCount($this->userRepository->getFollowingCount($userId));
+            $user->setFollowersCount($this->userRepository->getFollowersCount($userId));
         }
-
+    
         return $user;
     }
 
@@ -192,5 +199,34 @@ class UserService
     public function updateUserAccountStatus($userId, $statusId)
     {
         return $this->userRepository->updateAccountStatus($userId, $statusId);
+    }
+
+    // badges
+    public function checkAndNotifyNewBadge($userId, $cocktailCount)
+    {
+        $this->badgeService->checkAndNotifyNewBadge($userId, $cocktailCount);
+    }
+    public function getUserProgressToNextBadge($profileUserId, $cocktailCount)
+    {
+        return $this->badgeService->getUserProgressToNextBadge($profileUserId, $cocktailCount);
+    }
+
+    // social Media
+    public function getAllPlatforms()
+    {
+        return $this->socialLinkService->getAllPlatforms();
+    }
+    public function getUserSocialLinks($userId) {
+        return $this->socialLinkService->getUserSocialLinks($userId);
+    }
+    public function updateUserSocialLink($userId, $platformId, $url) {
+        return $this->socialLinkService->updateSocialLink($userId, $platformId, $url);
+    }
+    public function deleteUserSocialLink( $userId, $platformId) {
+        return $this->socialLinkService->deleteSocialLink($userId, $platformId);
+    }
+    public function getSocialFormData($userId)
+    {
+        return $this->socialLinkService->getSocialFormData($userId);
     }
 }

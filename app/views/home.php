@@ -1,7 +1,7 @@
 <?php
 $metaTitle = "Drinx - Cocktail Library";
 $pageTitle = "Drip, Drop, Drinx";
-$page="home";
+$page = "home";
 
 include __DIR__ . '/layout/header.php';
 
@@ -29,21 +29,24 @@ $cocktailId = $matches[1] ?? null;
         <script src="<?= htmlspecialchars($script); ?>"></script>
     <?php endforeach; ?>
 <?php endif; ?>
-<div class="content-wrapper">
-<aside class="leftSidebar">
+<div class="container">
+    <aside class="container__left">
+      <button id="toggle-left" class="toggle-button" aria-expanded="true">◀</button>
         <?php include __DIR__ . '/cocktails/categories.php'; ?>
         <?php if (isset($stickyCocktail) && is_object($stickyCocktail)): ?>
             <div class="stickyContainer">
                 <div class="stickyCard">
-                    <h2>📌Sticky Cocktail</h2>
+                    <h2> <i class="fa-solid fa-paperclip"></i> Sticky Cocktail</h2>
+                    <a href="/cocktails/<?= htmlspecialchars($stickyCocktail->getCocktailId()) ?>-<?= urlencode($stickyCocktail->getTitle()) ?>">
+                        <h3 class="stickyTitle"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
+                    </a>
                     <div class="stickyMediaWrapper">
                         <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>" alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
                     </div>
                     <div class="stickyContent">
-                            <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
-                                <h3 class="stickyTitle"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
-                            </a>
-                        <p class="stickyDescription"><?php echo htmlspecialchars($stickyCocktail->getDescription()); ?></p>
+                    <p class="sticky-description">
+                    <?= htmlspecialchars(getFirstSentence($stickyCocktail->getDescription())); ?>
+                </p>
                     </div>
                 </div>
             </div>
@@ -51,7 +54,7 @@ $cocktailId = $matches[1] ?? null;
             <p>No sticky cocktail selected or invalid data.</p>
         <?php endif; ?>
     </aside>
-    <main>
+    <main class="container__main">
         <!-- Logic to include forms based on the path -->
         <?php
         if ($currentPath === '/login') {
@@ -79,16 +82,15 @@ $cocktailId = $matches[1] ?? null;
         }
         ?>
     </main>
-    <aside class="controlPanel">
-        <?php
-        // Only include the About section if the user is not logged in
-        if (!isset($_SESSION['user'])):
-            include __DIR__ . '/about/about.php';
-        endif;
-        ?>
+    <nav class="container__right">
+
+    <button id="toggle-right" class="toggle-button" aria-expanded="true">▶</button>
         <?php
         $userProfile = $userProfile ?? null;
         include __DIR__ . '/layout/control_panel.php'; ?>
-    </aside>
+        <?php
+        include __DIR__ . '/about/about.php';
+        ?>
+    </nav>
 </div>
 <?php include __DIR__ . '/layout/footer.php'; ?>

@@ -6,43 +6,88 @@
     width: 95%;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    text-align: start;
     display: flex;
     flex-direction: column;
     background-image: var(--background);
     position: relative;
-}
-
-.cocktailInfo {
-    display: flex;
-    justify-content: start;
-    padding: 1rem;
-    & h3 {
-        margin: 0;
+    & a {
+        position: relative;
     }
-}
+    & .creatorInfo {
+        position: relative;
+        gap: 1rem;
+        display: flex;   
+        padding: .5rem ;
+        background: var(--card-linear-gradient);
+        border-radius: 8px 8px 0 0;
+        & a {
+            align-self: center;
+        }
+    }
+    & .cocktailInfo {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        background-color: var(--button-primary-transparent);
+        border-radius: 10px;
+        & h3 {
+            color: var(--accent-primary);
+        }
+    }
+    & .cocktailTitle {
+        display: flex;
+        justify-content: start;
+        background: var(--card-linear-gradient);
+        border-radius: 8px 8px 0 0;
+        padding: .5rem;
+        color: var(--text-primary);
+        position: absolute;
+        bottom: 0;
+        & h3 {
+            letter-spacing: .1rem;
+        }
+    }
+    & .cocktailMeta {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem;
+    }
 
-.buttonWrapper {
-    display: flex;
-    position: absolute;
-    justify-content: end;
-    width: 100%;
-}
-
-.cocktailImage {
-    width: 100%;
-    object-fit: cover;
-    border-bottom: 1px solid #ccc;
-    border-radius: 6px 6px 0 0;
-}
-
-.creatorInfo {
-    position: relative;
-    gap: 1rem;
-    display: flex;
-    padding: .5rem 0;
-    a {
-        z-index: 1000;
+    & .cocktailInfo {
+        display: flex;
+        justify-content: start;
+        padding: 1rem;
+        & h3 {
+            margin: 0;
+        }
+    }
+    .orderby {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        color: var(--text-primary);
+        gap: .5rem;
+        
+    }
+    & .buttonWrapper {
+        display: flex;
+        position: absolute;
+        justify-content: end;
+        width: 100%;
+    }
+    
+    & .cocktailImage {
+        width: 100%;
+        object-fit: contain;
+        border-bottom: 1px solid var(--accent-primary);
+        border-radius: 6px 6px 0 0;
+    }
+    & p {
+        text-align: start;
+        padding-left: .5rem;
     }
 }
 
@@ -58,80 +103,67 @@
     padding-top: 1rem;
 }
 
-.cocktailInfo {
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    background-color: var(--button-primary-transparent);
-    border-radius: 10px;
-    & h3 {
-        color: var(--accent-primary);
-    }
-}
-
 /*  Sticky Cocktail  */
 
 .stickyContainer {
     position: relative;
     display: flex;
     justify-content: start;
-}
-
-.stickyContent {
-    background-color: var(--card-background);
-    color: var(--text-primary);
-    padding: 0 .5rem;
-    top: 0;
-    bottom: 0;
-    border-radius: 0 0 8px 8px;
-    & a h3 {
-        font-size: 1rem;
-        margin: 0;
-    }
-}
-
-.stickyCard {
-    padding: .5rem;
-    overflow: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    text-align: start;
-    background-image: var(--radialSecondaryAccent);
-    display: flex;
-    align-items: stretch;
-    flex-direction: column;
-    & h2 {
-        background-color: var(--card-background);
-        font-size: 1rem;
-        padding: .5rem;
-        color: var(--accent-primary);
-        top: 0;
-        border-radius: 8px 8px 0 0;
-    }
-    & img {
-        object-fit: cover;
-        height: auto;
-        border-radius: 4px;
-    }
-    & h3 {
-        margin: 0;
-        padding: .5rem 0 0 0;
-    }
-    & a :hover {
-        color: var(--text-primary);
-    }
-    & p {
-        margin: 0;
-        text-overflow: ellipsis;
-    }
-    @media screen and (max-width: 768px) {
-       display: none;
+    padding: var(--base-padding);
+    & .stickyCard {
+        padding: 0;
+        overflow: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: start;
+        background: var(--card-radial-gradient);
+        display: flex;
+        align-items: stretch;
+        flex-direction: column;
+        & h2 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            padding: .5rem;
+            background-color: var(--accent-primary);
+            top: 0;
+            border-radius: 8px 8px 0 0;
+        }
+    
+        & .stickyContent {
+            background-color: var(--background);
+            color: var(--text-primary);
+            padding: 0 .5rem;
+            top: 0;
+            bottom: 0;
+            border-radius: 0 0 8px 8px;
+            & a h3 {
+                font-size: 1rem;
+                margin: 0;
+            }
+        }
         
-    } 
+        & img {
+            object-fit: cover;
+            height: auto;
+            border-radius: 4px;
+        }
+        & h3 {
+            margin: 0;
+            padding: .5rem 0 0 0;
+        }
+        & a :hover {
+            color: var(--text-primary);
+        }
+        & p {
+            margin: 0;
+            text-overflow: ellipsis;
+        }
+        @media screen and (max-width: 768px) {
+           display: none;
+            
+        } 
+    }
 }
-
-
-.stickyCard 
 
 .stickyMediaWrapper {
     display: flex;
@@ -141,7 +173,34 @@
     overflow: hidden;
 }
 
-.recipeCard h3 {
-    color: var(--accent-primary);
+.recipeCard {
+    height: 25dvh;  
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    & :nth-child(1) {
+        position: absolute;
+        z-index: 2;
+        background-color: var(--image-overlay);
+        padding: .2rem .5rem;
+        bottom: 0;
 
+        display: flex;
+        flex-direction: column;
+        & h3 {
+            position: relative;
+            color: var(--text-primary);
+            padding: 0;
+        }
+        & a {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--accent-primary);
+        }
+    }
 }
+

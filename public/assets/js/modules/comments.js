@@ -1,4 +1,3 @@
-///// Comments
 export function initializeComments() {
     const commentsSection = document.querySelector('.commentsSection');
 
@@ -9,13 +8,45 @@ export function initializeComments() {
     // Clear existing event listeners to avoid duplicates
     const newCommentsSection = commentsSection.cloneNode(true);
     commentsSection.replaceWith(newCommentsSection);
-    
+
+    const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
+
+    function updateCsrfToken(newToken) {
+        if (newToken) {
+            csrfMetaTag.setAttribute('content', newToken);
+
+            // Update all hidden CSRF inputs
+            document.querySelectorAll('input[name="csrf_token"]').forEach(input => {
+                input.value = newToken;
+            });
+        }
+    }
+
+    async function handleServerResponse(response) {
+        const rawText = await response.text();
+        try {
+            const data = JSON.parse(rawText);
+
+            // Update CSRF token if provided
+            if (data.new_csrf) {
+                updateCsrfToken(data.new_csrf);
+            }
+            return data;
+        } catch (error) {
+            console.error('Error parsing response:', error, rawText);
+            return { success: false, error: 'Invalid server response.' };
+        }
+    }
+
     // Top-level comment submission
     const commentForm = newCommentsSection.querySelector('#TopLevelCommentForm');
     if (commentForm) {
         commentForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const formData = new FormData(commentForm);
+
+            // Add CSRF token to the form data
+            formData.append('csrf_token', csrfMetaTag.getAttribute('content'));
 
             try {
                 const response = await fetch(commentForm.action, {
@@ -26,16 +57,7 @@ export function initializeComments() {
                     },
                 });
 
-                // Validate the response
-                const contentType = response.headers.get('Content-Type');
-                if (!response.ok || !contentType || !contentType.includes('application/json')) {
-                    const rawText = await response.text();
-                    console.error('Unexpected Response:', rawText);
-                    alert('Failed to add comment. Please try again.');
-                    return;
-                }
-
-                const data = await response.json();
+                const data = await handleServerResponse(response);
                 if (data.success) {
                     newCommentsSection.innerHTML = data.html; // Replace comments section with updated HTML
                     document.dispatchEvent(new Event('Drinx.DOMUpdated')); // Trigger any reinitialization if needed
@@ -48,62 +70,70 @@ export function initializeComments() {
             }
         });
     }
-    // Event delegation for dynamically added elements
-    newCommentsSection.addEventListener('click', async (event) => {
-        const target = event.target;
 
-        // Handle delete comment/reply
-        if (target.matches('.menuItem') && target.textContent.includes('🗑️')) {
-            event.preventDefault();
-            const form = target.closest('form');
-            if (!form) {
-                console.error("Delete form not found.");
-                return;
-            }
-
-            const confirmed = confirm('Are you sure you want to delete this?');
-            if (!confirmed) return;
-
-            try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    headers: { 'Accept': 'application/json' },
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    newCommentsSection.outerHTML = data.html;
-                    document.dispatchEvent(new Event('Drinx.DOMUpdated'));
-                } else {
-                    alert(data.error || 'Failed to delete comment.');
-                }
-            } catch (error) {
-                console.error('Error deleting comment:', error);
-            }
+newCommentsSection.addEventListener('click', async (event) => {
+    let target = event.target;
+    // Ensure the target is the delete button, even if the icon inside is clicked
+    if (target.matches('.delete *')) {
+        target = target.closest('.delete');
+    }
+    if (target && target.matches('.delete')) {
+        event.preventDefault(); // Prevent default form submission
+        const form = target.closest('form');
+        if (!form) {
+            console.error("Delete form not found.");
+            return;
         }
 
-        // Handle reply button toggle
-        if (target.matches('.replyButton')) {
-            const replyForm = newCommentsSection.querySelector(`#replyForm-${target.dataset.commentId}`);
-            if (replyForm) {
-                replyForm.classList.toggle('hidden');
-            }
-        }
+        const confirmed = confirm('Are you sure you want to delete this?');
+        if (!confirmed) return;
 
-        // Handle dots menu toggle
-        if (target.matches('.dotsButton')) {
-            const menu = target.nextElementSibling;
-            if (menu) {
-                menu.classList.toggle('hidden');
+        const formData = new FormData(form);
+        formData.append('csrf_token', csrfMetaTag.getAttribute('content'));
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' },
+            });
+
+            const data = await handleServerResponse(response);
+            if (data.success) {
+                newCommentsSection.outerHTML = data.html;
+                document.dispatchEvent(new Event('Drinx.DOMUpdated'));
+            } else {
+                alert(data.error || 'Failed to delete comment.');
             }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
         }
-    });
+    }
+
+    // Handle reply button toggle
+    if (target.matches('.replyButton')) {
+        const replyForm = newCommentsSection.querySelector(`#replyForm-${target.dataset.commentId}`);
+        if (replyForm) {
+            replyForm.classList.toggle('hidden');
+        }
+    }
+
+    // Handle dots menu toggle
+    if (target.matches('.dotsButton')) {
+        const menu = target.nextElementSibling;
+        if (menu) {
+            menu.classList.toggle('hidden');
+        }
+    }
+});
 
     // Handle reply submission
     newCommentsSection.addEventListener('submit', async (event) => {
         if (event.target.matches('.replyForm form')) {
             event.preventDefault();
             const formData = new FormData(event.target);
+
+            formData.append('csrf_token', csrfMetaTag.getAttribute('content'));
 
             try {
                 const response = await fetch(event.target.action, {
@@ -112,7 +142,7 @@ export function initializeComments() {
                     headers: { 'Accept': 'application/json' },
                 });
 
-                const data = await response.json();
+                const data = await handleServerResponse(response);
                 if (data.success) {
                     newCommentsSection.outerHTML = data.html;
                     document.dispatchEvent(new Event('Drinx.DOMUpdated'));
@@ -131,6 +161,7 @@ export function initializeComments() {
             event.preventDefault();
             const formData = new FormData(event.target);
 
+            formData.append('csrf_token', csrfMetaTag.getAttribute('content'));
             try {
                 const response = await fetch(event.target.action, {
                     method: 'POST',
@@ -138,13 +169,7 @@ export function initializeComments() {
                     headers: { 'Accept': 'application/json' },
                 });
 
-                if (!response.ok) {
-                    console.error("Edit request failed with status:", response.status);
-                    alert('Failed to edit comment. Please try again.');
-                    return;
-                }
-
-                const data = await response.json();
+                const data = await handleServerResponse(response);
                 if (data.success) {
                     newCommentsSection.outerHTML = data.html;
                     document.dispatchEvent(new Event('Drinx.DOMUpdated'));
@@ -187,6 +212,7 @@ export function initializeComments() {
             }
         }
     });
+
     // Add a global listener for DOM updates
     document.addEventListener('Drinx.DOMUpdated', () => {
         initializeComments();

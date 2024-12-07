@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../models/Ingredient.php';
 class IngredientRepository
 {
     private $db;
@@ -35,11 +36,6 @@ class IngredientRepository
         }
 
         return $ingredients;
-    }
-
-    public function fetchIngredientsForCocktail($cocktailId)
-    {
-        return $this->getIngredientsByCocktailId($cocktailId);
     }
 
     public function countIngredients()
@@ -116,7 +112,7 @@ class IngredientRepository
 
         return $stmt->execute();
     }
-    
+
     // Get all available units
     public function getAllUnits()
     {
@@ -139,6 +135,42 @@ class IngredientRepository
         $stmt = $this->db->prepare('DELETE FROM ingredients WHERE ingredient_id = :ingredient_id');
         $stmt->bindParam(':ingredient_id', $ingredientId, PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+    public function getIngredientsGroupedByTags()
+    {
+        $stmt = $this->db->prepare('
+        SELECT 
+            i.ingredient_id,
+            i.name AS ingredient_name,
+            t.tag_id,
+            t.name AS tag_name
+        FROM ingredients i
+        LEFT JOIN ingredient_tags it ON i.ingredient_id = it.ingredient_id
+        LEFT JOIN tags t ON it.tag_id = t.tag_id
+        WHERE t.tag_id IS NOT NULL
+        ORDER BY t.name, i.name
+    ');
+        $stmt->execute();
+        $allIngredients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $result = ['categorized' => [], 'uncategorized' => []];
+
+        foreach ($allIngredients as $ingredient) {
+            if (!empty($ingredient['tag_id'])) {
+                // Group by tag
+                $result['categorized'][$ingredient['tag_name']][] = [
+                    'ingredient_id' => $ingredient['ingredient_id'],
+                    'ingredient_name' => $ingredient['ingredient_name']
+                ];
+            }
+        }
+
+        return $result;
+    }
+    public function fetchIngredientsForCocktail($cocktailId)
+    {
+        return $this->getIngredientsByCocktailId($cocktailId);
     }
 
     public function fetchUncategorizedIngredients($uncategorizedTag = 'Uncategorized')
@@ -176,5 +208,12 @@ class IngredientRepository
         $stmt = $this->db->prepare('SELECT tag_id FROM tags WHERE name = "Uncategorized"');
         $stmt->execute();
         return $stmt->fetchColumn();
+    }
+
+    public function searchByName($query) {
+        $sql = "SELECT * FROM ingredients WHERE ingredient_name LIKE :query";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['query' => '%' . $query . '%']);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

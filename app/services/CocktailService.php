@@ -1,13 +1,4 @@
 <?php
-require_once __DIR__ . '/../repositories/CommentRepository.php';
-require_once __DIR__ . '/../repositories/CocktailRepository.php';
-require_once __DIR__ . '/../repositories/CategoryRepository.php';
-require_once __DIR__ . '/../repositories/IngredientRepository.php';
-require_once __DIR__ . '/../repositories/StepRepository.php';
-require_once __DIR__ . '/../repositories/TagRepository.php';
-require_once __DIR__ . '/../repositories/DifficultyRepository.php';
-require_once __DIR__ . '/../repositories/LikeRepository.php';
-
 
 class CocktailService
 {
@@ -108,6 +99,10 @@ class CocktailService
     {
         return $this->categoryRepository->getAllCategories();
     }
+    public function getCategoryIdByName($categoryname)
+    {
+        return $this->categoryRepository->getCategoryIdByName($categoryname);
+    }
 
     public function getCategoryByCocktailId($cocktailId)
     {
@@ -135,10 +130,6 @@ class CocktailService
     //     return $this->tagRepository->removeTagFromCocktail($cocktailId, $tagId);
     // }
 
-    public function getAllTags()
-    {
-        return $this->tagRepository->getAllTags();
-    }
 
     // Delegate ingredient clearing to IngredientService
     public function clearIngredients($cocktailId)
@@ -243,4 +234,20 @@ class CocktailService
     {
         return $this->commentRepository->getCommentCountByCocktailId($cocktailId);
     }
+    public function getCocktailCountByUserId($userId)
+    {
+        return $this->cocktailRepository->getCocktailCountByUserId($userId);
+    }
+
+    // Difficulty-related operations
+    public function getAllDifficulties()
+    {
+        return $this->difficultyRepository->getAllDifficulties();
+    }
+    public function getDifficultyNameById ($difficultyId)
+    {
+        return $this->difficultyRepository->getDifficultyNameById($difficultyId);
+    }
+
+  
 }

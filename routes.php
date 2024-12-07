@@ -46,11 +46,13 @@ $router->add('POST', '#^/admin/ingredients/delete$#', [IngredientController::cla
 // Search route
 $router->add('GET', '#^/search$#', [SearchController::class, 'search']);
 $router->add('GET', '#^/searchAllUsers$#', [SearchController::class, 'adminUserSearch']);
-
+$router->add('GET', '#^/admin/ingredients/search$#', [SearchController::class, 'ingredientSearch']);
 // User routes
 $router->add('GET', '#^/profile/(\d+)$#', [UserController::class, 'profile']);
 $router->add('GET', '#^/profile/([a-zA-Z0-9_-]+)$#', [UserController::class, 'profileByUsername']); // Show profile by username
 $router->add('POST', '#^/profile/update$#', [UserController::class, 'updateProfile']); // Handle profile update
+// Social link routes
+$router->add('POST', '#^/profile/social-links/manage$#', [UserController::class, 'manageSocialLinks']);
 
 // Account deletion routes
 $router->add('POST', '#^/profile/delete$#', [UserController::class, 'deleteAccount']); // Handle account deletion directly from profile
@@ -76,6 +78,8 @@ $router->add('POST', '#^/cocktails/(\d+)/assign-tags$#', [TagController::class, 
     
 // Admin Ingredient Management
 $router->add('GET', '#^/admin/ingredients/uncategorized$#', [IngredientController::class, 'getUncategorizedIngredients']); // Get uncategorized ingredients
+//CATEGORIZED
+$router->add('GET', '#^/admin/ingredients/categorized$#', [IngredientController::class, 'getCategorizedIngredients']); // Get categorized ingredients
 $router->add('POST', '#^/admin/ingredients/assign-tag$#', [IngredientController::class, 'assignTag']); // Assign tag to ingredient
 $router->add('POST', '#^/admin/ingredients/create$#', [IngredientController::class, 'createIngredient']); // Add new ingredient
 $router->add('POST', '#^/admin/ingredients/edit$#', [IngredientController::class, 'editIngredientName']); // Edit ingredient

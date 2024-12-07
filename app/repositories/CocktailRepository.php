@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Cocktail.php';
 require_once __DIR__ . '/../models/Ingredient.php';
 require_once __DIR__ . '/../models/Step.php';
@@ -8,7 +7,8 @@ class CocktailRepository
 {
     private $db;
 
-    public function __construct($db) {
+    public function __construct($db) 
+    {
         $this->db = $db;
     }
 
@@ -33,6 +33,8 @@ class CocktailRepository
             $tags,
             $data['like_count'] ?? 0,
             $data['difficulty_name'] ?? null,
+            $data['created_at'] ?? null, 
+        $data['updated_at'] ?? null 
         );
     }
 
@@ -355,6 +357,14 @@ class CocktailRepository
             LEFT JOIN comments com ON c.cocktail_id = com.cocktail_id 
             WHERE com.comment_id IS NULL
         ");
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }    
+    
+    public function getCocktailCountByUserId($userId)
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM cocktails WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn();
     }

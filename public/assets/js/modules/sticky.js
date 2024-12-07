@@ -1,8 +1,13 @@
 ///// Sticky
 export function initializeSticky() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     function updateStickyCocktail() {
         fetch('/admin/sticky-cocktail', {
-            headers: { 'Content-Type': 'application/json' },
+            method: 'GET',  
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken  
+            },
         })
             .then(response => response.json())
             .then(data => {
@@ -10,23 +15,19 @@ export function initializeSticky() {
                 if (stickyContainer && data.success) {
                     stickyContainer.innerHTML = `
                         <div class="stickyCard">
-                            <h2>📌 Sticky Cocktail</h2>
+                            <h2><i class="fa-solid fa-paperclip"></i> Sticky Cocktail</h2>
                             <div class="stickyMediaWrapper">
-                                <a href="/cocktails/${data.id}-${encodeURIComponent(data.title)}">
-                                    <img src="${data.image}" 
-                                         alt="${data.title}" class="cocktail-image">
-                                </a>
+                                <img src="/uploads/cocktails/${data.image}" alt="${data.title}" class="cocktail-image">
                             </div>
                             <div class="stickyContent">
-                                <h3 class="cocktail-title">
-                                    <a href="/cocktails/${data.id}-${encodeURIComponent(data.title)}">
-                                        ${data.title}
-                                    </a>
-                                </h3>
+                                <a href="/cocktails/${data.id}-${encodeURIComponent(data.title)}">
+                                    <h3 class="cocktail-title">${data.title}</h3>
+                                </a>
                                 <p class="cocktail-description">${data.description}</p>
                             </div>
                         </div>
                     `;
+                    console.log('Sticky cocktail updated:', data);
                 } else {
                     console.warn('No sticky cocktail found or returned:', data);
                 }
@@ -41,20 +42,28 @@ export function initializeSticky() {
 
                 fetch('/admin/toggle-sticky', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cocktail_id: cocktailId }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken // Pass CSRF token in the header for POST request
+                    },
+                    body: JSON.stringify({
+                        cocktail_id: cocktailId,
+                        csrf_token: csrfToken // Pass CSRF token in the body too
+                    }),
                 })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            // Reset all sticky buttons
                             document.querySelectorAll('.set-sticky').forEach(btn => {
                                 btn.classList.remove('active');
-                                btn.textContent = '📌';
+                                btn.innerHTML = '<i class="fa-solid fa-paperclip"></i>';
                             });
 
+                            // Update the clicked button
                             if (data.is_sticky) {
                                 this.classList.add('active');
-                                this.textContent = '📌';
+                                this.innerHTML = '<i class="fa-solid fa-paperclip"></i>';
                             }
 
                             updateStickyCocktail();

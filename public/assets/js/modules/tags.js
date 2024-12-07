@@ -1,7 +1,9 @@
 export function initializeTags() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const $tagsManagement = $("#tagsManagement");
     const $tagDialog = $("#tagDialog");
     const $notificationDialog = $("#notificationDialog");
+
 
     // Toggle Tag Management 
     $("#toggleTagsManagementButton").on("click", function () {
@@ -10,7 +12,7 @@ export function initializeTags() {
 
     // Initialize Tag Dialog
     $tagDialog.dialog({
-        autoOpen: false, // Dialog is not open by default
+        autoOpen: false, 
         modal: true,
         buttons: {
             Save: function () {
@@ -76,21 +78,24 @@ export function initializeTags() {
         const tagId = $("#tagId").val();
         const tagName = $("#tagName").val().trim();
         const tagCategoryId = $("#tagCategory").val();
-        const tagCategoryName = $("#tagCategory option:selected").text().trim(); // Clean category name
+        const tagCategoryName = $("#tagCategory option:selected").text().trim(); 
     
         if (!tagName || !tagCategoryId) {
             alert("All fields are required.");
             return;
         }
-    
+
         const url = tagId ? '/admin/tag/save' : '/admin/tag/add';
         const data = tagId
-            ? { tag_id: tagId, tag_name: tagName, tag_category_id: tagCategoryId }
-            : { tag_name: tagName, tag_category_id: tagCategoryId };
+        ? { tag_id: tagId, tag_name: tagName, tag_category_id: tagCategoryId, csrf_token: csrfToken }
+        : { tag_name: tagName, tag_category_id: tagCategoryId, csrf_token: csrfToken };
     
         $.ajax({
             url: url,
             method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
             contentType: "application/json",
             data: JSON.stringify(data),
             success: function (response) {
@@ -176,19 +181,27 @@ export function initializeTags() {
     function handleDeleteTag($button) {
         const tagId = $button.data("tag-id");
         const tagName = $button.data("tag-name");
-
+    
+        // Get the CSRF token from the meta tag
+        const csrfToken = $('meta[name="csrf-token"]').attr('content'); 
         if (confirm(`Are you sure you want to delete the tag "${tagName}"?`)) {
+            const data = {
+                tag_id: tagId,
+                csrf_token: csrfToken
+            };
+    
+            // Perform the AJAX request
             $.ajax({
                 url: '/admin/tag/delete',
                 method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ tag_id: tagId }),
+                data: JSON.stringify(data), // Convert the data to a JSON string
                 success: function (response) {
                     try {
                         const jsonResponse = typeof response === "string" ? JSON.parse(response) : response;
+    
                         if (jsonResponse.status === 'success') {
                             alert(jsonResponse.message);
-                            $button.closest('.tag-item').remove(); 
+                            $button.closest('.tag-item').remove();  // Remove the tag item from the DOM
                         } else {
                             alert(jsonResponse.message);
                         }

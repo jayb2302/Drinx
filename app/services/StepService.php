@@ -2,7 +2,9 @@
 class StepService {
     private $stepRepository;
 
-    public function __construct(StepRepository $stepRepository) {
+    public function __construct(
+        StepRepository $stepRepository
+    ) {
         $this->stepRepository = $stepRepository;
     }
 

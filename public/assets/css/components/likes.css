@@ -1,24 +1,23 @@
-.like-button {
-    color: white;
-    background-color: var(--card-background);
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-}
-
-.unlike-button {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-}
-
 .like-section {
-    background-color: var(--nav-background);
+    background: var(--lcard-linear-gradient);
     color: var(--accent-primary);
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    & .like-button {
+        color: var(--text-primary);
+        background-color: var(--card-background);
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+    & .unlike-button {
+        background-color: var(--error);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
 }
 .like-section form{
     display: flex;
@@ -28,5 +27,5 @@
 
 .like-icon {
     font-size: 24px; 
-    color: red; 
+    color: var(--error); 
 }
