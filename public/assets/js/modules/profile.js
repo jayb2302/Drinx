@@ -4,7 +4,6 @@ export function initializeProfile() {
     const form = document.getElementById('edit-profile-form');
     const closeButton = document.getElementById('close-form-button');
     
-
     // Toggle form visibility when edit button is clicked
     editButton?.addEventListener('click', (e) => {
         e.preventDefault();

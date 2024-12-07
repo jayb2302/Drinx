@@ -234,8 +234,7 @@ class UserController extends BaseController
         $userProfile = $this->userService->getUserWithFollowCounts($profileUserId);
         // Fetch cocktail count and progress to next badge
         $cocktailCount = $this->cocktailService->getCocktailCountByUserId($profileUserId);
-        // error_log("Cocktail Count: $cocktailCount");
-
+     
         $progressData = $this->badgeService->getUserProgressToNextBadge($profileUserId, $cocktailCount);
         // error_log("Progress Data: " . print_r($progressData, true));
 
@@ -252,23 +251,24 @@ class UserController extends BaseController
 
         $userId = $_SESSION['user']['id'];
 
-        // Debugging output
-        echo "Attempting to follow: UserID = $userId, FollowedUserID = $followedUserId";
-
         if ($userId === $followedUserId) {
             $_SESSION['error'] = "You cannot follow yourself.";
-            redirect("profile/$userId");
+            $followedUser = $this->userService->getUserById($followedUserId);
+            $username = $followedUser ? $followedUser->getUsername() : $followedUserId;
+            redirect("profile/$username");
             return;
         }
-
+    
         $followSuccess = $this->userService->followUser($userId, $followedUserId);
         if ($followSuccess) {
             $_SESSION['success'] = "User followed successfully.";
         } else {
             $_SESSION['error'] = "Failed to follow user or already following.";
         }
-
-        redirect("profile/$followedUserId");
+    
+        $followedUser = $this->userService->getUserById($followedUserId);
+        $username = $followedUser ? $followedUser->getUsername() : $followedUserId;
+        redirect("profile/$username");
     }
 
     // Unfollow a user
@@ -279,12 +279,15 @@ class UserController extends BaseController
         }
 
         $userId = $_SESSION['user']['id'];
-        if ($this->userService->unfollowUser($userId, $followedUserId)) {
-            $_SESSION['success'] = "User unfollowed successfully.";
-        } else {
-            $_SESSION['error'] = "Failed to unfollow user or not currently following.";
-        }
+        
+    if ($this->userService->unfollowUser($userId, $followedUserId)) {
+        $_SESSION['success'] = "User unfollowed successfully.";
+    } else {
+        $_SESSION['error'] = "Failed to unfollow user or not currently following.";
+    }
 
-        redirect("profile/$followedUserId");
+    $followedUser = $this->userService->getUserById($followedUserId);
+    $username = $followedUser ? $followedUser->getUsername() : $followedUserId;
+    redirect("profile/$username");
     }
 }
