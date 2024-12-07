@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/SocialLink.php';
 require_once __DIR__ . '/../models/Platform.php';
-class SocialsRepository {
+class SocialLinkRepository {
     private $db;
     public function __construct($db) {
         $this->db = $db;

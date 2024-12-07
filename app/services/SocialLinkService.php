@@ -1,20 +1,21 @@
 <?php
 
-class SocialsService {
-    private $socialsRepository;
+class SocialLinkService {
+    private $socialLinkRepository;
     public function __construct(
-        SocialsRepository $socialsRepository) {
-        $this->socialsRepository = $socialsRepository;
+        SocialLinkRepository $socialLinkRepository
+    ) {
+        $this->socialLinkRepository = $socialLinkRepository;
     }
 
     // Fetch all social platforms
     public function getAllPlatforms() {
-        return $this->socialsRepository->getAllPlatforms();
+        return $this->socialLinkRepository->getAllPlatforms();
     }
     // Get all social links for a user
     public function getUserSocialLinks($userId): array
     {
-        $socialLinks = $this->socialsRepository->getSocialLinksByUserId($userId);
+        $socialLinks = $this->socialLinkRepository->getSocialLinksByUserId($userId);
     
         $linksArray = [];
         foreach ($socialLinks as $link) {
@@ -33,16 +34,16 @@ class SocialsService {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException("Invalid URL format.");
         }
-        return $this->socialsRepository->updateSocialLink($userId, $platformId, $url);
+        return $this->socialLinkRepository->updateSocialLink($userId, $platformId, $url);
     }
     // Delete a social link
     public function deleteSocialLink($userId, $platformId) {
-        return $this->socialsRepository->deleteSocialLink($userId, $platformId);
+        return $this->socialLinkRepository->deleteSocialLink($userId, $platformId);
     }
     public function getSocialFormData($userId): array
     {
         // Fetch all available platforms
-        $platforms = $this->socialsRepository->getAllPlatforms();
+        $platforms = $this->socialLinkRepository->getAllPlatforms();
     
         // Fetch the user's social links (indexed by platform_id)
         $userSocialLinks = $this->getUserSocialLinks($userId);

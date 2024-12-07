@@ -10,7 +10,7 @@ require_once __DIR__ . '/../repositories/LikeRepository.php';
 require_once __DIR__ . '/../repositories/CommentRepository.php';
 require_once __DIR__ . '/../repositories/UserRepository.php';
 require_once __DIR__ . '/../repositories/BadgeRepository.php';
-require_once __DIR__ . '/../repositories/SocialsRepository.php';
+require_once __DIR__ . '/../repositories/SocialLinkRepository.php';
 
 // Services
 require_once __DIR__ . '/../services/AdminService.php';
@@ -25,7 +25,7 @@ require_once __DIR__ . '/../services/BadgeService.php';
 require_once __DIR__ . '/../services/TagService.php';
 require_once __DIR__ . '/../services/UnitService.php';
 require_once __DIR__ . '/../services/AuthService.php';
-require_once __DIR__ . '/../services/SocialsService.php';
+require_once __DIR__ . '/../services/SocialLinkService.php';
 
 
 // Controllers
@@ -56,7 +56,7 @@ $likeRepository = new LikeRepository($db);
 $commentRepository = new CommentRepository($db);
 $userRepository = new UserRepository($db);
 $badgeRepository = new BadgeRepository($db);
-$socialsRepository = new SocialsRepository($db);
+$socialLinkRepository = new SocialLinkRepository($db);
 
 // Services
 $authService = new AuthService(
@@ -72,8 +72,8 @@ $adminService = new AdminService(
 $badgeService = new BadgeService(
     $badgeRepository
 );
-$socialsService = new SocialsService(
-    $socialsRepository
+$socialLinkService = new SocialLinkService(
+    $socialLinkRepository
 );
 $imageService = new ImageService();
 $ingredientService = new IngredientService(
@@ -90,7 +90,7 @@ $likeService = new LikeService(
 $userService = new UserService(
     $userRepository,
     $badgeService,
-    $socialsService
+    $socialLinkService
 );
 $commentService = new CommentService(
     $commentRepository, 
