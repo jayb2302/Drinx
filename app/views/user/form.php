@@ -1,6 +1,16 @@
 <div class="form-container">
+
     <form action="/profile/update" method="post" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()); ?>" />
+         <!-- Profile Picture Upload -->
+         <div class="form-group">
+            <label for="profile_picture">Profile Picture</label>
+            <input type="file" name="profile_picture" id="profile_picture">
+            <span id="file-error" style="color: red; display: none;"></span>
+            <img id="image-preview" src="<?= $profile->getProfilePicture() ? asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())) : ''; ?>"
+                 alt="Profile Picture Preview"
+                 style="display: <?= $profile->getProfilePicture() ? 'block' : 'none'; ?>; width: 100px;">
+        </div>
         <!-- First Name -->
         <div class="form-group">
             <label for="first_name">First Name</label>
@@ -18,15 +28,10 @@
             <label for="bio">Bio</label>
             <textarea name="bio" id="bio"><?= htmlspecialchars($profile->getBio() ?? '') ?></textarea>
         </div>
-        <!-- Profile Picture Upload -->
-        <div class="form-group">
-            <label for="profile_picture">Profile Picture</label>
-            <input type="file" name="profile_picture" id="profile_picture">
-            <span id="file-error" style="color: red; display: none;"></span>
-            <img id="image-preview" src="<?= $profile->getProfilePicture() ? asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())) : ''; ?>"
-                 alt="Profile Picture Preview"
-                 style="display: <?= $profile->getProfilePicture() ? 'block' : 'none'; ?>; width: 100px;">
-        </div>
+       
         <button type="submit" class="btn btn-success">Save Changes</button>
     </form>
+    <button type="button" class="close-button" id="close-form-button">
+    <i class="fa-solid fa-xmark"></i>
+</button>
 </div>
