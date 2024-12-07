@@ -111,7 +111,11 @@ class UserController extends BaseController
             $firstName = sanitize($_POST['first_name']);
             $lastName = sanitize($_POST['last_name']);
             $bio = sanitize($_POST['bio']);
-
+            $socialLinks = $_POST['social_links'] ?? [];
+            foreach ($socialLinks as $platformId => $url) {
+                $socialLinks[$platformId] = sanitize($url);
+            }
+            
             // Handle file upload if a new profile picture is uploaded
             $profilePicture = $currentProfilePicture;
             // Handle file upload if a new profile picture is uploaded
@@ -122,7 +126,19 @@ class UserController extends BaseController
                 } else {
                     $_SESSION['error'] = "Failed to upload profile picture.";
                     redirect("profile/$username");
-                    return; // Exit to avoid overwriting the current picture
+                    return; 
+                }
+            }
+            // Update social links
+            foreach ($socialLinks as $platformId => $url) {
+                if (!empty($url)) {
+                    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                        $_SESSION['error'] = "Invalid URL format for social media link.";
+                        redirect("profile/$username");
+                    }
+                    $this->userService->updateUserSocialLink($userId, $platformId, $url);
+                } else {
+                    $this->userService->deleteUserSocialLink($userId, $platformId);
                 }
             }
 
@@ -209,7 +225,9 @@ class UserController extends BaseController
 
         // Check if current user is following the profile user
         $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
-
+        $platforms = $this->userService->getAllPlatforms(); 
+        $formData = $this->userService->getSocialFormData($profileUserId); // Fetch social links data
+        $socialLinks = $this->userService->getUserSocialLinks($profileUserId);
         $userRecipes = $this->cocktailService->getUserRecipes($profileUserId);
         $userBadges = $this->badgeService->getUserBadges($profileUserId);
         $profileStats = $this->userService->getUserStats($profileUserId);

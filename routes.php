@@ -51,6 +51,8 @@ $router->add('GET', '#^/admin/ingredients/search$#', [SearchController::class, '
 $router->add('GET', '#^/profile/(\d+)$#', [UserController::class, 'profile']);
 $router->add('GET', '#^/profile/([a-zA-Z0-9_-]+)$#', [UserController::class, 'profileByUsername']); // Show profile by username
 $router->add('POST', '#^/profile/update$#', [UserController::class, 'updateProfile']); // Handle profile update
+// Social link routes
+$router->add('POST', '#^/profile/social-links/manage$#', [UserController::class, 'manageSocialLinks']);
 
 // Account deletion routes
 $router->add('POST', '#^/profile/delete$#', [UserController::class, 'deleteAccount']); // Handle account deletion directly from profile

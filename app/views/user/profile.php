@@ -19,10 +19,10 @@ if (isset($_SESSION['success'])) {
     <!-- User Profile Header -->
     <aside class="profile__main">
         <!-- User Info -->
-        <div class="profile-info">  
-        <!-- Profile Picture -->
+        <div class="profile-info">
+            <!-- Profile Picture -->
             <div class="profile-picture">
-                
+
                 <?php if ($profile->getProfilePicture()): ?>
                     <img class="profile-img" src="<?= asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>"
                         alt="Profile picture of <?= htmlspecialchars($profile->getUsername()); ?>" class="profile-img">
@@ -34,7 +34,7 @@ if (isset($_SESSION['success'])) {
                     <?= htmlspecialchars($profile->getFirstName() ?? 'No First Name') . ' ' . htmlspecialchars($profile->getLastName() ?? 'No Last Name'); ?>
                 </h2>
                 <small>@ <?= htmlspecialchars($profile->getUsername() ?? 'Unknown'); ?></small>
-              
+
                 <p class="bio"><?= htmlspecialchars($profile->getBio() ?? 'This user has not set a bio yet.'); ?></p>
                 <?php if ($userId !== $profileUserId): ?> <!-- Only show follow/unfollow buttons if viewing another user's profile -->
                     <?php if (isset($isFollowing) && $isFollowing): ?>
@@ -62,7 +62,7 @@ if (isset($_SESSION['success'])) {
                                 <!-- <img src="<?= asset('uploads/badges/' . htmlspecialchars(string: $badge->getBadgeImage() ?? 'default-badge.svg')); ?>"
                                 alt="<?= htmlspecialchars($badge->getName()); ?>" class="badge-img"> -->
                                 <p title="<?= htmlspecialchars($badge->getDescription()); ?>">
-                                <i class="fa-solid fa-trophy"></i>   <?= htmlspecialchars($badge->getName()); ?>
+                                    <i class="fa-solid fa-trophy"></i> <?= htmlspecialchars($badge->getName()); ?>
                                 </p>
                             </div>
                         <?php endforeach; ?>
@@ -103,37 +103,60 @@ if (isset($_SESSION['success'])) {
                     <li>Comments Received: <?= $profileStats['comments_received'] ?? 0; ?></li>
                 </ul>
             </div>
-            <!-- Edit-Delete Section -->
-            <?php if ($userId === $profileUserId): ?>
-                <!-- Edit Profile Button - Only show if user is viewing their own profile -->
-                <div class="edit-delete">
-                    <a id="edit-profile-button" class="button-secondary">
-                        <span>
-                            Edit Profile
-                        </span>
-                    </a>
-                    <div class="delete-account-section">
-                        <button id="deleteAccountButton" class="button-secondary">Delete Account</button>
-
-                        <div id="deleteConfirmSection" style="display:none;">
-                            <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
-
-                            <form action="/profile/delete" method="POST">
-                                <label for="password">Confirm Password:</label>
-                                <input type="password" name="password" required>
-                                <button type="submit" class="confirm-delete">Confirm Deletion</button>
-                            </form>
-
-                            <!-- Display any error messages related to deletion -->
-                            <?php if (isset($_SESSION['error'])): ?>
-                                <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); ?></div>
-                                <?php unset($_SESSION['error']); ?>
-                            <?php endif; ?>
+            <div class="social-icons">
+                <h4>Socials</h4>
+                <?php if (!empty($socialLinks)): ?>
+                    <?php foreach ($socialLinks as $link): ?>
+                        <a href="<?= htmlspecialchars($link['url']); ?>" target="_blank" rel="noopener noreferrer"
+                            title="<?= htmlspecialchars($link['platform_name']); ?>" class="social-icon-link">
+                            <i class="fa-brands <?= htmlspecialchars($link['icon_class']); ?>"></i>
+                        </a>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No social media links added yet.</p>
+                <?php endif; ?>
+            </div>
+            
+                    <!-- Edit-Delete Section -->
+                    <?php if ($userId === $profileUserId): ?>
+                        <!-- Edit Profile Button - Only show if user is viewing their own profile -->
+                        <div class="edit-delete">
+                            <a id="edit-profile-button" class="button-secondary">
+                                <span>
+                                    Edit Profile
+                                </span>
+                            </a>
+                            <div class="delete-account-section">
+                                <button id="deleteAccountButton" class="button-secondary">Delete Account</button>
+            
+                                <div id="deleteConfirmSection" style="display:none;">
+                                    <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
+                                    <div id="deleteConfirmSection" style="display:none;">
+                                        <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
+            
+                                        <form action="/profile/delete" method="POST">
+                                            <label for="password">Confirm Password:</label>
+                                            <input type="password" name="password" required>
+                                            <button type="submit" class="confirm-delete">Confirm Deletion</button>
+                                        </form>
+                                        <form action="/profile/delete" method="POST">
+                                            <label for="password">Confirm Password:</label>
+                                            <input type="password" name="password" required>
+                                            <button type="submit" class="confirm-delete">Confirm Deletion</button>
+                                        </form>
+            
+                                        <!-- Display any error messages related to deletion -->
+                                        <?php if (isset($_SESSION['error'])): ?>
+                                            <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); ?></div>
+                                            <?php unset($_SESSION['error']); ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            <?php endif; ?>
+                    <?php endif; ?>
         </div>
+
     </aside>
     <!-- Recipe Section -->
     <div id="edit-profile-form" style="display:none;">
@@ -170,8 +193,8 @@ if (isset($_SESSION['success'])) {
         <?php else: ?>
             <p>No recipes uploaded yet.</p>
         <?php endif; ?>
-        </main>
 
+        </main>
     </div>
 </div>
 

@@ -397,7 +397,6 @@ class UserRepository
         return $users;
     }
 
-
     // Helper function to map user data with status
     private function mapToUserWithStatus($result)
     {
