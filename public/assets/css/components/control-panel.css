@@ -32,15 +32,6 @@
     margin-bottom: 1.5rem;
     background-color: var(--background);
     border-radius: 8px 8px 0 0;
-    .follow-stats  {
-        color: var(--text-primary);
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        background-color: var(--accent-primary);
-        padding: .5rem 1rem;
-    }
 }
 
 .control-user-picture {

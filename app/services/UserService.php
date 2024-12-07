@@ -181,13 +181,13 @@ class UserService
     public function getUserWithFollowCounts($userId)
     {
         $user = $this->userRepository->findByIdWithProfile($userId); // Fetch the user object
-
+    
         if ($user) {
-            // Set the following and followers count on the User object
-            $user->setFollowingCount($this->getFollowingCount($userId));
-            $user->setFollowersCount($this->getFollowersCount($userId));
+            // Fetch and set the counts
+            $user->setFollowingCount($this->userRepository->getFollowingCount($userId));
+            $user->setFollowersCount($this->userRepository->getFollowersCount($userId));
         }
-
+    
         return $user;
     }
 

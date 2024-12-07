@@ -4,12 +4,11 @@ button {
     display: inline-block;
     justify-content: end;
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--button-radius);
     cursor: pointer;
-    font-size: 16px;
     transition: background-color 0.3s;
     background-color: var(--button-primary);
-    color: var(--text-primary);
+    color: var(--text-secondary);
     & .primary {
         background-color: var(--button-primary);
         color: var(--text-secondary);
@@ -39,7 +38,6 @@ button {
 .button {
     padding: 10px 15px;
     border: 1px solid var(--border);
-    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s;
@@ -47,16 +45,23 @@ button {
     & .button-secondary {
         display: inline-block;
         align-items: stretch;
-        padding: var(--base-padding);
+        padding: var(--button-padding);
         border: 1px solid var(--border);
         border-radius: 10px;
         cursor: pointer;
         font-size: 16px;
         transition: background-color 0.3s;
-        background-color: var(--button-secondary);
+        background-color: var(--button-primary);
         width: fit-content;
         text-align: center;
     }
+}
+
+.button-secondary{
+    background-color: var(--button-primary);
+    color: var(--text-secondary);
+    padding: var(--button-padding);
+    border-radius: .5rem;
 }
 
 /** Sticky Button **/

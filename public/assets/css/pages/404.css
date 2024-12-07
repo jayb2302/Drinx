@@ -1,0 +1,48 @@
+.page-404 {
+    display: flex;
+    background: url(../../brand/404Spilled.webp) no-repeat center center/cover;
+    height: 85vh;
+    justify-content: end;
+    & .message-404 {
+        display: flex;
+        flex-direction: column;
+        align-items: baseline;
+        background: var(--card-linear-gradient-50);
+        padding: var(--base-padding);
+        border-radius: 1rem 0 0 1rem;
+        & h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
+        }
+        & span {
+            text-shadow: -2px 3px 4px rgba(0,0,0,0.4);
+            color: var(--accent-primary);
+            mix-blend-mode: multiply;
+            font-size: 15rem;
+            font-family: var(--font-display);
+            @media (prefers-color-scheme: dark) {
+                mix-blend-mode: difference;
+            }
+            
+        }
+        & p {
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--text-primary);
+        }
+        & a {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--button-primary);
+            color: var(--text-secondary);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        & a:hover {
+            background-color: var(--button-hover);
+        }
+    }
+}

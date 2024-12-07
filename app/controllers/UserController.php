@@ -38,7 +38,7 @@ class UserController extends BaseController
         $badges = $this->badgeService->getUserBadges($profileUserId);
         $profileStats = $this->userService->getUserStats($profileUserId);
         $isFollowing = $this->userService->isFollowing($loggedInUserId, $profileUserId); // Check if current user is following the profile user
-
+        
         // Fetch cocktail count and progress to next badge
         $cocktailCount = $this->cocktailService->getCocktailCountByUserId($profileUserId);
         // error_log("Cocktail Count: $cocktailCount");
@@ -231,7 +231,7 @@ class UserController extends BaseController
         $userRecipes = $this->cocktailService->getUserRecipes($profileUserId);
         $userBadges = $this->badgeService->getUserBadges($profileUserId);
         $profileStats = $this->userService->getUserStats($profileUserId);
-
+        $userProfile = $this->userService->getUserWithFollowCounts($profileUserId);
         // Fetch cocktail count and progress to next badge
         $cocktailCount = $this->cocktailService->getCocktailCountByUserId($profileUserId);
         // error_log("Cocktail Count: $cocktailCount");

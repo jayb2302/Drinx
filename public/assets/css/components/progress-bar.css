@@ -1,29 +1,34 @@
 .badge-progress-container {
-  margin: 20px 0;
-}
-.badge-progress {
-  display: flex;
-  flex-direction: row;
-  gap: 10%;
-  align-items: baseline;
-}
-.progress-bar-container {
-  position: relative;
-  border: 1px solid var(--text-primary);
-  background-color: var(--background); /* Light gray background */
-  height: 10px;
-  border-radius: 10px;
-  overflow: hidden;
-  margin: 10px auto;
-  width: 80%; /* Adjust the width as needed */
-  & .progress-bar {
-    background-color: var(--success); /* Green color for progress */
-    height: 100%;
-    width: 0; /* Dynamically set via PHP */
-    border-radius: 10px 0 0 10px; /* Round only the left side */
-    transition: width 0.3s ease-in-out; /* Smooth animation */
+ 
+  & .badge-progress {
+    display: flex;
+    flex-direction: row;
+    gap: 10%;
+    align-items: baseline;
   }
-  & p {
-    margin-top: 5px;
+  .progress-bar-container {
+    position: relative;
+    border: 1px solid var(--text-primary);
+    background-color: var(--background); /* Light gray background */
+    height: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    
+    & .progress-bar {
+      background-color: var(--succsess); 
+      height: 100%;
+      width: 0; 
+      border-radius: 10px 0 0 10px; /* Round only the left side */
+      transition: width 0.3s ease-in-out; 
+    }
+    & p {
+      margin-top: 5px;
+      font-family: var(--font-display);
+    }
   }
+}
+
+.badge-card {
+  font-family: var(--font-display);
 }
