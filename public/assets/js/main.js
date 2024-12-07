@@ -13,6 +13,7 @@ import { initializeTags } from './modules/tags.js';
 import { initializeUserManagement } from './modules/user-management.js';
 import { initializeSidebars } from './modules/sidebars.js';
 import { initializeImageValidation } from './modules/image-handler.js';
+import { initializeSocialMedia } from './modules/socials.js';
 // Fetch CSRF token from the meta tag
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Initialize profile page features
             initializeProfile();
             initializeImageValidation('profile_picture', 'image-preview', 'file-error');
+            initializeSocialMedia();
             break;
 
         case 'admin':

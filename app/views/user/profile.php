@@ -97,11 +97,24 @@ if (isset($_SESSION['success'])) {
                 <li>Comments Received: <?= $profileStats['comments_received'] ?? 0; ?></li>
             </ul>
         </div>
+        <div class="social-icons">
+            <h4>Socials</h4>
+            <?php if (!empty($socialLinks)): ?>
+                <?php foreach ($socialLinks as $link): ?>
+                    <a href="<?= htmlspecialchars($link['url']); ?>" target="_blank" rel="noopener noreferrer"
+                        title="<?= htmlspecialchars($link['platform_name']); ?>" class="social-icon-link">
+                        <i class="fa-brands <?= htmlspecialchars($link['icon_class']); ?>"></i>
+                    </a>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No social media links added yet.</p>
+            <?php endif; ?>
+        </div>
     </div>
     <!-- Edit-Delete Section -->
     <?php if ($userId === $profileUserId): ?>
-    <div class="edit-delete">
-        <!-- Edit Profile Button - Only show if user is viewing their own profile -->
+        <div class="edit-delete">
+            <!-- Edit Profile Button - Only show if user is viewing their own profile -->
             <a id="edit-profile-button" class="button-secondary">
                 <span>
                     Edit Profile
@@ -112,27 +125,27 @@ if (isset($_SESSION['success'])) {
             <div id="edit-profile-form" style="display:none;">
                 <?php include __DIR__ . '/form.php'; ?>
             </div>
- 
-        <div class="delete-account-section">
-            <button id="deleteAccountButton" class="button-secondary">Delete Account</button>
 
-            <div id="deleteConfirmSection" style="display:none;">
-                <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
+            <div class="delete-account-section">
+                <button id="deleteAccountButton" class="button-secondary">Delete Account</button>
 
-                <form action="/profile/delete" method="POST">
-                    <label for="password">Confirm Password:</label>
-                    <input type="password" name="password" required>
-                    <button type="submit" class="confirm-delete">Confirm Deletion</button>
-                </form>
+                <div id="deleteConfirmSection" style="display:none;">
+                    <p class="warning">Warning: This action will permanently delete your account and cannot be undone!</p>
 
-                <!-- Display any error messages related to deletion -->
-                <?php if (isset($_SESSION['error'])): ?>
-                    <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); ?></div>
-                    <?php unset($_SESSION['error']); ?>
-                <?php endif; ?>
+                    <form action="/profile/delete" method="POST">
+                        <label for="password">Confirm Password:</label>
+                        <input type="password" name="password" required>
+                        <button type="submit" class="confirm-delete">Confirm Deletion</button>
+                    </form>
+
+                    <!-- Display any error messages related to deletion -->
+                    <?php if (isset($_SESSION['error'])): ?>
+                        <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); ?></div>
+                        <?php unset($_SESSION['error']); ?>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 </div>
 <!-- Recipe Section -->
