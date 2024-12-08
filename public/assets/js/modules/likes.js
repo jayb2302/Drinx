@@ -3,6 +3,11 @@ export function initializeLikes() {
     document.addEventListener('click', function (event) {
         const likeButton = event.target.closest('.like-button');
         if (!likeButton) return;
+        // Check if the button is disabled (not logged in)
+        if (likeButton.hasAttribute('data-disabled')) {
+            alert("Please log in to like this cocktail.");
+            return; // Prevent further execution
+        }
 
         const cocktailId = likeButton.getAttribute('data-cocktail-id');
         const actionUrl = `/cocktails/${cocktailId}/toggle-like`;

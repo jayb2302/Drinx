@@ -18,12 +18,12 @@ export function initializeSticky() {
                             <h2><i class="fa-solid fa-paperclip"></i> Sticky Cocktail</h2>
                             <div class="stickyMediaWrapper">
                                 <img src="/uploads/cocktails/${data.image}" alt="${data.title}" class="cocktail-image">
-                            </div>
-                            <div class="stickyContent">
-                                <a href="/cocktails/${data.id}-${encodeURIComponent(data.title)}">
-                                    <h3 class="cocktail-title">${data.title}</h3>
-                                </a>
-                                <p class="cocktail-description">${data.description}</p>
+                                <div class="stickyContent">
+                                    <a href="/cocktails/${data.id}-${encodeURIComponent(data.title)}">
+                                        <h3 class="cocktail-title">${data.title}</h3>
+                                    </a>
+                                    <p class="cocktail-description">${data.description}</p>
+                                </div>
                             </div>
                         </div>
                     `;

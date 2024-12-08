@@ -1,6 +1,6 @@
-<div class="form-container">
-    <h2>Login</h2>
-
+<div class="auth-form-container">
+    <h2>Shaken or stirred?</h2>
+    <small>Log in to decide.</small>
     <?php
     // Display success message
     if (isset($_SESSION['success'])) {
@@ -29,9 +29,13 @@
 
         <button type="submit" class="secondary">Login</button>
     </form>
+    <small> Drip, Drop, Drinx </small>
     <a href="/register" class="button-secondary">
         <span class="">
-            Register
+            Register now
         </span>
     </a>
+    <h3>
+        – the only thing missing is you - 
+    </h3>
 </div>

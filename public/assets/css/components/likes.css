@@ -1,5 +1,4 @@
 .like-section {
-    background: var(--lcard-linear-gradient);
     color: var(--accent-primary);
     display: flex;
     align-items: center;
@@ -11,13 +10,46 @@
         padding: 8px 12px;
         cursor: pointer;
     }
-    & .unlike-button {
-        background-color: var(--error);
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        cursor: pointer;
+    & .like-button-container {
+        display: inline-block;
+        position: relative;
+        
+        & .disabled {
+            color: var(--disabled-text);
+            cursor: not-allowed;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        & .login-message {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0%;
+            transform: translateX(-0%);
+            background-color: var(--overlay);
+            color: var(--text-primary);
+            font-size: .8rem;
+            white-space: wrap;
+            padding: var(--tag-padding);
+            border-radius: var(--button-radius);
+            opacity: 0;
+            transition: opacity .2s ease-in-out;
+            & a {
+                color: var(--accent-primary);
+            }
+        }
+        & .login-link {
+            color: var(--accent-primary);
+            cursor: pointer;
+        }
+        &:hover .login-message {
+            display: block;
+            opacity: 1;
+            z-index: 20;
+        }
     }
+
 }
 .like-section form{
     display: flex;

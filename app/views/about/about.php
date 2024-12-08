@@ -1,6 +1,5 @@
 <section class="aboutSection">
     <?php if (!isset($_SESSION['user'])): ?>
-        
             <a href="/login" class="button-secondary">
                 <span>Login</span>
             </a>
