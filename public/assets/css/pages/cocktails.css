@@ -7,9 +7,15 @@
   align-items: flex-start; 
   justify-content: center; 
   background-color: var(--background-primary);
-  gap: 5rem; 
-  height: 80vh;
+  gap: 1rem; 
+  
+  max-height: 85dvh;
   overflow-y: auto;
+  padding-bottom: 1rem;
+  @media screen and (max-width: 768px) {
+    height: 75vh;
+    
+  }
   
 }
 .recipeWrapper {
@@ -49,9 +55,6 @@
     
   }
   & .recipe__main {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
     padding: var(--base-padding);
     flex-grow: 1;
     @media screen and (max-width: 768px) {
@@ -95,6 +98,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
   position: relative;
 }
+
 .title {
   border-bottom: 1px solid var(--border);
   border-radius: 8px;
@@ -165,7 +169,6 @@ h1 {
     }
     & p {
       margin: 0;
-      
       padding: var(--base-padding);
       background-color: var(--background);
       border-radius: 0 0 8px 8px;
@@ -216,15 +219,4 @@ a:hover {
     color: var(--text-secondary);
   }
   
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .container {
-      padding: 15px; 
-  }
-
-  h1 {
-      font-size: 2rem; 
-  }
 }

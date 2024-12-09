@@ -34,66 +34,76 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
         <div class="cocktailContainer">
             <article class="cocktailCard">
                 <!-- User Info Section -->
-                <div class="creatorInfo">
+                <div class="cocktailCardHeader">
                     <a href="/profile/<?= urlencode($creatorName) ?>" title="View <?= htmlspecialchars($creatorName) ?>'s profile">
                         <img src="/uploads/users/<?= htmlspecialchars($creatorPicture) ?>" alt="<?= htmlspecialchars($creatorName) ?>'s Profile Picture" class="creatorPicture">
-                        @<?= htmlspecialchars($creatorName) ?>
+                        <p>
+                            @<?= htmlspecialchars($creatorName) ?>
+                        </p>
                     </a>
-                </div>
-                <!-- Cocktail Card Content -->
-                <div class="buttonWrapper">
-                    <?php if ($_SESSION['user']['is_admin'] ?? false): ?>
-                        <button class="set-sticky <?= $cocktail->isSticky() ? 'active' : '' ?>"
-                            data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
-                            data-sticky-status="<?= $cocktail->isSticky() ? 'true' : 'false' ?>"
-                            aria-pressed="<?= $cocktail->isSticky() ? 'true' : 'false' ?>"
-                            title="<?= $cocktail->isSticky() ? 'Remove Sticky' : 'Mark as Sticky' ?>">
-                            <i class="<?= $cocktail->isSticky() ? 'fa-solid fa-paperclip' : 'fa-solid fa-paperclip' ?>"></i>
-                        </button>
-                    <?php endif; ?>
-                    <div class="like-section">
-                        <!-- Display the like count for all users -->
-                        <?php if ($loggedInUserId): ?>
-                            <!-- If the user is logged in, show the like button -->
-                            <button class="like-button" data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
-                                data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
-                                <span class="like-count"><?= $totalLikes ?></span>
-                                <span class="like-icon">
-                                    <i class="<?= $cocktail->hasLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart' ?>"></i>
-                                </span>
-                            </button>
-                        <?php else: ?>
-                            <!-- If the user is not logged in, show only the like count and a non-functional like button -->
-                            <button class="like-button" onclick="showLoginPopup(event)" title="Log in to like this cocktail">
-                                <span class="like-icon">
-                                    <i class="fa-regular fa-heart"></i>
-                                </span>
+                    <div class="buttonWrapper">
+                        <?php if ($_SESSION['user']['is_admin'] ?? false): ?>
+                            <button class="set-sticky <?= $cocktail->isSticky() ? 'active' : '' ?>"
+                                data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
+                                data-sticky-status="<?= $cocktail->isSticky() ? 'true' : 'false' ?>"
+                                aria-pressed="<?= $cocktail->isSticky() ? 'true' : 'false' ?>"
+                                title="<?= $cocktail->isSticky() ? 'Remove Sticky' : 'Mark as Sticky' ?>">
+                                <i class="<?= $cocktail->isSticky() ? 'fa-solid fa-paperclip' : 'fa-solid fa-paperclip' ?>"></i>
                             </button>
                         <?php endif; ?>
-                    </div>
-                    <!-- Hidden login popup -->
-                    <div id="loginPopup" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background-color:#fff; padding:20px; border:1px solid #ccc; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index:1000;">
-                        <p>Please log in to like this cocktail.</p>
-                        <button onclick="closeLoginPopup()">Close</button>
+                        <div class="like-section">
+                            <!-- Display the like count for all users -->
+                            <?php if ($loggedInUserId): ?>
+                                <!-- If the user is logged in, show the like button -->
+                                <button class="like-button" data-cocktail-id="<?= $cocktail->getCocktailId() ?>"
+                                    data-liked="<?= $cocktail->hasLiked ? 'true' : 'false' ?>">
+                                    <span class="like-count"><?= $totalLikes ?></span>
+                                    <span class="like-icon">
+                                        <i class="<?= $cocktail->hasLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart' ?>"></i>
+                                    </span>
+                                </button>
+                            <?php else: ?>
+                                <!-- Disabled button for logged-out users -->
+                                <div class="like-button-container">
+                                    <button class="like-button disabled" data-disabled="true">
+                                        <span class="like-icon">
+                                            <i class="fa-regular fa-heart"></i>
+                                        </span>
+                                        <span class="like-count"><?= htmlspecialchars($totalLikes) ?></span>
+                                    </button>
+                                    <span class="login-message">
+                                        Please <a href="/login" class="login-link">log in</a> to like this cocktail..
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <!-- Hidden login popup -->
+                        <div id="loginPopup" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background-color:#fff; padding:20px; border:1px solid #ccc; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index:1000;">
+                            <p>Please log in to like this cocktail.</p>
+                            <button onclick="closeLoginPopup()">Close</button>
+                        </div>
                     </div>
                 </div>
-                <div class="orderby">
-                    <?php foreach ($tags ?? [] as $tag): ?>
-                        <span class="tag"><?= htmlspecialchars($tag['name']) ?></span>
-                    <?php endforeach; ?>
-                </div>
-                <!-- Cocktail Image and Title -->
-                <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
-                    <img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= $cocktailTitle ?>" class="cocktailImage">
-                    <div class="cocktailTitle">
-                        <h3><?= ucwords(strtolower($cocktailTitle)) ?></h3>
+                <div class="cocktailCardContent">
+                    <!-- Cocktail Card Content -->
+                    <div class="orderby">
+                        <?php foreach ($tags ?? [] as $tag): ?>
+                            <span class="tag"><?= htmlspecialchars($tag['name']) ?></span>
+                        <?php endforeach; ?>
                     </div>
-                </a>
+                    <!-- Cocktail Image and Title -->
+                    <a href="/cocktails/<?= htmlspecialchars($cocktail->getCocktailId()) ?>-<?= urlencode($cocktail->getTitle()) ?>">
+                        <img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= $cocktailTitle ?>" class="cocktailImage">
+                        <div class="cocktailTitle">
+                            <h3><?= ucwords(strtolower($cocktailTitle)) ?></h3>
+                        </div>
+                    </a>
+                </div>
                 <div class="cocktailMeta">
                     <span><?= $totalLikes ?> <i class="fa-solid fa-heart"></i> <?= $cocktail->commentCount ?> <i class="fa-solid fa-comments"></i></span>
                     <span><i class="fa-solid fa-calendar"></i> <?= formatDate($cocktail->getCreatedAt() ?? 'Unknown date') ?></span>
                 </div>
-                <p><?= htmlspecialchars($cocktail->getDescription()) ?></p>
+                <p class="cocktailDescription"><?= htmlspecialchars($cocktail->getDescription()) ?></p>
                 <!-- Comment Count and Recent Comments -->
                 <div class="commentSection">
                     <?php if ($cocktail->commentCount > 0): ?>

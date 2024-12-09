@@ -81,8 +81,9 @@
             font-size: 2rem;
             color: var(--accent-primary);
             bottom: .5rem;
-            mix-blend-mode: overlay;
-            right: .5rem;
+            mix-blend-mode: screen;
+            left: .5rem;
+            opacity: 0.4;
         }
     }
 

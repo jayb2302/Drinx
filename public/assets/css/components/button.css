@@ -64,12 +64,6 @@ button {
     border-radius: .5rem;
 }
 
-/** Sticky Button **/
-.button-wrapper {
-    display: flex;
-    justify-content: flex-end;
-}
-
 .buttons{
     display: flex;
     gap: 10px;  

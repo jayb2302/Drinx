@@ -3,7 +3,6 @@
 }
 
 .cocktailCard {
-    width: 95%;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     text-align: start;
@@ -14,15 +13,21 @@
     & a {
         position: relative;
     }
-    & .creatorInfo {
+    & .cocktailCardHeader {
         position: relative;
+        display: flex;
+        justify-content: space-between;
         gap: 1rem;
-        display: flex;   
         padding: .5rem ;
         background: var(--card-linear-gradient);
         border-radius: 8px 8px 0 0;
         & a {
+            display: flex;
             align-self: center;
+        }
+        & .buttonWrapper {
+            display: flex;
+            gap: 1rem;
         }
     }
     & .cocktailInfo {
@@ -54,7 +59,27 @@
         gap: 1rem;
         padding: 1rem;
     }
-
+    & .cocktailDescription {
+        padding-left: 1.5rem;
+    }
+    & .cocktailCardContent {
+        position: relative;
+        .orderby {
+            width: 100%;
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            justify-content: flex-start;
+            color: var(--text-primary);
+            padding: var(--tag-padding);
+            gap: .4rem;
+            right: 0;
+            position: absolute;
+            background-color: var(--image-overlay);
+            z-index: 10;
+            border-radius: 0 0 .5rem .5rem;
+        }
+    }
     & .cocktailInfo {
         display: flex;
         justify-content: start;
@@ -62,21 +87,6 @@
         & h3 {
             margin: 0;
         }
-    }
-    .orderby {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        color: var(--text-primary);
-        gap: .5rem;
-        
-    }
-    & .buttonWrapper {
-        display: flex;
-        position: absolute;
-        justify-content: end;
-        width: 100%;
     }
     
     & .cocktailImage {
@@ -109,7 +119,6 @@
     position: relative;
     display: flex;
     justify-content: start;
-    padding: var(--base-padding);
     & .stickyCard {
         padding: 0;
         overflow: auto;
@@ -120,13 +129,23 @@
         display: flex;
         align-items: stretch;
         flex-direction: column;
+        & a{
+            position: relative;
+            color: var(--accent-primary);
+            & .stickyTitle {
+                background-color: var(--image-overlay);
+                padding: .5rem;
+                position: absolute;
+                bottom: 0;
+            }
+        } 
         & h2 {
-            color: var(--text-primary);
+            color: var(--text-secondary);
             font-size: 1rem;
             padding: .5rem;
-            background-color: var(--accent-primary);
+            background-color: var(--button-primary);
             top: 0;
-            border-radius: 8px 8px 0 0;
+            border-radius: var(--button-radius);
         }
     
         & .stickyContent {
@@ -136,10 +155,7 @@
             top: 0;
             bottom: 0;
             border-radius: 0 0 8px 8px;
-            & a h3 {
-                font-size: 1rem;
-                margin: 0;
-            }
+            
         }
         
         & img {
@@ -147,10 +163,7 @@
             height: auto;
             border-radius: 4px;
         }
-        & h3 {
-            margin: 0;
-            padding: .5rem 0 0 0;
-        }
+        
         & a :hover {
             color: var(--text-primary);
         }
@@ -158,10 +171,6 @@
             margin: 0;
             text-overflow: ellipsis;
         }
-        @media screen and (max-width: 768px) {
-           display: none;
-            
-        } 
     }
 }
 
@@ -171,6 +180,7 @@
     height: 20vh;
     justify-content: center;
     overflow: hidden;
+    border-radius: var(--button-radius);
 }
 
 .recipeCard {
