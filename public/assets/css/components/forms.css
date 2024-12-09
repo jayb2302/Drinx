@@ -16,13 +16,10 @@ form {
 
 /* Form Container */
 .form-container {
-    max-height: 90dvh;
     overflow: auto;
-    display: flex;
-    flex-direction: column;
+    padding: var(--base-padding);
     background: var(--card-linear-gradient);
     color: var(--text-primary);
-    padding: 1%;
     border-radius: 0.5rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
     font-family: var(--font-body);
@@ -146,7 +143,6 @@ form {
         width: 100%;
     }
 }
-
 
 .auth-form-container {
     display: flex;
