@@ -4,59 +4,148 @@
     overflow-x: hidden;
     @media screen and (max-width: 768px) {
         flex-direction: column-reverse;
-        
     }
     & .container__main {
         flex-grow: 1;
-        transition: margin 0.4s ease, width 0.4s ease;
+        transition:
+            margin 0.4s ease,
+            width 0.4s ease;
         border-radius: var(--border-radius);
         padding: 0 1.5rem;
-
+        
+        margin-bottom: 5%;
         @media screen and (max-width: 768px) {
-            width: 100%;
+            padding: 0;
             
         }
-        /* display: flex;
-        flex-direction: column;
-        justify-content: flex-start; */
     }
 
     & .container__left,
     & .container__right {
+        position: relative;
         padding: var(--base-padding);
-        border-radius: var(--border-radius);
+        border-radius: var(--button-radius);
         flex: 0 0 20vw;
         max-width: 20vw;
         min-width: 20vw;
         background: var(--card-radial-gradient);
         color: var(--text-secondary);
         box-sizing: border-box;
-        transition: transform 0.4s ease;
         transform: translateX(0);
-
+        opacity: 1;
+        transition:
+            transform 0.4s ease,
+            opacity 0.4s ease;
+        min-height: 75vh;
         @media screen and (max-width: 768px) {
-            width: 100%;
-            transform: translateX(-100%);
-            opacity: 0;
-            position: absolute;
-            top: 0;
+            position: fixed;
+            left: 0;
             bottom: 0;
-            z-index: 5;
+            width: 100%;
+            max-width: 100%;
+            opacity: 1;
+            z-index: 40;
+            transform: translateY(15%);
+            background: var(--bcard-linear-gradient);
+        }
+        & .toggle-button {
+            position: fixed;
+            top: 0;
+            transform: translateY(0);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition:
+                transform 0.4s ease,
+                left 0.4s ease,
+                right 0.4s ease;
+            opacity: 1;
+            @media screen and (max-width: 768px) {
+                background: var(--tcard-linear-gradient);
+
+            }
+            
+            &:hover {
+                background: var(--image-overlay);
+                color: var(--text-primary);
+                
+             
+            }
         }
     }
 
     & .container__left {
+        border-radius:  0 1rem 1rem 0;
+        transform: translateY(0%);
+        & .toggle-button {
+            right: -2rem;
+            transition: right 0.4s ease;
+            @media screen and (max-width: 768px) {
+                right: auto;
+                transform: rotate(270deg);
+                top: -5%;
+            }
+        }
         &.collapsed {
             transform: translateX(-100%);
+            & .toggle-button {
+                right: -3rem;
+                transform: rotate(180deg) translate(0%);
+                @media screen and (max-width: 768px) {
+                right: auto;
+                top: -5%;
+                transform: rotate(90deg) ;
+                }            
+            }
+            @media screen and (max-width: 768px) {
+                transform: translateY(88%);
+                & .toggle-button {
+                    right: auto;
+                }
+            }
+           
         }
-       
+        @media screen and (max-width: 768px) {
+            transform: translateY(0%);
+            height: auto;
+            
+            
+        }
     }
 
+
     & .container__right {
+        border-radius: 1rem 0 0 1rem;
+        transform: translateY(0%);
+        & .toggle-button {
+            left: -2rem;
+            transition: left 0.4s ease;
+            @media screen and (max-width: 768px) {
+                left: 90%;
+                transform: rotate(90deg);
+                top: -7%;
+            }
+        
+        }
         &.collapsed {
             transform: translateX(100%);
+            & .toggle-button {
+                left: -3rem;
+                transform: rotate(180deg);
+                @media screen and (max-width: 768px) {
+                    left: 90%;
+                    top: -7%;
+                    transform: rotate(270deg) ;
+                }  
+            }
+            @media screen and (max-width: 768px) {
+                transform: translateY(92%);
+            }
         }
-       
     }
     & .container__comments {
         flex: 0 0 30vw;
@@ -68,64 +157,34 @@
         border-radius: var(--border-radius);
     }
 }
-/* Shared Toggle Button Styles */
-.toggle-button {
-    position: absolute;
-    top: 0;
-    z-index: 10;
-    background: var(--background);
-    border: none;
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: var(--text-primary);
-    padding: 0.2rem;
-    border-radius: 10px;
-    transition: transform 0.3s ease;
-
-    &:hover {
-        background: var(--button-primary);
-        color: var(--text-secondary);
-    }
-
-    &.collapsed {
-        transform: rotate(180deg);
-    }
-    /* Positioning for left toggle button */
-    &#toggle-left {
-        right: -2rem;
-    }
-
-    /* Positioning for right toggle button */
-    &#toggle-right {
-        left: -2rem;
-    }
-}
-
 
 .category-sidebar {
     color: var(--text-primary);
     border-radius: 10px;
     padding-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
     & h3 {
         color: var(--text-primary);
-        font-size: 1.5rem;
+        font-size: 1.1rem;
         margin-bottom: 1rem;
     }
     & a {
         color: var(--text-primary);
         background: var(--lcard-linear-gradient);
         display: inline-block;
-        padding-left: .5rem;
-        width: calc(100% - .5rem);
+        padding-left: 0.5rem;
+        width: calc(100% - 0.5rem);
         font-size: 1.1rem;
         border-radius: var(--button-radius);
         & :hover {
             color: var(--accent-primary);
         }
         &:active {
-         background-color: (--accent-hover);
+            background-color: (--accent-hover);
         }
-    } 
+    }
 }
 
 .sort-options {
@@ -137,7 +196,7 @@
     padding: 0.5rem 0;
     border-radius: 10px;
     & a {
-        padding:var(--tag-padding);
+        padding: var(--tag-padding);
         border-radius: var(--button-radius);
     }
 }

@@ -25,6 +25,10 @@
             display: flex;
             align-self: center;
         }
+        & .buttonWrapper {
+            display: flex;
+            gap: 1rem;
+        }
     }
     & .cocktailInfo {
         display: flex;
@@ -55,16 +59,20 @@
         gap: 1rem;
         padding: 1rem;
     }
+    & .cocktailDescription {
+        padding-left: 1.5rem;
+    }
     & .cocktailCardContent {
         position: relative;
         .orderby {
             width: 100%;
             display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-end;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            justify-content: flex-start;
             color: var(--text-primary);
             padding: var(--tag-padding);
-            gap: .5rem;
+            gap: .4rem;
             right: 0;
             position: absolute;
             background-color: var(--image-overlay);
@@ -163,10 +171,6 @@
             margin: 0;
             text-overflow: ellipsis;
         }
-        @media screen and (max-width: 768px) {
-           display: none;
-            
-        } 
     }
 }
 

@@ -9,6 +9,10 @@ header {
     color: var(--text-secondary);
     z-index: 1000;
     gap: 1rem;
+   .theme-toggle-button {
+    background: var(--lcard-linear-gradient);
+    color: var(--logo-color);
+   }
     & .nav-links {
         display: flex; 
     }

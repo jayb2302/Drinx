@@ -36,7 +36,7 @@ export function initializeSearch() {
             container.append(`
                 <a href="/profile/${encodeURIComponent(user.username)}">
                     <div class="user-suggestion">
-                        <img src="${profilePicture}" alt="${user.username}'s profile picture" style="width: 40px; height: 40px;"/>
+                        <img src="${profilePicture}" alt="${user.username}'s profile picture" style="width: 40px; height: 40px;" class="profile-pic"/>
                         ${user.username}
                     </div>
                 </a>
@@ -64,4 +64,10 @@ export function initializeSearch() {
         if (query.length >= 3) performSearch(query);
         else $('#searchResults').hide().empty();
     }, 300));
+    
+    $(document).on('keydown', function (event) {
+        if (event.key === 'Escape') {
+            $('#searchResults').hide(); 
+        }
+    });
 }

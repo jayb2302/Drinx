@@ -103,7 +103,7 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                     <span><?= $totalLikes ?> <i class="fa-solid fa-heart"></i> <?= $cocktail->commentCount ?> <i class="fa-solid fa-comments"></i></span>
                     <span><i class="fa-solid fa-calendar"></i> <?= formatDate($cocktail->getCreatedAt() ?? 'Unknown date') ?></span>
                 </div>
-                <p><?= htmlspecialchars($cocktail->getDescription()) ?></p>
+                <p class="cocktailDescription"><?= htmlspecialchars($cocktail->getDescription()) ?></p>
                 <!-- Comment Count and Recent Comments -->
                 <div class="commentSection">
                     <?php if ($cocktail->commentCount > 0): ?>
