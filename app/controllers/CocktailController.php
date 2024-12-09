@@ -35,7 +35,7 @@ class CocktailController extends BaseController
             session_start();
         }
     }
-    
+
     private function redirect($url)
     {
         header("Location: $url");
@@ -95,20 +95,20 @@ class CocktailController extends BaseController
                 exit;
             }
             $errors = $this->validateCocktailInput($_POST);
-
             $description = sanitizeTrim($_POST['description']);
+
             if (strlen($description) > self::MAX_DESCRIPTION_LENGTH) {
                 $errors[] = "Description cannot exceed " . self::MAX_DESCRIPTION_LENGTH . " characters.";
             }
             // Log validation errors
-            error_log("Validation errors: " . print_r($errors, true));
+            // error_log("Validation errors: " . print_r($errors, true));
 
             // Handle the image upload
             $image = $this->handleImageUpload($_FILES['image'], $errors);
 
             // Log image handling errors or success
-            error_log("Image handling result: " . print_r($image, true));
-            error_log("Image upload errors: " . print_r($errors, true));
+            // error_log("Image handling result: " . print_r($image, true));
+            // error_log("Image upload errors: " . print_r($errors, true));
 
             if ($this->handleValidationErrors($errors, '/cocktails/add'))
                 return;
@@ -122,9 +122,11 @@ class CocktailController extends BaseController
                 'difficulty_id' => intval($_POST['difficulty_id'])
             ];
 
+            $isSticky = isset($_POST['isSticky']) ? 1 : 0;
+
             try {
                 // Log cocktail data to be stored
-                error_log("Storing cocktail data: " . print_r($cocktailData, true));
+                // error_log("Storing cocktail data: " . print_r($cocktailData, true));
 
                 // Proceed with creating the cocktail
                 $cocktailId = $this->cocktailService->createCocktail($cocktailData);
@@ -135,11 +137,14 @@ class CocktailController extends BaseController
                 $parsedQuantities = $this->processQuantities($_POST['quantities']);
                 $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $parsedQuantities, $_POST['units']);
 
+                if ($this->authService->isAdmin() && $isSticky) {
+                    $this->cocktailService->clearStickyCocktail();
+                    $this->cocktailService->setStickyCocktail($cocktailId);
+                }
+
                 // Check for new badges and notify user
                 $userId = $_SESSION['user']['id'];
-                $cocktailCount = $this->cocktailService->getCocktailCountByUserId($userId); // Fetch the updated cocktail count
-                error_log("User ID: $userId | Cocktail Count: $cocktailCount");
-
+                $cocktailCount = $this->cocktailService->getCocktailCountByUserId($userId); // Fetch updated cocktail count
                 $this->userService->checkAndNotifyNewBadge($userId, $cocktailCount); // Check for new badges
 
                 $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
@@ -160,12 +165,12 @@ class CocktailController extends BaseController
 
         // Get the current user
         $currentUser = $this->authService->getCurrentUser();
-    
+
         // Only allow the owner or an admin to edit the cocktail
         if ($cocktail->getUserId() !== $currentUser->getId() && !$this->authService->isAdmin()) {
             $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
         }
-    
+
 
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
@@ -189,7 +194,7 @@ class CocktailController extends BaseController
         if ($cocktail->getUserId() !== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
             $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
         }
-        
+
 
         $errors = $this->validateCocktailInput($_POST);
         $image = $this->handleImageUpdate($_FILES['image'], $cocktail, $errors);
@@ -207,7 +212,6 @@ class CocktailController extends BaseController
             'category_id' => intval($_POST['category_id']),
             'difficulty_id' => intval($_POST['difficulty_id']),
             'image' => $image ?: $cocktail->getImage(),
-            'is_sticky' => isset($_POST['isSticky']) ? 1 : 0
         ];
         error_log("Updating cocktail with data: " . print_r($cocktailData, true));
 
@@ -227,6 +231,11 @@ class CocktailController extends BaseController
             // Handle ingredients
             $this->ingredientService->updateIngredients($cocktailId, $_POST['ingredients'], $parsedQuantities, $_POST['units']);
             $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
+
+            if ($this->authService->isAdmin() && $isSticky) {
+                $this->cocktailService->clearStickyCocktail();
+                $this->cocktailService->setStickyCocktail($cocktailId);
+            }
 
             $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
         } catch (Exception $e) {
@@ -552,7 +561,7 @@ class CocktailController extends BaseController
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
         // Only allow the owner or an admin to delete the cocktail
-        if ($cocktail->getUserId()!== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
+        if ($cocktail->getUserId() !== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
             $this->redirect('/cocktails');
         }
 
