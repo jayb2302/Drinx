@@ -100,23 +100,27 @@ class CocktailController extends BaseController
             if (strlen($description) > self::MAX_DESCRIPTION_LENGTH) {
                 $errors[] = "Description cannot exceed " . self::MAX_DESCRIPTION_LENGTH . " characters.";
             }
-            // Log validation errors
-            // error_log("Validation errors: " . print_r($errors, true));
 
             // Handle the image upload
             $image = $this->handleImageUpload($_FILES['image'], $errors);
 
-            // Log image handling errors or success
-            // error_log("Image handling result: " . print_r($image, true));
-            // error_log("Image upload errors: " . print_r($errors, true));
+            // Convert prep time
+            $prepTime = convertPrepTimeToMinutes($_POST['prep_time']);
+            error_log("Converted prep_time: " . print_r($prepTime, true));
 
-            if ($this->handleValidationErrors($errors, '/cocktails/add'))
+            if ($prepTime === null || $prepTime < 1 || $prepTime > 240) {
+                $errors[] = "Preparation time must be between 1 and 240 minutes.";
+            }
+            error_log("Submitted prep_time: " . print_r($_POST['prep_time'], true));
+            if ($this->handleValidationErrors($errors, '/cocktails/add')) {
                 return;
+            }
 
             $cocktailData = [
                 'user_id' => $_SESSION['user']['id'],
                 'title' => sanitize($_POST['title']),
                 'description' => substr($description, 0, self::MAX_DESCRIPTION_LENGTH), // Enforce length
+                'prep_time' => $prepTime,
                 'image' => $image,
                 'category_id' => intval($_POST['category_id']),
                 'difficulty_id' => intval($_POST['difficulty_id'])
@@ -168,9 +172,10 @@ class CocktailController extends BaseController
 
         // Only allow the owner or an admin to edit the cocktail
         if ($cocktail->getUserId() !== $currentUser->getId() && !$this->authService->isAdmin()) {
-            $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
+            $this->redirect('/cocktails');
         }
 
+        $authController = $this->authService;
 
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
@@ -182,8 +187,7 @@ class CocktailController extends BaseController
         $difficulties = $this->cocktailService->getAllDifficulties();
         $isEditing = true;
 
-        // Pass the variables to the view
-        require_once __DIR__ . '/../views/cocktails/form.php'; // Load the edit form
+        require_once __DIR__ . '/../views/cocktails/form.php';
     }
 
     public function update($cocktailId)
@@ -192,13 +196,19 @@ class CocktailController extends BaseController
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
         if ($cocktail->getUserId() !== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
-            $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
+            // Redirect if the user doesn't have permission
+            $this->redirect('/cocktails');
         }
-
 
         $errors = $this->validateCocktailInput($_POST);
         $image = $this->handleImageUpdate($_FILES['image'], $cocktail, $errors);
+        // Convert prep time
+        $prepTime = convertPrepTimeToMinutes($_POST['prep_time']);
+        error_log("Converted prep_time: " . print_r($prepTime, true));
 
+        if ($prepTime === null || $prepTime < 1 || $prepTime > 240) {
+            $errors[] = "Preparation time must be between 1 and 240 minutes.";
+        }
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
             $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktail->getTitle()) . '/edit');
@@ -211,6 +221,7 @@ class CocktailController extends BaseController
             'description' => sanitizeTrim($_POST['description']),
             'category_id' => intval($_POST['category_id']),
             'difficulty_id' => intval($_POST['difficulty_id']),
+            'prep_time' => $prepTime,
             'image' => $image ?: $cocktail->getImage(),
         ];
         error_log("Updating cocktail with data: " . print_r($cocktailData, true));
@@ -298,7 +309,8 @@ class CocktailController extends BaseController
             'title' => 'Title',
             'description' => 'Description',
             'category_id' => 'Category',
-            'difficulty_id' => 'Difficulty'
+            'difficulty_id' => 'Difficulty',
+            'prep_time' => 'Preparation Time',
         ];
 
         // Check for empty required fields
@@ -325,7 +337,13 @@ class CocktailController extends BaseController
         if (isset($data['difficulty_id']) && !filter_var($data['difficulty_id'], FILTER_VALIDATE_INT)) {
             $errors[] = "Difficulty must be a valid integer.";
         }
-
+        // Validate prep_time
+        if (!empty($data['prep_time'])) {
+            $prepTime = convertPrepTimeToMinutes($data['prep_time']); // Convert prep_time to minutes
+            if ($prepTime === null || $prepTime < 1 || $prepTime > 240) {
+                $errors[] = "Preparation time must be between 1 and 240 minutes.";
+            }
+        }
         // Optional: Check image if it's required and exists
         if (empty($data['image']) && !empty($data['image_required'])) {
             $errors[] = "Image is required.";

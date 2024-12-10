@@ -1,7 +1,7 @@
 <div class="form-container">
     <form action="/cocktails/<?= $isEditing ? 'update/' . $cocktail->getCocktailId() : 'store' ?>" method="post" enctype="multipart/form-data">
-       
-    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>">
+
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>">
 
         <h1><?= $isEditing ? 'Edit' : 'Add' ?> Cocktail Recipe</h1>
         <div class="form-group">
@@ -52,6 +52,13 @@
                         <?= htmlspecialchars($difficulty['difficulty_name']); ?>
                     </option>
                 <?php endforeach; ?>
+            </select>
+            <select id="prep_time" name="prep_time" required>
+                <option value="">Select Preparation Time</option>
+                <option value="<15" <?= $isEditing && $cocktail->getPrepTime() === 10 ? 'selected' : '' ?>>Less than 15 minutes</option>
+                <option value="15–30" <?= $isEditing && $cocktail->getPrepTime() === 20 ? 'selected' : '' ?>>15–30 minutes</option>
+                <option value="30–60" <?= $isEditing && $cocktail->getPrepTime() === 45 ? 'selected' : '' ?>>30–60 minutes</option>
+                <option value=">60" <?= $isEditing && $cocktail->getPrepTime() === 90 ? 'selected' : '' ?>>More than 60 minutes</option>
             </select>
             <?php if ($authController->isAdmin()): ?>
                 <div class="sticky-cocktail">

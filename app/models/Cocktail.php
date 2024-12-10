@@ -7,6 +7,7 @@ class Cocktail
     private $is_sticky = false;
     private $title;
     private $description;
+    private $prep_time;
     private $image;
     private $category_id;
     private $difficulty_id;
@@ -28,6 +29,7 @@ class Cocktail
         $title = '',
         $description = '',
         $image = '',
+        $prep_time = null,
         $is_sticky = false,
         $category_id = null,
         $difficulty_id = null,
@@ -43,6 +45,7 @@ class Cocktail
         $this->user_id = $user_id;
         $this->title = $title;
         $this->description = $description;
+        $this->prep_time = $prep_time;
         $this->image = $image;
         $this->is_sticky = $is_sticky; // Initialize sticky status
         $this->category_id = $category_id;
@@ -90,6 +93,16 @@ class Cocktail
     public function getDescription()
     {
         return $this->description;
+    }
+
+    public function getPrepTime()
+    {
+        return $this->prep_time;
+    }
+
+    public function setPrepTime($prep_time)
+    {
+        $this->prep_time = $prep_time;
     }
 
     public function getImage()

@@ -25,6 +25,7 @@ class CocktailRepository
             $data['title'] ?? 'Unknown',
             $data['description'] ?? 'No description available',
             $data['image'] ?? 'default-image.webp',
+            $data['prep_time'] ?? null,
             (bool)($data['is_sticky'] ?? false),
             $data['category_id'] ?? null,
             $data['difficulty_id'] ?? null,
@@ -87,13 +88,14 @@ class CocktailRepository
     public function create($cocktailData)
     {
         $stmt = $this->db->prepare("
-            INSERT INTO cocktails (user_id, title, description, image, is_sticky, category_id, difficulty_id, created_at) 
-            VALUES (:user_id, :title, :description, :image, :is_sticky, :category_id, :difficulty_id, NOW())
+            INSERT INTO cocktails (user_id, title, description, prep_time, image,  is_sticky, category_id, difficulty_id, created_at) 
+            VALUES (:user_id, :title, :description, :prep_time, :image,  :is_sticky, :category_id, :difficulty_id, NOW())
         ");
 
         $stmt->bindParam(':user_id', $cocktailData['user_id'], PDO::PARAM_INT);
         $stmt->bindParam(':title', $cocktailData['title']);
         $stmt->bindParam(':description', $cocktailData['description']);
+        $stmt->bindParam(':prep_time', $cocktailData['prep_time']);
         $stmt->bindParam(':image', $cocktailData['image']);
         $stmt->bindParam(':is_sticky', $cocktailData['is_sticky'], PDO::PARAM_BOOL);
         $stmt->bindParam(':category_id', $cocktailData['category_id'], PDO::PARAM_INT);
@@ -113,7 +115,8 @@ class CocktailRepository
             UPDATE cocktails 
             SET title = :title, 
                 description = :description, 
-                image = :image, 
+                prep_time = :prep_time,
+                image = :image,
                 is_sticky = :is_sticky, 
                 category_id = :category_id, 
                 difficulty_id = :difficulty_id, 
@@ -123,6 +126,7 @@ class CocktailRepository
         $stmt->bindParam(':id', $cocktail_id, PDO::PARAM_INT);
         $stmt->bindParam(':title', $cocktailData['title']);
         $stmt->bindParam(':description', $cocktailData['description']);
+        $stmt->bindParam(':prep_time', $cocktailData['prep_time']);
         $stmt->bindParam(':image', $cocktailData['image']);
         $stmt->bindParam(':is_sticky', $cocktailData['is_sticky'], PDO::PARAM_BOOL);
         $stmt->bindParam(':category_id', $cocktailData['category_id']);

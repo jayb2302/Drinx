@@ -113,6 +113,7 @@ include_once __DIR__ . '/../../helpers/helpers.php';
                 <p>
                     <strong>Difficulty:</strong> <?= htmlspecialchars($cocktail->getDifficultyName() ?? 'Not specified') ?>
                 </p>
+                <p><strong>Preparation Time:</strong> <?= formatPrepTime($cocktail->getPrepTime()) ?></p>
                 <p>
                     <?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?>
                 </p>
