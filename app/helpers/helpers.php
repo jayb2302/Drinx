@@ -103,6 +103,38 @@ function validatePassword($password, &$errors)
     return empty($errors); // Return true if no errors
 }
 
+function convertPrepTimeToMinutes($prepTime)
+{
+    switch ($prepTime) {
+        case '<15':
+            return 10; // "Less than 15 minutes"
+        case '15–30':
+            return 20; // "15–30 minutes"
+        case '30–60':
+            return 45; // "30–60 minutes"
+        case '>60':
+            return 90; //  "More than 60 minutes"
+        default:
+            return null; 
+    }
+}
+
+function formatPrepTime($prepTime)
+{
+    switch ($prepTime) {
+        case 10:
+            return "Less than 15 minutes";
+        case 20:
+            return "15–30 minutes";
+        case 45:
+            return "30–60 minutes";
+        case 90:
+            return "More than 60 minutes";
+        default:
+            return "Unknown preparation time"; 
+    }
+}
+
 // Helper function to get the first sentence of a description
 function getFirstSentence($description) {
     if (empty(trim($description))) {

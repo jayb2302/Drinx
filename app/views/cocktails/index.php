@@ -102,6 +102,14 @@ $loggedInUserId = $_SESSION['user']['id'] ?? null;
                 <div class="cocktailMeta">
                     <span><?= $totalLikes ?> <i class="fa-solid fa-heart"></i> <?= $cocktail->commentCount ?> <i class="fa-solid fa-comments"></i></span>
                     <span><i class="fa-solid fa-calendar"></i> <?= formatDate($cocktail->getCreatedAt() ?? 'Unknown date') ?></span>
+                    <?php
+                    $prepTime = $cocktail->getPrepTime() ?? 0; 
+                    $iconClass = 'fa-solid fa-stopwatch';
+                    ?>
+                    <span class="prep-time">
+                        <i class="<?= $iconClass ?>"></i>
+                        <?= htmlspecialchars($prepTime) ?> mins
+                    </span>
                 </div>
                 <p class="cocktailDescription"><?= htmlspecialchars($cocktail->getDescription()) ?></p>
                 <!-- Comment Count and Recent Comments -->

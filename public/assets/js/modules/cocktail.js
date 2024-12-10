@@ -11,7 +11,7 @@ export function initializeCocktail() {
     }
 
     const descriptionInput = document.getElementById('description');
-    const charCount = document.getElementById('charCount'); 
+    const charCount = document.getElementById('charCount');
 
     if (descriptionInput && charCount) {
         descriptionInput.addEventListener('input', function () {
@@ -32,17 +32,19 @@ export function initializeCocktail() {
             const newIngredientDiv = `
                 <div class="ingredient-input" id="ingredientGroup${ingredientCount}">
                      <div class="ingredient-name-container">
-                        <input type="text" name="ingredients[]" id="ingredient${ingredientCount}" required>
-                    </div>
+                        <label for="ingredient${ingredientCount}">Ingredient ${ingredientCount}:</label>
+                        <input type="text" placeholder="Ingredient name" name="ingredients[]" id="ingredient${ingredientCount}"  required>
+                    </div> 
+                    
                     <div class="quantity-unit-container">
-                        
-                        <input type="number" name="quantities[]" id="quantity${ingredientCount}" step="any" required>                    
-                        
-                        <select name="units[]" id="unit${ingredientCount}" required>
-                            ${getUnitOptions()} <!-- Populate unit options dynamically -->
+                        <input type="number" name="quantities[]" id="quantity${ingredientCount}" step="any" required>                        
+                        <select name="units[]" id="unit${ingredientCount}" placeholder="Quantity e.g., 1/2 or 3.5" required>
+                            ${getUnitOptions()} 
                         </select>
                     </div>
-                    <button type="button" class="delete-ingredient-button" data-ingredient-id="${ingredientCount}">❌</button>
+                    <button type="button" class="delete-ingredient-button" data-ingredient-id="${ingredientCount}">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
             `;
 
@@ -51,8 +53,9 @@ export function initializeCocktail() {
 
         // Delete ingredient functionality
         ingredientsContainer.addEventListener('click', (event) => {
-            if (event.target.classList.contains('delete-ingredient-button')) {
-                const ingredientGroup = event.target.closest('.ingredient-input');
+            const deleteButton = event.target.closest('.delete-ingredient-button');
+            if (deleteButton) {
+                const ingredientGroup = deleteButton.closest('.ingredient-input');
                 if (ingredientGroup) {
                     ingredientGroup.remove();
                     renumberIngredients();
@@ -63,12 +66,12 @@ export function initializeCocktail() {
         function renumberIngredients() {
             ingredientsContainer.querySelectorAll('.ingredient-input').forEach((ingredient, index) => {
                 const ingredientNumber = index + 1;
-        
+
                 const label = ingredient.querySelector('label[for^="ingredient"]');
                 const input = ingredient.querySelector('input[name="ingredients[]"]');
                 const quantity = ingredient.querySelector('input[name="quantities[]"]');
                 const unit = ingredient.querySelector('select[name="units[]"]');
-        
+
                 // Update labels and IDs
                 if (label) label.textContent = `Ingredient ${ingredientNumber}:`;
                 if (input) input.id = `ingredient${ingredientNumber}`;
@@ -79,7 +82,7 @@ export function initializeCocktail() {
         function updateDeleteButtonVisibility() {
             const deleteButtons = ingredientsContainer.querySelectorAll('.remove-ingredient-button');
             deleteButtons.forEach(button => (button.style.display = 'inline')); // Show all delete buttons
-        
+
             if (deleteButtons.length === 1) {
                 deleteButtons[0].style.display = 'none'; // Hide delete button if only one ingredient
             }
@@ -98,11 +101,13 @@ export function initializeCocktail() {
             stepCount++;
             const newStepDiv = `
              <div class="step-input" data-step-index="${stepCount}">
-                 <div class="form-group">
-                     <label for="step${stepCount}">Step ${stepCount}:</label>
-                     <textarea name="steps[]" id="step${stepCount}" required></textarea>
-                 </div>
-                 <button type="button" class="delete-step-button" data-step-id="${stepCount}">❌</button>
+                <div class="form-group">
+                <label : for="step${stepCount}">Step ${stepCount}:</label>
+                    <textarea name="steps[]" id="step${stepCount}" required></textarea>
+                </div>
+                <button type="button" class="delete-step-button" data-step-id="${stepCount}">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
              </div>
          `;
             stepsContainer.insertAdjacentHTML("beforeend", newStepDiv);
@@ -110,8 +115,8 @@ export function initializeCocktail() {
 
         // Delete step functionality
         stepsContainer.addEventListener("click", (event) => {
-            if (event.target.classList.contains("delete-step-button")) {
-                const deleteButton = event.target;
+            const deleteButton = event.target.closest(".delete-step-button");
+            if (deleteButton) {
                 const stepInput = deleteButton.closest(".step-input");
 
                 if (stepInput) {
