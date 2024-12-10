@@ -110,12 +110,12 @@ include_once __DIR__ . '/../../helpers/helpers.php';
                         <span class="tag"><?= htmlspecialchars($tag['name']) ?></span>
                     <?php endforeach; ?>
                 </div>
-                <p>
-                    <strong>Difficulty:</strong> <?= htmlspecialchars($cocktail->getDifficultyName() ?? 'Not specified') ?>
-                </p>
-                <p><strong>Preparation Time:</strong> <?= formatPrepTime($cocktail->getPrepTime()) ?></p>
+                <p><strong><i class="fa-solid fa-stopwatch"></i></strong> <?= formatPrepTime($cocktail->getPrepTime()) ?></p>
                 <p>
                     <?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?>
+                </p>
+                <p class="recipeDifficulty">
+                 <?= $cocktail->getDifficultyIconHtml() ?>
                 </p>
 
             </div>

@@ -72,7 +72,7 @@ button {
 
 .set-sticky {
     background-color: var(--button-secondary); 
-    color: var(--text-secondary); 
+    color: var(--text-primary); 
     border: none; 
     cursor: pointer; 
     transition: background-color 0.3s; 

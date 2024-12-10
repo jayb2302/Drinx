@@ -187,6 +187,19 @@ class Cocktail
     {
         $this->difficulty_id = $difficulty_id;
     }
+    public function getDifficultyIconHtml()
+    {
+        switch (strtolower($this->getDifficultyName())) {
+            case 'easy':
+                return '<span class="difficulty-icon easy"><i class="fa-solid fa-glass-cheers"></i> Easy</span>';
+            case 'medium':
+                return '<span class="difficulty-icon medium"><i class="fa-solid fa-wine-glass-alt"></i>';
+            case 'hard':
+                return '<span class="difficulty-icon hard"><i class="fa-solid fa-wine-bottle"></i> Hard</span>';
+            default:
+                return '<span class="difficulty-icon unknown"><i class="fa-solid fa-question"></i> Unknown</span>';
+        }
+    }
 
     public function getCommentCount() {
         return $this->commentCount;

@@ -32,6 +32,7 @@
                 <textarea name="description" maxlength="500" id="description" required> <?= $isEditing && $cocktail->getDescription() ? sanitizeTrim($cocktail->getDescription()) : '' ?> </textarea>
             </div>
         </div>
+
         <!-- Category and Difficulty -->
         <div class="category-difficulty-container">
             <!-- <label for="category_id">Category</label> -->
@@ -60,15 +61,15 @@
                 <option value="30–60" <?= $isEditing && $cocktail->getPrepTime() === 45 ? 'selected' : '' ?>>30–60 minutes</option>
                 <option value=">60" <?= $isEditing && $cocktail->getPrepTime() === 90 ? 'selected' : '' ?>>More than 60 minutes</option>
             </select>
-            <?php if ($authController->isAdmin()): ?>
-                <div class="sticky-cocktail">
-                    <label for="isSticky" class="tooltip" data-tooltip="Mark this cocktail as sticky to feature it prominently.">
-                        <i class="fa-solid fa-paperclip"></i>
-                    </label>
-                    <input type="checkbox" name="isSticky" id="isSticky" value="1" <?= $isEditing && $cocktail->isSticky() ? 'checked' : '' ?>>
-                </div>
-            <?php endif; ?>
         </div>
+        <?php if ($authController->isAdmin()): ?>
+            <div class="sticky-cocktail">
+                <label for="isSticky" class="tooltip" data-tooltip="Mark this cocktail as sticky to feature it prominently.">
+                    <i class="fa-solid fa-paperclip"></i>
+                </label>
+                <input type="checkbox" name="isSticky" id="isSticky" value="1" <?= $isEditing && $cocktail->isSticky() ? 'checked' : '' ?>>
+            </div>
+        <?php endif; ?>
 
         <h3>Ingredients</h3>
         <div id="ingredientsContainer" class="ingredientsContainer">
@@ -82,11 +83,11 @@
                         </div>
 
                         <div class="quantity-unit-container">
-                            <label for="quantity<?= $i + 1 ?>">Quantity:</label>
+                            <!-- <label for="quantity<?= $i + 1 ?>">Quantity:</label> -->
                             <input type="text" name="quantities[]" id="quantity<?= $i + 1 ?>"
                                 value="<?= htmlspecialchars($ingredient->getQuantity()) ?>" placeholder="e.g., 1/2 or 3.5" required>
 
-                            <label for="unit<?= $i + 1 ?>">Unit:</label>
+                            <!-- <label for="unit<?= $i + 1 ?>">Unit:</label> -->
                             <select name="units[]" id="unit<?= $i + 1 ?>" required>
                                 <option value="">Select Unit</option>
                                 <?php foreach ($units as $unit): ?>
@@ -98,7 +99,7 @@
                             </select>
                         </div>
                         <?php if (count($ingredients) > 1): ?> <!-- Only show delete button if more than one ingredient -->
-                            <button type="button" class="delete-ingredient-button">❌</button>
+                            <button type="button" class="delete-ingredient-button"><i class="fa-solid fa-xmark"></i></button>
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
@@ -151,7 +152,9 @@
                             <textarea name="steps[]" id="step<?= $i + 1 ?>" required><?= htmlspecialchars($step->getInstruction()) ?></textarea>
                         </div>
                         <?php if ($i > 0): ?> <!-- Hide delete button for the first step -->
-                            <button type="button" class="delete-step-button" data-step-id="<?= htmlspecialchars($step->getStepId()) ?>">❌</button>
+                            <button type="button" class="delete-step-button" data-step-id="<?= htmlspecialchars($step->getStepId()) ?>">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>

@@ -38,7 +38,7 @@ $cocktailId = $matches[1] ?? null;
                 <div class="stickyCard">
                     <h2> <i class="fa-solid fa-paperclip"></i> Sticky Cocktail</h2>
                     <a href="/cocktails/<?= htmlspecialchars($stickyCocktail->getCocktailId()) ?>-<?= urlencode($stickyCocktail->getTitle()) ?>">
-                        <h3 class="stickyTitle"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
+                        <h3 class="stickyTitle"><?= ucwords(strtolower($stickyCocktail->getTitle())); ?></h3> 
                         <div class="stickyMediaWrapper">
                             <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>" alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
                         </div>
