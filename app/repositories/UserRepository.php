@@ -281,8 +281,12 @@ class UserRepository
         }
         return null;
     }
+    // Search for users by username
     public function searchUsers($query)
     {
+        // Escape % and _ characters
+        $sanitizedQuery = str_replace(['%', '_'], ['\%', '\_'], $query);
+
         $stmt = $this->db->prepare("
             SELECT u.user_id, u.username, 
                    COALESCE(p.profile_picture, 'user-default.svg') AS profile_picture
@@ -291,23 +295,27 @@ class UserRepository
             WHERE u.username LIKE :query
             LIMIT 5
         ");
-        $stmt->execute(['query' => '%' . $query . '%']);
+        $stmt->execute(['query' => '%' . $sanitizedQuery . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return users as an associative array
     }
     public function searchAllUsers($query = null)
     {
         $sql = "
-            SELECT u.user_id, u.username, u.email, u.account_status_id,
-                   CASE 
-                       WHEN u.account_status_id = 1 THEN 'Active'
-                       WHEN u.account_status_id = 2 THEN 'Suspended'
-                       WHEN u.account_status_id = 3 THEN 'Banned'
-                       ELSE 'Unknown'
-                   END AS account_status_name,
-                   COALESCE(p.profile_picture, 'user-default.svg') AS profile_picture
-            FROM users u
-            LEFT JOIN user_profile p ON u.user_id = p.user_id
-        WHERE u.is_admin = 0  -- Exclude admin users
+            SELECT 
+            u.user_id, 
+            u.username, 
+            u.email, 
+            u.account_status_id,
+            CASE 
+                WHEN u.account_status_id = 1 THEN 'Active'
+                WHEN u.account_status_id = 2 THEN 'Suspended'
+                WHEN u.account_status_id = 3 THEN 'Banned'
+                ELSE 'Unknown'
+            END AS account_status_name,
+            COALESCE(p.profile_picture, 'user-default.svg') AS profile_picture
+        FROM users u
+        LEFT JOIN user_profile p ON u.user_id = p.user_id
+        WHERE u.is_admin = 0 -- Exclude admin users
     ";
 
         // Add filtering if a query is provided
@@ -316,7 +324,13 @@ class UserRepository
         }
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute($query ? ['query' => "%$query%"] : []);
+
+        // Bind sanitized query parameter if provided
+        if ($query) {
+            $sanitizedQuery = '%' . addcslashes($query, '%_') . '%'; // Escape wildcards
+            $stmt->bindParam(':query', $sanitizedQuery, PDO::PARAM_STR);
+        }
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
