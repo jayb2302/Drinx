@@ -19,8 +19,6 @@ class AdminController extends BaseController
 
     public function dashboard()
     {
-
-
         // Check if the user is an admin
         if (!$this->authService->isAdmin()) {
             http_response_code(403);
@@ -31,12 +29,11 @@ class AdminController extends BaseController
         // Fetch the dashboard data, including tags
         $dashboardData = $this->adminService->getDashboardData();
 
-
         // Extract data and add checks
         $stats = $dashboardData['stats'] ?? [];
         $users = $dashboardData['users'] ?? [];
         $cocktails = $dashboardData['cocktails'] ?? [];
-
+        
         $categorizedIngredients = $this->ingredientService->getIngredientsByTags();
 
         $groupedTags = $dashboardData['groupedTags'] ?? [];
