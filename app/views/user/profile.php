@@ -6,26 +6,29 @@ include_once __DIR__ . '/../layout/header.php'; ?>
 <?php
 // Display any error messages (optional)
 if (isset($_SESSION['error'])) {
-    echo '<div class="alert alert-danger">' . htmlspecialchars($_SESSION['error']) . '</div>';
+    echo '<div id="message" class="alert alert-danger"><h4> <i class="fa-solid fa-bell"></i> <span>' . htmlspecialchars($_SESSION['error']) . ' </span><i class="fa-solid fa-bell"></i> </h4></div>';
     unset($_SESSION['error']);
 }
 
 // Display success message (optional)
 if (isset($_SESSION['success'])) {
-    echo '<div class="success">' . htmlspecialchars($_SESSION['success']) . '</div>';
+    echo '<div id="message" class="success"><h4> <i class="fa-solid fa-bell"></i> <span> ' . htmlspecialchars($_SESSION['success']) . '</span><i class="fa-solid fa-bell"></i> </h4></div>';
     unset($_SESSION['success']);
 }
 ?>
+<!-- <div id="message" class="success"><h4> <i class="fa-solid fa-bell"></i> <span> congratulations you have been fucked </span><i class="fa-solid fa-bell"></i> </h4></div> -->
 <div class="profile__container">
 
     <!-- User Profile Header -->
     <aside class="profile__main">
         <!-- User Info -->
         <div class="profile-info">
+            <?php if ($userId === $profileUserId): ?>
+                <a href="/logout" class="logout-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+            <?php endif; ?>
             <!-- Profile Picture -->
             <div class="profile-picture">
-                <?php if ($userId !== $profileUserId): ?>
-                    <!-- Only show follow/unfollow buttons if viewing another user's profile -->
+                 <?php if ($userId !== $profileUserId): ?>
                     <?php if (isset($isFollowing) && $isFollowing): ?>
                         <form action="/user/unfollow/<?= htmlspecialchars($profileUserId); ?>" method="POST">
                             <button type="submit" class="btn btn-danger unfollow">Unfollow</button>
@@ -35,7 +38,7 @@ if (isset($_SESSION['success'])) {
                             <button type="submit" class="btn btn-primary follow">Follow</button>
                         </form>
                     <?php endif; ?>
-                <?php endif; ?>
+                <?php endif; ?> 
                 <?php if ($profile->getProfilePicture()): ?>
                     <img class="profile-img"
                         src="<?= asset('/../uploads/users/' . htmlspecialchars($profile->getProfilePicture())); ?>"
@@ -49,7 +52,13 @@ if (isset($_SESSION['success'])) {
                 </h2>
                 <small>@ <?= htmlspecialchars($profile->getUsername() ?? 'Unknown'); ?></small>
 
-                <p class="bio"><?= htmlspecialchars($profile->getBio() ?? 'This user has not set a bio yet.'); ?></p>
+                <p class="bio">
+                    <span class="bio-content">
+                        <?= htmlspecialchars($profile->getBio() ?? 'This user has not set a bio yet.'); ?>
+                    </span>
+                    <span class="bio-toggle"> <a href="#" class="read-more">Read more</a></span>
+                </p>
+
                 <div class="follow-stats">
                     <small>Following: <?= htmlspecialchars($userProfile->getFollowingCount() ?? 0); ?></small>
                     <i>|</i>
@@ -127,6 +136,7 @@ if (isset($_SESSION['success'])) {
             <?php if ($userId === $profileUserId): ?>
                 <!-- Edit Profile Button - Only show if user is viewing their own profile -->
                 <div class="edit-delete">
+                    <div id="overlay" style="display:none;"></div>
                     <a id="edit-profile-button" class="button-secondary">
                         <span>
                             Edit Profile

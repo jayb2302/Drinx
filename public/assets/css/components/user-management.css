@@ -35,9 +35,13 @@
         transition: 0.2s ease-out;
       }
     }
-    & .userContainer {
-      max-height: 40vh;
-      overflow-y: auto;
+  }
+  & .user-container {
+    max-height: 40vh;
+    overflow-y: auto;
+    @media screen and (max-width: 768px) {
+      max-height: 60vh;
+      
     }
   }
 }
@@ -45,6 +49,7 @@
 /* Row styling */
 .users-rows {
   border-bottom: 1px solid var(--border);
+  border-radius: var(--button-radius);
   background-color: var(--card-background);
   color: var(--text-primary);
   transition: 0.2s ease-out;
@@ -147,8 +152,6 @@
   }
 
   .users-rows td {
-    display: flex;
-    justify-content: space-between;
     padding: 0.5rem 0;
     font-size: 1rem;
 
@@ -168,8 +171,11 @@
   /* Adjust action buttons and form */
   .update-status-form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.5rem;
+    & select {
+      margin: 0;
+    }
   }
 
   .update-status-form select {

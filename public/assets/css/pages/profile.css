@@ -2,11 +2,51 @@
   display: flex;
   flex-direction: row-reverse;
   position: relative;
-  height: 85vh;
+  height: 100%;
+  min-height: 85vh;
+  & .logout-icon{
+    float: inline-end;
+  }
+  & h2 {
+    text-align: center;
+  }
+  & small{
+    text-align: center;
+  }
+  
+  
   & .follow,
   .unfollow {
     float: inline-end;
     margin-bottom: 0.5rem;
+  }
+  & .bio {
+    max-width: 500px; /* Adjust as needed */
+    line-height: 1.6;
+    font-size: 1rem;
+    color: var(--text-color);
+  }
+  
+  & .bio .bio-toggle {
+    color: var(--link-color);
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  & .bio .read-more {
+    color: inherit; /* Match the text color */
+    font-weight: normal;
+    text-decoration: underline;
+  }
+  & #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--overlay); 
+    z-index: 99; 
+    display: none;
   }
   & #edit-profile-form {
     width: 25dvw;
@@ -19,6 +59,7 @@
     border-radius: 0.5rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
     z-index: 100;
+ 
 
     & .close-button-container {
       display: flex;
@@ -60,12 +101,19 @@
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    overflow-y: scroll;
+    width: 25vw;
 
     & .profile-info {
       background: var(--lcard-linear-gradient);
       border-radius: 10px;
       padding: var(--base-padding);
+      height: 100%;
+      width: 100%;
+    }
+    & .profile-badges {
+      & p {
+        margin-top: 0.5rem;
+      }
     }
     & .edit-delete {
       display: flex;
@@ -80,11 +128,13 @@
 
         /* max-width: min-content; */
         & button {
-          color: var(--error);
+          
+          color: var(--text-secondary);
+          background-color: var(--error);
         }
         & #deleteConfirmSection form {
-          text-align: end;
-          justify-self: end;
+          display: flex;
+          flex-direction: column;
           & > * {
             margin: 0.5rem;
           }
@@ -107,10 +157,11 @@
       text-align: center;
       padding: var(--base-padding);
       border: 1px solid;
-      border-radius: var(--border-radius);
+      border-radius: var(--button-radius);
       justify-content: space-around;
       align-items: center;
       font-size: 1rem;
+      margin-bottom: 0.5rem;
     }
   }
   .social-icons {
@@ -118,6 +169,7 @@
     justify-content: center;
     gap: 1rem;
     margin: 0.5rem 0 2rem;
+    flex-wrap: wrap;
     & .fa-brands {
       font-size: 2rem;
     }

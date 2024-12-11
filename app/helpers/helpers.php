@@ -55,6 +55,23 @@ function sanitizeNumber($input) {
     return null; 
 }
 
+function sanitizeQuery($query, $maxLength = 100) {
+    $sanitized = trim($query);
+
+    // Strip HTML tags
+    $sanitized = strip_tags($sanitized);
+
+    // Escape special characters for safe use in SQL
+    $sanitized = htmlspecialchars($sanitized, ENT_QUOTES, 'UTF-8');
+
+    // Limit the length to prevent abuse
+    if (strlen($sanitized) > $maxLength) {
+        $sanitized = substr($sanitized, 0, $maxLength);
+    }
+
+    return $sanitized;
+}
+
 // Function to redirect to a given path
 function redirect($path) {
     header("Location: " . url($path));

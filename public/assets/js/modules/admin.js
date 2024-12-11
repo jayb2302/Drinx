@@ -1,5 +1,12 @@
 /// Admin
 export function initializeAdmin() {
+    const sidebar = document.querySelector('.admin__sidebar');
+    const toggleButton = document.getElementById('sidebarToggle');
+    const sectionButtons = document.querySelectorAll('.admin-toggle-button');
+
+    toggleButton.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
     function toggleSection(sectionId) {
         // Hide all admin sections
         document.querySelectorAll('.admin-section').forEach(section => {
@@ -11,17 +18,21 @@ export function initializeAdmin() {
         if (selectedSection) {
             selectedSection.style.display = 'block';
         }
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            sidebar.classList.remove('active');
+        }
     }
     const defaultSectionId = 'userManagement';
     toggleSection(defaultSectionId);
       // Attach toggleSection function to buttons or links
-      document.querySelectorAll('.admin-toggle-button').forEach(button => {
+      sectionButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
             const targetSection = button.getAttribute('data-target');
             toggleSection(targetSection);
         });
     });
+
     document.querySelectorAll('.accordion-header').forEach(header => {
         header.addEventListener('click', (e) => {
             const accordionItem = header.parentElement;

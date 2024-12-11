@@ -12,7 +12,20 @@ form {
         justify-content: flex-end;
         gap: 1.5rem;
     }
+    & input[type="text"],
+    & input[type="number"],
+    & select,
+    & textarea {
+        padding: .5rem;
+        border: 0.1rem solid var(--border);
+        border-radius: 0.2rem;
+        font-family: var(--font-body);
+        color: var(--text-primary);
+        background: var(--surface);
+        resize: vertical;
+    }
 }
+
 
 /* Form Container */
 .form-container {
@@ -63,18 +76,7 @@ form {
             margin-bottom: 0.8rem;
         }
 
-        & input[type="text"],
-        & input[type="number"],
-        & select,
-        & textarea {
-            padding: .5rem;
-            border: 0.1rem solid var(--border);
-            border-radius: 0.2rem;
-            font-family: var(--font-body);
-            color: var(--text-primary);
-            background: var(--surface);
-            resize: vertical;
-        }
+       
 
         & input[type="text"]:focus,
         & input[type="number"]:focus,
