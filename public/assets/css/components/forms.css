@@ -71,12 +71,8 @@ form {
             display: block;
             font-family: var(--font-display);
             font-weight: bold;
-            color: var(--text-secondary);
             margin-bottom: 0.8rem;
             pointer-events: none;
-            position: absolute;
-            top: 50%;
-            left: 1rem;
         }
 
         & input[type="text"]:focus,
