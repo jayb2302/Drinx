@@ -28,7 +28,7 @@ export function initializeUserManagement() {
             row.innerHTML = `
                 <td>
                     <a href="/profile/${encodeURIComponent(user.username)}">
-                        <img src="${profileImage}" width="40" height="40">
+                        <img src="${profileImage}" class="profile-pic">
                     </a>
                 </td>
                 <td>${sanitizeHTML(user.username)}</td>
