@@ -1,6 +1,6 @@
-<div class="form-container">
-    <h2>Login</h2>
-
+<div class="auth-form-container">
+    <h2>Shaken or stirred?</h2>
+    <small>Log in to decide.</small>
     <?php
     // Display success message
     if (isset($_SESSION['success'])) {
@@ -15,6 +15,8 @@
     ?>
 
     <form action="/login" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>" />
+
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" class="form-control" id="email" name="email" required>
@@ -27,8 +29,13 @@
 
         <button type="submit" class="secondary">Login</button>
     </form>
-    <button class="secondary">
-
-        <a href="/register" class="secondary">Register</a>
-    </button>
+    <small> Drip, Drop, Drinx </small>
+    <a href="/register" class="button-secondary">
+        <span class="">
+            Register now
+        </span>
+    </a>
+    <h3>
+        – the only thing missing is you - 
+    </h3>
 </div>

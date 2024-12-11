@@ -3,8 +3,9 @@
 class UnitRepository {
     private $db;
 
-    public function __construct($dbConnection) {
-        $this->db = $dbConnection;
+    public function __construct($db)
+    {
+        $this->db = $db;
     }
 
     public function getAllUnits() {
@@ -13,4 +14,3 @@ class UnitRepository {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-?>

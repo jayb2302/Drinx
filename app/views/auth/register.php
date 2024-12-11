@@ -8,6 +8,7 @@
     }
     ?>
     <form method="POST" action="/register">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" name="username" id="username" required>

@@ -1,19 +1,36 @@
 <?php
+require_once __DIR__ . '/BaseController.php';
+
 class IngredientController
 {
-    private $ingredientRepository;
-    private $tagRepository;
+    private $ingredientService;
+    private $tagService;
 
-    public function __construct($ingredientRepository, $tagRepository)
-    {
-        $this->ingredientRepository = $ingredientRepository;
-        $this->tagRepository = $tagRepository;
+    public function __construct(
+        IngredientService $ingredientService,
+        TagService $tagService
+    ) {
+        $this->ingredientService = $ingredientService;
+        $this->tagService = $tagService;
     }
 
+    public function manageIngredients()
+    {
+        $ingredientsWithTags = $this->ingredientService->getIngredientsByTags();
+
+        // Debugging: Output the data to ensure it's populated correctly
+        // error_log(print_r($ingredientsWithTags, true)); // Logs to server logs
+        echo '<pre>';
+        print_r($ingredientsWithTags); // Displays data in the browser
+        echo '</pre>';
+        // die(); // Stops execution for debugging
+
+        require_once __DIR__ . '/../views/ingredients/manage_ingredients.php';
+    }
     public function getUncategorizedIngredients()
     {
         try {
-            $uncategorized = $this->ingredientRepository->fetchUncategorizedIngredients();
+            $uncategorized = $this->ingredientService->fetchUncategorizedIngredients();
 
             if (!empty($uncategorized)) {
                 header('Content-Type: application/json');
@@ -31,14 +48,22 @@ class IngredientController
     // Assign a tag to an ingredient
     public function assignTag()
     {
+      
         try {
             $data = json_decode(file_get_contents('php://input'), true);
+            $csrfToken = $data['csrf_token'] ?? '';
+            $sessionToken = $_SESSION['csrf_token'] ?? '';
+        
+            // Validate CSRF token
+            if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+                http_response_code(403);
+                echo json_encode(['status' => 'error', 'message' => 'Invalid or missing CSRF token.']);
+                return;
+            }
             $ingredientId = $data['ingredient_id'] ?? null;
             $ingredientName = trim($data['ingredient_name'] ?? '');
             $tagId = $data['tag_id'] ?? null;
 
-            // Debugging log
-            error_log("Assigning Tag - Ingredient ID: $ingredientId, Tag ID: $tagId");
 
             if (!$ingredientId || !$tagId) {
                 http_response_code(400);
@@ -48,7 +73,7 @@ class IngredientController
             }
 
             // Ensure ingredient exists
-            if (!$this->ingredientRepository->doesIngredientExist($ingredientId)) {
+            if (!$this->ingredientService->doesIngredientExist($ingredientId)) {
                 http_response_code(404);
                 error_log("Ingredient not found: $ingredientId");
                 echo json_encode(['status' => 'error', 'message' => 'Ingredient not found.']);
@@ -56,7 +81,7 @@ class IngredientController
             }
 
             // Ensure tag exists
-            if (!$this->tagRepository->doesTagExist($tagId)) {
+            if (!$this->tagService->doesTagExist($tagId)) {
                 http_response_code(404);
                 error_log("Tag not found: $tagId");
                 echo json_encode(['status' => 'error', 'message' => 'Tag not found.']);
@@ -64,7 +89,7 @@ class IngredientController
             }
 
             // Assign the tag
-            $result = $this->ingredientRepository->assignTag($ingredientId, $tagId);
+            $result = $this->ingredientService->assignTag($ingredientId, $tagId);
 
             if ($result) {
                 echo json_encode(['status' => 'success', 'message' => 'Tag assigned successfully.']);
@@ -84,6 +109,16 @@ class IngredientController
     {
         try {
             $data = json_decode(file_get_contents('php://input'), true);
+            
+            $csrfToken = $data['csrf_token'] ?? '';
+            $sessionToken = $_SESSION['csrf_token'] ?? '';
+
+            if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+                http_response_code(403);
+                echo json_encode(['status' => 'error', 'message' => 'Invalid or missing CSRF token.']);
+                return;
+            }
+
             $ingredientName = trim($data['ingredient_name'] ?? '');
 
             // Check if ingredient name is empty
@@ -94,7 +129,7 @@ class IngredientController
             }
 
             // Check if ingredient already exists by name
-            $ingredientId = $this->ingredientRepository->getIngredientIdByName($ingredientName);
+            $ingredientId = $this->ingredientService->getIngredientIdByName($ingredientName);
 
             if ($ingredientId) {
                 // If the ingredient already exists, send an error
@@ -104,15 +139,9 @@ class IngredientController
             }
 
             // Create the new ingredient
-            $ingredientId = $this->ingredientRepository->createIngredient($ingredientName);
+            $ingredientId = $this->ingredientService->createIngredient($ingredientName);
 
             if ($ingredientId) {
-                // Get the "Uncategorized" tag ID using the repository
-                $uncategorizedTagId = $this->ingredientRepository->getUncategorizedTagId();
-
-                // Assign the "Uncategorized" tag
-                $this->ingredientRepository->assignTag($ingredientId, $uncategorizedTagId);
-
                 // Return success response
                 echo json_encode(['status' => 'success', 'message' => 'Ingredient added successfully.', 'ingredient_id' => $ingredientId]);
             } else {
@@ -138,7 +167,7 @@ class IngredientController
                 return;
             }
 
-            $result = $this->ingredientRepository->updateIngredientName($ingredientId, $ingredientName);
+            $result = $this->ingredientService->updateIngredientName($ingredientId, $ingredientName);
 
             if ($result) {
                 echo json_encode(['status' => 'success', 'message' => 'Ingredient name updated successfully.']);
@@ -164,7 +193,7 @@ class IngredientController
             }
 
             // Call the repository to delete the ingredient
-            $result = $this->ingredientRepository->deleteIngredient($ingredientId);
+            $result = $this->ingredientService->deleteIngredient($ingredientId);
 
             // Return the response based on the result
             if ($result) {

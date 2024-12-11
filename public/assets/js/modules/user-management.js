@@ -1,44 +1,51 @@
-document.addEventListener("DOMContentLoaded", () => {
+export function initializeUserManagement() {
     const userSearchInput = document.getElementById("userSearch");
     const userTableBody = document.getElementById("userTableBody");
     let sortOrder = 1; // Initialize sorting order
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');  // CSRF Token
 
-    // Utility function for sanitizing HTML in JavaScript
     function sanitizeHTML(str) {
-        const temp = document.createElement('div');
+        const temp = document.createElement("div");
         temp.textContent = str;
         return temp.innerHTML;
     }
 
     function renderUsers(users) {
-        userTableBody.innerHTML = ''; // Clear table
+        userTableBody.innerHTML = ""; // Clear table
         users.forEach(user => {
-            const profileImage = user.profile_picture && user.profile_picture !== 'user-default.svg' 
+            
+            const profileImage = user.profile_picture && user.profile_picture !== "user-default.svg" 
                 ? `/uploads/users/${encodeURIComponent(user.profile_picture)}`
-                : '/uploads/users/user-default.svg';
-    
+                : "/uploads/users/user-default.svg";
+                const statusCircle = {
+                    1: '🟢', // Active
+                    2: '🟡', // Suspended
+                    3: '🔴'  // Banned
+                };
+        
             const row = document.createElement("tr");
-            row.className = 'users-rows';
+            row.className = "users-rows";
             row.innerHTML = `
                 <td>
                     <a href="/profile/${encodeURIComponent(user.username)}">
-                        <img src="${profileImage}" 
-                             width="40" 
-                             height="40">
+                        <img src="${profileImage}" width="40" height="40">
                     </a>
                 </td>
                 <td>${sanitizeHTML(user.username)}</td>
                 <td>${sanitizeHTML(user.email)}</td>
-                <td>${sanitizeHTML(user.account_status_name)}</td>
+                <td>
+                <span class="status-circle">${statusCircle[user.account_status_id] || ''}</span>
+                <span>${sanitizeHTML(user.account_status_name)}</span>
+            </td>
                 <td>
                     <form class="update-status-form" data-user-id="${user.user_id}">
                         <input type="hidden" name="user_id" value="${user.user_id}">
                         <select name="status_id">
-                            <option value="1" ${user.account_status_id == 1 ? 'selected' : ''}>Active</option>
-                            <option value="2" ${user.account_status_id == 2 ? 'selected' : ''}>Suspended</option>
-                            <option value="3" ${user.account_status_id == 3 ? 'selected' : ''}>Banned</option>
+                            <option value="1" ${user.account_status_id == 1 ? "selected" : ""}>🟢</option>
+                            <option value="2" ${user.account_status_id == 2 ? "selected" : ""}>🟡</option>
+                            <option value="3" ${user.account_status_id == 3 ? "selected" : ""}>🔴</option>
                         </select>
-                        <button class="button" type="submit">Update Status</button>
+                        <button class="button" type="submit">Update</button>
                     </form>
                 </td>
             `;
@@ -46,12 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         attachStatusFormListeners();
     }
-    
-   
-    
-    
-  
-    // Fetch and render all users initially or when clearing search
+
     function fetchAllUsers() {
         fetch(`/searchAllUsers`)
             .then(response => response.json())
@@ -59,10 +61,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const users = data.users || [];
                 renderUsers(users);
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => console.error("Error:", error));
     }
 
-    // Search and display filtered users
     userSearchInput.addEventListener("input", () => {
         const query = userSearchInput.value.trim();
 
@@ -75,66 +76,61 @@ document.addEventListener("DOMContentLoaded", () => {
                     const users = data.users || [];
                     renderUsers(users);
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => console.error("Error:", error));
         }
     });
 
-    // Attach event listeners for status forms
     function attachStatusFormListeners() {
-        document.querySelectorAll('form.update-status-form').forEach(form => {
-            form.addEventListener('submit', function(event) {
+        document.querySelectorAll("form.update-status-form").forEach(form => {
+            form.addEventListener("submit", function(event) {
                 event.preventDefault(); // Prevent default form submission
 
                 const formData = new FormData(this);
-                const row = this.closest('tr'); // Get the row of the current form
+                const row = this.closest("tr");
 
-                fetch('/admin/update-status', {
-                    method: 'POST',
-                    body: formData
+                formData.append('csrf_token', csrfToken);
+                fetch("/admin/update-status", {
+                    method: "POST",
+                    body: formData,
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert(data.message); // Optional: Display a success message
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            alert(data.message);
 
-                        // Update the displayed account status in the row
-                        const statusSelect = this.querySelector('select[name="status_id"]');
-                        const selectedStatusText = statusSelect.options[statusSelect.selectedIndex].textContent;
-
-                        // Find the cell that displays the account status and update it
-                        const statusDisplayCell = row.querySelector('td:nth-child(4)'); // Assuming it's the 4th cell
-                        if (statusDisplayCell) {
-                            statusDisplayCell.textContent = selectedStatusText;
+                            // Update account status dynamically
+                            const statusSelect = this.querySelector("select[name='status_id']");
+                            const selectedStatusText = statusSelect.options[statusSelect.selectedIndex].textContent;
+                            const statusDisplayCell = row.querySelector("td:nth-child(4)");
+                            if (statusDisplayCell) {
+                                statusDisplayCell.textContent = selectedStatusText;
+                            }
+                        } else {
+                            alert(data.message);
                         }
-                    } else {
-                        alert(data.message); // Display error message
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
-                });
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("An error occurred. Please try again.");
+                    });
             });
         });
     }
 
-    // Sorting function
     const tableHeaders = document.querySelectorAll(".manage-users th[data-sort]");
     tableHeaders.forEach(header => {
         header.addEventListener("click", () => {
             const sortBy = header.getAttribute("data-sort");
             sortTable(sortBy, header);
-            sortOrder *= -1; // Toggle sorting order
+            sortOrder *= -1;
         });
     });
 
     function sortTable(sortBy, header) {
         const rows = Array.from(userTableBody.rows);
 
-        // Clear other header classes
         document.querySelectorAll(".sortable").forEach(th => th.classList.remove("sort-asc", "sort-desc"));
 
-        // Set the sort indicator class based on the order
         if (sortOrder === 1) {
             header.classList.add("sort-asc");
             header.classList.remove("sort-desc");
@@ -166,6 +162,5 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Load all users on initial page load
     fetchAllUsers();
-});
+}

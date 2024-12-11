@@ -23,7 +23,9 @@ class AdminService
 
     public function getAllUsers()
     {
+        
         return $this->userRepository->getAllUsers();
+        
     }
 
     public function updateUserStatus($userId, $statusId)
@@ -53,6 +55,22 @@ class AdminService
         }
         return $grouped;
     }
+
+    public function getCategorizedIngredients()
+{
+    try {
+        $categorizedIngredients = $this->ingredientRepository->getIngredientsGroupedByTags();
+        echo json_encode([
+            'status' => 'success',
+            'ingredients' => $categorizedIngredients
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to fetch categorized ingredients.'
+        ]);
+    }
+}
     public function getDashboardData()
     {
         // Fetch stats for the dashboard
@@ -89,9 +107,12 @@ class AdminService
             'tagCategories' => $tagCategories,
         ];
     }
+
     public function getDashboardStats()
     {
-        $topCreator = $this->userRepository->getUserWithMostRecipes();
+        // Get the top creator (user with most recipes)
+        $topCreator = $this->userRepository->getUserWithMostRecipes();  // this should return a User object
+    
         return [
             'totalUsers' => $this->userRepository->countUsers(),
             'totalCocktails' => $this->cocktailRepository->countCocktails(),
@@ -99,10 +120,10 @@ class AdminService
             'totalTags' => $this->tagRepository->countTags(),
             'totalComments' => $this->commentRepository->countComments(),
             'mostUsedIngredient' => $this->ingredientRepository->getMostUsedIngredient()['name'] ?? 'N/A',
-            'mostPopularCocktail' => $this->cocktailRepository->getMostPopularCocktail()['title'] ?? 'N/A',
+'mostPopularCocktail' => $this->cocktailRepository->getMostPopularCocktail()->getTitle() ?? 'N/A',
             'unusedTags' => $this->tagRepository->countUnusedTags(),
             'cocktailsWithoutComments' => $this->cocktailRepository->countCocktailsWithoutComments(),
-            'userWithMostRecipes' => $this->userRepository->getUserWithMostRecipes(), // Return User object
+            'userWithMostRecipes' => $topCreator,  // Keep it as a User object
         ];
     }
 }

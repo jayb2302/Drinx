@@ -1,5 +1,9 @@
 <div id="tagDialog" title="Manage Tag" style="display: none;">
     <form id="tagForm">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']); ?>">
+
+
+
         <input type="hidden" id="tagId">
         <label for="tagName">Tag Name:</label>
         <input type="text" id="tagName" required>

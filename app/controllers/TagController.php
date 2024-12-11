@@ -1,16 +1,21 @@
 <?php
-class TagController
-{
-    private $tagRepository;
+require_once __DIR__ . '/BaseController.php';
 
-    public function __construct(TagRepository $tagRepository)
-    {
-        $this->tagRepository = $tagRepository;
+class TagController extends BaseController
+{
+    private $tagService;
+
+    public function __construct(
+        AuthService $authService,
+        TagService $tagService
+    ) {
+        parent::__construct($authService);
+        $this->tagService = $tagService;
     }
-    
+
     public function getAllTags()
     {
-        $tags = $this->tagRepository->getAllTags();
+        $tags = $this->tagService->getAllTags();
         $this->jsonResponse(
             $tags ? 'success' : 'error',
             $tags ? 'Tags retrieved successfully.' : 'No tags found.',
@@ -21,7 +26,7 @@ class TagController
 
     public function getTagById($tagId)
     {
-        $tag = $this->tagRepository->getTagById($tagId);
+        $tag = $this->tagService->getTagById($tagId);
         $this->jsonResponse(
             $tag ? 'success' : 'error',
             $tag ? 'Tag retrieved successfully.' : 'Tag not found.',
@@ -33,31 +38,63 @@ class TagController
     // Save (add/update) a tag
     public function saveTag()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        $tagId = isset($data['tag_id']) ? sanitize($data['tag_id']) : null;
-        $tagName = sanitize($data['tag_name']);
-        $tagCategoryId = sanitize($data['tag_category_id']);
-
-        if (empty($tagName) || empty($tagCategoryId)) {
-            $this->jsonResponse('error', 'Tag name and category are required.', [], 400);
+        // Check if the user is an admin
+        if (!$this->authService->isAdmin()) {
+            http_response_code(403);
+            echo json_encode(['error' => 'You do not have permission to perform this action.']);
+            exit();
         }
 
-        $result = $this->tagRepository->save($tagName, $tagCategoryId, $tagId);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        $this->jsonResponse(
-            $result ? 'success' : 'error',
-            $result ? 'Tag saved successfully.' : 'Failed to save tag.',
-            [],
-            $result ? 200 : 500
-        );
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            // Log the incoming CSRF token and session token for debugging
+            error_log("Incoming CSRF Token: " . $data['csrf_token']);
+            error_log("Session CSRF Token: " . $_SESSION['csrf_token']);
+
+            $csrfToken = $data['csrf_token'] ?? '';
+            $sessionToken = $_SESSION['csrf_token'] ?? '';
+
+            // Validate CSRF token
+            if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+                http_response_code(403);
+                echo json_encode(['status' => 'error', 'message' => 'Invalid or missing CSRF token.']);
+                return;
+            }
+
+            // Sanitize and validate tag data
+            $tagId = isset($data['tag_id']) ? sanitize($data['tag_id']) : null;
+            $tagName = sanitize($data['tag_name'] ?? ''); // Ensure tag_name is set before sanitizing
+            $tagCategoryId = sanitize($data['tag_category_id'] ?? ''); // Ensure tag_category_id is set before sanitizing
+
+            // Validate if name and category are provided
+            if (empty($tagName) || empty($tagCategoryId)) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Tag name and category are required.']);
+                exit();
+            }
+
+        $result = $this->tagService->save($tagName, $tagCategoryId, $tagId);
+
+            // Return success or failure response
+            if ($result) {
+                echo json_encode(['status' => 'success', 'message' => 'Tag saved successfully.']);
+            } else {
+                http_response_code(500);
+                echo json_encode(['status' => 'error', 'message' => 'Failed to save tag.']);
+            }
+        } else {
+            http_response_code(405);
+            echo json_encode(['error' => 'Method not allowed.']);
+        }
     }
-    
+
     public function editTag($tagId)
     {
-        $editTag = $this->tagRepository->getTagById($tagId);
-        $tags = $this->groupTagsByCategory($this->tagRepository->getAllTags());
-        $tagCategories = $this->tagRepository->getAllTagCategories();
+        $editTag = $this->tagService->getTagById($tagId);
+        $tags = $this->groupTagsByCategory($this->tagService->getAllTags());
+        $tagCategories = $this->tagService->getAllTagCategories();
 
         require_once __DIR__ . '/../views/admin/manage_tags.php';
     }
@@ -66,6 +103,12 @@ class TagController
     public function deleteTag()
     {
         $data = json_decode(file_get_contents('php://input'), true);
+        $csrfToken = $data['csrf_token'] ?? '';
+        $sessionToken = $_SESSION['csrf_token'] ?? '';
+
+        if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+            $this->jsonResponse('error', 'Invalid or missing CSRF token.', [], 403);
+        }
 
         $tagId = isset($data['tag_id']) ? sanitize($data['tag_id']) : null;
 
@@ -73,7 +116,7 @@ class TagController
             $this->jsonResponse('error', 'Invalid tag ID.', [], 400);
         }
 
-        $result = $this->tagRepository->deleteTag($tagId);
+        $result = $this->tagService->deleteTag($tagId);
 
         $this->jsonResponse(
             $result ? 'success' : 'error',
@@ -82,7 +125,7 @@ class TagController
             $result ? 200 : 500
         );
     }
-    
+
     private function groupTagsByCategory($tags)
     {
         $grouped = [];

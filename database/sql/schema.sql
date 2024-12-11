@@ -103,8 +103,10 @@ CREATE TABLE `user_badges` (
   `badge_id` int,
   `earned_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`, `badge_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE,
-  FOREIGN KEY (`badge_id`) REFERENCES `badges`(`badge_id`) ON DELETE CASCADE
+  CONSTRAINT `fk_user_badges_user_id`
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_user_badges_badge_id`
+    FOREIGN KEY (`badge_id`) REFERENCES `badges`(`badge_id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `user_activity` (
@@ -174,7 +176,7 @@ CREATE TABLE `tags` (
 CREATE TABLE `tag_categories` (
   `tag_category_id` int(11) NOT NULL,
   `category_name` varchar(100) NOT NULL
-) 
+); 
 
 CREATE TABLE ingredient_tags (
     ingredient_tag_id INT AUTO_INCREMENT PRIMARY KEY,

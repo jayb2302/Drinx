@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Cocktail.php';
 require_once __DIR__ . '/../models/Ingredient.php';
 require_once __DIR__ . '/../models/Step.php';
@@ -8,10 +7,9 @@ class CocktailRepository
 {
     private $db;
 
-    public function __construct()
+    public function __construct($db) 
     {
-        $database = new Database();
-        $this->db = $database->getConnection();
+        $this->db = $db;
     }
 
     // Method to create a Cocktail object from database result data
@@ -35,6 +33,8 @@ class CocktailRepository
             $tags,
             $data['like_count'] ?? 0,
             $data['difficulty_name'] ?? null,
+            $data['created_at'] ?? null, 
+        $data['updated_at'] ?? null 
         );
     }
 
@@ -286,6 +286,23 @@ class CocktailRepository
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Ingredient');
     }
 
+   
+    public function getMostPopularCocktail()
+    {
+        $stmt = $this->db->prepare("
+            SELECT c.*, COUNT(l.like_id) AS like_count
+            FROM cocktails c
+            LEFT JOIN likes l ON c.cocktail_id = l.cocktail_id
+            GROUP BY c.cocktail_id
+            ORDER BY like_count DESC
+            LIMIT 1
+        ");
+        $stmt->execute();
+        $cocktailData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $cocktailData ? $this->createCocktailObject($cocktailData) : null;
+    }
+
     private function getStepsByCocktailId($cocktailId)
     {
         $stmt = $this->db->prepare("SELECT * FROM cocktail_steps WHERE cocktail_id = :cocktail_id");
@@ -329,5 +346,26 @@ class CocktailRepository
         $stmt = $this->db->prepare("UPDATE cocktails SET is_sticky = 1 WHERE cocktail_id = :cocktail_id");
         $stmt->bindParam(':cocktail_id', $cocktailId, PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+
+    public function countCocktailsWithoutComments()
+    {
+        $stmt = $this->db->prepare(" 
+            SELECT COUNT(c.cocktail_id) 
+            FROM cocktails c 
+            LEFT JOIN comments com ON c.cocktail_id = com.cocktail_id 
+            WHERE com.comment_id IS NULL
+        ");
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }    
+    
+    public function getCocktailCountByUserId($userId)
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM cocktails WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
 }

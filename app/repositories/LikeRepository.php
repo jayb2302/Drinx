@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../models/Like.php';
 class LikeRepository
 {
     private $db;

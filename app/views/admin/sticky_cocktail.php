@@ -7,12 +7,27 @@ header('Content-Type: application/json');
 $stickyCocktail = $cocktailService->getStickyCocktail();
 
 if ($stickyCocktail) {
+    $cocktailId = htmlspecialchars($stickyCocktail->getCocktailId());
+    $cocktailTitle = htmlspecialchars($stickyCocktail->getTitle());
+    $cocktailDescription = htmlspecialchars($stickyCocktail->getDescription());
+    $firstSentence = getFirstSentence($cocktailDescription); 
+    $cocktailImage = $stickyCocktail->getImage();
+
+    if (!empty($cocktailImage)) {
+        $cocktailImage = '/uploads/cocktails/' . htmlspecialchars($cocktailImage);
+    } else {
+        $cocktailImage = '/uploads/cocktails/default-cocktail.jpeg'; // Fallback image
+    }
+
+    $cocktailLink = "/cocktails/{$cocktailId}-{$cocktailTitle}";
+
     echo json_encode([
         'success' => true,
-        'id' => $stickyCocktail->getCocktailId(),
-        'title' => $stickyCocktail->getTitle(),
-        'description' => $stickyCocktail->getDescription(),
-        'image' => '/uploads/cocktails/' . $stickyCocktail->getImage(), // Include the full path for the image
+        'id' => $cocktailId,
+        'title' => $cocktailTitle,
+        'description' => $firstSentence,
+        'image' => $cocktailImage,
+        'link' => $cocktailLink,
     ]);
 } else {
     echo json_encode([

@@ -2,66 +2,68 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  background-color: var(--card-background);
-  padding: .5rem 2rem;
+  background-color: var(--background);
+  padding: 0.5rem 2rem;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   font-family: var(--font-body);
-  color: var(--text-secondary);
-}
-
-* Table styling */
-.manage-users {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  padding: 0 3%;
-}
-
-/* Apply general styling to all table headers */
-.manage-users thead th {
-  background-color: var(--surface);
   color: var(--text-primary);
-  text-align: left;
-  padding: 10px;
-  font-size: 1em;
-  font-weight: 200;
-  transition: 0.2s ease-out;
 }
-/* Apply hover effect and cursor only to the first 3 th elements */
-.sortable {
-  cursor: pointer;
-}
-.sortable:hover {
-  text-decoration: underline;
-  font-weight: bold;
-  background-color: var(--text-primary);
-  color: var(--surface);
-  font-weight: 900;
+.admin-container {
+  & .manage-users {
+    width: 100%;
+    border-collapse: collapse;
+    padding: var(--base-padding);
+    background: var(--lcard-linear-gradient);
+    & tr {
+      background: var(--lcard-linear-gradient);
+      & .sortable {
+        cursor: pointer;
+        & :hover {
+          text-decoration: underline;
+          font-weight: bold;
+          background-color: var(--text-primary);
+          color: var(--surface);
+          font-weight: 900;
+        }
+      }
+      & th {
+        color: var(--text-primary);
+        text-align: start;
+        font-size: 1em;
+        font-weight: 200;
+        transition: 0.2s ease-out;
+      }
+    }
+    & .userContainer {
+      max-height: 40vh;
+      overflow-y: auto;
+    }
+  }
 }
 
 /* Row styling */
 .users-rows {
-  border-bottom: 1px solid var(--text-primary);
-  background-color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  background-color: var(--card-background);
   color: var(--text-primary);
   transition: 0.2s ease-out;
-}
-.users-rows:hover {
-  border-bottom: 1px solid #ddd;
-  background-color: var(--text-primary);
-  color: var(--text-secondary);
+  margin-bottom: .5rem;
+  &:hover {
+    border-bottom: 2px solid var(--border);
+    background-color: var(--nav-background);
+    color: var(--text-primary);
+  }
+  & td {
+    padding: var(-tag-padding);
+    text-align: left;
+  }
 }
 
-/* Cell styling */
-.users-rows td {
-  padding: 12px;
-  text-align: left;
-}
 .users-rows td:first-child {
   text-align-last: center;
 }
-.profile-pic{
+.profile-pic {
   width: 70px;
   height: 70px;
   border-radius: 50%;
@@ -69,7 +71,7 @@
   border: 2px solid var(--text-primary);
   object-fit: cover;
 }
-.profile-pic:hover{
+.profile-pic:hover {
   cursor: pointer;
   scale: 1.1;
   border: 2px solid var(--accent-primary);
@@ -88,5 +90,3 @@
   border: 1px solid var(--text-secondary);
   border-radius: 4px;
 }
-
-

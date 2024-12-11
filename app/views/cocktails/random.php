@@ -1,11 +1,11 @@
 <?php
-//  Making sure $cocktail is set
+// Ensure $cocktail is set
 if (isset($cocktail) && $cocktail) {
     echo '<div class="recipe-wrapper">';  // Container for styling
-    echo '<h2 class="recipe-card">' . htmlspecialchars($cocktail->getTitle()) . '</h2>';
+    echo '<h2 class="recipe-card">' . sanitizeTrim($cocktail->getTitle()) . '</h2>';
     echo '<div class="recipe-card">';
-    echo '<img src="' . asset('/uploads/cocktails/' . htmlspecialchars($cocktail->getImage())) . '" alt="Random Cocktail Image" class="cocktailImage">';
-    echo '<p>' . htmlspecialchars($cocktail->getDescription()) . '</p>';
+    echo '<img src="' . asset('/uploads/cocktails/' . sanitizeTrim($cocktail->getImage())) . '" alt="Random Cocktail Image" class="cocktailImage">';
+    echo '<p>' . sanitizeTrim(getFirstSentence($cocktail->getDescription())) . '</p>'; // Use first sentence and sanitize
     echo '<a href="/cocktails/' . $cocktail->getId() . '-' . urlencode($cocktail->getTitle()) . '" class="btn btn-primary">View Recipe</a>';
     echo '</div>';
     echo '</div>'; // End of container
@@ -15,3 +15,4 @@ if (isset($cocktail) && $cocktail) {
 } else {
     echo '<p>No cocktail found. Try again!</p>';
 }
+?>

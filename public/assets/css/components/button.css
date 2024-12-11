@@ -1,67 +1,69 @@
-/* buttons.css */
-
+/* Styles for buttons */
 button {
     padding: 1rem 4rem;
     display: inline-block;
     justify-content: end;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--button-radius);
     cursor: pointer;
-    font-size: 16px;
     transition: background-color 0.3s;
-    background-color: var(--button-secondary);
-}
-
-button.primary {
     background-color: var(--button-primary);
-    color: var(--text-primary);
-    width: 100%;
-}
-
-button.primary:hover {
-    background-color: var(--button-hover);
-}
-
-button.secondary {
-    background-color: var(--button-secondary);
     color: var(--text-secondary);
-    width: 100%;
-    font-size: 1.2rem;
+    & .primary {
+        background-color: var(--button-primary);
+        color: var(--text-secondary);
+        width: 100%;
+        & :hover {
+            background-color: var(--button-hover);
+        }
+    }
+    & .secondary {
+        background-color: var(--button-secondary);
+        color: var(--text-secondary);
+        width: 100%;
+        font-size: 1.2rem;
+        & :hover {
+            background-color: var(--card-background);
+            color: var(--text-primary);
+        }
+    }
+    &  .delete {
+        background-color: var(--error);
+        color: var(--text-secondary);
+        width: 100%;
+        height: auto;
+    }
 }
 
-button.secondary:hover {
-    background-color: var(--card-background);
-}
-button.delete {
-    background-color: var(--error);
-    color: var(--text-secondary);
-    width: 100%;
-    height: auto;
-}
 .button {
     padding: 10px 15px;
     border: 1px solid var(--border);
-    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s;
     background-color: var(--button-primary);
+    & .button-secondary {
+        display: inline-block;
+        align-items: stretch;
+        padding: var(--button-padding);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+        background-color: var(--button-primary);
+        width: fit-content;
+        text-align: center;
+    }
 }
-.button-secondary {
-    padding: 10px 15px;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    background-color: var(--button-secondary);
+
+.button-secondary{
+    background-color: var(--button-primary);
+    color: var(--text-secondary);
+    padding: var(--button-padding);
+    border-radius: .5rem;
 }
-/** Sticky Button **/
-.button-wrapper {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-}
+
 .buttons{
     display: flex;
     gap: 10px;  
@@ -76,18 +78,45 @@ button.delete {
     cursor: pointer; 
     transition: background-color 0.3s; 
     opacity: 0.7; 
-}
-
-.set-sticky.active {
-    opacity: 1;
-    background-color: var(--button-primary); /* Change color for active state */
-}
-.set-sticky:hover {
-    background-color: var(--button-secondary); 
+    & .set-sticky.active {
+        opacity: 1;
+        background-color: var(--button-primary); 
+    }
+    & :hover {
+        background-color: var(--button-secondary); 
+    }
 }
 
 .active {
-    background-color: var(--button-secondary); /* Green color for active/sticky */
+    background-color: var(--accent-primary);
+    color: var(--text-primary); 
 }
 
+/* Control Buttons */
+.control-buttons {
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
 
+.randomRecipeButton {
+    width: 100%;
+    padding: .5rem;
+    background-color: var(--accent-primary);
+    color: var(--text-primary);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: var(--font-display);
+    font-weight: bold;
+}
+
+.randomRecipeButton:hover {
+    background-color: var(--button-hover);
+    color: var(--text-primary);
+}

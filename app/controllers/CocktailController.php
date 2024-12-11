@@ -1,59 +1,39 @@
 <?php
-require_once __DIR__ . '/../config/dependencies.php';
+require_once __DIR__ . '/BaseController.php';
 
-class CocktailController
+class CocktailController extends BaseController
 {
-    private $cocktailService;
     private $ingredientService;
     private $stepService;
-    private $difficultyRepository;
     private $commentService;
     private $likeService;
-    private $tagRepository;
-    private $userService;
+    private $imageService;
+    private $badgeService;
 
+    // Maximum description length
+    private const MAX_DESCRIPTION_LENGTH = 500;
 
-    public function __construct()
-    {
+    public function __construct(
+        AuthService $authService,
+        UserService $userService,
+        CocktailService $cocktailService,
+        IngredientService $ingredientService,
+        StepService $stepService,
+        CommentService $commentService,
+        LikeService $likeService,
+        ImageService $imageService,
+    ) {
+        parent::__construct($authService, $userService, $cocktailService);
+        $this->ingredientService = $ingredientService;
+        $this->stepService = $stepService;
+        $this->commentService = $commentService;
+        $this->likeService = $likeService;
+        $this->imageService = $imageService;
+
+        // Ensure session is started
         if (session_status() === PHP_SESSION_NONE) {
-            session_start(); // Start session if not already started
+            session_start();
         }
-
-        $db = Database::getConnection();  // Get the database connection
-
-        // Initialize repositories
-        $cocktailRepository = new CocktailRepository($db);
-        $categoryRepository = new CategoryRepository($db);
-        $ingredientRepository = new IngredientRepository($db);
-        $stepRepository = new StepRepository($db);
-        $tagRepository = new TagRepository($db);
-        $this->difficultyRepository = new DifficultyRepository($db);
-        $commentRepository = new CommentRepository($db);
-        $likeRepository = new LikeRepository($db);
-        $this->likeService = new LikeService(new LikeRepository($db));
-        $userRepository = new UserRepository($db);
-        $userService = new UserService($userRepository);
-
-        // Initialize services    
-        $unitRepository = new UnitRepository($db);
-        $this->ingredientService = new IngredientService($ingredientRepository, $unitRepository);
-        $this->stepService = new StepService($stepRepository);
-        $this->commentService = new CommentService($commentRepository, $userService);
-        $this->userService = new UserService(new UserRepository($db));
-
-
-        // Initialize the CocktailService with services and repositories
-        $this->cocktailService = new CocktailService(
-            $cocktailRepository,
-            $categoryRepository,
-            $this->ingredientService,
-            $this->stepService,
-            $tagRepository,
-            $this->difficultyRepository,
-            $likeRepository,
-            $userRepository,
-            $commentRepository
-        );
     }
 
     private function redirect($url)
@@ -92,7 +72,7 @@ class CocktailController
         // Fetch necessary data for the form (categories, units)
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
-        $difficulties = $this->difficultyRepository->getAllDifficulties();
+        $difficulties = $this->cocktailService->getAllDifficulties();
 
         $isEditing = false;
         // Pass the necessary data to the view
@@ -105,32 +85,48 @@ class CocktailController
         $this->ensureLoggedIn();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $errors = $this->validateCocktailInput($_POST);
+            $csrfToken = $_POST['csrf_token'] ?? '';
+            $sessionToken = $_SESSION['csrf_token'] ?? '';
 
+            // Validate the CSRF token
+            if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+                http_response_code(403);
+                echo json_encode(['error' => 'Invalid or missing CSRF token.']);
+                exit;
+            }
+            $errors = $this->validateCocktailInput($_POST);
+            $description = sanitizeTrim($_POST['description']);
+
+            if (strlen($description) > self::MAX_DESCRIPTION_LENGTH) {
+                $errors[] = "Description cannot exceed " . self::MAX_DESCRIPTION_LENGTH . " characters.";
+            }
             // Log validation errors
-            error_log("Validation errors: " . print_r($errors, true));
+            // error_log("Validation errors: " . print_r($errors, true));
 
             // Handle the image upload
             $image = $this->handleImageUpload($_FILES['image'], $errors);
 
             // Log image handling errors or success
-            error_log("Image handling result: " . print_r($image, true));
-            error_log("Image upload errors: " . print_r($errors, true));
+            // error_log("Image handling result: " . print_r($image, true));
+            // error_log("Image upload errors: " . print_r($errors, true));
 
-            if ($this->handleValidationErrors($errors, '/cocktails/add')) return;
+            if ($this->handleValidationErrors($errors, '/cocktails/add'))
+                return;
 
             $cocktailData = [
                 'user_id' => $_SESSION['user']['id'],
                 'title' => sanitize($_POST['title']),
-                'description' => sanitize($_POST['description']),
+                'description' => substr($description, 0, self::MAX_DESCRIPTION_LENGTH), // Enforce length
                 'image' => $image,
                 'category_id' => intval($_POST['category_id']),
                 'difficulty_id' => intval($_POST['difficulty_id'])
             ];
 
+            $isSticky = isset($_POST['isSticky']) ? 1 : 0;
+
             try {
                 // Log cocktail data to be stored
-                error_log("Storing cocktail data: " . print_r($cocktailData, true));
+                // error_log("Storing cocktail data: " . print_r($cocktailData, true));
 
                 // Proceed with creating the cocktail
                 $cocktailId = $this->cocktailService->createCocktail($cocktailData);
@@ -140,6 +136,16 @@ class CocktailController
 
                 $parsedQuantities = $this->processQuantities($_POST['quantities']);
                 $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $parsedQuantities, $_POST['units']);
+
+                if ($this->authService->isAdmin() && $isSticky) {
+                    $this->cocktailService->clearStickyCocktail();
+                    $this->cocktailService->setStickyCocktail($cocktailId);
+                }
+
+                // Check for new badges and notify user
+                $userId = $_SESSION['user']['id'];
+                $cocktailCount = $this->cocktailService->getCocktailCountByUserId($userId); // Fetch updated cocktail count
+                $this->userService->checkAndNotifyNewBadge($userId, $cocktailCount); // Check for new badges
 
                 $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
             } catch (Exception $e) {
@@ -157,19 +163,23 @@ class CocktailController
 
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
+        // Get the current user
+        $currentUser = $this->authService->getCurrentUser();
+
         // Only allow the owner or an admin to edit the cocktail
-        if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
+        if ($cocktail->getUserId() !== $currentUser->getId() && !$this->authService->isAdmin()) {
             $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
         }
+
 
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
         $difficultyId = $cocktail->getDifficultyId();
-        $difficultyName = $this->difficultyRepository->getDifficultyNameById($difficultyId);
+        $difficultyName = $this->cocktailService->getDifficultyNameById($difficultyId);
 
-        $difficulties = $this->difficultyRepository->getAllDifficulties();
+        $difficulties = $this->cocktailService->getAllDifficulties();
         $isEditing = true;
 
         // Pass the variables to the view
@@ -181,9 +191,10 @@ class CocktailController
         $this->ensureLoggedIn();
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
-        if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
-            $this->redirect('/cocktails');
+        if ($cocktail->getUserId() !== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
+            $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
         }
+
 
         $errors = $this->validateCocktailInput($_POST);
         $image = $this->handleImageUpdate($_FILES['image'], $cocktail, $errors);
@@ -197,11 +208,10 @@ class CocktailController
 
         $cocktailData = [
             'title' => sanitize($_POST['title']),
-            'description' => sanitize($_POST['description']),
+            'description' => sanitizeTrim($_POST['description']),
             'category_id' => intval($_POST['category_id']),
             'difficulty_id' => intval($_POST['difficulty_id']),
             'image' => $image ?: $cocktail->getImage(),
-            'is_sticky' => isset($_POST['isSticky']) ? 1 : 0
         ];
         error_log("Updating cocktail with data: " . print_r($cocktailData, true));
 
@@ -221,6 +231,11 @@ class CocktailController
             // Handle ingredients
             $this->ingredientService->updateIngredients($cocktailId, $_POST['ingredients'], $parsedQuantities, $_POST['units']);
             $this->handleCocktailIngredients($cocktailId, $_POST['ingredients'], $_POST['quantities'], $_POST['units']);
+
+            if ($this->authService->isAdmin() && $isSticky) {
+                $this->cocktailService->clearStickyCocktail();
+                $this->cocktailService->setStickyCocktail($cocktailId);
+            }
 
             $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
         } catch (Exception $e) {
@@ -244,7 +259,7 @@ class CocktailController
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
         // Only allow the owner or an admin to delete the step
-        if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
+        if ($cocktail->getUserId() !== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
             $this->redirect('/cocktails/' . $cocktailId); // Redirect if the user doesn't have permission
         }
 
@@ -298,6 +313,11 @@ class CocktailController
             $errors[] = "Title cannot be more than 255 characters.";
         }
 
+        // Validate description length (new addition)
+        if (!empty($data['description']) && strlen($data['description']) > 500) { // Adjust length as needed
+            $errors[] = "Description cannot be more than 500 characters.";
+        }
+
         // Check category_id and difficulty_id for valid integers
         if (isset($data['category_id']) && !filter_var($data['category_id'], FILTER_VALIDATE_INT)) {
             $errors[] = "Category must be a valid integer.";
@@ -317,34 +337,35 @@ class CocktailController
     // Handle image upload for new cocktails
     private function handleImageUpload($file, &$errors)
     {
-        if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
-            // Sanitize and validate the original filename
-            $image = sanitize($file['name']);
-            $fileExtension = strtolower(pathinfo($image, PATHINFO_EXTENSION));
-
-            // Check the file extension
-            $allowedTypes = ['jpeg', 'jpg', 'png', 'webp'];
-            if (!in_array($fileExtension, $allowedTypes)) {
-                $errors[] = "Invalid image format. Allowed formats are JPEG, PNG, and WEBP.";
-                return null; // Exit if file type is not allowed
+        try {
+            // Validate if a file is uploaded
+            if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+                throw new \Exception("No valid file uploaded.");
             }
 
-            // Generate a unique filename to avoid conflicts
-            $image = bin2hex(random_bytes(8)) . '.' . $fileExtension;
-            $target_dir = __DIR__ . '/../../public/uploads/cocktails/';
-            $target_file = $target_dir . $image;
 
-            // Move the uploaded file to the target directory
-            if (!move_uploaded_file($file['tmp_name'], $target_file)) {
-                $errors[] = "There was an error uploading the image.";
-                return null;
-            }
+            // Set the target directory for cocktail images
+            $targetDir = __DIR__ . '/../../public/uploads/cocktails/';
 
-            // Return the unique filename for storing in the database
-            return $image;
+
+            // Generate a unique file name for the uploaded image
+            $uniqueFileName = uniqid() . '.webp';
+            $targetPath = $targetDir . $uniqueFileName;
+
+            // Set the desired dimensions for the cocktail image
+            $width = 1280; // Example width
+            $height = 720; // Example height
+
+            // Process the image using the ImageService
+            $this->imageService->processImage($file, $width, $height, $targetPath);
+
+            // Return the unique file name to store in the database
+            return $uniqueFileName;
+        } catch (\Exception $e) {
+            // Capture and log any errors
+            $errors[] = "Failed to upload image: " . $e->getMessage();
+            return null;
         }
-
-        return null; // Return null if no image was uploaded
     }
 
     // Handle image update for editing cocktails
@@ -359,15 +380,15 @@ class CocktailController
     // Ensure user is logged in
     private function ensureLoggedIn()
     {
-        if (!AuthController::isLoggedIn()) {
-            $this->redirect('login');
+        if (!$this->authService->isLoggedIn()) {
+            $this->redirect('/login'); // Redirect to login if not logged in
         }
     }
 
     // Ensure user has permission to edit or delete
     private function ensureUserHasPermission($cocktailUserId)
     {
-        if ($cocktailUserId !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
+        if ($cocktailUserId !== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
             $this->redirect('/cocktails');
         }
     }
@@ -390,43 +411,80 @@ class CocktailController
     public function view($cocktailId, $action = 'view')
     {
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
+        $authController = new AuthController($this->authService, $this->userService);
+        $currentUser = $this->userService->getUserWithProfile($loggedInUserId);
+        // Sanitize inputs
         $cocktailId = intval($cocktailId); // Sanitize ID
         $action = sanitize($action); // Sanitize action
-
-        $cocktail = $this->cocktailService->getCocktailById($cocktailId);
         $isEditing = ($action === 'edit');
+
+        // Fetch primary cocktail details
+        $cocktail = $this->cocktailService->getCocktailById($cocktailId);
+        if (!$cocktail) {
+            // Handle case where cocktail does not exist
+            http_response_code(404);
+            require_once __DIR__ . '/../views/404.php';
+            return;
+        }
+        $cocktailTitle = $cocktail ? htmlspecialchars($cocktail->getTitle()) : 'Unknown Cocktail';
         // Check if user has liked the cocktail
         $cocktail->hasLiked = $loggedInUserId
             ? $this->likeService->userHasLikedCocktail($loggedInUserId, $cocktailId)
             : false;
 
-        // Fetch ingredients and convert quantities to fractions
+        $creator = $this->userService->getUserWithProfile($cocktail->getUserId());
         $ingredients = $this->cocktailService->getCocktailIngredients($cocktailId);
-        $processedIngredients = [];
-        foreach ($ingredients as $ingredient) {
-            $processedIngredients[] = [
+        $processedIngredients = array_map(function ($ingredient) {
+            return [
                 'name' => $ingredient->getName(),
                 'quantity' => $this->ingredientService->convertDecimalToFraction($ingredient->getQuantity()),
                 'unit' => $ingredient->getUnitName(),
             ];
-        }
+        }, $ingredients);
 
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
-        $category = $this->cocktailService->getCategoryByCocktailId($cocktailId);
         $tags = $this->cocktailService->getCocktailTags($cocktailId);
         $categories = $this->cocktailService->getCategories();
+
+        $categoryName = 'Unknown Category';
+        foreach ($categories as $category) {
+            if ($category['category_id'] === $cocktail->getCategoryId()) {
+                $categoryName = $category['name'];
+                break;
+            }
+        }
+
         $units = $this->ingredientService->getAllUnits();
         $difficultyId = $cocktail->getDifficultyId();
-        $difficulties = $this->difficultyRepository->getAllDifficulties();
-        $difficultyName = $this->difficultyRepository->getDifficultyNameById($cocktail->getDifficultyId());
+        $difficulties = $this->cocktailService->getAllDifficulties();
+        $difficultyName = $this->cocktailService->getDifficultyNameById($cocktail->getDifficultyId());
 
         // Fetch total likes for the cocktail
         $totalLikes = $this->likeService->getLikesForCocktail($cocktailId);
         $comments = $this->commentService->getCommentsWithReplies($cocktailId);
+        $viewData = compact(
+            'cocktail',
+            'creator',
+            'processedIngredients',
+            'steps',
+            'tags',
+            'categoryName',
+            'category',
+            'categories',
+            'units',
+            'difficulties',
+            'difficultyName',
+            'totalLikes',
+            'comments',
+            'loggedInUserId',
+            'isEditing'
+        );
 
         if ($isEditing) {
+            extract($viewData);
             require_once __DIR__ . '/../views/cocktails/form.php'; // Load the edit form
         } else {
+            extract($viewData);
             require_once __DIR__ . '/../views/cocktails/view.php'; // Load the view page
         }
     }
@@ -487,14 +545,24 @@ class CocktailController
     // Delete a cocktail (only for the owner or admin)
     public function delete($cocktailId)
     {
+        $csrfToken = $_POST['csrf_token'] ?? '';
+        $sessionToken = $_SESSION['csrf_token'] ?? '';
+
+        // Validate the CSRF token
+        if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Invalid or missing CSRF token.']);
+            exit;
+        }
+
         $cocktailId = intval($cocktailId); // Sanitize ID
         $this->ensureLoggedIn(); // Ensure the user is logged in
 
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
         // Only allow the owner or an admin to delete the cocktail
-        if ($cocktail->getUserId() !== $_SESSION['user']['id'] && !AuthController::isAdmin()) {
-            $this->redirect('/cocktails'); // Redirect if the user doesn't have permission
+        if ($cocktail->getUserId() !== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
+            $this->redirect('/cocktails');
         }
 
         // Delete the cocktail

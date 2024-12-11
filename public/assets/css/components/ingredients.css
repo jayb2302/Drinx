@@ -1,53 +1,113 @@
-
 /* Ingredient Management Section */
+
 #ingredientManagement {
+    display: flex;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-#ingredientManagement h2 {
-    color: var(--accent-primary);
-    font-family: var(--font-display);
+    justify-content: space-between;
+    padding: var(--tag-padding);
+    @media screen and (max-width: 768px) {
+        flex-direction: column;
+    }
+    & h2 {
+        color: var(--text-primary);
+        font-family: var(--font-display);
+    }
+    & li {
+        list-style-type: none;
+        display: flex;
+        justify-content: space-between;
+    }
+    & .uncategorized-section {
+        display: flex;
+        flex-direction: column;
+        width: 45vw;
+        @media screen and (max-width: 768px) {
+            width: 100%;
+        }
+    }
+    & .ingredient-section {
+        display: flex;
+        flex-direction: column;
+        width: 45vw;
+        @media screen and (max-width: 768px) {
+            width: 100%;
+        }
+        & .accordion {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            & .accordion-item {
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                overflow: hidden;
+                transition: all 0.3s ease-in-out;
+                flex-grow: 1;
+                .accordion-header {
+                    background: var(--card-linear-gradient);
+                    color: var(--text-primary);
+                    cursor: pointer;
+                    border: none;
+                    width: 100%;
+                    text-align: left;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    font-size: 1rem;
+                    font-weight: bold;
+                    transition: background-color 0.3s;
+                    &:hover {
+                        background: var(--lcard-linear-gradient);
+                    }
+                }
+                & .accordion-body {
+                    display: none;
+                    overflow: hidden;
+                    flex-grow: 1;
+                    & ul {
+                        background: var(--card-linear-gradient);
+                    }
+                    & .ingredient-list {
+                        list-style: none;
+                        padding: var(--tag-padding);
+                        margin: 0;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                    }
+                }
+            }
+        }
+        & .section-title {
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+    }
 }
 
-#ingredientManagement li {
-    list-style-type: none;
-    display: flex;
-    justify-content: space-between;
-}
 .ingredient-card {
-    display: flex;
-    flex-direction: column;
     background-color: var(--card-background);
-    color: var(--text-secondary);
+    color: var(--text-primary);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 15px;
     transition: background-color 0.3s;
-}
-.ingredient-card li:hover {
-    background-color: var(--card-background-hover);
-}
-.ingredient-card h3 {
-    color: var(--text-primary);
-}
-.ingredient-card p {
-    color: var(--text-secondary);
-}
-/* Buttons */
-button {
-    background-color: var(--button-primary);
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
-    padding: 10px .5rem;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    & li:hover {
+        background-color: var(--card-background-hover);
+    }
+    & h3 {
+        color: var(--text-primary);
+    }
+    & p {
+        color: var(--text-secondary);
+    }
 }
 
 button:hover {
     background-color: var(--button-hover);
+    color: var(--text-primary);
 }
 
 button:disabled {
@@ -57,17 +117,20 @@ button:disabled {
 }
 
 /* Inputs */
-input, select {
+input,
+select {
     background-color: var(--surface);
     color: var(--text-primary);
     border: 1px solid var(--border);
-    padding: 8px;
+    padding: var(--button-padding);
     border-radius: 5px;
     display: flex;
     flex-direction: column;
+    
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     border-color: var(--accent-primary);
     outline: none;
 }
@@ -128,7 +191,7 @@ input:focus, select:focus {
 #assignTagButton {
     background-color: var(--button-primary);
     color: var(--text-secondary);
-    padding: .5rem .3rem;
+    padding: 0.5rem 0.3rem;
     margin-top: 10px;
     border: none;
     cursor: pointer;
@@ -140,7 +203,6 @@ input:focus, select:focus {
 }
 @media (prefers-color-scheme: dark) {
     body {
-        
         color: var(--text-primary);
     }
 
@@ -155,11 +217,5 @@ input:focus, select:focus {
     .modal-content {
         background-color: var(--card-background);
         color: var(--text-primary);
-    }
-
-    /* Customize buttons for dark mode */
-    button {
-        background-color: var(--button-primary);
-        color: var(--text-secondary);
     }
 }

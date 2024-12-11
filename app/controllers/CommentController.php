@@ -1,135 +1,181 @@
 <?php
-class CommentController
+require_once __DIR__ . '/BaseController.php';
+
+class CommentController extends BaseController
 {
     private $commentService;
-    private $cocktailService;
 
-    public function __construct(CommentService $commentService, CocktailService $cocktailService)
-    {
+    public function __construct(
+        AuthService $authService,
+        UserService $userService,
+        CocktailService $cocktailService,
+        CommentService $commentService
+    ) {
+        parent::__construct($authService, $userService, $cocktailService);
         $this->commentService = $commentService;
-        $this->cocktailService = $cocktailService; // Initialize cocktailService
     }
-
 
     // Add a comment or reply
     public function addComment($cocktailId)
     {
-        // Ensure user is logged in
-        $userId = $_SESSION['user']['id'] ?? null;
-        if (!$userId) {
-            $_SESSION['error'] = 'You must be logged in to comment.';
-            header("Location: /login");
-            exit();
+        $this->prepareJsonResponse();
+
+        if (!$this->validateCsrfToken()) {
+            $this->respondWithError('Invalid CSRF token.', 403);
         }
 
-        // Get comment data from POST
+        $userId = $_SESSION['user']['id'] ?? null;
+        if (!$userId) {
+            $this->respondWithError('You must be logged in to comment.', 401);
+        }
+
         $commentText = sanitize($_POST['commentText'] ?? '');
         $parentCommentId = isset($_POST['parent_comment_id']) ? sanitize($_POST['parent_comment_id']) : null;
 
         if (empty($commentText)) {
-            $_SESSION['error'] = 'Comment cannot be empty.';
-            header("Location: /cocktails/{$cocktailId}");
-            exit();
+            $this->respondWithError('Comment cannot be empty.', 400);
         }
 
-        // Ensure parent_comment_id is null for top-level comments
-        $parentCommentId = empty($parentCommentId) ? null : $parentCommentId;
-
-        // Add the comment using service
-        $this->commentService->addComment($userId, $cocktailId, $commentText, $parentCommentId);
-
-        // Redirect back to the cocktail view
-        $cocktailTitle = urlencode($_POST['cocktailTitle']);
-        header("Location: /cocktails/{$cocktailId}-{$cocktailTitle}");
-        exit();
+        try {
+            $this->commentService->addComment($userId, $cocktailId, $commentText, $parentCommentId);
+            $this->renderCommentsSection($cocktailId);
+        } catch (Exception $e) {
+            // error_log($e->getMessage());
+            $this->respondWithError('An unexpected error occurred.', 500);
+        }
     }
 
     // Edit comment
     public function edit($commentId)
     {
+        $this->prepareJsonResponse();
+
+        if (!$this->validateCsrfToken()) {
+            $this->respondWithError('Invalid CSRF token.', 403);
+        }
+
         $comment = $this->commentService->getCommentById($commentId);
-    
-        if ($_SESSION['user']['id'] !== $comment->getUserId() && !AuthController::isAdmin()) {
-            header("HTTP/1.1 403 Forbidden");
-            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-            exit();
+        if (!$comment) {
+            $this->respondWithError('Comment not found.', 404);
         }
-    
-        // Update comment with AJAX data
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $newCommentText = $_POST['comment'] ?? '';
-            if ($this->commentService->updateComment($commentId, $newCommentText)) {
-                echo json_encode(['success' => true, 'comment' => $newCommentText]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to update comment']);
-            }
-            exit();
+
+        if ($_SESSION['user']['id'] !== $comment->getUserId() && !$this->authService->isAdmin()) {
+            $this->respondWithError('You are not authorized to edit this comment.', 403);
+        }
+
+        $newCommentText = sanitize($_POST['commentText'] ?? '');
+        if (empty($newCommentText)) {
+            $this->respondWithError('Comment text cannot be empty.', 400);
+        }
+
+        try {
+            $this->commentService->updateComment($commentId, $newCommentText);
+            $this->renderCommentsSection($comment->getCocktailId());
+        } catch (Exception $e) {
+            // error_log($e->getMessage());
+            $this->respondWithError('An unexpected error occurred.', 500);
         }
     }
 
-    public function update($commentId) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $newCommentText = $_POST['comment'] ?? '';
-            
-            // Perform the update
-            $updated = $this->commentService->updateComment($commentId, $newCommentText);
-
-            // Redirect or send response based on success
-            if ($updated) {
-                header('Location: /cocktails');
-            } else {
-                echo json_encode(['error' => 'Failed to update comment']);
-            }
-        } else {
-            header("HTTP/1.1 405 Method Not Allowed");
-        }
-    }
+    // Delete comment
     public function delete($commentId)
     {
+        // error_log("Delete method called with comment ID: $commentId"); // Add this log
+        $this->prepareJsonResponse();
+    
+        if (!$this->validateCsrfToken()) {
+            // error_log("CSRF token validation failed.");
+            $this->respondWithError('Invalid CSRF token.', 403);
+        }
+    
         $comment = $this->commentService->getCommentById($commentId);
+        if (!$comment) {
+            // error_log("Comment not found for ID: $commentId");
+            $this->respondWithError('Comment not found.', 404);
+        }
+    
+        if ($_SESSION['user']['id'] !== $comment->getUserId() && !$this->authService->isAdmin()) {
+            // error_log("Authorization failed for user ID: {$_SESSION['user']['id']}");
+            $this->respondWithError('You are not authorized to delete this comment.', 403);
+        }
+    
+        try {
+            $cocktailId = $comment->getCocktailId();
+            // error_log("Attempting to delete comment ID: $commentId for cocktail ID: $cocktailId");
+            $this->commentService->deleteComment($commentId);
+    
+            // error_log("Comment ID $commentId deleted successfully.");
+            $this->renderCommentsSection($cocktailId);
+        } catch (Exception $e) {
+            // error_log("Error deleting comment ID $commentId: " . $e->getMessage());
+            $this->respondWithError('An unexpected error occurred.', 500);
+        }
+    }
+    
+    
 
-        if ($_SESSION['user']['id'] !== $comment->getUserId() && !AuthController::isAdmin()) {
-            header("Location: /cocktails");
-            exit();
+    // Add a reply to a comment
+    public function reply($commentId)
+    {
+        $this->prepareJsonResponse();
+
+        if (!$this->validateCsrfToken()) {
+            $this->respondWithError('Invalid CSRF token.', 403);
         }
 
-        // Get cocktail ID and title for redirect
-        $cocktailId = $comment->getCocktailId();
-        $cocktail = $this->cocktailService->getCocktailById($cocktailId); // Retrieve cocktail using cocktailService
-        $cocktailTitle = $cocktail ? urlencode($cocktail->getTitle()) : 'Unknown';
+        $userId = $_SESSION['user']['id'] ?? null;
+        $commentText = sanitize($_POST['comment'] ?? '');
+        $cocktailId = sanitize($_POST['cocktail_id'] ?? '');
 
-        // Delete the comment
-        $this->commentService->deleteComment($commentId);
+        if (!$userId || !$commentText || !$cocktailId) {
+            $this->respondWithError('Invalid input.', 400);
+        }
 
-        // Redirect back to the cocktail page
-        header("Location: /cocktails/{$cocktailId}-{$cocktailTitle}");
+        try {
+            $this->commentService->addComment($userId, $cocktailId, $commentText, $commentId);
+            $this->renderCommentsSection($cocktailId);
+        } catch (Exception $e) {
+            // error_log($e->getMessage());
+            $this->respondWithError('An unexpected error occurred.', 500);
+        }
+    }
+
+    // Helper methods
+    private function prepareJsonResponse()
+    {
+        ob_clean(); // Clear any output buffer
+        header('Content-Type: application/json');
+    }
+
+    private function validateCsrfToken()
+    {
+        $csrfToken = $_POST['csrf_token'] ?? '';
+        return validateCsrfToken($csrfToken);
+    }
+
+    private function respondWithError($message, $statusCode)
+    {
+        http_response_code($statusCode);
+        echo json_encode(['error' => $message]);
         exit();
     }
 
-    public function reply($commentId)
+    private function renderCommentsSection($cocktailId)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $userId = $_SESSION['user']['id'] ?? null;
-            $commentText = $_POST['comment'] ?? '';
-            $cocktailId = $_POST['cocktail_id'] ?? null; // Retrieve cocktail_id from the form
+        $cocktail = $this->cocktailService->getCocktailById($cocktailId);
+        $comments = $this->commentService->getCommentsWithReplies($cocktailId);
+        $currentUser = $this->authService->getCurrentUser();
+        $authController = new AuthController($this->authService, $this->userService);
 
-            // Validate inputs
-            if ($userId && $commentText && $cocktailId) {
-                $parentCommentId = $commentId;
+        ob_start();
+        require __DIR__ . '/../views/cocktails/comment_section.php';
+        $commentsHtml = ob_get_clean();
 
-                // Add reply to the database
-                $this->commentService->addComment($userId, $cocktailId, $commentText, $parentCommentId);
-
-                // Redirect back to the cocktail page with title
-                $cocktailTitle = urlencode($_POST['cocktailTitle'] ?? '');
-                header("Location: /cocktails/{$cocktailId}-{$cocktailTitle}");
-                exit;
-            } else {
-                // Handle invalid input
-                $_SESSION['errors'] = ["Failed to post reply. Please try again."];
-                header("Location: /cocktails/{$cocktailId}");
-                exit;
-            }
-        }
+        echo json_encode([
+            'success' => true,
+            'html' => $commentsHtml,
+            'new_csrf' => generateCsrfToken(),
+        ]);
+        exit();
     }
 }

@@ -4,7 +4,7 @@ use App\Routing\Router;
 require_once __DIR__ . '/router.php';
 require_once __DIR__ . '/app/config/dependencies.php';
 
-$router = new Router(); // Instantiate the Router class
+$router = new Router(); 
 
 // Category routes (with sort options)
 $router->add('GET', '#^/category/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)$#', [HomeController::class, 'index']); // Match /category/{category}/{sort}
@@ -46,13 +46,13 @@ $router->add('POST', '#^/admin/ingredients/delete$#', [IngredientController::cla
 // Search route
 $router->add('GET', '#^/search$#', [SearchController::class, 'search']);
 $router->add('GET', '#^/searchAllUsers$#', [SearchController::class, 'adminUserSearch']);
-
-
-
+$router->add('GET', '#^/admin/ingredients/search$#', [SearchController::class, 'ingredientSearch']);
 // User routes
 $router->add('GET', '#^/profile/(\d+)$#', [UserController::class, 'profile']);
 $router->add('GET', '#^/profile/([a-zA-Z0-9_-]+)$#', [UserController::class, 'profileByUsername']); // Show profile by username
 $router->add('POST', '#^/profile/update$#', [UserController::class, 'updateProfile']); // Handle profile update
+// Social link routes
+$router->add('POST', '#^/profile/social-links/manage$#', [UserController::class, 'manageSocialLinks']);
 
 // Account deletion routes
 $router->add('POST', '#^/profile/delete$#', [UserController::class, 'deleteAccount']); // Handle account deletion directly from profile
@@ -70,14 +70,16 @@ $router->add('POST', '#^/cocktails/update/(\d+)$#', [CocktailController::class, 
 $router->add('POST', '#^/cocktails/delete/(\d+)$#', [CocktailController::class, 'delete']); // Delete a cocktail
 $router->add('POST', '#^/cocktails/(\d+)/delete-step$#', [CocktailController::class, 'deleteStep']);
 $router->add('GET', '#^/cocktails/random$#', [CocktailController::class, 'getRandomCocktail']);
-// View cocktails
-$router->add('GET', '#^/cocktails$#', [CocktailController::class, 'index']); // List all cocktails
 $router->add('GET', '#^/cocktails/(\d+)-(.+)$#', [CocktailController::class, 'view']); // View specific cocktail
+
 // Tag Routes
 $router->add('GET', '#^/tags/([a-zA-Z0-9-]+)$#', [TagController::class, 'showTagsByCategory']);  // Show tags for a category like "Flavor", "Mood", etc.
 $router->add('POST', '#^/cocktails/(\d+)/assign-tags$#', [TagController::class, 'assignTagsToCocktail']);  // Assign tags based on ingredients for a cocktail
+    
 // Admin Ingredient Management
 $router->add('GET', '#^/admin/ingredients/uncategorized$#', [IngredientController::class, 'getUncategorizedIngredients']); // Get uncategorized ingredients
+//CATEGORIZED
+$router->add('GET', '#^/admin/ingredients/categorized$#', [IngredientController::class, 'getCategorizedIngredients']); // Get categorized ingredients
 $router->add('POST', '#^/admin/ingredients/assign-tag$#', [IngredientController::class, 'assignTag']); // Assign tag to ingredient
 $router->add('POST', '#^/admin/ingredients/create$#', [IngredientController::class, 'createIngredient']); // Add new ingredient
 $router->add('POST', '#^/admin/ingredients/edit$#', [IngredientController::class, 'editIngredientName']); // Edit ingredient
@@ -87,12 +89,15 @@ $router->add('POST', '#^/admin/ingredients/delete$#', [IngredientController::cla
 $router->add('GET', '#^/admin/units$#', [IngredientController::class, 'showUnits']); // View all units
 $router->add('POST', '#^/admin/unit/add$#', [IngredientController::class, 'addUnit']); // Add a new unit
 $router->add('POST', '#^/admin/unit/delete$#', [IngredientController::class, 'deleteUnit']); // Delete a unit
+
 // Comment interactions
-$router->add('POST', '#^/cocktails/(\d+)/comments$#', [CommentController::class, 'addComment']);
-$router->add('GET', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
+$router->add('POST', '#^/cocktails/(\d+)-[^/]+/comments$#', [CommentController::class, 'addComment']);
+// $router->add('GET', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment
+$router->add('POST', '#^/comments/(\d+)/edit$#', [CommentController::class, 'edit']); // Edit comment * current itteration only uses POST. ** Edit is a prefared naming convention
 $router->add('POST', '#^/comments/(\d+)/update$#', [CommentController::class, 'update']); // Update comment
 $router->add('POST', '#^/comments/(\d+)/delete$#', [CommentController::class, 'delete']); // Delete comment or reply
 $router->add('POST', '#^/comments/(\d+)/reply$#', [CommentController::class, 'reply']);
+
 // Toggle like route
 $router->add('POST', '#^/cocktails/(\d+)/toggle-like$#', [LikeController::class, 'toggleLike']);
 

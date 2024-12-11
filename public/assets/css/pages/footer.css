@@ -1,24 +1,19 @@
 footer {
-    color: var(--text-secondary);
-    background-color: var(--card-background);
-    padding: 20px 0;
-    text-align: center;
-    font-size: 0.9rem;
-    border-top: 1px solid var(--border);
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-  }
-  
-  footer a {
+  color: var(--text-primary);
+  background-color: var(--background);
+  padding: 0;
+  text-align: center;
+  font-size: 0.9rem;
+  border-top: 1px solid var(--border);
+  z-index: 1001;
+  & a {
     color: var(--text-link);
     text-decoration: none;
+    & :hover {
+      color: var(--accent-hover);
+    }
   }
-  
-  footer a:hover {
-    color: var(--accent-hover);
-  }
-  
-  footer p {
+  & p {
     margin: 0;
+  }
 }

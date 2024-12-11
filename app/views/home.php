@@ -1,6 +1,7 @@
 <?php
 $metaTitle = "Drinx - Cocktail Library";
 $pageTitle = "Drip, Drop, Drinx";
+$page = "home";
 
 include __DIR__ . '/layout/header.php';
 
@@ -9,6 +10,11 @@ if (isset($_COOKIE['logout_success'])) {
     echo '<div class="alert alert-success">' . htmlspecialchars($_COOKIE['logout_success']) . '</div>';
     // Clear the cookie after displaying the message
     setcookie('logout_success', '', time() - 3600, "/"); // Expire the cookie immediately
+}
+if (isset($_COOKIE['account_deleted_success'])) {
+    echo '<div class="alert alert-success">' . htmlspecialchars($_COOKIE['account_deleted_success']) . '</div>';
+    // Unset the cookie after displaying the message
+    setcookie('account_deleted_success', '', time() - 3600, "/");
 }
 
 // Get the current URL path
@@ -23,19 +29,24 @@ $cocktailId = $matches[1] ?? null;
         <script src="<?= htmlspecialchars($script); ?>"></script>
     <?php endforeach; ?>
 <?php endif; ?>
-<div class="content-wrapper">
-<aside class="leftSidebar">
+<div class="container">
+    <aside class="container__left">
+        <button id="toggle-left" class="toggle-button" aria-expanded="true"><i class="fa-solid fa-chevron-left"></i></button>
         <?php include __DIR__ . '/cocktails/categories.php'; ?>
         <?php if (isset($stickyCocktail) && is_object($stickyCocktail)): ?>
             <div class="stickyContainer">
                 <div class="stickyCard">
-                    <h2>📌Sticky Cocktail</h2>
-                    <div class="stickyMediaWrapper">
-                        <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>" alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
-                    </div>
+                    <h2> <i class="fa-solid fa-paperclip"></i> Sticky Cocktail</h2>
+                    <a href="/cocktails/<?= htmlspecialchars($stickyCocktail->getCocktailId()) ?>-<?= urlencode($stickyCocktail->getTitle()) ?>">
+                        <h3 class="stickyTitle"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
+                        <div class="stickyMediaWrapper">
+                            <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>" alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
+                        </div>
+                    </a>
                     <div class="stickyContent">
-                        <h3 class="cocktail-title"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
-                        <p class="cocktail-description"><?php echo htmlspecialchars($stickyCocktail->getDescription()); ?></p>
+                        <p class="sticky-description">
+                            <?= htmlspecialchars(getFirstSentence($stickyCocktail->getDescription())); ?>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -43,10 +54,7 @@ $cocktailId = $matches[1] ?? null;
             <p>No sticky cocktail selected or invalid data.</p>
         <?php endif; ?>
     </aside>
-    <!-- Sticky Cocktail -->
-    <main>
-
-        
+    <main class="container__main">
         <!-- Logic to include forms based on the path -->
         <?php
         if ($currentPath === '/login') {
@@ -74,16 +82,14 @@ $cocktailId = $matches[1] ?? null;
         }
         ?>
     </main>
-    <aside class="controlPanel">
-        <?php
-        // Only include the About section if the user is not logged in
-        if (!isset($_SESSION['user'])):
-            include __DIR__ . '/about/about.php';
-        endif;
-        ?>
+    <nav class="container__right">
+        <button id="toggle-right" data-tooltip="Hide panel" class="toggle-button" aria-expanded="true"><i class="fa-solid fa-angle-right"></i></button>
         <?php
         $userProfile = $userProfile ?? null;
         include __DIR__ . '/layout/control_panel.php'; ?>
-    </aside>
+        <?php
+        include __DIR__ . '/about/about.php';
+        ?>
+    </nav>
 </div>
 <?php include __DIR__ . '/layout/footer.php'; ?>

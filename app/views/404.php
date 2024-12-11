@@ -1,12 +1,19 @@
+<?php
+require_once __DIR__ . '/layout/header.php';
+?>
+<div class="page-404">
+    <div class="message-404">
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Page Not Found</title>
-</head>
-<body>
-    <h1>404 - Page Not Found</h1>
-    <p>The page you are looking for does not exist.</p>
-</body>
-</html>
+        <span>
+            404
+        </span>
+        <h1>
+            How'd you end up here?
+        </h1>
+        <p>You need to stop drinking. </p>
+        
+        <a href="/">Seek homepage</a>
+    </div>
+</div>
+
+<?php require_once __DIR__ . '/layout/footer.php'; ?>
