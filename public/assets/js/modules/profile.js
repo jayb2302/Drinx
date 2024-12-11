@@ -18,6 +18,16 @@ export function initializeProfile() {
             form.style.display = 'none';
         }
     });
+    
+    // Close form when clicking outside of the form
+    document.addEventListener('click', (e) => {
+        if (form && form.style.display === 'block') {
+            const isClickInside = form.contains(e.target) || editButton?.contains(e.target);
+            if (!isClickInside) {
+                form.style.display = 'none';
+            }
+        }
+    });
 
     document.getElementById('deleteAccountButton')?.addEventListener('click', () => {
         const section = document.getElementById('deleteConfirmSection');

@@ -176,3 +176,8 @@ li {
 .success {
   color: var(--success);
 }
+/* centralizing select element color styling ? */
+/* select{
+  background-color: var(--button-primary); 
+  color: var(--text-secondary);
+} */

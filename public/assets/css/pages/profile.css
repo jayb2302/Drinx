@@ -1,112 +1,260 @@
 .profile__container {
+  display: flex;
+  flex-direction: row-reverse;
+  position: relative;
+  height: 85vh;
+  & .follow,
+  .unfollow {
+    float: inline-end;
+    margin-bottom: 0.5rem;
+  }
+  & #edit-profile-form {
+    width: 25dvw;
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--overlay);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    z-index: 100;
+
+    & .close-button-container {
+      display: flex;
+      justify-content: flex-end;
+      & .close-button {
+        margin: 0;
+      }
+    }
+    & form {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    & .platform-container {
+      color: var(--text-secondary);
+      & label {
+        display: block;
+        font-family: var(--font-display);
+        font-weight: bold;
+        color: var(--text-primary);
+        margin-bottom: 0.8rem;
+      }
+      & select {
+        font-size: 1rem;
+        background-color: var(--surface);
+        color: var(--text-primary);
+        margin-bottom: 0.8rem;
+      }
+    }
+    & button {
+      display: block;
+      justify-self: center;
+      margin-top: 1rem;
+    }
+  }
+
+  & .profile__main {
     display: flex;
-    flex-direction: row-reverse;
-    position: relative;
-    height: 85vh;
-    & #edit-profile-form {
-        width: 100%;
-        display: none;
-        position:fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: var(--overlay);
-        z-index: 100;
-        & .form-container {
-         background: var(--lcard-linear-gradient);
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    overflow-y: scroll;
+
+    & .profile-info {
+      background: var(--lcard-linear-gradient);
+      border-radius: 10px;
+      padding: var(--base-padding);
+    }
+    & .edit-delete {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      & #edit-profile-button {
+        text-align: center;
+      }
+      & .delete-account-section {
+        justify-items: flex-end;
+        align-self: flex-end;
+
+        /* max-width: min-content; */
+        & button {
+          color: var(--error);
         }
+        & #deleteConfirmSection form {
+          text-align: end;
+          justify-self: end;
+          & > * {
+            margin: 0.5rem;
+          }
+        }
+      }
+    }
+  }
+  & .profile-picture {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    & img {
+      align-self: center;
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+    }
+    & .follow-stats {
+      display: flex;
+      text-align: center;
+      padding: var(--base-padding);
+      border: 1px solid;
+      border-radius: var(--border-radius);
+      justify-content: space-around;
+      align-items: center;
+      font-size: 1rem;
+    }
+  }
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0.5rem 0 2rem;
+    & .fa-brands {
+      font-size: 2rem;
+    }
+  }
+  & .profile__recipes {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    flex-grow: 1;
+    margin: 0;
+    border-radius: 1rem;
+    background: var(--card-linear-gradient);
+    padding: var(--base-padding);
+    & .recipe-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      white-space: nowrap;
+      scroll-behavior: smooth;
+      overflow: hidden;
+      & .recipe-card {
+        flex: 0 0 auto;
+        width: 20vw;
+        max-width: 300px;
+        background: var(--card-linear-gradient);
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        & a {
+          position: relative;
+          & h3 {
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            background: var(--card-linear-gradient);
+            border-radius: 0.5rem 0.5rem 0 0;
+          }
+        }
+        & img {
+          width: 100%;
+          aspect-ratio: 4/3;
+        }
+
+        & .recipe-dates {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+  }
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+
+    #edit-profile-form {
+      top: 55%;
+      width: 100vw;
+      z-index: 10000;
+      position: fixed;
+      bottom: 0;
+      top: 0;
+      left: 0;
+      transform: none;
+      & .form-container {
+        height: 100%;
+        & label,
+        input,
+        textarea {
+          font-size: 1.1rem;
+        }
+      }
+      & .close-button-container {
+        margin-bottom: 1rem;
+      }
+      & button {
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
     }
     & .profile__main {
-        display: flex;
+      margin: 2%;
+      width: 100%;
+      width: -moz-available;
+      width: -webkit-fill-available;
+    }
+    & .profile-info {
+      width: 100%;
+      width: -moz-available;
+      width: -webkit-fill-available;
+    }
+
+    .profile__recipes {
+      width: 100%;
+      width: -moz-available;
+      width: -webkit-fill-available;
+      margin: 2%;
+      & .recipe-container {
+        width: 100%;
+        width: -moz-available;
+        width: -webkit-fill-available;
+        margin-top: 1rem;
         justify-content: space-evenly;
-        align-items: center;
-        
-        & .profile-info {
-            background: var(--lcard-linear-gradient);
-            border-radius: 10px;
+        padding: 0.5rem;
+        & .recipe-card {
+          width: -webkit-fill-available;
+          height: min-content;
+          & h3 {
             padding: var(--base-padding);
+          }
+          & .cocktailInfo {
+            font-size: 0.7rem;
+          }
         }
-        & .edit-delete {
-            display: flex;
-            flex-direction: column;
-            gap: .5rem;
-        }
+      }
     }
-    & .profile-picture {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        & img {
-            align-self: center;
-            border-radius: 50%;
-            width: 100px;
-            height: 100px;
-        }
-        & .follow-stats {
-            text-align: center;
-        }
+
+    .social-icons {
+      & .fa-brands {
+        font-size: 2.5rem;
+      }
     }
-    & .profile__recipes {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-        flex-grow: 1;
-        margin: 0;
-        border-radius: 1rem;
-        background: var(--card-linear-gradient);
-        padding: var(--base-padding);
-        & .recipe-container {
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
-            gap: 1rem;
-            flex-wrap: wrap;
-            border-radius: 1rem;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            white-space: nowrap;
-            scroll-behavior: smooth;
-            overflow: hidden;
-            & .recipe-card {
-                flex: 0 0 auto;
-                width: 20vw;
-                max-width: 300px;
-                background: var(--card-linear-gradient);
-                padding: 0.5rem;
-                border-radius: 0.5rem;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                & a {
-                    position: relative;
-                    & h3 {
-                        width: 100%;
-                        position: absolute;
-                        bottom: 0;
-                        background: var(--card-linear-gradient);
-                        border-radius: .5rem .5rem 0 0 ;
-                    }
-                }
-                & img {
-                    width: 100%;
-                    aspect-ratio: 4/3;
-                }
-               
-                & .recipe-dates {
-                    display: flex;
-                    flex-direction: column;
-                }
-            }
-        }
-    }
-}
-.recipe-wrapper h3 {
+  }
+
+  .recipe-wrapper h3 {
     margin: 0.5rem 0;
     color: var(--text-primary);
-}
+  }
 
-.recipe-card {
+  .recipe-card {
     background-color: var(--card-background);
     padding: 0.5rem;
     border-radius: 0.5rem;
+  }
 }
-
-

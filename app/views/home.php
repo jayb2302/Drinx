@@ -7,12 +7,12 @@ include __DIR__ . '/layout/header.php';
 
 // Check if the logout_success cookie is set and display it
 if (isset($_COOKIE['logout_success'])) {
-    echo '<div class="alert alert-success">' . htmlspecialchars($_COOKIE['logout_success']) . '</div>';
+    echo '<div class="success">' . htmlspecialchars($_COOKIE['logout_success']) . '</div>';
     // Clear the cookie after displaying the message
     setcookie('logout_success', '', time() - 3600, "/"); // Expire the cookie immediately
 }
 if (isset($_COOKIE['account_deleted_success'])) {
-    echo '<div class="alert alert-success">' . htmlspecialchars($_COOKIE['account_deleted_success']) . '</div>';
+    echo '<div class="success">' . htmlspecialchars($_COOKIE['account_deleted_success']) . '</div>';
     // Unset the cookie after displaying the message
     setcookie('account_deleted_success', '', time() - 3600, "/");
 }

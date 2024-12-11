@@ -1,116 +1,126 @@
 .admin-container {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    background: var(--lcard-linear-gradient);
-    padding: var(--base-padding);
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    color: var(--text-secondary);
-    font-family: var(--font-body);
-    gap: 1rem;
-    margin-bottom: 15%;
-    & h1 {
-        font-family: var(--font-display);
-        font-size: 2rem;
-        color: var(--text-primary);
-        text-align: start;
-    }
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background: var(--lcard-linear-gradient);
+  padding: var(--base-padding);
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  gap: 1rem;
+  margin-bottom: 15%;
+  & h1 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--text-primary);
+    text-align: start;
+  }
 }
 
 .admin-dashboard {
-    padding: 1rem;
-    background: var(--card-background);
-    color: var(--text-primary);
-    border-radius: 0.5rem;
-    font-family: var(--font-body);
-    & .dashboard-stats {
-        display: flex;
-        justify-content: flex-start;
-        background: var(--card-radial-gradient);
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        position: relative;
-        overflow: hidden;
-        width: 100%;
-        padding: 1rem 0;
-        scroll-behavior: smooth;
-        & :hover {
-            overflow-x: auto; /* Keep horizontal scroll visible on hover */
-        }
+  padding: 1rem;
+  background: var(--card-background);
+  color: var(--text-primary);
+  border-radius: 0.5rem;
+  font-family: var(--font-body);
+  & .dashboard-stats {
+    display: flex;
+    justify-content: flex-start;
+    background: var(--card-radial-gradient);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding: 1rem 0;
+    scroll-behavior: smooth;
+    & :hover {
+      overflow-x: auto; /* Keep horizontal scroll visible on hover */
     }
-    & .dashboard-navigation {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 2rem;
-        & .button {
-            flex: 1;
-            background: var(--button-primary);
-            color: var(--text-secondary);
-            padding: 0.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+  }
+  & .dashboard-navigation {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    & .button {
+      flex: 1;
+      background: var(--button-primary);
+      color: var(--text-secondary);
+      padding: 0.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
+  }
 }
 
 .dashboard-navigation .button:hover {
-    background: var(--button-hover);
+  background: var(--button-hover);
 }
 .stat-card {
-    flex: 0 0 auto;
-    width: 150px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    padding: 0.5rem;
-    background-color: var(--card-radial-gradient);
-    position: relative;
-    height: fit-content;
-    & .stat-info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        & .stat-icon {
-            position: absolute;
-            object-fit: cover;
-            font-size: 2rem;
-            color: var(--accent-primary);
-            bottom: .5rem;
-            mix-blend-mode: screen;
-            left: .5rem;
-            opacity: 0.4;
-        }
+  flex: 0 0 auto;
+  width: 150px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 0.5rem;
+  background-color: var(--card-radial-gradient);
+  position: relative;
+  height: fit-content;
+  & .stat-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    & .stat-icon {
+      position: absolute;
+      object-fit: cover;
+      font-size: 2rem;
+      color: var(--accent-primary);
+      bottom: 0.5rem;
+      mix-blend-mode: screen;
+      left: 0.5rem;
+      opacity: 0.4;
     }
+  }
 
-    & .stat-title {
-        font-size: 1rem;
-        margin: 0;
-        color: var(--text-primary);
-    }
+  & .stat-title {
+    font-size: 1rem;
+    margin: 0;
+    color: var(--text-primary);
+  }
 
-    & .stat-value {
-        font-size: 1.25rem;
-        font-weight: bold;
-        letter-spacing: 0.1rem;
-        color: var(--text-primary);
-    }
+  & .stat-value {
+    font-size: 1.25rem;
+    font-weight: bold;
+    letter-spacing: 0.1rem;
+    color: var(--text-primary);
+  }
 }
 
 .stats-scroll {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    animation: scrollLeft 15s linear;
-    position: relative;
-    will-change: transform;
-    padding: 0 1rem;
-    overflow: hidden;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  animation: scrollLeft 15s linear;
+  position: relative;
+  will-change: transform;
+  padding: 0 1rem;
+  overflow: hidden;
+  justify-content: space-around;
+  
 }
+
+@media screen and (max-width: 768px) {
+    .stats-scroll {
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+  }
 
 /* Animation */
 /* @keyframes scrollLeft {
@@ -124,18 +134,19 @@
 
 /* Optional: Pause on hover */
 .dashboard-stats:hover .stats-scroll {
-    animation-play-state: paused;
+  animation-play-state: paused;
 }
 
 .dashboard-stats::-webkit-scrollbar {
-    height: 8px;
+  height: 8px;
 }
 
 .dashboard-stats::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 
 .dashboard-stats::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
+  
