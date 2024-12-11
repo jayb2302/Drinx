@@ -9,6 +9,11 @@ export function initializeSearch() {
     }
 
     function performSearch(query) {
+        query = query.trim();
+        if (query.length < 3) {
+            $('#searchResults').hide().empty();
+            return;
+        }
         $.ajax({
             url: '/search',
             type: 'GET',
@@ -22,8 +27,13 @@ export function initializeSearch() {
         const resultsContainer = $('#searchResults');
         resultsContainer.empty();
 
-        if (data?.users) displayUserSuggestions(data.users, resultsContainer);
-        if (data?.cocktails) displayCocktailSuggestions(data.cocktails, resultsContainer);
+        // Check if users or cocktails exist in the response
+        if (data?.users && data.users.length > 0) {
+            displayUserSuggestions(data.users, resultsContainer);
+        }
+        if (data?.cocktails && data.cocktails.length > 0) {
+            displayCocktailSuggestions(data.cocktails, resultsContainer);
+        }
 
         resultsContainer.toggle(resultsContainer.children().length > 0);
     }
