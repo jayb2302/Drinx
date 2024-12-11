@@ -45,7 +45,7 @@
   --button-secondary: #303841;
   --button-hover: #fad325c7;
   --button-radius: 0.5rem;
-  --border: #303841;
+  --border: #303841c6;
   --container-border: #303841;
 
   --success: #69bf69;
@@ -74,6 +74,8 @@
   --tag-padding: 0.2rem 0.5rem;
   --base-padding: 0.5rem 1rem;
   --border-radius: clamp(0.5rem, calc(var(--base-padding) * 0.5), 1rem);
+
+  --box-shadow: 0px 98px 18px -97px rgba(48,56,65,0.56) inset;
 }
 
 :root[data-theme="dark"] {
@@ -121,6 +123,8 @@
   .category {
     color: var(--text-secondary);
   }
+
+  
 }
 
 body {
@@ -157,7 +161,7 @@ a {
   transition: color 0.3s;
   cursor: pointer;
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 li {

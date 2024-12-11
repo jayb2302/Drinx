@@ -1,7 +1,9 @@
 .fa-heart {
     color: var(--error);
 }
-
+.fa-paperclip {
+    color: var(--text-primary);
+}
 .fa-shake {
     animation: custom-shake 1s ease-in-out infinite;
 }

@@ -23,12 +23,12 @@
                                     data-tag-id="<?= htmlspecialchars($tag['tag_id']); ?>"
                                     data-tag-name="<?= htmlspecialchars($tag['name']); ?>"
                                     data-tag-category-id="<?= htmlspecialchars($tag['tag_category_id']); ?>">
-                                    🖊️
+                                    <i class="fa-solid fa-pencil"></i>
                                 </button>
                                 <button class="button-error deleteTagButton" 
                                     data-tag-id="<?= htmlspecialchars($tag['tag_id']); ?>" 
                                     data-tag-name="<?= htmlspecialchars($tag['name']); ?>">
-                                    🗑️
+                                    <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
                         </li>
