@@ -58,6 +58,9 @@
         justify-content: space-between;
         gap: 1rem;
         padding: 1rem;
+        .prep-time i {
+            color: var(--accent-primary);
+        }    
     }
     & .cocktailDescription {
         padding-left: 1.5rem;
@@ -137,6 +140,7 @@
                 padding: .5rem;
                 position: absolute;
                 bottom: 0;
+                width: 100%;
             }
         } 
         & h2 {

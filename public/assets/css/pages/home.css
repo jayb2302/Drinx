@@ -2,6 +2,8 @@
     display: flex;
     flex-direction: row;
     overflow-x: hidden;
+    flex-grow: 1;
+    
     @media screen and (max-width: 768px) {
         flex-direction: column-reverse;
     }
@@ -11,7 +13,7 @@
             margin 0.4s ease,
             width 0.4s ease;
         border-radius: var(--border-radius);
-        padding: 0 1.5rem;
+        padding: var(--base-padding);
         
         margin-bottom: 5%;
         @media screen and (max-width: 768px) {

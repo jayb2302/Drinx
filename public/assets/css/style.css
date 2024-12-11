@@ -45,7 +45,7 @@
   --button-secondary: #303841;
   --button-hover: #fad325c7;
   --button-radius: 0.5rem;
-  --border: #fad21e;
+  --border: #303841;
   --container-border: #303841;
 
   --success: #69bf69;
@@ -98,7 +98,7 @@
   --button-secondary: #1f1f1f;
   --button-hover: #dcb404d1;
 
-  --border: #dcb404;
+  --border: #bec6cf;
   --container-border: #f2f2f2;
 
   --success: #409640;
@@ -156,6 +156,8 @@ a {
   text-decoration: none;
   transition: color 0.3s;
   cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 600;
 }
 
 li {

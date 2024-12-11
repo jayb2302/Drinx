@@ -72,9 +72,8 @@ button {
 
 .set-sticky {
     background-color: var(--button-secondary); 
-    color: white; 
+    color: var(--text-primary); 
     border: none; 
-    padding: 10px 20px; 
     cursor: pointer; 
     transition: background-color 0.3s; 
     opacity: 0.7; 
