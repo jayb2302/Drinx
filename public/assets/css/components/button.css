@@ -94,12 +94,12 @@ button {
 .randomRecipeButton {
     width: 100%;
     padding: .5rem;
-    background-color: var(--accent-primary);
+    background-color: var(--button-secondary);
     color: var(--text-primary);
+    border: solid 1px var(--border);
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     font-size: 1rem;
-    border: none;
-    border-radius: 0.3rem;
+    border-radius: var(--button-radius);
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
     font-family: var(--font-display);

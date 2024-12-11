@@ -18,7 +18,7 @@ export function initializeIngredients() {
     });
 
     // Initialize Add Ingredient Modal
-    console.log("Initializing Add Ingredient Modal");
+    // console.log("Initializing Add Ingredient Modal");
     $("#addIngredientDialog").dialog({
         autoOpen: false,
         modal: true,
@@ -95,7 +95,7 @@ export function initializeIngredients() {
         $("#ingredientId").val(ingredientId); // Set the hidden ingredient ID
         $("#ingredientName").text(ingredientName); // Set the ingredient name in the modal
 
-        console.log("Ingredient ID:", ingredientId, "Ingredient Name:", ingredientName); // Debug
+        // console.log("Ingredient ID:", ingredientId, "Ingredient Name:", ingredientName); // Debug
         $("#editIngredientContainer").show();
 
         // Fetch tags and open the dialog
@@ -176,7 +176,7 @@ export function initializeIngredients() {
                 },
                 data: JSON.stringify({ ingredient_id: ingredientId, csrf_token: csrfToken }),
                 success: function (response) {
-                    console.log("Delete response:", response);
+                    // console.log("Delete response:", response);
 
                     // Ensure response is parsed correctly (if it's a string, parse it)
                     if (typeof response === "string") {
@@ -218,7 +218,7 @@ export function initializeIngredients() {
             success: function (response) {
                 // Check if the response has a success status and contains groupedTags
                 if (response.status === "success" && response.groupedTags) {
-                    console.log("Tags fetched:", response.groupedTags);
+                    // console.log("Tags fetched:", response.groupedTags);
 
                     const $dropdown = $("#tag");
                     $dropdown.empty();
@@ -305,7 +305,7 @@ export function initializeIngredients() {
             method: 'GET',
             dataType: 'json',
             success: function (response) {
-                console.log("Fetched uncategorized ingredients:", response);
+                // console.log("Fetched uncategorized ingredients:", response);
 
                 if (response.status === 'success') {
                     renderUncategorizedIngredients(response.ingredients);

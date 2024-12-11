@@ -55,8 +55,9 @@
     flex-grow: 1;
     & .title {
       border-bottom: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: var(--button-radius);
       padding-bottom: 0.5rem;
+      padding-left: 1rem; 
       color: var(--text-primary);
     }
     @media screen and (max-width: 768px) {
@@ -68,6 +69,7 @@
     }
     & .creatorInfo {
       padding-top: .5rem;
+      padding-left: 1rem;
     }
     & .cocktailActions {
       position: sticky;
