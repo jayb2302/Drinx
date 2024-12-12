@@ -6,6 +6,8 @@
     flex-direction: column;
     background-image: var(--background);
     position: relative;
+    /*width: 100%;*/ /* for uniform cocktail images*/
+    max-width: 800px;
     & a {
         position: relative;
     }
@@ -90,9 +92,10 @@
     
     & .cocktailImage {
         width: 100%;
-        object-fit: contain;
         border-bottom: 1px solid var(--accent-primary);
         border-radius: 6px 6px 0 0;
+        aspect-ratio: 4/3;  
+        object-fit: cover;  
     }
     & p {
         text-align: start;
@@ -113,7 +116,6 @@
 }
 
 /*  Sticky Cocktail  */
-
 .stickyContainer {
     position: relative;
     display: flex;
@@ -149,7 +151,6 @@
             top: 0;
             border-radius: var(--button-radius);
         }
-    
         & .stickyContent {
             background-color: var(--background);
             color: var(--text-primary);
@@ -157,15 +158,12 @@
             top: 0;
             bottom: 0;
             border-radius: 0 0 8px 8px;
-            
         }
-        
         & img {
             object-fit: cover;
             height: auto;
             border-radius: 4px;
         }
-        
         & a :hover {
             color: var(--text-primary);
         }

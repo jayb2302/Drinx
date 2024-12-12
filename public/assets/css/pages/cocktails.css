@@ -86,7 +86,6 @@
     }
   }
   & .container__comments {
-    
     padding: var(--base-padding);
     background: var(--lcard-linear-gradient);
     @media screen and (max-width: 768px) {

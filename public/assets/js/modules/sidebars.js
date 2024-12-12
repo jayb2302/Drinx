@@ -6,7 +6,7 @@ export function initializeSidebars() {
     const categoryLinks = document.querySelectorAll('.category-sidebar a'); 
 
     if (!leftSidebar || !rightSidebar || !leftToggleButton || !rightToggleButton) {
-        console.warn('Sidebar elements or toggle buttons are missing.');
+        // console.warn('Sidebar elements or toggle buttons are missing.');
         return;
     }
  // Helper to update tooltip

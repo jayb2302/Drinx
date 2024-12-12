@@ -1,17 +1,21 @@
 .admin-container {
-    background: var(--lcard-linear-gradient);
-    padding: var(--base-padding);
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    color: var(--text-secondary);
-    font-family: var(--font-body);
-   
-    & h1 {
-        font-family: var(--font-display);
-        font-size: 1.5rem;
-        color: var(--text-primary);
-        text-align: start;
-    }
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background: var(--lcard-linear-gradient);
+  padding: var(--base-padding);
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  gap: 1rem;
+  /* margin-bottom: 15%; */
+  & h1 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--text-primary);
+    text-align: start;
+  }
 }
 
 .admin-dashboard {
@@ -60,7 +64,7 @@
 }
 
 .dashboard-navigation .button:hover {
-    background: var(--button-hover);
+  background: var(--button-hover);
 }
 .stat-card {
     border-radius: 8px;
@@ -89,11 +93,11 @@
         border-radius: 50%;
     }
 
-    & .stat-title {
-        font-size: 1rem;
-        margin: 0;
-        color: var(--text-primary);
-    }
+  & .stat-title {
+    font-size: 1rem;
+    margin: 0;
+    color: var(--text-primary);
+  }
 
     & .stat-value {
         font-size: 0.9rem;
@@ -127,20 +131,20 @@
 
 /* Optional: Pause on hover */
 .dashboard-stats:hover .stats-scroll {
-    animation-play-state: paused;
+  animation-play-state: paused;
 }
 
 .dashboard-stats::-webkit-scrollbar {
-    height: 8px;
+  height: 8px;
 }
 
 .dashboard-stats::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 
 .dashboard-stats::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 @media screen and (max-width: 768px) {

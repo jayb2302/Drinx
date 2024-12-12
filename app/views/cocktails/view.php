@@ -6,10 +6,10 @@ include_once __DIR__ . '/../../helpers/helpers.php';
 
 ?>
 <?php if (isset($_SESSION['badge_notification'])): ?>
-    <?php error_log("Displaying badge notification: " . print_r($_SESSION['badge_notification'], true)); ?>
-    <div class="alert alert-success">
-        <h4><?= htmlspecialchars($_SESSION['badge_notification']['message']); ?></h4>
-        <p><?= htmlspecialchars($_SESSION['badge_notification']['badge_description']); ?></p>
+    <!-- <?php error_log("Displaying badge notification: " . print_r($_SESSION['badge_notification'], true)); ?> -->
+    <div id="message" class="success">
+        <i class="fa-solid fa-bell success"></i><h4><?= htmlspecialchars($_SESSION['badge_notification']['message']); ?></h4>
+        <!-- <p><?= htmlspecialchars($_SESSION['badge_notification']['badge_description']); ?></p> -->
     </div>
     <?php unset($_SESSION['badge_notification']); ?>
 <?php endif; ?>

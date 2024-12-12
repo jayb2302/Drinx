@@ -18,7 +18,17 @@
                     style="display: <?= $isEditing && $cocktail->getImage() ? 'block' : 'none'; ?>; width: 100px;">
 
             <?php endif; ?>
-
+            <?php
+            if (isset($_SESSION['errors'])) {
+                echo '<ul class="error-messages">';
+                foreach ($_SESSION['errors'] as $error) {
+                    echo '<li>' . htmlspecialchars($error) . '</li>';
+                }
+                echo '</ul>';
+                // Clear the errors after displaying them
+                unset($_SESSION['errors']);
+            }
+            ?>
         </div>
         <div class="recipeHeader">
             <div class="form-group">
@@ -175,15 +185,3 @@
         </div>
     </form>
 </div>
-
-<?php
-if (isset($_SESSION['errors'])) {
-    echo '<ul class="error-messages">';
-    foreach ($_SESSION['errors'] as $error) {
-        echo '<li>' . htmlspecialchars($error) . '</li>';
-    }
-    echo '</ul>';
-    // Clear the errors after displaying them
-    unset($_SESSION['errors']);
-}
-?>

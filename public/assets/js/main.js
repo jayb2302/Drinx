@@ -15,6 +15,7 @@ import { initializeSidebars } from './modules/sidebars.js';
 import { initializeImageValidation } from './modules/image-handler.js';
 import { initializeSocialMedia } from './modules/socials.js';
 import { initializeThemeSwitcher } from './modules/theme.js';
+import { initializeMessageTimeout } from './modules/messageTimeOut.js';
 // Fetch CSRF token from the meta tag
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -38,6 +39,8 @@ document.addEventListener('DOMContentLoaded', function () {
             initializeSticky();
             initializeRandomCocktail();
             initializeCocktail();
+            initializeMessageTimeout();
+            initializeImageValidation('image', 'cocktail-image-preview', 'cocktail-file-error');
             break;
 
         case 'profile':
@@ -45,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             initializeProfile();
             initializeImageValidation('profile_picture', 'image-preview', 'file-error');
             initializeSocialMedia();
+            initializeMessageTimeout();
             break;
 
         case 'admin':
@@ -53,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
             initializeIngredients();
             initializeTags();
             initializeUserManagement();
+            initializeMessageTimeout();
             break;
 
         case 'cocktail':
@@ -61,8 +66,9 @@ document.addEventListener('DOMContentLoaded', function () {
             initializeComments();
             initializeLikes();
             initializeImageValidation('image', 'cocktail-image-preview', 'cocktail-file-error');
+            initializeMessageTimeout();
             break;
-
+            
         default:
             console.warn('Unknown page type:', pageType);
             break;

@@ -35,9 +35,13 @@
         transition: 0.2s ease-out;
       }
     }
-    & .userContainer {
-      max-height: 40vh;
-      overflow-y: auto;
+  }
+  & .user-container {
+    max-height: 60vh;
+    overflow-y: auto;
+    @media screen and (max-width: 768px) {
+      max-height: 80vh;
+      
     }
   }
 }
@@ -45,6 +49,7 @@
 /* Row styling */
 .users-rows {
   border-bottom: 1px solid var(--border);
+  border-radius: var(--button-radius);
   background-color: var(--card-background);
   color: var(--text-primary);
   transition: 0.2s ease-out;
@@ -64,8 +69,8 @@
   text-align-last: center;
 }
 .profile-pic {
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   transition: 0.2s ease-out;
   border: 2px solid var(--text-primary);
@@ -89,4 +94,47 @@
   padding: 5px;
   border: 1px solid var(--text-secondary);
   border-radius: 4px;
+}
+
+@media screen and (max-width: 768px) {
+  .admin-container {
+    padding: 1rem;
+    gap: 0.5rem;
+    & .admin-control-title {
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    & .user-search-input {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    & .manage-users {
+      display: block;
+      overflow-x: auto;
+      width: 100%;
+      border-collapse: collapse;
+      & thead {
+        display: none; 
+      }
+      & tbody {
+        display: block;
+      }
+
+      & tr {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--border);
+        margin-bottom: 1rem;
+        padding: var(--base-padding);
+        & form > *{
+          width: 100%;
+        }
+      }
+    }
+  }
 }
