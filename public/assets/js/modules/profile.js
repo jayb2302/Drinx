@@ -65,11 +65,11 @@ export function initializeProfile() {
 
      if (bioContent && bioToggle) {
          const fullText = bioContent.textContent.trim();
-         const shortText = fullText.slice(0, 100); // Adjust the character limit as needed
+         const shortText = fullText.slice(0, 50); // Adjust the character limit as needed
 
          let isExpanded = false;
 
-         if (fullText.length > 100) {
+         if (fullText.length > 50) {
              bioContent.textContent = shortText + '...';
              bioToggle.style.display = 'inline';
 

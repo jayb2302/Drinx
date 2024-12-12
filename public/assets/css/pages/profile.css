@@ -4,17 +4,16 @@
   position: relative;
   height: 100%;
   min-height: 85vh;
-  & .logout-icon{
+  & .logout-icon {
     float: inline-end;
   }
   & h2 {
     text-align: center;
   }
-  & small{
+  & small {
     text-align: center;
   }
-  
-  
+
   & .follow,
   .unfollow {
     float: inline-end;
@@ -26,13 +25,13 @@
     font-size: 1rem;
     color: var(--text-color);
   }
-  
+
   & .bio .bio-toggle {
     color: var(--link-color);
     cursor: pointer;
     text-decoration: none;
   }
-  
+
   & .bio .read-more {
     color: inherit; /* Match the text color */
     font-weight: normal;
@@ -44,8 +43,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--overlay); 
-    z-index: 99; 
+    background-color: var(--overlay);
+    z-index: 99;
     display: none;
   }
   & #edit-profile-form {
@@ -59,7 +58,6 @@
     border-radius: 0.5rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
     z-index: 100;
- 
 
     & .close-button-container {
       display: flex;
@@ -87,6 +85,11 @@
         background-color: var(--surface);
         color: var(--text-primary);
         margin-bottom: 0.8rem;
+      }
+    }
+    & #social-link-container {
+      & .social-input {
+        color: var(--text-primary);
       }
     }
     & button {
@@ -128,8 +131,7 @@
 
         /* max-width: min-content; */
         & button {
-          
-          color: var(--text-secondary);
+          color: #f2f2f2;
           background-color: var(--error);
         }
         & #deleteConfirmSection form {
@@ -184,6 +186,7 @@
     border-radius: 1rem;
     background: var(--card-linear-gradient);
     padding: var(--base-padding);
+    max-height: 80vh;
     & .recipe-container {
       display: flex;
       flex-direction: row;
@@ -194,11 +197,13 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       white-space: nowrap;
       scroll-behavior: smooth;
-      overflow: hidden;
+      max-height: 80vh;
+      max-width: 75vw ;
+      overflow-y: auto;
       & .recipe-card {
         flex: 0 0 auto;
         width: 20vw;
-        max-width: 300px;
+        /* max-width: 300px; */
         background: var(--card-linear-gradient);
         padding: 0.5rem;
         border-radius: 0.5rem;
@@ -277,10 +282,13 @@
         width: -moz-available;
         width: -webkit-fill-available;
         margin-top: 1rem;
-        justify-content: space-evenly;
+        justify-content: center;
+        max-width: none;
         padding: 0.5rem;
         & .recipe-card {
+          width: 100%;
           width: -webkit-fill-available;
+          width: -moz-available;
           height: min-content;
           & h3 {
             padding: var(--base-padding);

@@ -7,6 +7,18 @@
 .fa-shake {
     animation: custom-shake 1s ease-in-out infinite;
 }
+.fa-bell {
+    margin-right: 0.5rem;
+    &.error {
+        color: var(--error);
+    }
+}
+.fa-bell {
+    margin-right: 0.5rem;
+    &.success {
+        color: var(--success);
+    }
+}
 
 @keyframes custom-shake {
     0%, 100% {

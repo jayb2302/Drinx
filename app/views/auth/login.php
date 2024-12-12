@@ -4,12 +4,12 @@
     <?php
     // Display success message
     if (isset($_SESSION['success'])) {
-        echo '<div id="message" class="success"><h4><i class="fa-solid fa-bell"></i><span>' . htmlspecialchars($_SESSION['success']) . '</span><i class="fa-solid fa-bell"></i></h4></div>';
+        echo '<div id="message" class="success"><i class="fa-solid fa-bell success"></i><h4>' . htmlspecialchars($_SESSION['success']) . '</h4></div>';
         unset($_SESSION['success']); // Clear the success message after displaying
     }
     // Display error message 
     if (isset($_SESSION['error'])) {
-        echo '<div id="message" class="alert alert-danger"><h4><i class="fa-solid fa-bell"></i><span>' . htmlspecialchars($_SESSION['error']) . '</span><i class="fa-solid fa-bell"></i></h4></div>';
+        echo '<div id="message" class="alert alert-danger"><i class="fa-solid fa-bell error"></i><h4>' . htmlspecialchars($_SESSION['error']) . '</div>';
         unset($_SESSION['error']); // Clear the error message after displaying
     }
     ?>

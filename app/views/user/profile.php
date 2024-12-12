@@ -6,17 +6,17 @@ include_once __DIR__ . '/../layout/header.php'; ?>
 <?php
 // Display any error messages (optional)
 if (isset($_SESSION['error'])) {
-    echo '<div id="message" class="alert alert-danger"><h4> <i class="fa-solid fa-bell"></i> <span>' . htmlspecialchars($_SESSION['error']) . ' </span><i class="fa-solid fa-bell"></i> </h4></div>';
+    echo '<div id="message" class="alert alert-danger"> <i class="fa-solid fa-bell error"></i> <h4>' . htmlspecialchars($_SESSION['error']) . '  </h4></div>';
     unset($_SESSION['error']);
 }
 
 // Display success message (optional)
 if (isset($_SESSION['success'])) {
-    echo '<div id="message" class="success"><h4> <i class="fa-solid fa-bell"></i> <span> ' . htmlspecialchars($_SESSION['success']) . '</span><i class="fa-solid fa-bell"></i> </h4></div>';
+    echo '<div id="message" class="success"> <i class="fa-solid fa-bell success"></i>  <h4> ' . htmlspecialchars($_SESSION['success']) . '</h4></div>';
     unset($_SESSION['success']);
 }
 ?>
-<!-- <div id="message" class="success"><h4> <i class="fa-solid fa-bell"></i> <span> congratulations you have been fucked </span><i class="fa-solid fa-bell"></i> </h4></div> -->
+<!-- <div id="message" class="success"> <i class="fa-solid fa-bell success"></i> <h4> this is a test message </h4> </div> -->
 <div class="profile__container">
 
     <!-- User Profile Header -->
@@ -61,7 +61,7 @@ if (isset($_SESSION['success'])) {
 
                 <div class="follow-stats">
                     <small>Following: <?= htmlspecialchars($userProfile->getFollowingCount() ?? 0); ?></small>
-                    <i>|</i>
+                    <div>|</div>
                     <small>Followers: <?= htmlspecialchars($userProfile->getFollowersCount() ?? 0); ?></small>
                 </div>
             </div>

@@ -6,6 +6,8 @@
     flex-direction: column;
     background-image: var(--background);
     position: relative;
+    /*width: 100%;*/ /* for uniform cocktail images*/
+    /* max-width: 800px;*/ /* for uniform cocktail images*/
     & a {
         position: relative;
     }
@@ -93,6 +95,8 @@
         object-fit: contain;
         border-bottom: 1px solid var(--accent-primary);
         border-radius: 6px 6px 0 0;
+        /* aspect-ratio: 16/9;  */ /* for uniform cocktail images */
+        /* object-fit: cover;  */ /* for uniform cocktail images */
     }
     & p {
         text-align: start;
