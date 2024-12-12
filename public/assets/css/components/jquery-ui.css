@@ -110,4 +110,5 @@ input,
     border: 1px solid var(--border);
     color: var(--text-primary);
     box-sizing: border-box;
+    width: 100%;
 }

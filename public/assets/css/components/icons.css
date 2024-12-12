@@ -12,9 +12,6 @@
     &.error {
         color: var(--error);
     }
-}
-.fa-bell {
-    margin-right: 0.5rem;
     &.success {
         color: var(--success);
     }

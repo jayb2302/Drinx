@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
             initializeRandomCocktail();
             initializeCocktail();
             initializeMessageTimeout();
+            initializeImageValidation('image', 'cocktail-image-preview', 'cocktail-file-error');
             break;
 
         case 'profile':
@@ -67,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
             initializeImageValidation('image', 'cocktail-image-preview', 'cocktail-file-error');
             initializeMessageTimeout();
             break;
-
+            
         default:
             console.warn('Unknown page type:', pageType);
             break;

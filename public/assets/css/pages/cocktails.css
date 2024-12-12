@@ -40,7 +40,6 @@
   justify-content: center;
   background-color: var(--background);
   padding: 0.1rem 0.2rem;
-  /* width: 100%; */ /* for uniform cocktail images */
 }
 
 .recipe__container {
@@ -87,7 +86,6 @@
     }
   }
   & .container__comments {
-    
     padding: var(--base-padding);
     background: var(--lcard-linear-gradient);
     @media screen and (max-width: 768px) {

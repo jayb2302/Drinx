@@ -85,6 +85,7 @@
         background-color: var(--surface);
         color: var(--text-primary);
         margin-bottom: 0.8rem;
+        width: 100%;
       }
     }
     & #social-link-container {
@@ -170,10 +171,10 @@
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin: 0.5rem 0 2rem;
+    padding: var(--button-padding);
     flex-wrap: wrap;
     & .fa-brands {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
   }
   & .profile__recipes {
@@ -208,13 +209,18 @@
         padding: 0.5rem;
         border-radius: 0.5rem;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        & .cocktailInfo {
+          font-size: 0.8rem;
+          padding-left: .5rem;
+        }
         & a {
           position: relative;
           & h3 {
             width: 100%;
             position: absolute;
             bottom: 0;
-            background: var(--card-linear-gradient);
+            right: 0;
+            background: var(--image-overlay);
             border-radius: 0.5rem 0.5rem 0 0;
           }
         }
