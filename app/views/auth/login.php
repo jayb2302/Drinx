@@ -18,13 +18,13 @@
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>" />
 
         <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" name="email" required>
+        <label for="email" class="sr-only">Email</label>
+            <input type="email" class="form-control" placeholder="Email Address" id="email" name="email" required>
         </div>
 
         <div class="form-group">
-            <label for="login-password">Password:</label>
-            <input type="password" class="form-control" id="login-password" name="password" required>
+            <label for="login-password" class="sr-only">Password:</label>
+            <input type="password" placeholder="Password" class="form-control" id="login-password" name="password" required>
         </div>
 
         <button type="submit" class="secondary">Login</button>
