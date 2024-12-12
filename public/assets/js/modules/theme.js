@@ -27,4 +27,13 @@ export function initializeThemeSwitcher() {
             moonIcon.style.display = 'none';
         }
     });
+    // Deselect input fields on Esc key
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            const activeElement = document.activeElement;
+            if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
+                activeElement.blur(); // Remove focus from the input or textarea
+            }
+        }
+    });
 }

@@ -1,102 +1,114 @@
-/* Custom Dialog */
-body .ui-dialog {
-    background-color: var(--card-background);  
-    border-radius: 10px;                       
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-    width: 100%;
-}
-body label {
-    color: var(--text-primary); 
-    font-size: 1rem;            
+body {
+    .ui-dialog {
+        background-color: var(--card-background);
+        border-radius: 10px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        & .ui-widget-content {
+            background-color: var(--card-background);
+            border: none;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            p {
+                display: flex;
+                gap: 1rem;
+            }
+        }
+        &-title {
+            color: var(--text-primary);
+            font-size: 1.125rem;
+        }
+
+        &-titlebar {
+            background-color: var(--accent-primary);
+            color: var(--text-secondary);
+
+            &-close {
+                color: var(--text-secondary);
+                font-size: 1rem;
+            }
+        }
+
+        &-buttonpane {
+            background: var(--card-linear-gradient);
+            border-top: 1px solid var(--border);
+            padding: 1rem;
+
+            .ui-buttonset {
+                display: flex;
+                gap: 1rem;
+                justify-content: flex-end;
+
+                .ui-button {
+                    background-color: var(--button-primary);
+                    color: var(--text-primary);
+                    font-size: 1rem;
+                    border-radius: 5px;
+                    padding: 0.75rem 1.5rem;
+                    border: none;
+
+                    &:hover {
+                        background-color: var(--button-hover);
+                    }
+                }
+            }
+        }
+    }
+
+    .ui-autocomplete {
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        max-height: 200px;
+        overflow-y: auto;
+
+        li {
+            padding: 0.5rem 1rem;
+
+            &.ui-state-focus {
+                background-color: var(--accent-hover);
+                color: var(--text-primary);
+            }
+        }
+    }
+
+    .ui-datepicker {
+        background-color: var(--surface);
+        border-radius: 10px;
+        border: 1px solid var(--border);
+
+        &-header {
+            background-color: var(--accent-primary);
+            color: var(--text-secondary);
+        }
+
+        .ui-state-default {
+            background-color: var(--background);
+        }
+
+        .ui-state-hover {
+            background-color: var(--accent-hover);
+            color: var(--text-primary);
+        }
+
+        .ui-state-active {
+            background-color: var(--button-primary);
+            color: var(--text-primary);
+        }
+    }
+
+    label {
+        color: var(--text-primary);
+        font-size: 1rem;
+    }
 }
 
-body .ui-dialog-title {
-    color: var(--text-primary);  
-    font-size: 1.125rem;         
-}
-
-body .ui-dialog-titlebar {
-    background-color: var(--accent-primary); 
-    color: var(--text-secondary);            
-}
 input,
 #tagForm select,
 #tagForm button {
-    
     padding: 10px;
-    border-radius: 4px; 
-    border: 1px solid var(--border); 
-    box-sizing: border-box; 
-}
-
-body .ui-dialog-titlebar-close {
-    color: var(--text-secondary); 
-    font-size: 1rem;              
-}
-body .ui-dialog-buttonpane {
-    background-color: var(--card-background); 
-    border-top: 1px solid var(--border);       
-    padding: 1rem;                           
-}
-
-body .ui-buttonset {
-    display: flex; 
-    gap: 1rem;    
-    justify-content: flex-end; 
-}
-/* Custom Buttons */
-body .ui-button {
-    background-color: var(--button-primary); 
-    color: var(--text-primary);              
-    font-size: 1rem;                         
-    border-radius: 5px;                      
-    padding: 0.75rem 1.5rem;                 
-    border: none;                            
-}
-
-body .ui-button:hover {
-    background-color: var(--button-hover);  
-}
-
-/* Custom Autocomplete */
-body .ui-autocomplete {
-    background-color: var(--surface);        
-    border: 1px solid var(--border);         
-    max-height: 200px;                        
-    overflow-y: auto;                         
-}
-
-body .ui-autocomplete li {
-    padding: 0.5rem 1rem;                    
-}
-
-body .ui-autocomplete li.ui-state-focus {
-    background-color: var(--accent-hover);   
-    color: var(--text-primary);              
-}
-
-/* Custom Datepicker */
-body .ui-datepicker {
-    background-color: var(--surface);        
-    border-radius: 10px;                     
-    border: 1px solid var(--border);         
-}
-
-body .ui-datepicker-header {
-    background-color: var(--accent-primary); 
-    color: var(--text-secondary);            
-}
-
-body .ui-datepicker .ui-state-default {
-    background-color: var(--background);     
-}
-
-body .ui-datepicker .ui-state-hover {
-    background-color: var(--accent-hover);   
-    color: var(--text-primary);              
-}
-
-body .ui-datepicker .ui-state-active {
-    background-color: var(--button-primary); 
-    color: var(--text-primary);               
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    box-sizing: border-box;
+    width: 100%;
 }

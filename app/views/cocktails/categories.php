@@ -12,6 +12,6 @@
         <a href="/category/<?php echo $categoryName; ?>/<?php echo $sortOption; ?>"
             class="category-link <?php echo ($categoryName === ($_GET['category'] ?? '')) ? 'active' : ''; ?>">
             <?php echo htmlspecialchars($category['name']); ?>
-        </a><br>
+        </a>
     <?php endforeach; ?>
 </div>

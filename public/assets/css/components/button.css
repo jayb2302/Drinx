@@ -22,6 +22,7 @@ button {
         color: var(--text-secondary);
         width: 100%;
         font-size: 1.2rem;
+        flex-grow: 1;
         & :hover {
             background-color: var(--card-background);
             color: var(--text-primary);
@@ -36,7 +37,7 @@ button {
 }
 
 .button {
-    padding: 10px 15px;
+    padding: var(--button-padding);
     border: 1px solid var(--border);
     cursor: pointer;
     font-size: 16px;
@@ -64,33 +65,17 @@ button {
     border-radius: .5rem;
 }
 
-/** Sticky Button **/
-.button-wrapper {
-    display: flex;
-    justify-content: flex-end;
-}
-
 .buttons{
-    display: flex;
-    gap: 10px;  
     width: 100%;
 }
 
 .set-sticky {
-    background-color: var(--button-secondary); 
-    color: white; 
+    color: var(--text-primary); 
     border: none; 
-    padding: 10px 20px; 
     cursor: pointer; 
-    transition: background-color 0.3s; 
+    transition: box-shadow 0.3s; 
     opacity: 0.7; 
-    & .set-sticky.active {
-        opacity: 1;
-        background-color: var(--button-primary); 
-    }
-    & :hover {
-        background-color: var(--button-secondary); 
-    }
+    background: none;
 }
 
 .active {
@@ -110,12 +95,11 @@ button {
 .randomRecipeButton {
     width: 100%;
     padding: .5rem;
-    background-color: var(--accent-primary);
     color: var(--text-primary);
+    border: solid 1px var(--border);
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     font-size: 1rem;
-    border: none;
-    border-radius: 0.3rem;
+    border-radius: var(--button-radius);
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
     font-family: var(--font-display);

@@ -27,7 +27,6 @@ export function initializeSticky() {
                             </div>
                         </div>
                     `;
-                    console.log('Sticky cocktail updated:', data);
                 } else {
                     console.warn('No sticky cocktail found or returned:', data);
                 }

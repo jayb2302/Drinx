@@ -55,6 +55,23 @@ function sanitizeNumber($input) {
     return null; 
 }
 
+function sanitizeQuery($query, $maxLength = 100) {
+    $sanitized = trim($query);
+
+    // Strip HTML tags
+    $sanitized = strip_tags($sanitized);
+
+    // Escape special characters for safe use in SQL
+    $sanitized = htmlspecialchars($sanitized, ENT_QUOTES, 'UTF-8');
+
+    // Limit the length to prevent abuse
+    if (strlen($sanitized) > $maxLength) {
+        $sanitized = substr($sanitized, 0, $maxLength);
+    }
+
+    return $sanitized;
+}
+
 // Function to redirect to a given path
 function redirect($path) {
     header("Location: " . url($path));
@@ -101,6 +118,38 @@ function validatePassword($password, &$errors)
     }
 
     return empty($errors); // Return true if no errors
+}
+
+function convertPrepTimeToMinutes($prepTime)
+{
+    switch ($prepTime) {
+        case '<15':
+            return 10; // "Less than 15 minutes"
+        case '15–30':
+            return 20; // "15–30 minutes"
+        case '30–60':
+            return 45; // "30–60 minutes"
+        case '>60':
+            return 90; //  "More than 60 minutes"
+        default:
+            return null; 
+    }
+}
+
+function formatPrepTime($prepTime)
+{
+    switch ($prepTime) {
+        case 10:
+            return "Less than 15 minutes";
+        case 20:
+            return "15–30 minutes";
+        case 45:
+            return "30–60 minutes";
+        case 90:
+            return "More than 60 minutes";
+        default:
+            return "Unknown preparation time"; 
+    }
 }
 
 // Helper function to get the first sentence of a description

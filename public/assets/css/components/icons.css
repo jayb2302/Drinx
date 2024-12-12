@@ -1,9 +1,20 @@
 .fa-heart {
     color: var(--error);
 }
-
+.fa-paperclip {
+    color: var(--text-primary);
+}
 .fa-shake {
     animation: custom-shake 1s ease-in-out infinite;
+}
+.fa-bell {
+    margin-right: 0.5rem;
+    &.error {
+        color: var(--error);
+    }
+    &.success {
+        color: var(--success);
+    }
 }
 
 @keyframes custom-shake {

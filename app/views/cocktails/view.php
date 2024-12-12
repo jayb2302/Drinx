@@ -6,10 +6,10 @@ include_once __DIR__ . '/../../helpers/helpers.php';
 
 ?>
 <?php if (isset($_SESSION['badge_notification'])): ?>
-    <?php error_log("Displaying badge notification: " . print_r($_SESSION['badge_notification'], true)); ?>
-    <div class="alert alert-success">
-        <h4><?= htmlspecialchars($_SESSION['badge_notification']['message']); ?></h4>
-        <p><?= htmlspecialchars($_SESSION['badge_notification']['badge_description']); ?></p>
+    <!-- <?php error_log("Displaying badge notification: " . print_r($_SESSION['badge_notification'], true)); ?> -->
+    <div id="message" class="success">
+        <i class="fa-solid fa-bell success"></i><h4><?= htmlspecialchars($_SESSION['badge_notification']['message']); ?></h4>
+        <!-- <p><?= htmlspecialchars($_SESSION['badge_notification']['badge_description']); ?></p> -->
     </div>
     <?php unset($_SESSION['badge_notification']); ?>
 <?php endif; ?>
@@ -25,7 +25,7 @@ include_once __DIR__ . '/../../helpers/helpers.php';
 <div class="recipe__container">
     <main class="recipe__main">
         <div class="cocktailActions">
-            <?php if ($authController->isLoggedIn() && ($currentUser->canEditCocktail($cocktail->getUserId()) || $authController->isAdmin())):?>
+            <?php if ($authController->isLoggedIn() && ($currentUser->canEditCocktail($cocktail->getUserId()) || $authController->isAdmin())): ?>
                 <button id="editCocktailButton" class="primary"> <i class="fa-solid fa-pencil"></i> </button>
                 <!-- Delete Button -->
                 <form action="/cocktails/delete/<?= $cocktail->getCocktailId() ?>" method="post"
@@ -47,12 +47,12 @@ include_once __DIR__ . '/../../helpers/helpers.php';
 
         <!-- Like/Unlike Button -->
         <div class="like-section">
-             <!-- Category -->
-        <div class="recipe-category">
-            <p class="category font-semibold">
-                <?= htmlspecialchars($categoryName) ?>
-            </p>
-        </div>
+            <!-- Category -->
+            <div class="recipe-category">
+                <p class="category font-semibold">
+                    <?= htmlspecialchars($categoryName) ?>
+                </p>
+            </div>
             <?php if ($loggedInUserId): ?>
                 <button class="like-button"
                     data-cocktail-id="<?= htmlspecialchars($cocktail->getCocktailId()) ?>"
@@ -63,12 +63,18 @@ include_once __DIR__ . '/../../helpers/helpers.php';
                     <span class="like-count"><?= htmlspecialchars($totalLikes) ?></span>
                 </button>
             <?php else: ?>
-                <button class="like-button" onclick="showLoginPopup(event)">
-                    <span class="like-icon">
-                        <i class="fa-regular fa-heart"></i>
+                <!-- Disabled button for logged-out users -->
+                <div class="like-button-container">
+                    <button class="like-button disabled" data-disabled="true">
+                        <span class="like-icon">
+                            <i class="fa-regular fa-heart"></i>
+                        </span>
+                        <span class="like-count"><?= htmlspecialchars($totalLikes) ?></span>
+                    </button>
+                    <span class="login-message">
+                        Please <a href="/login" class="login-link">log in</a> to like this cocktail..
                     </span>
-                </button>
-                <span class="like-count"><?= htmlspecialchars($totalLikes) ?></span>
+                </div>
             <?php endif; ?>
         </div>
         <h1 class="title"><?= ucwords(strtolower($cocktailTitle)) ?></h1>
@@ -89,7 +95,7 @@ include_once __DIR__ . '/../../helpers/helpers.php';
                 <span><i class="fa-solid fa-calendar"></i> <?= formatDate($cocktail->getCreatedAt() ?? 'Unknown date') ?></span>
             </div>
         </div>
-       
+
         <div class="recipeContainer">
             <!-- Image -->
             <div class="recipeImage">
@@ -104,11 +110,12 @@ include_once __DIR__ . '/../../helpers/helpers.php';
                         <span class="tag"><?= htmlspecialchars($tag['name']) ?></span>
                     <?php endforeach; ?>
                 </div>
-                <p>
-                    <strong>Difficulty:</strong> <?= htmlspecialchars($cocktail->getDifficultyName() ?? 'Not specified') ?>
-                </p>
+                <p><strong><i class="fa-solid fa-stopwatch"></i></strong> <?= formatPrepTime($cocktail->getPrepTime()) ?></p>
                 <p>
                     <?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?>
+                </p>
+                <p class="recipeDifficulty">
+                 <?= $cocktail->getDifficultyIconHtml() ?>
                 </p>
 
             </div>

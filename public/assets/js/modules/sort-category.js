@@ -36,7 +36,7 @@ export function initializeSortAndCategories() {
         const url = state.currentCategory
             ? `/category/${state.currentCategory}/${state.currentSort}`
             : `/${state.currentSort}`;
-    
+
         fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(response => {
                 if (!response.ok) {
@@ -46,24 +46,24 @@ export function initializeSortAndCategories() {
             })
             .then(data => {
                 const wrapper = document.querySelector('.wrapper');
-    
+                const mainContainer = document.querySelector('.container__main');
+
                 if (wrapper) {
                     // Update content
                     wrapper.innerHTML = data.content;
-    
+
                     // Scroll to the top of the wrapper
                     wrapper.scrollTo({ top: 0, behavior: 'smooth' });
-    
-                    // Optional: log scroll position for debugging
-                    console.log('Scroll position reset to:', wrapper.scrollTop);
-    
-                    // Update active sort option
-                    updateSortIndicator();
-    
-                    // Reinitialize dynamic events or modules
-                    document.dispatchEvent(new Event('Drinx.DOMUpdated'));
+
+                } else if (mainContainer) {
+                    // If wrapper is not found, scroll container__main to the top
+                    mainContainer.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    // Log fallback to main container
+                    console.log('Wrapper not found. Scrolled container__main instead.');
                 } else {
-                    console.error('Wrapper element not found!');
+                    // If neither element is found, log an error
+                    console.error('Both wrapper and container__main not found!');
                 }
             })
             .catch(error => console.error('Error fetching cocktails:', error));

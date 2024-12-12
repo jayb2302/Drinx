@@ -3,11 +3,11 @@
     text-align: start;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
+    padding-top: .5rem;
     & .aboutContainer {
-        background-color: var(--card-background);
+        background-color: var(--card-linear-gradient);
         border-radius: 10px;
-        padding: var(--base-padding);
         & .aboutHeading {
             font-size: 1.5rem;
             font-weight: bold;
@@ -15,6 +15,7 @@
             font-family: var(--font-display);
             margin-bottom: .5rem;
         }
+
         & .aboutIntro {
             font-size: 1.2rem;
             color: var(--text-primary);
@@ -51,7 +52,6 @@
         padding: 0.7rem 1.2rem;
     }
 }
-
 @media (max-width: 480px) {
     .about-heading {
         font-size: 1.8rem;

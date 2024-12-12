@@ -1,6 +1,5 @@
 <section class="aboutSection">
     <?php if (!isset($_SESSION['user'])): ?>
-        
             <a href="/login" class="button-secondary">
                 <span>Login</span>
             </a>
@@ -12,7 +11,7 @@
     <?php endif; ?>
     <div class="aboutContainer">
         <div class="buttonContainer">
-            <a href="#" class="randomRecipeButton"><i class="fa-solid fa-handshake-angle fa-shake"></i> Let us Shake it</a>
+            <a href="#" class="randomRecipeButton"><i class="fa-solid fa-handshake-angle fa-shake"></i> Let's shake it</a>
         </div>
         <div class="randomRecipe">
             <!-- Random cocktail will appear here -->

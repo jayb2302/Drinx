@@ -7,7 +7,7 @@ class CocktailRepository
 {
     private $db;
 
-    public function __construct($db) 
+    public function __construct($db)
     {
         $this->db = $db;
     }
@@ -25,6 +25,7 @@ class CocktailRepository
             $data['title'] ?? 'Unknown',
             $data['description'] ?? 'No description available',
             $data['image'] ?? 'default-image.webp',
+            $data['prep_time'] ?? null,
             (bool)($data['is_sticky'] ?? false),
             $data['category_id'] ?? null,
             $data['difficulty_id'] ?? null,
@@ -33,8 +34,8 @@ class CocktailRepository
             $tags,
             $data['like_count'] ?? 0,
             $data['difficulty_name'] ?? null,
-            $data['created_at'] ?? null, 
-        $data['updated_at'] ?? null 
+            $data['created_at'] ?? null,
+            $data['updated_at'] ?? null
         );
     }
 
@@ -82,18 +83,19 @@ class CocktailRepository
         $stmt = $this->db->query("SELECT COUNT(*) FROM cocktails");
         return $stmt->fetchColumn();
     }
-    
+
     // Create a new cocktail
     public function create($cocktailData)
     {
         $stmt = $this->db->prepare("
-            INSERT INTO cocktails (user_id, title, description, image, is_sticky, category_id, difficulty_id, created_at) 
-            VALUES (:user_id, :title, :description, :image, :is_sticky, :category_id, :difficulty_id, NOW())
+            INSERT INTO cocktails (user_id, title, description, prep_time, image,  is_sticky, category_id, difficulty_id, created_at) 
+            VALUES (:user_id, :title, :description, :prep_time, :image,  :is_sticky, :category_id, :difficulty_id, NOW())
         ");
 
         $stmt->bindParam(':user_id', $cocktailData['user_id'], PDO::PARAM_INT);
         $stmt->bindParam(':title', $cocktailData['title']);
         $stmt->bindParam(':description', $cocktailData['description']);
+        $stmt->bindParam(':prep_time', $cocktailData['prep_time']);
         $stmt->bindParam(':image', $cocktailData['image']);
         $stmt->bindParam(':is_sticky', $cocktailData['is_sticky'], PDO::PARAM_BOOL);
         $stmt->bindParam(':category_id', $cocktailData['category_id'], PDO::PARAM_INT);
@@ -113,7 +115,8 @@ class CocktailRepository
             UPDATE cocktails 
             SET title = :title, 
                 description = :description, 
-                image = :image, 
+                prep_time = :prep_time,
+                image = :image,
                 is_sticky = :is_sticky, 
                 category_id = :category_id, 
                 difficulty_id = :difficulty_id, 
@@ -123,6 +126,7 @@ class CocktailRepository
         $stmt->bindParam(':id', $cocktail_id, PDO::PARAM_INT);
         $stmt->bindParam(':title', $cocktailData['title']);
         $stmt->bindParam(':description', $cocktailData['description']);
+        $stmt->bindParam(':prep_time', $cocktailData['prep_time']);
         $stmt->bindParam(':image', $cocktailData['image']);
         $stmt->bindParam(':is_sticky', $cocktailData['is_sticky'], PDO::PARAM_BOOL);
         $stmt->bindParam(':category_id', $cocktailData['category_id']);
@@ -152,15 +156,24 @@ class CocktailRepository
     }
     public function searchCocktails($query)
     {
+        $sanitizedQuery = str_replace(['%', '_'], ['\%', '\_'], $query);
+
         $stmt = $this->db->prepare("
-            SELECT cocktail_id, title, image 
+            SELECT 
+                cocktail_id, 
+                title, 
+                image,
+                description,
+                created_at
             FROM cocktails 
-            WHERE title LIKE :query
+            WHERE title LIKE :query 
         ");
-        $searchTerm = '%' . $query . '%';
+
+        $searchTerm = '%' . $sanitizedQuery . '%';
         $stmt->bindParam(':query', $searchTerm, PDO::PARAM_STR);
         $stmt->execute();
 
+        // Fetch all data as associative arrays
         $cocktailsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Map the results directly to prevent adding default attributes like hasLiked
@@ -168,7 +181,11 @@ class CocktailRepository
             return [
                 'cocktail_id' => $data['cocktail_id'],
                 'title' => $data['title'],
-                'image' => $data['image'] ?? 'default-image.webp'
+                'image' => $data['image'] ?? 'default-image.webp',
+                'description' => $data['description'] ?? '',       
+                'category_id' => $data['category_id'] ?? null,     
+                'difficulty_id' => $data['difficulty_id'] ?? null, 
+                'created_at' => $data['created_at'] ?? null
             ];
         }, $cocktailsData);
     }
@@ -286,7 +303,7 @@ class CocktailRepository
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Ingredient');
     }
 
-   
+
     public function getMostPopularCocktail()
     {
         $stmt = $this->db->prepare("
@@ -359,8 +376,8 @@ class CocktailRepository
         ");
         $stmt->execute();
         return $stmt->fetchColumn();
-    }    
-    
+    }
+
     public function getCocktailCountByUserId($userId)
     {
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM cocktails WHERE user_id = :user_id");

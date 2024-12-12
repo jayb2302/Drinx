@@ -9,6 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
     </a>
     <!-- Search Bar -->
     <div class="search-container">
+    <i class="fa-solid fa-magnifying-glass"></i>
         <input type="text" id="searchInput" placeholder="Search for cocktails or users..." autocomplete="off" />
         <div id="searchResults" class="search-results" style="display: none;">
             <div id="userSuggestions"></div>

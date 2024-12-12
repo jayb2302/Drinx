@@ -7,12 +7,12 @@ include __DIR__ . '/layout/header.php';
 
 // Check if the logout_success cookie is set and display it
 if (isset($_COOKIE['logout_success'])) {
-    echo '<div class="alert alert-success">' . htmlspecialchars($_COOKIE['logout_success']) . '</div>';
+    echo '<div id="message" class="success"> <i class="fa-solid fa-bell success"></i><h4>' . htmlspecialchars($_COOKIE['logout_success']) . '</h4></div>';
     // Clear the cookie after displaying the message
     setcookie('logout_success', '', time() - 3600, "/"); // Expire the cookie immediately
 }
 if (isset($_COOKIE['account_deleted_success'])) {
-    echo '<div class="alert alert-success">' . htmlspecialchars($_COOKIE['account_deleted_success']) . '</div>';
+    echo '<div id="message" class="success"> <i class="fa-solid fa-bell success"></i><h4>' . htmlspecialchars($_COOKIE['account_deleted_success']) . '</h4></div>';
     // Unset the cookie after displaying the message
     setcookie('account_deleted_success', '', time() - 3600, "/");
 }
@@ -31,22 +31,26 @@ $cocktailId = $matches[1] ?? null;
 <?php endif; ?>
 <div class="container">
     <aside class="container__left">
-      <button id="toggle-left" class="toggle-button" aria-expanded="true">◀</button>
+        <button id="toggle-left" class="toggle-button" aria-expanded="true"><i
+                class="fa-solid fa-chevron-left"></i></button>
         <?php include __DIR__ . '/cocktails/categories.php'; ?>
         <?php if (isset($stickyCocktail) && is_object($stickyCocktail)): ?>
             <div class="stickyContainer">
                 <div class="stickyCard">
                     <h2> <i class="fa-solid fa-paperclip"></i> Sticky Cocktail</h2>
-                    <a href="/cocktails/<?= htmlspecialchars($stickyCocktail->getCocktailId()) ?>-<?= urlencode($stickyCocktail->getTitle()) ?>">
-                        <h3 class="stickyTitle"><?php echo htmlspecialchars($stickyCocktail->getTitle()); ?></h3>
+                    <a
+                        href="/cocktails/<?= htmlspecialchars($stickyCocktail->getCocktailId()) ?>-<?= urlencode($stickyCocktail->getTitle()) ?>">
+                        <h3 class="stickyTitle"><?= htmlspecialchars(ucwords(strtolower($stickyCocktail->getTitle()))); ?>
+                        </h3>
+                        <div class="stickyMediaWrapper">
+                            <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>"
+                                alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
+                        </div>
                     </a>
-                    <div class="stickyMediaWrapper">
-                        <img src="/uploads/cocktails/<?php echo htmlspecialchars($stickyCocktail->getImage()); ?>" alt="<?php echo htmlspecialchars($stickyCocktail->getTitle()); ?>" class="cocktail-image">
-                    </div>
                     <div class="stickyContent">
-                    <p class="sticky-description">
-                    <?= htmlspecialchars(getFirstSentence($stickyCocktail->getDescription())); ?>
-                </p>
+                        <p class="sticky-description">
+                            <?= htmlspecialchars(getFirstSentence($stickyCocktail->getDescription())); ?>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -83,8 +87,8 @@ $cocktailId = $matches[1] ?? null;
         ?>
     </main>
     <nav class="container__right">
-
-    <button id="toggle-right" class="toggle-button" aria-expanded="true">▶</button>
+        <button id="toggle-right" data-tooltip="Hide panel" class="toggle-button" aria-expanded="true"><i
+                class="fa-solid fa-angle-right"></i></button>
         <?php
         $userProfile = $userProfile ?? null;
         include __DIR__ . '/layout/control_panel.php'; ?>

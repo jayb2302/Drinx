@@ -23,7 +23,7 @@
     <!-- Ingredient Management Section -->
     <div id="ingredientManagement">
         <div class="uncategorized-section">
-            <h2>Uncategorized Ingredients</h2>
+            <h2 class="section-title">Uncategorized Ingredients</h2>
             <!-- This will be dynamically populated by JS -->
             <ol id="uncategorizedIngredients" class="ingredient-card">
                 <!-- <li data-ingredient-id="23">
@@ -39,7 +39,7 @@
         <div class="ingredient-section">
             <h2 class="section-title">Categorized Ingredients</h2>
             <?php if (!empty($categorizedIngredients['categorized'])): ?>
-                <div class="accordion">
+                <div class="accordion ingredient-card">
                     <?php foreach ($categorizedIngredients['categorized'] as $tagName => $ingredients): ?>
                         <div class="accordion-item">
                             <button class="accordion-header">

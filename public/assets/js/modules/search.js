@@ -9,6 +9,11 @@ export function initializeSearch() {
     }
 
     function performSearch(query) {
+        query = query.trim();
+        if (query.length < 3) {
+            $('#searchResults').hide().empty();
+            return;
+        }
         $.ajax({
             url: '/search',
             type: 'GET',
@@ -22,8 +27,13 @@ export function initializeSearch() {
         const resultsContainer = $('#searchResults');
         resultsContainer.empty();
 
-        if (data?.users) displayUserSuggestions(data.users, resultsContainer);
-        if (data?.cocktails) displayCocktailSuggestions(data.cocktails, resultsContainer);
+        // Check if users or cocktails exist in the response
+        if (data?.users && data.users.length > 0) {
+            displayUserSuggestions(data.users, resultsContainer);
+        }
+        if (data?.cocktails && data.cocktails.length > 0) {
+            displayCocktailSuggestions(data.cocktails, resultsContainer);
+        }
 
         resultsContainer.toggle(resultsContainer.children().length > 0);
     }
@@ -36,7 +46,7 @@ export function initializeSearch() {
             container.append(`
                 <a href="/profile/${encodeURIComponent(user.username)}">
                     <div class="user-suggestion">
-                        <img src="${profilePicture}" alt="${user.username}'s profile picture" style="width: 40px; height: 40px;"/>
+                        <img src="${profilePicture}" alt="${user.username}'s profile picture" style="width: 40px; height: 40px;" class="profile-pic"/>
                         ${user.username}
                     </div>
                 </a>
@@ -64,4 +74,10 @@ export function initializeSearch() {
         if (query.length >= 3) performSearch(query);
         else $('#searchResults').hide().empty();
     }, 300));
+    
+    $(document).on('keydown', function (event) {
+        if (event.key === 'Escape') {
+            $('#searchResults').hide(); 
+        }
+    });
 }
