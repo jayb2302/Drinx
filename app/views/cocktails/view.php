@@ -115,7 +115,8 @@ include_once __DIR__ . '/../../helpers/helpers.php';
                     <?= htmlspecialchars($cocktail->getDescription() ?? 'No description available') ?>
                 </p>
                 <p class="recipeDifficulty">
-                 <?= $cocktail->getDifficultyIconHtml() ?>
+                    <?= $cocktail->getDifficultyIconHtml() ?>
+                    <?= ucfirst($cocktail->getDifficultyName()) ?>
                 </p>
 
             </div>

@@ -197,13 +197,13 @@ public function getDifficultyName()
     {
         switch (strtolower($this->getDifficultyName())) {
             case 'easy':
-                return '<span class="difficulty-icon easy"><i class="fa-solid fa-glass-cheers"></i> Easy</span>';
+                return '<i class="fa-solid fa-glass-cheers easy" title="Easy"></i>';
             case 'medium':
-                return '<span class="difficulty-icon medium"><i class="fa-solid fa-wine-glass-alt"></i> Medium</span>';
+                return '<i class="fa-solid fa-wine-glass-alt medium" title="Medium"></i>';
             case 'hard':
-                return '<span class="difficulty-icon hard"><i class="fa-solid fa-wine-bottle"></i> Hard</span>';
+                return '<i class="fa-solid fa-wine-bottle hard" title="Hard"></i>';
             default:
-                return '<span class="difficulty-icon unknown"><i class="fa-solid fa-question"></i> Unknown</span>';
+                return '<i class="fa-solid fa-question unknown" title="Unknown"></i>';
         }
     }
 

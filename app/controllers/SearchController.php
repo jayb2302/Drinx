@@ -37,8 +37,7 @@ class SearchController extends BaseController
                 'image' => $cocktail->getImage(),
                 'prep_time' => $cocktail->getPrepTime(),
                 'difficulty_name' => $cocktail->getDifficultyName(),
-                'difficulty_icon_html' => $cocktail->getDifficultyIconHtml() // Include HTML for difficulty icon
-
+                'difficulty_icon_html' => $cocktail->getDifficultyIconHtml() 
             ];
         }, $cocktailsData);
         

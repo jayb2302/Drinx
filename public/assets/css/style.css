@@ -28,6 +28,7 @@
   --background: #f2f2f2;
   --nav-background: #e0e0e0;
   --text-primary: #1c2126;
+  --text-primary-light: #7a8086;
   --text-secondary: #f2f2f2;
   --text-link: #8e7815;
   --accent-primary: #dcb404;
@@ -49,8 +50,8 @@
   --container-border: #303841;
 
   --success: #69bf69;
-  --warning: #f2994a;
-  --error: #d64646;
+  --warning: #FFAB64;
+  --error: #FF8A86;
   --disabled-background: #e5e5e5;
   --disabled-text: #b0b0b0;
   /* Font Families */
@@ -78,6 +79,7 @@
   --border-radius: clamp(0.5rem, calc(var(--base-padding) * 0.5), 1rem);
 
   --box-shadow: 0px 98px 18px -97px rgba(48, 56, 65, 0.56) inset;
+  --drop-shadow: 0px -7px 16px -7px rgba(48,56,65,0.56); ;
 }
 
 :root[data-theme="dark"] {
@@ -87,6 +89,7 @@
   --nav-background: #1f1f1f;
   --text-primary: #f2f2f2;
   --text-secondary: #1f1f1f;
+  --text-primary-light: #b3bbc4; 
   --text-link: #dcb404;
   --accent-primary: #dcb404;
   --accent-hover: #dcb404;
@@ -106,7 +109,7 @@
   --container-border: #f2f2f2;
 
   --success: #409640;
-  --warning: #b55b0d;
+  --warning: #9C572F;
   --error: #b82828;
 
   --overlay: #1f1f1fbd;

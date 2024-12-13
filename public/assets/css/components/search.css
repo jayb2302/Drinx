@@ -3,25 +3,24 @@
   width: clamp(300px, 55vw, 1200px);
 
   & .easy {
-    background: none;
-    color: var(--success);
+    background: var(--success);
+    color: var(--text-primary);
     padding: var(--tag-padding);
     border: 1px solid var(--success);
     border-radius: var(--button-radius);
   }
   & .medium {
-    background: none;
-    color: var(--warning);
+    background: var(--warning);
+    color: var(--text-primary);
     padding: var(--tag-padding);
     border: 1px solid var(--warning);
     border-radius: var(--button-radius);
   }
   & .hard {
-    background: none;
-    color: var(--error);
+    background: var(--error);
+    color: var(--primary-text);
     padding: var(--tag-padding);
     border: 1px solid var(--error);
-
     border-radius: var(--button-radius);
   }
   & .fa-magnifying-glass {
@@ -69,19 +68,32 @@
     & i {
       position: relative;
     }
-
+    & h3 {
+      padding:var(--button-padding);
+      color: var(--text-primary-light);
+    }
     & div {
-      padding: 10px;
+      padding: 0 1rem;
       cursor: pointer;
       gap: 1rem;
-      width: fit-content;
+      width: 100%;
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-
+      
+      & .suggestion-header {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        @media screen and (max-width: 768px) {
+          justify-content: space-between;
+            
+        }
+      }
       & img {
         border: 1px solid var(--border);
+        border-radius: 50%;
         & .search-cocktail {
           border-radius: var(--button-radius);
         }
@@ -97,6 +109,12 @@
         }
       }
     }
+
+    & .user-suggestion {
+      justify-content: start ;      
+      width: 100%;
+    }
+
   }
   @media screen and (max-width: 768px) {
     .search-results {

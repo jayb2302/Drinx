@@ -132,7 +132,7 @@
 
         /* max-width: min-content; */
         & button {
-          color: #f2f2f2;
+          color:var(--text-primary-light);
           background-color: var(--error);
         }
         & #deleteConfirmSection form {

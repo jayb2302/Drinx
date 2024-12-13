@@ -29,13 +29,20 @@ export function initializeSearch() {
 
         // Check if users or cocktails exist in the response
         if (data?.users && data.users.length > 0) {
+            resultsContainer.append('<h3>Users</h3>');
             displayUserSuggestions(data.users, resultsContainer);
         }
+        resultsContainer.append('<h3>Cocktails</h3>');
         if (data?.cocktails && data.cocktails.length > 0) {
             displayCocktailSuggestions(data.cocktails, resultsContainer);
         }
 
-        resultsContainer.toggle(resultsContainer.children().length > 0);
+        if (resultsContainer.children().length > 0) {
+            resultsContainer.show();
+        } else {
+            resultsContainer.hide();
+            resultsContainer.append('<p>No results found.</p>'); // Optional: Add a "No results" message
+        }
     }
 
     function displayUserSuggestions(users, container) {
@@ -62,10 +69,13 @@ export function initializeSearch() {
             container.append(`
             <a href="/cocktails/${cocktail.cocktail_id}-${urlTitle}">
                 <div class="cocktail-suggestion">
-                    <img src="${imagePath}" alt="${cocktail.title}" style="width: 40px; height: 40px;" class="search-cocktail"/>
-                    <h4>${cocktail.title}</h4>
-                    <span class="prep-time"><i class="fa-solid fa-stopwatch"></i> ${prepTime}</span>
+                    <span class="suggestion-header">
+                        <img src="${imagePath}" alt="${cocktail.title}" style="width: 40px; height: 40px; " class="search-cocktail"/>
+                        <h4>${cocktail.title}</h4>
+                    </span>
+                    <span class="prep-time"><i class="fa-solid fa-stopwatch"></i> ${prepTime}
                     ${cocktail.difficulty_icon_html}               
+                    </span>
                 </div>
             </a>
             `);
