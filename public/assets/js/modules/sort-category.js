@@ -54,10 +54,12 @@ export function initializeSortAndCategories() {
 
                     // Scroll to the top of the wrapper
                     wrapper.scrollTo({ top: 0, behavior: 'smooth' });
+                    updateSortIndicator();
 
                 } else if (mainContainer) {
                     // If wrapper is not found, scroll container__main to the top
                     mainContainer.scrollTo({ top: 0, behavior: 'smooth' });
+                    updateSortIndicator();
 
                     // Log fallback to main container
                     console.log('Wrapper not found. Scrolled container__main instead.');

@@ -133,7 +133,7 @@ if (isset($_SESSION['success'])) {
             </div>
 
             <!-- Edit-Delete Section -->
-            <?php if ($userId === $profileUserId): ?>
+            <?php if ($userId === $profileUserId OR $authController->isAdmin()): ?>
                 <!-- Edit Profile Button - Only show if user is viewing their own profile -->
                 <div class="edit-delete">
                     <div id="overlay" style="display:none;"></div>

@@ -198,6 +198,8 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       white-space: nowrap;
       scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent-primary) var(--background);
       max-height: 80vh;
       max-width: 75vw ;
       overflow-y: auto;

@@ -11,6 +11,9 @@
   max-height: 85dvh;
   overflow-y: auto;
   padding-bottom: 1rem;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-primary) var(--background);
   @media screen and (max-width: 768px) {
     height: 75vh;
   }

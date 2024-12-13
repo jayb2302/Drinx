@@ -163,7 +163,8 @@ class CocktailRepository
                 cocktail_id, 
                 title, 
                 image,
-                description,
+                prep_time,
+                difficulty_id,
                 created_at
             FROM cocktails 
             WHERE title LIKE :query 
@@ -182,9 +183,8 @@ class CocktailRepository
                 'cocktail_id' => $data['cocktail_id'],
                 'title' => $data['title'],
                 'image' => $data['image'] ?? 'default-image.webp',
-                'description' => $data['description'] ?? '',       
-                'category_id' => $data['category_id'] ?? null,     
-                'difficulty_id' => $data['difficulty_id'] ?? null, 
+                'prep_time' => $data['prep_time'] ?? null,
+                'difficulty_id' => $data['difficulty_id'] ?? null,
                 'created_at' => $data['created_at'] ?? null
             ];
         }, $cocktailsData);
@@ -202,18 +202,11 @@ class CocktailRepository
     // Fetch cocktails sorted by like count
     public function getAllSortedByLikes()
     {
-        $stmt = $this->db->query("
-            SELECT c.*, COUNT(l.like_id) AS like_count
-            FROM cocktails c
-            LEFT JOIN likes l ON c.cocktail_id = l.cocktail_id
-            GROUP BY c.cocktail_id
-            ORDER BY like_count DESC
-        ");
+        $stmt = $this->db->query("SELECT * FROM view_cocktails_sorted_by_likes");
         $cocktailsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         return array_map([$this, 'createCocktailObject'], $cocktailsData);
     }
-
+    
     public function getAllHotCocktails()
     {
         $stmt = $this->db->prepare("

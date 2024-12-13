@@ -47,7 +47,7 @@ export function initializeSearch() {
                 <a href="/profile/${encodeURIComponent(user.username)}">
                     <div class="user-suggestion">
                         <img src="${profilePicture}" alt="${user.username}'s profile picture" style="width: 40px; height: 40px;" class="profile-pic"/>
-                        ${user.username}
+                        <h4>${user.username}</h4>
                     </div>
                 </a>
             `);
@@ -58,13 +58,16 @@ export function initializeSearch() {
         cocktails.forEach(cocktail => {
             const imagePath = cocktail.image ? `/uploads/cocktails/${cocktail.image}` : '/uploads/cocktails/default-image.webp';
             const urlTitle = encodeURIComponent(cocktail.title.replace(/\s+/g, '+'));
+            const prepTime = cocktail.prep_time ? `${cocktail.prep_time} mins` : 'N/A';
             container.append(`
-                <a href="/cocktails/${cocktail.cocktail_id}-${urlTitle}">
-                    <div class="cocktail-suggestion">
-                        <img src="${imagePath}" alt="${cocktail.title}" style="width: 40px; height: 40px;"/>
-                        ${cocktail.title}
-                    </div>
-                </a>
+            <a href="/cocktails/${cocktail.cocktail_id}-${urlTitle}">
+                <div class="cocktail-suggestion">
+                    <img src="${imagePath}" alt="${cocktail.title}" style="width: 40px; height: 40px;" class="search-cocktail"/>
+                    <h4>${cocktail.title}</h4>
+                    <span class="prep-time"><i class="fa-solid fa-stopwatch"></i> ${prepTime}</span>
+                    ${cocktail.difficulty_icon_html}               
+                </div>
+            </a>
             `);
         });
     }

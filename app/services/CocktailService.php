@@ -182,7 +182,6 @@ class CocktailService
     {
         return $this->cocktailRepository->searchCocktails($query);
     }
-
     public function getRandomCocktail()
     {
         return $this->cocktailRepository->getRandomCocktail();
@@ -214,7 +213,6 @@ class CocktailService
     {
         return $this->tagRepository->getTagsByCocktailId($cocktailId);
     }
-
 
     // Get the comment count for a specific cocktail
     public function getTopLevelCommentsForCocktail($cocktailId, $limit = 3)
@@ -251,5 +249,4 @@ class CocktailService
         return $this->difficultyRepository->getDifficultyNameById($difficultyId);
     }
 
-  
 }
