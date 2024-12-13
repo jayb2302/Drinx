@@ -41,7 +41,7 @@ export function initializeSearch() {
             resultsContainer.show();
         } else {
             resultsContainer.hide();
-            resultsContainer.append('<p>No results found.</p>'); // Optional: Add a "No results" message
+            resultsContainer.append('<p>No results found.</p>'); 
         }
     }
 
