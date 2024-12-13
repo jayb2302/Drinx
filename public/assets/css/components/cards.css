@@ -6,7 +6,7 @@
     flex-direction: column;
     background-image: var(--background);
     position: relative;
-    /*width: 100%;*/ /* for uniform cocktail images*/
+    width: 100%; /* for uniform cocktail images*/
     max-width: 800px;
     & a {
         position: relative;

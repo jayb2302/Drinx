@@ -222,7 +222,7 @@ class UserController extends BaseController
 
         $profileUserId = $profile->getId(); // Get the profile user's ID
         $userId = $_SESSION['user']['id']; // Get the current user's ID
-
+        $authController = $this->authService;
         // Check if current user is following the profile user
         $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
         $platforms = $this->userService->getAllPlatforms(); 

@@ -43,6 +43,8 @@
         position: relative;
         overflow: hidden;
         scroll-behavior: smooth;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-primary) var(--background);
     }
     & .dashboard-navigation {
         display: flex;
