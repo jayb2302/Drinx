@@ -29,22 +29,11 @@ class UserRepository
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['total'];
     }
+
+    // Top creator
     public function getUserWithMostRecipes()
     {
-        $query = "
-            SELECT 
-                u.user_id,
-                u.username,
-                p.profile_picture,
-                COUNT(c.cocktail_id) AS recipe_count
-            FROM users u
-            LEFT JOIN cocktails c ON u.user_id = c.user_id
-            LEFT JOIN user_profile p ON u.user_id = p.user_id
-            GROUP BY u.user_id
-            ORDER BY recipe_count DESC
-            LIMIT 1
-        ";
-
+        $query = "SELECT * FROM view_user_with_most_recipes LIMIT 1";
         $result = $this->db->query($query)->fetch(PDO::FETCH_ASSOC);
         if ($result) {
             $user = new User();
@@ -54,10 +43,9 @@ class UserRepository
             $user->setRecipeCount($result['recipe_count']);
             return $user;
         }
-
-        return null; // No top creator found
+        return null;
     }
-
+    
     // Delete a user and associated cocktails
     public function deleteUser($userId)
     {

@@ -1,3 +1,4 @@
+<div class="wrapper">
 <div class="form-container">
     <form action="/cocktails/<?= $isEditing ? 'update/' . $cocktail->getCocktailId() : 'store' ?>" method="post" enctype="multipart/form-data">
 
@@ -184,4 +185,5 @@
             <button type="submit">Submit</button>
         </div>
     </form>
+</div>
 </div>

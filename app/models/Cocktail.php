@@ -114,10 +114,16 @@ class Cocktail
         $this->image = $image;
     }
    
-    public function getDifficultyName()
-    {
-        return $this->difficulty_name;
-    }
+public function getDifficultyName()
+{
+    $difficultyMap = [
+        1 => 'Easy',
+        2 => 'Medium',
+        3 => 'Hard'
+    ];
+    return $difficultyMap[$this->difficulty_id] ?? 'Unknown';
+}
+
 
     public function setDifficultyName($difficulty_name)
     {
@@ -191,13 +197,13 @@ class Cocktail
     {
         switch (strtolower($this->getDifficultyName())) {
             case 'easy':
-                return '<span class="difficulty-icon easy"><i class="fa-solid fa-glass-cheers"></i> Easy</span>';
+                return '<i class="fa-solid fa-glass-cheers easy" title="Easy"></i>';
             case 'medium':
-                return '<span class="difficulty-icon medium"><i class="fa-solid fa-wine-glass-alt"></i>';
+                return '<i class="fa-solid fa-wine-glass-alt medium" title="Medium"></i>';
             case 'hard':
-                return '<span class="difficulty-icon hard"><i class="fa-solid fa-wine-bottle"></i> Hard</span>';
+                return '<i class="fa-solid fa-wine-bottle hard" title="Hard"></i>';
             default:
-                return '<span class="difficulty-icon unknown"><i class="fa-solid fa-question"></i> Unknown</span>';
+                return '<i class="fa-solid fa-question unknown" title="Unknown"></i>';
         }
     }
 

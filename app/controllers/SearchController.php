@@ -16,8 +16,30 @@ class SearchController extends BaseController
 
         // Fetch users and cocktails that match the query
         $users = $this->userService->searchUsers($sanitizedQuery);
-        $cocktails = $this->cocktailService->searchCocktails($query);
+        $cocktailsData = $this->cocktailService->searchCocktails($query);
         
+        $cocktails = array_map(function ($cocktailData) {
+            $cocktail = new Cocktail(
+                $cocktailData['cocktail_id'],
+                null,
+                $cocktailData['title'],
+                null,
+                $cocktailData['image'],
+                $cocktailData['prep_time'],
+                false,
+                null,
+                $cocktailData['difficulty_id']
+            );
+    
+            return [
+                'cocktail_id' => $cocktail->getCocktailId(),
+                'title' => $cocktail->getTitle(),
+                'image' => $cocktail->getImage(),
+                'prep_time' => $cocktail->getPrepTime(),
+                'difficulty_name' => $cocktail->getDifficultyName(),
+                'difficulty_icon_html' => $cocktail->getDifficultyIconHtml() 
+            ];
+        }, $cocktailsData);
         
         // Return results as JSON
         header('Content-Type: application/json');
