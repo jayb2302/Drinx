@@ -61,3 +61,8 @@
     font-size: 24px; 
     color: var(--error); 
 }
+.recipe__main{
+    .like-section{
+        align-items: flex-end;
+    }
+}

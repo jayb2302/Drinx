@@ -18,79 +18,115 @@ class UserController extends BaseController
         $this->badgeService = $badgeService;
     }
 
-    // Show the user profile
-    public function profile($profileUserId)
-    {
-        if (!$this->authService->isAdmin()) {
-            redirect('login');
-        }
-        $userId = $_SESSION['user']['id'] ?? null; // Use null coalescing operator to avoid undefined error
-        $loggedInUserId = $userId;
+    // // Show the user profile
+    // public function profile($profileUserId)
+    // {
+    //     if (!$this->authService->isAdmin()) {
+    //         redirect('login');
+    //     }
+    //     $userId = $_SESSION['user']['id'] ?? null; // Use null coalescing operator to avoid undefined error
+    //     $loggedInUserId = $userId;
 
-        // Fetch user profile data with user ID
-        $profile = $this->userService->getUserWithProfile($profileUserId);
-        if ($profile) {
-            error_log('Profile fetched: ' . print_r($profile, true));
-        } else {
-            error_log('Profile not found for User ID: ' . $profileUserId);
-        }
-        $userRecipes = $this->cocktailService->getUserRecipes($profileUserId);
-        $badges = $this->badgeService->getUserBadges($profileUserId);
-        $profileStats = $this->userService->getUserStats($profileUserId);
-        $isFollowing = $this->userService->isFollowing($loggedInUserId, $profileUserId); // Check if current user is following the profile user
-        
-        // Fetch cocktail count and progress to next badge
-        $cocktailCount = $this->cocktailService->getCocktailCountByUserId($profileUserId);
-        // error_log("Cocktail Count: $cocktailCount");
+    //     // Fetch user profile data with user ID
+    //     $profile = $this->userService->getUserWithProfile($profileUserId);
+    //     if ($profile) {
+    //         error_log('Profile fetched: ' . print_r($profile, true));
+    //     } else {
+    //         error_log('Profile not found for User ID: ' . $profileUserId);
+    //     }
+    //     $userRecipes = $this->cocktailService->getUserRecipes($profileUserId);
+    //     $badges = $this->badgeService->getUserBadges($profileUserId);
+    //     $profileStats = $this->userService->getUserStats($profileUserId);
+    //     $isFollowing = $this->userService->isFollowing($loggedInUserId, $profileUserId); // Check if current user is following the profile user
+    //     // Fetch cocktail count and progress to next badge
+    //     $cocktailCount = $this->cocktailService->getCocktailCountByUserId($profileUserId);
+    //     // error_log("Cocktail Count: $cocktailCount");
 
-        $progressData = $this->badgeService->getUserProgressToNextBadge($profileUserId, $cocktailCount);
-        // error_log("Progress Data: " . print_r($progressData, true));
+    //     $progressData = $this->badgeService->getUserProgressToNextBadge($profileUserId, $cocktailCount);
+    //     // error_log("Progress Data: " . print_r($progressData, true));
 
 
-        // Pass the profile data to the view
-        require_once __DIR__ . '/../views/user/profile.php';
-    }
+    //     // Pass the profile data to the view
+    //     require_once __DIR__ . '/../views/user/profile.php';
+    // }
 
-    // Show user settings
-    public function settings()
-    {
-        if (!$this->authService->isLoggedIn()) {
-            redirect('login');  // Redirect to login if not logged in
-        }
+    // // Show user settings
+    // public function settings()
+    // {
+    //     if (!$this->authService->isLoggedIn()) {
+    //         redirect('login');  // Redirect to login if not logged in
+    //     }
 
-        $user = $this->userService->getUserById($_SESSION['user']['id']);  // Fetch user data
-        require_once __DIR__ . '/../views/user/settings.php';  // Show settings view
-    }
+    //     $user = $this->userService->getUserById($_SESSION['user']['id']);  // Fetch user data
+    //     require_once __DIR__ . '/../views/user/settings.php';  // Show settings view
+    // }
 
     // Delete user account
-    public function deleteAccount()
+    public function deleteAccount($username)
     {
         if (!$this->authService->isLoggedIn()) {
             redirect('login');
         }
 
+        // Sanitize the username
+        $username = sanitize($username);
+        if (empty($username)) {
+            $_SESSION['error'] = 'Invalid username provided.';
+            redirect('/');
+        }
+
+        // Fetch the profile user based on the username
+        $profileUser = $this->userService->getUserByUsername($username);
+        if (!$profileUser) {
+            $_SESSION['error'] = 'User not found.';
+            redirect('/');
+        }
+
+        $profileUserId = $profileUser->getId();
         $userId = $_SESSION['user']['id'];
+        $isAdmin = $this->authService->isAdmin();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrfToken = sanitize($_POST['csrf_token'] ?? '');
             $password = sanitize($_POST['password']);
+            $deleteUserId = $isAdmin ? sanitize($_POST['delete_user_id'] ?? '') : $userId;
 
-            // Verify the user's password before proceeding
-            if ($this->userService->verifyPassword($userId, $password)) {
-                // Delete the user and associated data
-                if ($this->userService->deleteUser($userId)) {
-                    setcookie('account_deleted_success', 'Account deleted successfully.', time() + 10, "/");
-                    session_destroy(); // End session after deletion
-                    redirect('/');
+            if (!validateCsrfToken($csrfToken)) {
+                $_SESSION['error'] = 'Invalid CSRF token.';
+                redirect("/profile/" . urlencode($username));
+            }
+
+            // Prevent user id manipulation on hidden input
+            if ($deleteUserId != $profileUserId) {
+                $_SESSION['error'] = 'User does not match the current profile.';
+                redirect("/profile/" . urlencode($username));
+            }
+
+            // Verify the admin's password or the user's password
+            if (
+                ($isAdmin && $this->userService->verifyPassword($userId, $password)) ||
+                (!$isAdmin && $this->userService->verifyPassword($userId, $password))
+            ) {
+                // Perform deletion
+                if ($this->userService->deleteUser($deleteUserId)) {
+                    if ($isAdmin) {
+                        setcookie('account_deleted_success', 'User account deleted successfully.', time() + 10, "/");
+                        redirect('/');
+                    } else {
+                        setcookie('account_deleted_success', 'Account deleted successfully.', time() + 10, "/");
+                        session_destroy(); // End session after deletion
+                        redirect('/');
+                    }
                 } else {
                     $_SESSION['error'] = 'Failed to delete the account.';
                 }
             } else {
-                $_SESSION['error'] = 'Incorrect password. Please try again.';
+                $_SESSION['error'] = $isAdmin ? 'Admin password is incorrect.' : 'Incorrect password. Please try again.';
             }
         }
 
-        // Redirect back to profile if deletion failed or password was incorrect
-        redirect('profile');
+        // Redirect back to the current profile if deletion failed
+        redirect('/profile/' . urlencode($username));
     }
 
     // Update user profile (username, email)
@@ -115,7 +151,7 @@ class UserController extends BaseController
             foreach ($socialLinks as $platformId => $url) {
                 $socialLinks[$platformId] = sanitize($url);
             }
-            
+
             // Handle file upload if a new profile picture is uploaded
             $profilePicture = $currentProfilePicture;
             // Handle file upload if a new profile picture is uploaded
@@ -126,7 +162,7 @@ class UserController extends BaseController
                 } else {
                     $_SESSION['error'] = "Failed to upload profile picture.";
                     redirect("profile/$username");
-                    return; 
+                    return;
                 }
             }
             // Update social links
@@ -183,26 +219,26 @@ class UserController extends BaseController
         }
     }
 
-    public function changePassword()
-    {
-        if (!$this->authService->isLoggedIn()) {
-            redirect('login');  // Redirect to login if not logged in
-        }
+    // public function changePassword()
+    // {
+    //     if (!$this->authService->isLoggedIn()) {
+    //         redirect('login');  // Redirect to login if not logged in
+    //     }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $currentPassword = sanitize($_POST['current_password']);
-            $newPassword = sanitize($_POST['new_password']);
+    //     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    //         $currentPassword = sanitize($_POST['current_password']);
+    //         $newPassword = sanitize($_POST['new_password']);
 
-            // Attempt to change password using the service
-            if ($this->userService->changeUserPassword($_SESSION['user']['id'], $currentPassword, $newPassword)) {
-                $_SESSION['success'] = "Password changed successfully.";  // Success message
-            } else {
-                $_SESSION['error'] = "Failed to change password. Please try again.";  // Error message
-            }
+    //         // Attempt to change password using the service
+    //         if ($this->userService->changeUserPassword($_SESSION['user']['id'], $currentPassword, $newPassword)) {
+    //             $_SESSION['success'] = "Password changed successfully.";  // Success message
+    //         } else {
+    //             $_SESSION['error'] = "Failed to change password. Please try again.";  // Error message
+    //         }
 
-            redirect('settings');  // Redirect back to settings page
-        }
-    }
+    //         redirect('settings');  // Redirect back to settings page
+    //     }
+    // }
 
     public function profileByUsername($username)
     {
@@ -225,7 +261,7 @@ class UserController extends BaseController
         $authController = $this->authService;
         // Check if current user is following the profile user
         $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
-        $platforms = $this->userService->getAllPlatforms(); 
+        $platforms = $this->userService->getAllPlatforms();
         $formData = $this->userService->getSocialFormData($profileUserId); // Fetch social links data
         $socialLinks = $this->userService->getUserSocialLinks($profileUserId);
         $userRecipes = $this->cocktailService->getUserRecipes($profileUserId);
@@ -234,7 +270,6 @@ class UserController extends BaseController
         $userProfile = $this->userService->getUserWithFollowCounts($profileUserId);
         // Fetch cocktail count and progress to next badge
         $cocktailCount = $this->cocktailService->getCocktailCountByUserId($profileUserId);
-     
         $progressData = $this->badgeService->getUserProgressToNextBadge($profileUserId, $cocktailCount);
         // error_log("Progress Data: " . print_r($progressData, true));
 

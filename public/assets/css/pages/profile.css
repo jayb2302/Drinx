@@ -58,59 +58,174 @@
     border-radius: 0.5rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
     z-index: 100;
-
-    & .close-button-container {
-      display: flex;
-      justify-content: flex-end;
-      & .close-button {
-        margin: 0;
+    & .form-container {
+      width: 33vw;
+      padding: var(--base-padding);
+      background: var(--lcard-linear-gradient);
+      color: var(--text-primary);
+      border-radius: var(--button-radius);
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+      font-family: var(--font-body);
+      margin: 0 auto;
+      overflow-y: auto;
+      & h2 {
+        color: var(--accent-primary);
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+        text-align: start;
+        margin-bottom: 0.5rem;
       }
-    }
-    & form {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-    }
-    & .platform-container {
-      color: var(--text-secondary);
-      & label {
-        display: block;
+      & h3 {
+        color: var(--text-primary);
         font-family: var(--font-display);
         font-weight: bold;
-        color: var(--text-primary);
-        margin-bottom: 0.8rem;
+        text-align: start;
+        margin-bottom: 0.5rem;
       }
-      & select {
-        font-size: 1rem;
-        background-color: var(--surface);
-        color: var(--text-primary);
-        margin-bottom: 0.8rem;
+      & .category-difficulty-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        & select {
+          background-color: var(--surface);
+          color: var(--text-primary);
+          flex-grow: 1;
+        }
+      }
+      & .form-group {
+        margin-bottom: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        & label {
+          display: block;
+          font-family: var(--font-display);
+          font-weight: bold;
+          margin-bottom: 0.8rem;
+          pointer-events: none;
+        }
+
+        & input[type="text"]:focus,
+        & input[type="number"]:focus,
+        & select:focus,
+        & textarea:focus {
+          border-color: var(--accent-primary);
+          outline: none;
+        }
+      }
+      & textarea {
+        height: 4rem;
+        overflow: hidden;
+        font-family: var(--font-body);
+        box-sizing: border-box;
+        transition: height 0.5s;
+
+        &:focus {
+          height: 8rem;
+          overflow: auto;
+        }
+      }
+      & .sticky-cocktail {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        background: var(--lcard-linear-gradient);
+        box-shadow: 0 0.5 -1px rgba(0, 0, 0, 0.1);
+        padding: var(--button-padding);
+        width: 100%;
+        border-radius: 5px;
+
+        & input[type="checkbox"] {
+          margin: 0;
+          accent-color: var(--accent-primary);
+          cursor: pointer;
+        }
+        & label {
+          position: relative;
+          cursor: pointer;
+          &::after {
+            content: "Set cocktail as sticky to feature it prominently.";
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--background-secondary);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.2s ease;
+            z-index: 10;
+          }
+          &:hover::after {
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+      }
+      & input[type="file"] {
+        margin-bottom: 1rem;
+        padding: var(--button-padding);
+        flex-grow: 1;
         width: 100%;
       }
-    }
-    & #social-link-container {
-      & .social-input {
-        color: var(--text-primary);
+
+      & .close-button-container {
+        display: flex;
+        justify-content: flex-end;
+        & .close-button {
+          margin: 0;
+        }
+      }
+      & form {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      & .platform-container {
+        color: var(--text-secondary);
+        & label {
+          display: block;
+          font-family: var(--font-display);
+          font-weight: bold;
+          color: var(--text-primary);
+          margin-bottom: 0.8rem;
+        }
+        & select {
+          font-size: 1rem;
+          background-color: var(--surface);
+          color: var(--text-primary);
+          margin-bottom: 0.8rem;
+          width: 100%;
+        }
+      }
+      & #social-link-container {
+        & .social-input {
+          color: var(--text-primary);
+        }
+      }
+      & button {
+        display: block;
+        justify-self: center;
+        margin-top: 1rem;
       }
     }
-    & button {
-      display: block;
-      justify-self: center;
-      margin-top: 1rem;
-    }
   }
-
   & .profile__main {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    width: 25vw;
-
+    padding: var(--base-padding);
+    background: var(--lcard-linear-gradient);
+    border-radius: var(--button-radius);
     & .profile-info {
-      background: var(--lcard-linear-gradient);
-      border-radius: 10px;
-      padding: var(--base-padding);
+      border-radius: var(--button-radius);
       height: 100%;
       width: 100%;
     }
@@ -132,7 +247,7 @@
 
         /* max-width: min-content; */
         & button {
-          color:var(--text-primary-light);
+          color: var(--text-primary-light);
           background-color: var(--error);
         }
         & #deleteConfirmSection form {
@@ -181,31 +296,38 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
     flex-grow: 1;
     margin: 0;
-    border-radius: 1rem;
+    border-radius: var(--button-radius);
     background: var(--card-linear-gradient);
     padding: var(--base-padding);
-    max-height: 80vh;
+    height: auto;
+    width: 80%;
+    position: relative;
+    & .cocktailActions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.5rem;
+      position: sticky;
+      right: 0;
+      top: 7%;
+      width: 100%;
+    }
     & .recipe-container {
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
       gap: 1rem;
       flex-wrap: wrap;
-      border-radius: 1rem;
+      border-radius: var(--button-radius);
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       white-space: nowrap;
-      scroll-behavior: smooth;
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent-primary) var(--background);
       max-height: 80vh;
-      max-width: 75vw ;
       overflow-y: auto;
       & .recipe-card {
         flex: 0 0 auto;
-        width: 20vw;
+        width: 20%;
         /* max-width: 300px; */
         background: var(--card-linear-gradient);
         padding: 0.5rem;
@@ -213,7 +335,7 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         & .cocktailInfo {
           font-size: 0.8rem;
-          padding-left: .5rem;
+          padding-left: 0.5rem;
         }
         & a {
           position: relative;
@@ -238,6 +360,7 @@
       }
     }
   }
+  
   @media screen and (max-width: 768px) {
     flex-direction: column;
     align-items: center;
@@ -254,6 +377,7 @@
       transform: none;
       & .form-container {
         height: 100%;
+        width: 100%;
         & label,
         input,
         textarea {
@@ -269,7 +393,7 @@
       }
     }
     & .profile__main {
-      margin: 2%;
+      margin: 0 2%;
       width: 100%;
       width: -moz-available;
       width: -webkit-fill-available;

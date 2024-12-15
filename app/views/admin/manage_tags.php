@@ -8,7 +8,6 @@
   <?php include 'tag_form.php'; ?>
 
   <!-- Tags grouped by category -->
-
   <?php if (!empty($groupedTags)): ?>
     <div class="categories-container">
         <?php foreach ($groupedTags as $categoryName => $tags): ?>
@@ -28,7 +27,7 @@
                                 <button class="button-error deleteTagButton" 
                                     data-tag-id="<?= htmlspecialchars($tag['tag_id']); ?>" 
                                     data-tag-name="<?= htmlspecialchars($tag['name']); ?>">
-                                    <i class="fa-solid fa-trash"></i>
+                                    <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
                         </li>
