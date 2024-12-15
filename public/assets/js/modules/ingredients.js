@@ -153,8 +153,8 @@ export function initializeIngredients() {
                     }
                 },
                 error: function (xhr, status, error) {
-                    console.error("AJAX Error:", error);
-                    console.log("Response Text:", xhr.responseText);
+                    // console.error("AJAX Error:", error);
+                    // console.log("Response Text:", xhr.responseText);
                     alert("An error occurred while updating the ingredient name.");
                 },
             });
