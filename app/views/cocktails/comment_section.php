@@ -1,6 +1,6 @@
 <div class="commentsSection">
-    <h2 class=""> <i class="fa-brands fa-slideshare"></i> Bar Talk</h2>
     <!-- Top-level Comment Form -->
+    <h2 class=""> <i class="fa-brands fa-slideshare"></i> Bar Talk</h2>
     <?php if ($authController->isLoggedIn() && $currentUser->canComment()): ?>
         <div class="top-level-comment">
             <form id="TopLevelCommentForm"
@@ -80,7 +80,7 @@
                                     <form action="/comments/<?= $reply->getCommentId() ?>/delete" method="POST"
                                         onsubmit="return confirm('Are you sure you want to delete this reply?');">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
-                                        <button type="submit" class="delete">🗑️</button>
+                                        <button type="submit" class="delete"><i class="fa-solid fa-trash"></i></button>
                                     </form>
                                 <?php endif; ?>
                             </div>
@@ -106,6 +106,4 @@
 
         </div>
     <?php endforeach; ?>
-
-
 </div>

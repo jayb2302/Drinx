@@ -133,10 +133,12 @@
 body {
   background-color: var(--background);
   color: var(--text-primary);
-  font-family: var(--font-body); /* Use body font */
+  font-family: var(--font-body); 
   letter-spacing: 0.02em;
   margin: 0;
-  height: 100dvh; /* Ensure compatibility with browser UI on mobile devices */
+  height: 100dvh;
+  max-width: 100dvw;
+  overflow: auto; 
 }
 
 .logo {

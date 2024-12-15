@@ -140,12 +140,12 @@ export function initializeTags() {
                                             data-tag-id="${jsonResponse.tag_id}" 
                                             data-tag-name="${tagName}" 
                                             data-tag-category-id="${tagCategoryId}">
-                                            🖊️
+                                            <i class="fa-solid fa-pencil"></i>
                                         </button>
                                         <button class="button-error deleteTagButton" 
                                             data-tag-id="${jsonResponse.tag_id}" 
                                             data-tag-name="${tagName}">
-                                            🗑️
+                                            <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
                                 </li>

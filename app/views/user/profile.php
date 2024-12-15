@@ -18,7 +18,6 @@ if (isset($_SESSION['success'])) {
 ?>
 <!-- <div id="message" class="success"> <i class="fa-solid fa-bell success"></i> <h4> this is a test message </h4> </div> -->
 <div class="profile__container">
-
     <!-- User Profile Header -->
     <aside class="profile__main">
         <!-- User Info -->
@@ -171,7 +170,10 @@ if (isset($_SESSION['success'])) {
     <div id="edit-profile-form" style="display:none;">
         <?php include __DIR__ . '/form.php'; ?>
     </div>
-    <div class="profile__recipes">
+    <main class="profile__recipes">
+        <div class="cocktailActions">
+            <a href="/" class="button-secondary">Back</a>
+        </div>
         <!-- Profile Edit Form - Only show if user is viewing their own profile -->
         <h3>My Recipes</h3>
         <?php if (!empty($userRecipes)): ?>

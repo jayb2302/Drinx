@@ -56,8 +56,6 @@ export function initializeIngredients() {
             contentType: "application/json",
             data: JSON.stringify({ ingredient_name: ingredientName, csrf_token: csrfToken }),
             success: function (response) {
-                console.log("Server Response:", response);  // Log the raw response
-
                 // Check if response is a string, and parse it into an object if necessary
                 if (typeof response === "string") {
                     try {
@@ -88,7 +86,7 @@ export function initializeIngredients() {
 
     // Open Assign Tag Dialog
     $(document).on("click", ".assignTagButton", function () {
-        console.log("Assign Tag button clicked"); // Debug log
+        // console.log("Assign Tag button clicked"); // Debug log
         const ingredientId = $(this).closest("li").data("ingredient-id");
         const ingredientName = $(this).closest("li").find(".ingredient-name").text().trim();
 
@@ -100,7 +98,7 @@ export function initializeIngredients() {
 
         // Fetch tags and open the dialog
         fetchTagsWithCategories(() => {
-            console.log("Tags fetched successfully.");
+            // console.log("Tags fetched successfully.");
             $("#assignTagDialog").dialog("open"); // Open modal
         });
     });
@@ -127,7 +125,7 @@ export function initializeIngredients() {
                     csrf_token: csrfToken,
                 }),
                 success: function (response) {
-                    console.log("Response from server:", response);
+                    // console.log("Response from server:", response);
 
                     if (typeof response === "string") {
                         try {
@@ -195,9 +193,9 @@ export function initializeIngredients() {
                         // Remove the deleted ingredient from the list dynamically
                         $(`li[data-ingredient-id='${ingredientId}']`).remove();
 
-                        // Alternatively, re-fetch the ingredients
-                        fetchUncategorizedIngredients();  // If you want to re-fetch uncategorized
-                        fetchCategorizedIngredients();    // If you want to re-fetch categorized ingredients
+                        // Re-fetch the ingredients
+                        fetchUncategorizedIngredients();  
+                        fetchCategorizedIngredients();    
                     } else {
                         alert(response.message || "Failed to delete ingredient.");
                     }
@@ -310,7 +308,7 @@ export function initializeIngredients() {
                 if (response.status === 'success') {
                     renderUncategorizedIngredients(response.ingredients);
                 } else {
-                    console.error('Error fetching ingredients:', response.message);
+                    // console.error('Error fetching ingredients:', response.message);
                     alert(response.message || "Failed to fetch uncategorized ingredients.");
                 }
             },
@@ -365,8 +363,6 @@ export function initializeIngredients() {
         const ingredientId = $("#ingredientId").val();
         const tagId = $("#tag").val();
 
-        console.log("Assigning Tag - Ingredient ID:", ingredientId, "Tag ID:", tagId, "CSRF Token:", csrfToken);
-
         if (!ingredientId || !tagId) {
             alert("Please select a valid tag.");
             return;
@@ -381,8 +377,6 @@ export function initializeIngredients() {
             contentType: "application/json",
             data: JSON.stringify({ ingredient_id: ingredientId, tag_id: tagId, csrf_token: csrfToken }),
             success: function (response) {
-                console.log("Assign Tag Response:", response);
-
                 // Ensure response is an object
                 if (typeof response === "string") {
                     try {
@@ -406,9 +400,8 @@ export function initializeIngredients() {
                 }
             },
             error: function (xhr, status, error) {
-                console.error("AJAX Assign Tag Error:", error);
-                console.log("Response Text:", xhr.responseText);
-
+                // console.error("AJAX Assign Tag Error:", error);
+                // console.log("Response Text:", xhr.responseText);
                 let errorMessage = "An error occurred while assigning the tag.";
                 try {
                     const errorResponse = JSON.parse(xhr.responseText);
@@ -418,7 +411,6 @@ export function initializeIngredients() {
                 } catch (e) {
                     console.error("Error parsing server response:", e);
                 }
-
                 alert(errorMessage);
             }
         });

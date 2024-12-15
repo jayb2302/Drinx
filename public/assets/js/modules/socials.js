@@ -1,5 +1,5 @@
 export function initializeSocialMedia() {
-    console.log('Initializing social media links...');
+    // console.log('Initializing social media links...');
     const platformSelect = document.getElementById('platform-select');
     const socialLinkContainer = document.getElementById('social-link-container');
 

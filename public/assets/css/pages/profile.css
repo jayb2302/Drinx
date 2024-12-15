@@ -105,12 +105,11 @@
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    width: 25vw;
-
+    padding: var(--base-padding);
+    background: var(--lcard-linear-gradient);
+    border-radius: var(--button-radius);
     & .profile-info {
-      background: var(--lcard-linear-gradient);
-      border-radius: 10px;
-      padding: var(--base-padding);
+      border-radius: var(--button-radius);
       height: 100%;
       width: 100%;
     }
@@ -181,31 +180,41 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
     flex-grow: 1;
     margin: 0;
-    border-radius: 1rem;
+    border-radius: var(--button-radius);
     background: var(--card-linear-gradient);
     padding: var(--base-padding);
-    max-height: 80vh;
+    height: auto;
+    width: 80%;
+    position: relative;
+    & .cocktailActions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.5rem;
+      position: sticky;
+      right: 0;
+      top: 7%;
+      width: 100%;
+    }
     & .recipe-container {
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
       gap: 1rem;
       flex-wrap: wrap;
-      border-radius: 1rem;
+      border-radius: var(--button-radius);
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       white-space: nowrap;
       scroll-behavior: smooth;
       scrollbar-width: thin;
       scrollbar-color: var(--accent-primary) var(--background);
       max-height: 80vh;
-      max-width: 75vw ;
       overflow-y: auto;
       & .recipe-card {
         flex: 0 0 auto;
-        width: 20vw;
+        width: 20%;
         /* max-width: 300px; */
         background: var(--card-linear-gradient);
         padding: 0.5rem;
@@ -269,7 +278,7 @@
       }
     }
     & .profile__main {
-      margin: 2%;
+      margin: 0 2%;
       width: 100%;
       width: -moz-available;
       width: -webkit-fill-available;

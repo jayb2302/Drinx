@@ -56,15 +56,13 @@
             text-align: start;
             text-transform: capitalize;
         }
-
         ul {
             background-color: var(--card-background);
             border: 0.1rem solid var(--border);
             border-radius: 0.5rem;
-            height: 40dvh;
+            height: 50dvh;
             overflow: auto;
             padding: var(--tag-padding);
-
             .tag-item {
                 transition: background-color 0.2s ease;
                 color: var(--text-primary);
@@ -102,9 +100,8 @@
 /* Button Group */
 .button-group {
     display: flex;
-    gap: 5px;
     & .button-error {
-        background-color: var(--error);
+        border: 1px solid var(--error);
         color: var(--text-secondary);
         &:hover {
             background-color: var(--error);

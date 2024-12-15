@@ -117,7 +117,7 @@
             <?php else: ?>
                 <div class="ingredient-input">
                     <div class="ingredient-name-container">
-                        <!-- <label for="ingredient1">Ingredient 1:</label> -->
+                        <label for="ingredient1">Ingredient 1:</label>
                         <input
                             type="text"
                             name="ingredients[]"
