@@ -136,6 +136,7 @@ body {
   font-family: var(--font-body); /* Use body font */
   letter-spacing: 0.02em;
   margin: 0;
+  height: 100dvh; /* Ensure compatibility with browser UI on mobile devices */
 }
 
 .logo {

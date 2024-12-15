@@ -4,6 +4,10 @@
     font-family: var(--font-body);
     position: sticky;
     top: 10%;
+    height: 100dvh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-primary) var(--background);
     & .top-level-comment{
         gap: 1rem;
         & .commentHeading {

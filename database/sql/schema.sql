@@ -24,10 +24,12 @@ DROP TABLE IF EXISTS `difficulty_levels`;
 DROP TABLE IF EXISTS `user_badges`;
 DROP TABLE IF EXISTS `badges`;
 DROP TABLE IF EXISTS `user_profile`;
-DROP TABLE IF EXISTS `user_activity`;
-DROP TABLE IF EXISTS `user_ranks`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `account_status`;
+DROP TABLE IF EXISTS `tag_categories`;
+DROP TABLE IF EXISTS `ingredient_tags`;
+DROP TABLE IF EXISTS `social_platforms`;
+DROP TABLE IF EXISTS `user_social_links`;
 
 -- Re-enable foreign key checks after dropping tables
 SET FOREIGN_KEY_CHECKS = 1;
@@ -39,15 +41,9 @@ CREATE TABLE `account_status` (
   `status_name` varchar(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE `user_ranks` (
-  `rank_id` int PRIMARY KEY AUTO_INCREMENT,
-  `rank_name` varchar(50) UNIQUE NOT NULL,
-  `min_points` int NOT NULL UNIQUE
-);
-
 CREATE TABLE `badges` (
   `badge_id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(255) UNIQUE NOT NULL,
+  `name` varchar(100) UNIQUE NOT NULL,
   `description` text
 );
 
@@ -109,18 +105,9 @@ CREATE TABLE `user_badges` (
     FOREIGN KEY (`badge_id`) REFERENCES `badges`(`badge_id`) ON DELETE CASCADE
 );
 
-CREATE TABLE `user_activity` (
-  `user_id` int PRIMARY KEY NOT NULL,  
-  `rank_id` int,
-  `points` int DEFAULT 0,
-  `cocktails_uploaded` int DEFAULT 0,
-  `likes_received` int DEFAULT 0,
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),  
-  FOREIGN KEY (`rank_id`) REFERENCES `user_ranks`(`rank_id`)
-);
 CREATE TABLE `ingredients` (
   `ingredient_id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(255) UNIQUE NOT NULL
+  `name` varchar(100) UNIQUE NOT NULL
 );
 CREATE TABLE `ingredient_unit` (
   `unit_id` int PRIMARY KEY AUTO_INCREMENT,
@@ -178,13 +165,13 @@ CREATE TABLE `tag_categories` (
   `category_name` varchar(100) NOT NULL
 ); 
 
-CREATE TABLE ingredient_tags (
-    ingredient_tag_id INT AUTO_INCREMENT PRIMARY KEY,
-    ingredient_id INT NOT NULL,
-    tag_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_ingredient FOREIGN KEY (ingredient_id) REFERENCES ingredients (ingredient_id) ON DELETE CASCADE,
-    CONSTRAINT fk_tag FOREIGN KEY (tag_id) REFERENCES tags (tag_id) ON DELETE CASCADE
+CREATE TABLE `ingredient_tags` (
+    `ingredient_tag_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `ingredient_id` INT NOT NULL,
+    `tag_id` INT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_ingredient FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`ingredient_id`) ON DELETE CASCADE,
+    CONSTRAINT fk_tag FOREIGN KEY (`tag_id`) REFERENCES `tags` (`tag_id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `cocktail_tags` (
@@ -204,41 +191,19 @@ CREATE TABLE `follows` (
   FOREIGN KEY (`followed_user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE
 );
 
+CREATE TABLE `social_platforms` (
+    `platform_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `platform_name` VARCHAR(50) NOT NULL UNIQUE,
+    `icon_class` VARCHAR(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- CREATE VIEW user_stats AS
--- SELECT 
---     u.user_id,
---     u.username,
---     COALESCE(ua.cocktails_uploaded, 0) AS total_recipes,
---     COALESCE(ua.likes_received, 0) AS likes_received,
---     COALESCE(comment_count.comments_received, 0) AS comments_received,
---     COALESCE(ua.points, 0) AS points,
---     r.rank_name
--- FROM 
---     users u
--- LEFT JOIN (
---     SELECT 
---         u.user_id,
---         COUNT(c.cocktail_id) AS cocktails_uploaded,
---         COUNT(DISTINCT l.like_id) AS likes_received,
---         (COUNT(c.cocktail_id) * 10 + COUNT(l.like_id) * 2) AS points
---     FROM users u
---     LEFT JOIN cocktails c ON u.user_id = c.user_id
---     LEFT JOIN likes l ON l.cocktail_id = c.cocktail_id
---     GROUP BY u.user_id
--- ) ua ON u.user_id = ua.user_id
--- LEFT JOIN (
---     SELECT 
---         c.user_id, 
---         COUNT(*) AS comments_received
---     FROM 
---         cocktails c
---     LEFT JOIN 
---         comments cm ON cm.cocktail_id = c.cocktail_id
---     GROUP BY 
---         c.user_id
--- ) comment_count ON u.user_id = comment_count.user_id
--- LEFT JOIN 
---     user_ranks r ON ua.points >= r.min_points
--- ORDER BY 
---     ua.points DESC;
+CREATE TABLE `user_social_links` (
+    `social_link_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,
+    `platform_id` INT NOT NULL,
+    `url` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+    CONSTRAINT fk_platform_id FOREIGN KEY (`platform_id`) REFERENCES `social_platforms` (`platform_id`) ON DELETE CASCADE,
+    UNIQUE KEY uq_user_platform (`user_id`, `platform_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

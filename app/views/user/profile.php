@@ -28,7 +28,7 @@ if (isset($_SESSION['success'])) {
             <?php endif; ?>
             <!-- Profile Picture -->
             <div class="profile-picture">
-                 <?php if ($userId !== $profileUserId): ?>
+                <?php if ($userId !== $profileUserId): ?>
                     <?php if (isset($isFollowing) && $isFollowing): ?>
                         <form action="/user/unfollow/<?= htmlspecialchars($profileUserId); ?>" method="POST">
                             <button type="submit" class="btn btn-danger unfollow">Unfollow</button>
@@ -93,13 +93,11 @@ if (isset($_SESSION['success'])) {
                                     <div class="progress-bar" style="width: <?= $progressData['progress']; ?>%;"></div>
                                 </div>
                             </div>
-
                             <p>
                                 <?= ($progressData['nextMilestone'] - $cocktailCount); ?> more
                                 cocktail<?= ($progressData['nextMilestone'] - $cocktailCount) > 1 ? 's' : ''; ?>
                                 to become <?= htmlspecialchars($progressData['nextBadge']->getName()); ?>.
                             </p>
-
                         </div>
                     <?php else: ?>
                         <p>You have earned all available badges. Keep creating amazing cocktails!</p>
@@ -111,7 +109,7 @@ if (isset($_SESSION['success'])) {
             <div class="profile-stats">
                 <h3>Statistics</h3>
                 <ul>
-                    <li>Total Recipes: <?= count($userRecipes); ?></li>
+                    <li>Total Recipes: <?= $profileStats['cocktail_count'] ?? 0; ?></li>
                     <li>Likes Received: <?= $profileStats['likes_received'] ?? 0; ?></li>
                     <li>Comments Received: <?= $profileStats['comments_received'] ?? 0; ?></li>
                 </ul>
@@ -132,36 +130,40 @@ if (isset($_SESSION['success'])) {
                 </div>
             </div>
 
-            <!-- Edit-Delete Section -->
-            <?php if ($userId === $profileUserId OR $authController->isAdmin()): ?>
-                <!-- Edit Profile Button - Only show if user is viewing their own profile -->
-                <div class="edit-delete">
+            <div class="edit-delete">
+                <?php if ($userId === $profileUserId): ?>
                     <div id="overlay" style="display:none;"></div>
                     <a id="edit-profile-button" class="button-secondary">
                         <span>
                             Edit Profile
                         </span>
                     </a>
+                <?php endif; ?>
+                <?php if ($userId === $profileUserId or $authController->isAdmin()): ?>
                     <div class="delete-account-section">
                         <button id="deleteAccountButton" class="button-secondary">Delete Account</button>
-
                         <div id="deleteConfirmSection" style="display:none;">
-                            <p class="warning">Warning: This action will permanently delete your account and cannot be
+                            <p class="warning">Warning: This action will permanently delete the account and cannot be
                                 undone!</p>
-                            <form action="/profile/delete" method="POST">
-                                <label for="password">Confirm Password:</label>
+                            <form action="/profile/<?= urlencode($profile->getUsername()) ?>/delete" method="POST">
+                                <?= '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(generateCsrfToken()) . '">' ?>
+                                <label for="password">
+                                    <?= $authController->isAdmin() ? 'Admin Password' : 'Confirm Password' ?>:
+                                </label>
                                 <input type="password" name="password" required>
+                                <?php if ($authController->isAdmin()): ?>
+                                    <input type="hidden" name="delete_user_id" value="<?= htmlspecialchars($profileUserId) ?>">
+                                <?php endif; ?>
                                 <button type="submit" class="confirm-delete">Confirm Deletion</button>
                             </form>
-                            <!-- Display any error messages related to deletion -->
                             <?php if (isset($_SESSION['error'])): ?>
                                 <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); ?></div>
                                 <?php unset($_SESSION['error']); ?>
                             <?php endif; ?>
                         </div>
                     </div>
-                </div>
-            <?php endif; ?>
+                <?php endif; ?>
+            </div>
         </div>
 
     </aside>

@@ -36,6 +36,7 @@ form {
     font-family: var(--font-body);
     margin: 0 auto;
     overflow-y: auto;
+    width: 33vw;
 
     & h2 {
         color: var(--accent-primary);
@@ -313,6 +314,7 @@ input[type="submit"] {
 .editCommentForm {
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
     & textare {
         flex-grow: 1;
     }
@@ -320,4 +322,10 @@ input[type="submit"] {
 
 #editFormContainer {
     padding: var(--base-padding);
+}
+@media screen and (max-width: 768px) {
+    .form-container {
+        width: 100%;
+    }
+    
 }

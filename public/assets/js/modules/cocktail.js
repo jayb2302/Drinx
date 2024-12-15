@@ -5,7 +5,13 @@ export function initializeCocktail() {
         editCocktailButton.addEventListener("click", () => {
             const editForm = document.getElementById("editFormContainer");
             if (editForm) {
-                editForm.style.display = editForm.style.display === "none" ? "block" : "none";
+                const isFormVisible = editForm.style.display === "block";
+                editForm.style.display = isFormVisible ? "none" : "block";
+                
+                // Scroll to the top of the page if the form is now visible
+                if (!isFormVisible) {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
             }
         });
     }
