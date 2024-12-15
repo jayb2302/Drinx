@@ -4,9 +4,8 @@
     font-family: var(--font-body);
     position: sticky;
     top: 10%;
-    height: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent-primary) var(--background);
+    height: 100vh;
+    overflow-y: auto;
     & .top-level-comment{
         gap: 1rem;
         padding-top: .5rem;
@@ -20,6 +19,7 @@
             flex-direction: column;
             flex-grow: 1;
             gap: 1rem;
+            padding: 0.5rem;
             & textarea {
                 padding: 0.5rem;
                 border: 1px solid var(--border-color);

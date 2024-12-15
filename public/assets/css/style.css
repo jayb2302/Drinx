@@ -130,6 +130,12 @@
   }
 }
 
+*{
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-primary) var(--background);
+}
+
 body {
   background-color: var(--background);
   color: var(--text-primary);

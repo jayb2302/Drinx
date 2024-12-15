@@ -20,8 +20,6 @@
 
     .category-block {
         flex: 1;
-        scrollbar-width: thin;
-        scrollbar-color: var(--accent-primary) var(--background);
         &::-webkit-scrollbar {
             width: 10px;
             height: 10px;
