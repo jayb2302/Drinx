@@ -80,6 +80,8 @@ CREATE TABLE `cocktails` (
   `difficulty_id` int,
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp,
+  `is_sticky` BOOLEAN DEFAULT 0,
+
   FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE,
   FOREIGN KEY (`category_id`) REFERENCES `categories`(`category_id`),
   FOREIGN KEY (`difficulty_id`) REFERENCES `difficulty_levels`(`difficulty_id`)
@@ -95,7 +97,7 @@ CREATE TABLE `user_profile` (
 );
 
 CREATE TABLE `user_badges` (
-  `user_id` int,
+  `user_id` int ,
   `badge_id` int,
   `earned_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`, `badge_id`),
@@ -137,7 +139,7 @@ CREATE TABLE `comments` (
   `comment_id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int,
   `cocktail_id` int,
-  `parent_comment_id` int DEFAULT NULL, -- Allow NULL for top-level comments
+  `parent_comment_id` int DEFAULT NULL,
   `comment` text NOT NULL,
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE,
@@ -155,15 +157,19 @@ CREATE TABLE `likes` (
   FOREIGN KEY (`cocktail_id`) REFERENCES `cocktails`(`cocktail_id`) ON DELETE CASCADE
 );
 
-CREATE TABLE `tags` (
-  `tag_id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(50) UNIQUE NOT NULL
-);
-
 CREATE TABLE `tag_categories` (
-  `tag_category_id` int(11) NOT NULL,
+  `tag_category_id` INT PRIMARY KEY AUTO_INCREMENT,
   `category_name` varchar(100) NOT NULL
 ); 
+
+CREATE TABLE `tags` (
+  `tag_id` int PRIMARY KEY AUTO_INCREMENT,
+  `name` varchar(50) UNIQUE NOT NULL,
+  `tag_category_id` int NOT NULL,
+  FOREIGN KEY (`tag_category_id`) REFERENCES `tag_categories`(`tag_category_id`)
+);
+
+
 
 CREATE TABLE `ingredient_tags` (
     `ingredient_tag_id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -177,6 +183,7 @@ CREATE TABLE `ingredient_tags` (
 CREATE TABLE `cocktail_tags` (
   `cocktail_id` int,
   `tag_id` int,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`cocktail_id`, `tag_id`),
   FOREIGN KEY (`cocktail_id`) REFERENCES `cocktails`(`cocktail_id`) ON DELETE CASCADE,
   FOREIGN KEY (`tag_id`) REFERENCES `tags`(`tag_id`) ON DELETE CASCADE
