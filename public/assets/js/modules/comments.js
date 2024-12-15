@@ -38,6 +38,15 @@ export function initializeComments() {
         }
     }
 
+    // Helper to close all dots menus
+    function closeAllDotsMenus() {
+        document.querySelectorAll('.dotsMenu .menu').forEach(menu => menu.classList.add('hidden'));
+    }
+
+    // Helper to close all reply forms
+    function closeAllReplyForms() {
+        document.querySelectorAll('.replyForm').forEach(form => form.classList.add('hidden'));
+    }
     // Top-level comment submission
     const commentForm = newCommentsSection.querySelector('#TopLevelCommentForm');
     if (commentForm) {
@@ -71,61 +80,64 @@ export function initializeComments() {
         });
     }
 
-newCommentsSection.addEventListener('click', async (event) => {
-    let target = event.target;
-    // Ensure the target is the delete button, even if the icon inside is clicked
-    if (target.matches('.delete *')) {
-        target = target.closest('.delete');
-    }
-    if (target && target.matches('.delete')) {
-        event.preventDefault(); // Prevent default form submission
-        const form = target.closest('form');
-        if (!form) {
-            console.error("Delete form not found.");
-            return;
+    newCommentsSection.addEventListener('click', async (event) => {
+        let target = event.target;
+        // Handle Delete
+        if (target.matches('.delete *')) {
+            target = target.closest('.delete');
         }
-
-        const confirmed = confirm('Are you sure you want to delete this?');
-        if (!confirmed) return;
-
-        const formData = new FormData(form);
-        formData.append('csrf_token', csrfMetaTag.getAttribute('content'));
-
-        try {
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: { 'Accept': 'application/json' },
-            });
-
-            const data = await handleServerResponse(response);
-            if (data.success) {
-                newCommentsSection.outerHTML = data.html;
-                document.dispatchEvent(new Event('Drinx.DOMUpdated'));
-            } else {
-                alert(data.error || 'Failed to delete comment.');
+        if (target && target.matches('.delete')) {
+            event.preventDefault(); // Prevent default form submission
+            const form = target.closest('form');
+            if (!form) {
+                console.error("Delete form not found.");
+                return;
             }
-        } catch (error) {
-            console.error('Error deleting comment:', error);
-        }
-    }
 
-    // Handle reply button toggle
-    if (target.matches('.replyButton')) {
-        const replyForm = newCommentsSection.querySelector(`#replyForm-${target.dataset.commentId}`);
-        if (replyForm) {
-            replyForm.classList.toggle('hidden');
-        }
-    }
+            const confirmed = confirm('Are you sure you want to delete this?');
+            if (!confirmed) return;
 
-    // Handle dots menu toggle
-    if (target.matches('.dotsButton')) {
-        const menu = target.nextElementSibling;
-        if (menu) {
-            menu.classList.toggle('hidden');
+            const formData = new FormData(form);
+            formData.append('csrf_token', csrfMetaTag.getAttribute('content'));
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' },
+                });
+
+                const data = await handleServerResponse(response);
+                if (data.success) {
+                    newCommentsSection.outerHTML = data.html;
+                    document.dispatchEvent(new Event('Drinx.DOMUpdated'));
+                } else {
+                    alert(data.error || 'Failed to delete comment.');
+                }
+            } catch (error) {
+                console.error('Error deleting comment:', error);
+            }
         }
-    }
-});
+
+        // Handle reply button toggle
+        if (target.matches('.replyButton')) {
+            closeAllReplyForms();
+            const replyForm = newCommentsSection.querySelector(`#replyForm-${target.dataset.commentId}`);
+            if (replyForm) {
+                replyForm.classList.toggle('hidden');
+            }
+        }
+
+        // Handle dots menu toggle
+        const dotsButton = target.closest('.dotsButton');
+        if (dotsButton) {
+            const menu = dotsButton.nextElementSibling;
+            if (menu) {
+                closeAllDotsMenus();
+                menu.classList.toggle('hidden');
+            }
+        }
+    });
 
     // Handle reply submission
     newCommentsSection.addEventListener('submit', async (event) => {
@@ -184,11 +196,15 @@ newCommentsSection.addEventListener('click', async (event) => {
 
     // Handle toggling edit form
     newCommentsSection.addEventListener('click', (event) => {
-        if (event.target.matches('.editCommentButton')) {
-            const commentId = event.target.dataset.commentId;
+        const editButton = event.target.closest('.editCommentButton');
+
+        if (editButton) {
+            const commentId = editButton.dataset.commentId;
             const editForm = newCommentsSection.querySelector(`#editForm-${commentId}`);
+    
             if (editForm) {
-                editForm.classList.toggle('hidden');
+                closeAllDotsMenus(); // Close the dots menu
+                editForm.classList.toggle('hidden'); // Toggle the edit form
             } else {
                 console.error(`Edit form with ID editForm-${commentId} not found.`);
             }
@@ -206,6 +222,7 @@ newCommentsSection.addEventListener('click', async (event) => {
                 const dotsMenu = editForm.closest('.commentBox').querySelector('.dotsMenu .menu');
                 if (dotsMenu) {
                     dotsMenu.classList.add('hidden');
+                    closeAllDotsMenus();
                 }
             } else {
                 console.error('Edit form not found.');

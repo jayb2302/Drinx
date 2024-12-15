@@ -4,33 +4,35 @@
     font-family: var(--font-body);
     position: sticky;
     top: 10%;
+    height: 100vh;
+    overflow-y: auto;
     & .top-level-comment{
         gap: 1rem;
+        padding-top: .5rem;
         & .commentHeading {
             font-family: var(--font-display);
             color: var(--text-primary);
             margin-top: 2rem;
         }
-        
         & #TopLevelCommentForm {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
             gap: 1rem;
+            padding: 0.5rem;
             & textarea {
                 padding: 0.5rem;
                 border: 1px solid var(--border-color);
-                border-radius: var(--border-radius, 8px);
+                border-radius: var(--button-padding);
                 background: var(--lcard-linear-gradient);
                 font-size: 1rem;
                 resize: vertical; 
                 color: var(--text-primary);
-                height: 2rem;
+                height: 3rem;
                 overflow: hidden;
                 font-family: var(--font-body);
                 box-sizing: border-box;
                 transition: height 0.5s;
-    
                 &:focus{
                     height: 8rem;
                     overflow: auto;
@@ -45,7 +47,6 @@
         display: flex;
         flex-direction: column;
         & .comment {
-
             display: flex;
             align-content: stretch;
             flex-direction: column;
@@ -53,14 +54,12 @@
             align-items: stretch;
             border-radius: 10px;
             padding: .5rem;
-        
             & p {
                 padding-left: .5rem;
                 margin: 0;
                 font-size: 0.9rem;
                 text-align: start;
             }
-           
         }
     }
 }
@@ -86,6 +85,9 @@
     display: inline-block;
     & .dotsButton {
         background: none;
+        display: inline-block;
+        height: 100%;
+        width: 100% ;
         border: none;
         color: var(--text-primary);
         font-size: 1.2rem;
@@ -101,12 +103,11 @@
         overflow: hidden;
         z-index: 1;
         .delete {
-            background-color: var(--error);
+            border: 1px solid var(--error);
         }
     }
     & .menuItem {
         color: var(--text-secondary);
-        padding: 0.5rem 1rem;
         display: block;
         text-decoration: none;
         &:hover {
@@ -149,10 +150,7 @@
         color: var(--text-primary);
         font-family: var(--font-body);
     }
-    
 }
-
-
 
 .recentComments {
     display: flex;

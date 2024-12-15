@@ -42,9 +42,6 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         position: relative;
         overflow: hidden;
-        scroll-behavior: smooth;
-        scrollbar-width: thin;
-        scrollbar-color: var(--accent-primary) var(--background);
     }
     & .dashboard-navigation {
         display: flex;
