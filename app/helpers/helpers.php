@@ -113,7 +113,6 @@ function validateUsername($username, &$errors)
     return empty($errors); 
 }
 
-
 function validatePassword($password, &$errors)
 {
     $requirements = [];
