@@ -76,7 +76,13 @@ class AuthController extends BaseController
             }
             $username = sanitize($_POST['username']);
             $email = sanitize($_POST['email']);
-            $password = trim($_POST['password']); // Trim password
+            $password = trim($_POST['password']); 
+
+            if (!validateUsername($username, $errors)) {
+                $_SESSION['error'] = implode('<br>', $errors);
+                header("Location: /register");
+                exit();
+            }
             // Validate password
             if (!validatePassword($password, $errors)) {
                 $_SESSION['error'] = implode('<br>', $errors);

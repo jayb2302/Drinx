@@ -1,12 +1,5 @@
 <div class="auth-form-container">
     <h2>Register</h2>
-    <?php
-    // Display any error messages (optional)
-    if (isset($_SESSION['error'])) {
-        echo '<div class="alert alert-danger">' . htmlspecialchars($_SESSION['error']) . '</div>';
-        unset($_SESSION['error']); // Clear the error after displaying
-    }
-    ?>
     <form method="POST" action="/register">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
         <div class="form-group">
