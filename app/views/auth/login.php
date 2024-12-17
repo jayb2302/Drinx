@@ -9,7 +9,7 @@
     }
     // Display error message 
     if (isset($_SESSION['error'])) {
-        echo '<div id="message" class="alert alert-danger"><i class="fa-solid fa-bell error"></i><h4>' . htmlspecialchars($_SESSION['error']) . '</div>';
+        echo '<div id="message" class="alert alert-danger"><i class="fa-solid fa-bell error"></i><h4>' . htmlspecialchars($_SESSION['error']) . '</h4></div>';
         unset($_SESSION['error']); // Clear the error message after displaying
     }
     ?>
