@@ -97,6 +97,23 @@ function generateCocktailSlug($title) {
     return strtolower(str_replace(' ', '-', $title));
 }
 
+function validateUsername($username, &$errors)
+{
+   
+    if (strlen($username) < 4) {
+        $errors[] = "Username must be at least 4 characters long.";
+    }
+    if (strlen($username) > 30) { 
+        $errors[] = "Username cannot be more than 30 characters long.";
+    }
+
+    if (!preg_match('/^[\p{L}0-9\-_]+$/u', $username)) {
+        $errors[] = "Username can only contain letters, numbers, hyphens (-), and underscores (_).";
+    }
+    return empty($errors); 
+}
+
+
 function validatePassword($password, &$errors)
 {
     $requirements = [];

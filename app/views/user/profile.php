@@ -3,20 +3,8 @@ $page = 'profile';
 //profile name is the title
 $metaTitle = htmlspecialchars($profile->getFirstName() ?? 'User Profile');
 include_once __DIR__ . '/../layout/header.php'; ?>
-<?php
-// Display any error messages (optional)
-if (isset($_SESSION['error'])) {
-    echo '<div id="message" class="alert alert-danger"> <i class="fa-solid fa-bell error"></i> <h4>' . htmlspecialchars($_SESSION['error']) . '  </h4></div>';
-    unset($_SESSION['error']);
-}
 
-// Display success message (optional)
-if (isset($_SESSION['success'])) {
-    echo '<div id="message" class="success"> <i class="fa-solid fa-bell success"></i>  <h4> ' . htmlspecialchars($_SESSION['success']) . '</h4></div>';
-    unset($_SESSION['success']);
-}
-?>
-<!-- <div id="message" class="success"> <i class="fa-solid fa-bell success"></i> <h4> this is a test message </h4> </div> -->
+<!-- <div id="message" class="success"> <i class="fa-solid fa-bell success"></i> <h4> this is a test message </h4> </div> --> <!-- Test message -->
 <div class="profile__container">
     <!-- User Profile Header -->
     <aside class="profile__main">
