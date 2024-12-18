@@ -1,0 +1,181 @@
+<!-- [MermaidChart: 006b2163-125d-41a3-884a-6f3926467d05] -->
+erDiagram
+    users {
+        int user_id PK
+        varchar username
+        varchar email
+        varchar password
+        int account_status_id FK
+        timestamp join_date
+        timestamp last_login
+        tinyint is_admin
+    }
+
+    account_status {
+        int account_status_id PK
+        varchar status_name
+    }
+
+    user_profile {
+        int user_id PK
+        varchar first_name
+        varchar last_name
+        varchar profile_picture
+        text bio
+    }
+
+    user_badges {
+        int user_id FK
+        int badge_id FK
+        timestamp earned_at
+        tinyint is_current
+    }
+
+    badges {
+        int badge_id PK
+        varchar name
+        text description
+    }
+
+    user_activity {
+        int user_id FK
+        int rank_id FK
+        int points
+        int cocktails_uploaded
+        int likes_received
+    }
+
+    user_ranks {
+        int rank_id PK
+        varchar rank_name
+        int min_points
+    }
+
+    cocktails {
+        int cocktail_id PK
+        int user_id FK
+        varchar title
+        text description
+        int prep_time
+        varchar image
+        int category_id FK
+        int difficulty_id FK
+        timestamp created_at
+        timestamp updated_at
+        tinyint is_sticky
+    }
+
+    categories {
+        int category_id PK
+        varchar name
+    }
+
+    difficulty_levels {
+        int difficulty_id PK
+        varchar difficulty_name
+    }
+
+    cocktail_ingredients {
+        int cocktail_id FK
+        int ingredient_id FK
+        decimal quantity
+        int unit_id FK
+    }
+
+    ingredients {
+        int ingredient_id PK
+        varchar name
+    }
+
+    ingredient_unit {
+        int unit_id PK
+        varchar unit_name
+        varchar unit_system
+    }
+
+    cocktail_steps {
+        int step_id PK
+        int cocktail_id FK
+        int step_number
+        text instruction
+    }
+
+    comments {
+        int comment_id PK
+        int user_id FK
+        int cocktail_id FK
+        int parent_comment_id FK
+        text comment
+        timestamp created_at
+    }
+
+    likes {
+        int like_id PK
+        int user_id FK
+        int cocktail_id FK
+        timestamp created_at
+    }
+
+    tags {
+        int tag_id PK
+        varchar name
+        int tag_category_id FK
+    }
+
+    tag_categories {
+        int tag_category_id PK
+        varchar category_name
+    }
+
+    cocktail_tags {
+        int cocktail_id FK
+        int tag_id FK
+        timestamp created_at
+    }
+
+    follows {
+        int user_id FK
+        int followed_user_id FK
+        timestamp followed_at
+    }
+
+    user_social_links {
+        int social_link_id PK
+        int user_id FK
+        int platform_id FK
+        varchar url
+        timestamp created_at
+    }
+
+    social_platforms {
+        int platform_id PK
+        varchar platform_name
+        varchar icon_class
+    }
+
+    %% Relationships
+    account_status ||--o{ users : "has"
+    users ||--o{ user_profile : "has"
+    users ||--o{ user_badges : "earns"
+    badges ||--o{ user_badges : "awarded with"
+    users ||--o{ user_activity : "records"
+    user_ranks ||--o{ user_activity : "defines rank"
+    users ||--o{ cocktails : "uploads"
+    categories ||--o{ cocktails : "categorized by"
+    difficulty_levels ||--o{ cocktails : "difficulty"
+    cocktails ||--o{ cocktail_ingredients : "contains"
+    ingredients ||--o{ cocktail_ingredients : "used in"
+    ingredient_unit ||--o{ cocktail_ingredients : "measured in"
+    cocktails ||--o{ cocktail_steps : "has"
+    users ||--o{ comments : "writes"
+    cocktails ||--o{ comments : "receives"
+    comments ||--o{ comments : "replies to"
+    users ||--o{ likes : "likes"
+    cocktails ||--o{ likes : "liked"
+    cocktails ||--o{ cocktail_tags : "tagged with"
+    tags ||--o{ cocktail_tags : "applied to"
+    tag_categories ||--o{ tags : "belongs to"
+    users ||--o{ follows : "follows"
+    users ||--o{ follows : "followed by"
+    users ||--o{ user_social_links : "shares"
+    social_platforms ||--o{ user_social_links : "used on" 

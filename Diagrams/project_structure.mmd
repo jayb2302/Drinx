@@ -1,0 +1,53 @@
+---
+config:
+  layout: fixed
+---
+flowchart TB
+    Root["ProjectRoot"] --> App["App"] & Database["Database"] & Public["Public"] & Router["Router"] & Routes["Routes"]
+    App --> Config["Config"] & Controllers["Controllers"] & Helpers["Helpers"] & Models["Models"] & Repositories["Repositories"] & Services["Services"] & Views["Views"]
+    Config --> Database["Database"] & Dependencies["Dependencies"]
+    Controllers --> AdminController["AdminController"] & AuthController["AuthController"] & BaseController["BaseController"] & CocktailController["CocktailController"] & CommentController["CommentController"] & HomeController["HomeController"] & IngredientController["IngredientController"] & LikeController["LikeController"] & SearchController["SearchController"] & StepController["StepController"] & TagController["TagController"] & UserController["UserController"]
+    Helpers --> Helpers["Helpers"]
+    Models --> Badge["Badge"] & Cocktail["Cocktail"] & Comment["Comment"] & Ingredient["Ingredient"] & Like["Like"] & Platform["Platform"] & SocialLink["SocialLink"] & Step["Step"] & Tag["Tag"] & User["User"] & UserActivity["UserActivity"]
+    Repositories --> BadgeRepository["BadgeRepository"] & CategoryRepository["CategoryRepository"] & CocktailRepository["CocktailRepository"] & CommentRepository["CommentRepository"] & DifficultyRepository["DifficultyRepository"] & IngredientRepository["IngredientRepository"] & LikeRepository["LikeRepository"] & SocialLinkRepository["SocialLinkRepository"] & StepRepository["StepRepository"] & TagRepository["TagRepository"] & UnitRepository["UnitRepository"] & UserRepository["UserRepository"]
+    Services --> AdminService["AdminService"] & AuthService["AuthService"] & BadgeService["BadgeService"] & CocktailService["CocktailService"] & CommentService["CommentService"] & ImageService["ImageService"] & IngredientService["IngredientService"] & LikeService["LikeService"] & SocialLinkService["SocialLinkService"] & StepService["StepService"] & TagService["TagService"] & UnitService["UnitService"] & UserService["UserService"]
+    Views --> 404["404"] & About["About"] & Admin["Admin"] & Auth["Auth"] & Cocktails["CocktailsImg"] & Home["Home"] & Layout["Layout"] & User["User"]
+    About --> About["About"]
+    Admin --> Dashboard["Dashboard"] & Manage_badges["Manage_badges"] & Manage_ingredients["Manage_ingredients"] & Manage_tags["Manage_tags"] & Manage_users["Manage_users"] & Sticky_cocktail["Sticky_cocktail"] & Tag_form["Tag_form"]
+    Auth --> Login["Login"] & Register["Register"]
+    Cocktails --> Categories["Categories"] & Comment_section["Comment_section"] & Form["Form"] & Index["Index"] & Random["Random"] & Sorting["Sorting"] & Tag_section["Tag_section"] & Tags_categories["Tags_categories"] & View["View"]
+    Layout --> Control_panel["Control_panel"] & Footer["Footer"] & Head["Head"] & Header["Header"]
+    User --> Form & Profile["Profile"] & Settings["Settings"]
+    Database --> Sql["Sql"]
+    Sql --> Procedure["Procedure"] & Schema["Schema"] & Seed_data["Seed_data"] & Triggers["Triggers"]
+    Procedure --> Add_ingredient_default["Add_ingredient_default"] & Get_uncategorized_ingredients["Get_uncategorized_ingredients"]
+    Triggers --> Auto_tag_cocktail["Auto_tag_cocktail"] & Auto_tag_ingredient["Auto_tag_ingredient"] & Remove_uncategorized_tag["Remove_uncategorized_tag"] & Update_cocktail_tags["Update_cocktail_tags"] & Update_user_badges["Update_user_badges"]
+    Public --> Assets["Assets"] & IndexPublic["IndexPublic"] & Logout["Logout"] & Uploads["Uploads"]
+    Assets --> Brand["Brand"] & Css["Css"] & Js["Js"] & Sounds["Sounds"]
+    Brand --> 404Spilled["404Spilled"] & DrinxLogo["DrinxLogo"]
+    Css --> Components["Components"] & Pages["Pages"] & Style["Style"]
+    Components --> Button["Button"] & Cards["Cards"] & Comments["Comments"] & Control_panel["Control_panel"] & Forms["Forms"] & Icons["Icons"] & Ingredients["Ingredients"] & Jquery_ui["Jquery_ui"] & Likes["Likes"] & Navbar["Navbar"] & Progress_bar["Progress_bar"] & Search["Search"] & Tags["Tags"] & User_management["User_management"]
+    Pages --> 404["404"] & About["About"] & Admin["Admin"] & Cocktails["Cocktails"] & Footer["Footer"] & Home["Home"] & Profile["Profile"]
+    Js --> Main["Main"] & Modules["Modules"]
+    Modules --> Admin["Admin"] & Cocktail["Cocktail"] & Comments["Comments"] & Image_handler["Image_handler"] & Ingredients["Ingredients"] & Likes["Likes"] & MessageTimeOut["MessageTimeOut"] & Profile["Profile"] & Random["Random"] & Search["Search"] & Sidebars["Sidebars"] & Socials["Socials"] & Sort_category["Sort_category"] & Sticky["Sticky"] & Tags["Tags"] & Theme["Theme"] & User_management["User_management"]
+    Sounds --> ShakeThat["ShakeThat"] & Shuffling["Shuffling"]
+    Uploads --> CocktailsImg["CocktailImg"] & Users["Users"]
+    Users --> User_default["User_default"]
+    style Root color:#F2f2f2, fill:#1c2126, stroke:#dcb404
+    style App color:#F2f2f2, fill:#303841, stroke:#dcb404
+    style Database color:#F2f2f2, stroke:#dcb404, fill:#303841
+    style Public color:#F2f2f2, stroke:#dcb404, fill:#303841
+    style Config color:#F2f2f2, stroke:#dcb404, fill:#83888D
+    style Controllers color:#F2f2f2, stroke:#dcb404, fill:#83888D
+    style Helpers color:#F2f2f2, stroke:#dcb404, fill:#83888D
+    style Models color:#F2f2f2, stroke:#dcb404, fill:#83888D
+    style Repositories color:#F2f2f2, stroke:#dcb404, fill:#83888D
+    style Services color:#F2f2f2, stroke:#dcb404, fill:#83888D
+    style Views color:#F2f2f2, stroke:#dcb404, fill:#83888D
+    style Home color:#1c212g, strole:#dcb404, fill:#ACAFB3 
+    style 404 color:#1c212g, strole:#dcb404, fill:#ACAFB3 
+    style About color:#1c212g, strole:#dcb404, fill:#ACAFB3 
+    style Auth color:#1c2126, strole:#dcb404, fill:#ACAFB3 
+    style Cocktails color:#1c212g, strole:#dcb404, fill:#ACAFB3 
+    style Layout color:#1c212g, strole:#dcb404, fill:#ACAFB3 
+    style User color:#1c212g, strole:#dcb404, fill:#ACAFB3 
