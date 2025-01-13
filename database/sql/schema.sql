@@ -30,6 +30,7 @@ DROP TABLE IF EXISTS `tag_categories`;
 DROP TABLE IF EXISTS `ingredient_tags`;
 DROP TABLE IF EXISTS `social_platforms`;
 DROP TABLE IF EXISTS `user_social_links`;
+DROP TABLE IF EXISTS `trigger_debug`;
 
 -- Re-enable foreign key checks after dropping tables
 SET FOREIGN_KEY_CHECKS = 1;
@@ -214,3 +215,10 @@ CREATE TABLE `user_social_links` (
     CONSTRAINT fk_platform_id FOREIGN KEY (`platform_id`) REFERENCES `social_platforms` (`platform_id`) ON DELETE CASCADE,
     UNIQUE KEY uq_user_platform (`user_id`, `platform_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `trigger_debug` (
+  `cocktail_id` int(11) DEFAULT NULL,
+  `tag_id` int(11) DEFAULT NULL,
+  `ingredient_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;

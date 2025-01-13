@@ -1,4 +1,5 @@
 // Main.js for handling all the JS modules
+import './modules/sessionExpired.js'; // Automatically starts monitoring session expiration
 import { initializeProfile } from './modules/profile.js';
 import { initializeLikes } from './modules/likes.js';
 import { initializeSearch } from './modules/search.js';
