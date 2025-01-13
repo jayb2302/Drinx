@@ -35,10 +35,8 @@ class TagController extends BaseController
         );
     }
 
-    // Save (add/update) a tag
     public function saveTag()
     {
-        // Check if the user is an admin
         if (!$this->authService->isAdmin()) {
             http_response_code(403);
             echo json_encode(['error' => 'You do not have permission to perform this action.']);
@@ -48,10 +46,6 @@ class TagController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = json_decode(file_get_contents('php://input'), true);
-
-            // Log the incoming CSRF token and session token for debugging
-            error_log("Incoming CSRF Token: " . $data['csrf_token']);
-            error_log("Session CSRF Token: " . $_SESSION['csrf_token']);
 
             $csrfToken = $data['csrf_token'] ?? '';
             $sessionToken = $_SESSION['csrf_token'] ?? '';
@@ -65,8 +59,8 @@ class TagController extends BaseController
 
             // Sanitize and validate tag data
             $tagId = isset($data['tag_id']) ? sanitize($data['tag_id']) : null;
-            $tagName = sanitize($data['tag_name'] ?? ''); // Ensure tag_name is set before sanitizing
-            $tagCategoryId = sanitize($data['tag_category_id'] ?? ''); // Ensure tag_category_id is set before sanitizing
+            $tagName = sanitize($data['tag_name'] ?? '');
+            $tagCategoryId = sanitize($data['tag_category_id'] ?? '');
 
             // Validate if name and category are provided
             if (empty($tagName) || empty($tagCategoryId)) {
@@ -75,7 +69,7 @@ class TagController extends BaseController
                 exit();
             }
 
-        $result = $this->tagService->save($tagName, $tagCategoryId, $tagId);
+            $result = $this->tagService->save($tagName, $tagCategoryId, $tagId);
 
             // Return success or failure response
             if ($result) {
@@ -135,6 +129,7 @@ class TagController extends BaseController
         }
         return $grouped;
     }
+    
     // Helper function to send a JSON response  
     private function jsonResponse($status, $message, $data = [], $httpCode = 200)
     {

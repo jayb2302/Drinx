@@ -18,7 +18,6 @@ class StepController {
 
             $this->stepService->addStep($cocktail_id, $step_number, $instruction);
 
-            // Redirect back to the cocktail view page
             header('Location: /cocktails/view?id=' . $cocktail_id);
             exit();
         }

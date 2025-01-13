@@ -20,7 +20,6 @@ class HomeController extends BaseController
 
     public function index($categoryName = null, $sortOption = 'recent')
     {
-       
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
         $isAdmin = $_SESSION['user']['is_admin'] ?? false;
         $authController = new AuthController($this->authService, $this->userService);
@@ -34,7 +33,7 @@ class HomeController extends BaseController
             'user' => $user,
         ];
 
-        $isStandalone = false; // When rendering the homepage, set as false
+        $isStandalone = false; 
 
         // Checks if $categoryName is one of the sort options (recent, popular, hot)
         if (in_array($categoryName, ['recent', 'popular', 'hot'])) {
@@ -88,15 +87,17 @@ class HomeController extends BaseController
             $cocktail->commentCount = $commentCount;
             $cocktail->comments = $comments;
         }
+
         // Check for AJAX request
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
             ob_start();
-            include __DIR__ . '/../views/cocktails/index.php';  // This will include the comments
+            include __DIR__ . '/../views/cocktails/index.php';  
             $content = ob_get_clean();
             header('Content-Type: application/json');
-            echo json_encode(['content' => $content]);  // Make sure the response has content
+            echo json_encode(['content' => $content]);  
             return;
         }
+
         // Prepare user profile and admin data
         $userProfile = $loggedInUserId ? $this->userService->getUserWithFollowCounts($loggedInUserId) : null;
         $users = $isAdmin ? $this->userService->getAllUsersWithStatus() : null;
@@ -106,10 +107,6 @@ class HomeController extends BaseController
         $isAdding = $action === 'add';
         $isLoggingIn = $action === 'login';
         $isRegistering = $action === 'register';
-        // $includeScripts = [
-        //     asset('assets/js/sort-category.js')
-        // ];  
-        // Load the view
         require_once __DIR__ . '/../views/home.php';
     }
 
@@ -129,7 +126,7 @@ class HomeController extends BaseController
                 } catch (Exception $e) {
                     // Return an error response
                     echo json_encode(['success' => false, 'message' => 'Failed to set cocktail as sticky.']);
-                    http_response_code(500); // Internal server error
+                    http_response_code(500); 
                 }
             } else {
                 // Return a bad request response

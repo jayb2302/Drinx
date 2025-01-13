@@ -9,7 +9,6 @@ class AuthController extends BaseController
         parent::__construct($authService, $userService);
     }
 
-    // Handle user authentication
     public function authenticate()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -57,6 +56,7 @@ class AuthController extends BaseController
         $csrfToken = generateCsrfToken();
         return require_once __DIR__ . '/../views/auth/login.php';
     }
+
     // Show the registration form
     public function showRegister()
     {

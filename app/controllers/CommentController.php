@@ -80,40 +80,31 @@ class CommentController extends BaseController
     // Delete comment
     public function delete($commentId)
     {
-        // error_log("Delete method called with comment ID: $commentId"); // Add this log
         $this->prepareJsonResponse();
     
         if (!$this->validateCsrfToken()) {
-            // error_log("CSRF token validation failed.");
             $this->respondWithError('Invalid CSRF token.', 403);
         }
     
         $comment = $this->commentService->getCommentById($commentId);
         if (!$comment) {
-            // error_log("Comment not found for ID: $commentId");
             $this->respondWithError('Comment not found.', 404);
         }
     
         if ($_SESSION['user']['id'] !== $comment->getUserId() && !$this->authService->isAdmin()) {
-            // error_log("Authorization failed for user ID: {$_SESSION['user']['id']}");
             $this->respondWithError('You are not authorized to delete this comment.', 403);
         }
     
         try {
             $cocktailId = $comment->getCocktailId();
-            // error_log("Attempting to delete comment ID: $commentId for cocktail ID: $cocktailId");
             $this->commentService->deleteComment($commentId);
     
-            // error_log("Comment ID $commentId deleted successfully.");
             $this->renderCommentsSection($cocktailId);
         } catch (Exception $e) {
-            // error_log("Error deleting comment ID $commentId: " . $e->getMessage());
             $this->respondWithError('An unexpected error occurred.', 500);
         }
     }
     
-    
-
     // Add a reply to a comment
     public function reply($commentId)
     {
@@ -143,7 +134,7 @@ class CommentController extends BaseController
     // Helper methods
     private function prepareJsonResponse()
     {
-        ob_clean(); // Clear any output buffer
+        ob_clean();
         header('Content-Type: application/json');
     }
 

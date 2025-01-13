@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../config/dependencies.php';
 require_once __DIR__ . '/../helpers/helpers.php';
 
-
 class BaseController
 {
     protected $authService;

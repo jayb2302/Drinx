@@ -45,7 +45,7 @@ class CocktailController extends BaseController
     // List all cocktails (public access)
     public function index()
     {
-        $isStandalone = true; // Set to true to indicate a standalone cocktails page
+        $isStandalone = true; 
         $cocktails = $this->cocktailService->getAllCocktails();
         $categories = $this->cocktailService->getCategories();
         $loggedInUserId = $_SESSION['user']['id'] ?? null;
@@ -63,9 +63,9 @@ class CocktailController extends BaseController
             $cocktail->commentCount = count($comments); // Count the number of comments
         }
 
-        // Pass data to the view
-        require_once __DIR__ . '/../views/cocktails/index.php'; // Load the view to display cocktails
+        require_once __DIR__ . '/../views/cocktails/index.php'; 
     }
+
     // Show the form to add a new cocktail (only for logged-in users)
     public function add()
     {
@@ -129,9 +129,6 @@ class CocktailController extends BaseController
             $isSticky = isset($_POST['isSticky']) ? 1 : 0;
 
             try {
-                // Log cocktail data to be stored
-                // error_log("Storing cocktail data: " . print_r($cocktailData, true));
-
                 // Proceed with creating the cocktail
                 $cocktailId = $this->cocktailService->createCocktail($cocktailData);
 
@@ -148,8 +145,8 @@ class CocktailController extends BaseController
 
                 // Check for new badges and notify user
                 $userId = $_SESSION['user']['id'];
-                $cocktailCount = $this->cocktailService->getCocktailCountByUserId($userId); // Fetch updated cocktail count
-                $this->userService->checkAndNotifyNewBadge($userId, $cocktailCount); // Check for new badges
+                $cocktailCount = $this->cocktailService->getCocktailCountByUserId($userId); 
+                $this->userService->checkAndNotifyNewBadge($userId, $cocktailCount); 
 
                 $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktailData['title']));
             } catch (Exception $e) {
@@ -163,7 +160,7 @@ class CocktailController extends BaseController
     // Show the form to edit an existing cocktail (only for the owner or admin)
     public function edit($cocktailId)
     {
-        $this->ensureLoggedIn(); // Ensure user is logged in
+        $this->ensureLoggedIn(); 
 
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
@@ -181,10 +178,11 @@ class CocktailController extends BaseController
         $steps = $this->cocktailService->getCocktailSteps($cocktailId);
         $categories = $this->cocktailService->getCategories();
         $units = $this->ingredientService->getAllUnits();
+
         $difficultyId = $cocktail->getDifficultyId();
         $difficultyName = $this->cocktailService->getDifficultyNameById($difficultyId);
-
         $difficulties = $this->cocktailService->getAllDifficulties();
+
         $isEditing = true;
 
         require_once __DIR__ . '/../views/cocktails/form.php';
@@ -261,29 +259,27 @@ class CocktailController extends BaseController
         echo json_encode(['count' => $count]);
     }
 
-    // Delete steps
     public function deleteStep($cocktailId)
     {
-        $this->ensureLoggedIn(); // Ensure the user is logged in
+        $this->ensureLoggedIn(); 
 
         // Fetch the cocktail to verify ownership
         $cocktail = $this->cocktailService->getCocktailById($cocktailId);
 
         // Only allow the owner or an admin to delete the step
         if ($cocktail->getUserId() !== $this->authService->getCurrentUser()->getId() && !$this->authService->isAdmin()) {
-            $this->redirect('/cocktails/' . $cocktailId); // Redirect if the user doesn't have permission
+            $this->redirect('/cocktails/' . $cocktailId); 
         }
 
         // Check if there are steps to delete
         if (isset($_POST['delete_steps']) && is_array($_POST['delete_steps'])) {
             foreach ($_POST['delete_steps'] as $stepId) {
                 if (is_numeric($stepId)) {
-                    $this->stepService->deleteStep($cocktailId, $stepId); // Call the service to delete each step
+                    $this->stepService->deleteStep($cocktailId, $stepId); 
                 }
             }
         }
 
-        // Redirect back to the cocktail edit page after deletion
         $this->redirect('/cocktails/' . $cocktailId . '-' . urlencode($cocktail->getTitle()));
     }
 
@@ -299,7 +295,6 @@ class CocktailController extends BaseController
         $this->ingredientService->clearIngredientsByCocktailId($cocktailId);
     }
 
-    // Validate cocktail input data
     private function validateCocktailInput($data)
     {
         $errors = [];
@@ -326,7 +321,7 @@ class CocktailController extends BaseController
         }
 
         // Validate description length (new addition)
-        if (!empty($data['description']) && strlen($data['description']) > 500) { // Adjust length as needed
+        if (!empty($data['description']) && strlen($data['description']) > 500) { 
             $errors[] = "Description cannot be more than 500 characters.";
         }
 
@@ -339,12 +334,12 @@ class CocktailController extends BaseController
         }
         // Validate prep_time
         if (!empty($data['prep_time'])) {
-            $prepTime = convertPrepTimeToMinutes($data['prep_time']); // Convert prep_time to minutes
+            $prepTime = convertPrepTimeToMinutes($data['prep_time']); 
             if ($prepTime === null || $prepTime < 1 || $prepTime > 240) {
                 $errors[] = "Preparation time must be between 1 and 240 minutes.";
             }
         }
-        // Optional: Check image if it's required and exists
+
         if (empty($data['image']) && !empty($data['image_required'])) {
             $errors[] = "Image is required.";
         }
@@ -361,10 +356,8 @@ class CocktailController extends BaseController
                 throw new \Exception("No valid file uploaded.");
             }
 
-
             // Set the target directory for cocktail images
             $targetDir = __DIR__ . '/../../public/uploads/cocktails/';
-
 
             // Generate a unique file name for the uploaded image
             $uniqueFileName = uniqid() . '.webp';
@@ -392,14 +385,14 @@ class CocktailController extends BaseController
         if (!empty($file['name'])) {
             return $this->handleImageUpload($file, $errors);
         }
-        return $cocktail->getImage(); // Retain existing image if no new one is provided
+        return $cocktail->getImage(); 
     }
 
     // Ensure user is logged in
     private function ensureLoggedIn()
     {
         if (!$this->authService->isLoggedIn()) {
-            $this->redirect('/login'); // Redirect to login if not logged in
+            $this->redirect('/login'); 
         }
     }
 

@@ -59,5 +59,4 @@ class SearchController extends BaseController
         echo json_encode([
             'users' => $users]);
     }
-    
 }

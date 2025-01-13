@@ -33,7 +33,7 @@ class AdminController extends BaseController
         $stats = $dashboardData['stats'] ?? [];
         $users = $dashboardData['users'] ?? [];
         $cocktails = $dashboardData['cocktails'] ?? [];
-        
+
         $categorizedIngredients = $this->ingredientService->getIngredientsByTags();
 
         $groupedTags = $dashboardData['groupedTags'] ?? [];
@@ -57,28 +57,22 @@ class AdminController extends BaseController
     // Update user status (e.g., active, banned, suspended)
     public function updateUserStatus()
     {
-        // Debugging: Log session data at the start
-        // error_log("Session Data at Start: " . print_r($_SESSION, true));
-    
         // Check if the request method is POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Debugging: Log POST data
             // error_log("POST Data: " . print_r($_POST, true));
-    
+
             if (!$this->authService->isAdmin()) {
                 // error_log("Admin Check Failed: User is not an admin.");
                 http_response_code(403);
                 echo json_encode(['status' => 'error', 'message' => 'Unauthorized access.']);
                 exit();
             }
-    
+
             // Retrieve and log CSRF tokens
             $csrfToken = $_POST['csrf_token'] ?? '';
             $sessionToken = $_SESSION['csrf_token'] ?? '';
-    
-            // error_log("CSRF Token from POST: " . $csrfToken);
-            // error_log("CSRF Token from Session: " . $sessionToken);
-    
+
             // Validate CSRF tokens
             if (!$sessionToken || !hash_equals($sessionToken, $csrfToken)) {
                 // error_log("CSRF Token Validation Failed");
@@ -86,29 +80,28 @@ class AdminController extends BaseController
                 echo json_encode(['error' => 'Invalid or missing CSRF token.']);
                 exit;
             }
-    
+
             // Sanitize and log user inputs
             $userId = sanitize($_POST['user_id']);
             $statusId = sanitize($_POST['status_id']);
-            
+
             // Update user status in the database
             $result = $this->adminService->updateUserStatus($userId, $statusId);
             // error_log("Update Result: " . ($result ? "Success" : "Failure"));
-    
+
             // Respond with success
             echo json_encode(['status' => 'success', 'message' => 'User status updated successfully.']);
             exit();
         }
-    
+
         // Debugging: Log if request method is not POST
         error_log("Request Method Not Allowed: " . $_SERVER['REQUEST_METHOD']);
-    
+
         // Respond with an error for unauthorized access or invalid request method
         http_response_code(405); // Method Not Allowed
         echo json_encode(['status' => 'error', 'message' => 'Unauthorized access.']);
         exit();
     }
-    
 
     public function setStickyCocktail()
     {
@@ -170,6 +163,7 @@ class AdminController extends BaseController
         }
         exit;
     }
+
     // Toggle sticky cocktail via AJAX
     public function toggleStickyCocktail()
     {
@@ -216,12 +210,13 @@ class AdminController extends BaseController
         }
         exit;
     }
+
     public function manageIngredients()
     {
         $categorizedIngredients = $this->ingredientService->getIngredientsByTags();
         require_once __DIR__ . '/../views/admin/manage_ingredients.php';
     }
-    // Manage Tags Page
+
     public function manageTags()
     {
         try {

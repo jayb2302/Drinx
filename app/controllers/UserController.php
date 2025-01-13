@@ -114,7 +114,7 @@ class UserController extends BaseController
                         redirect('/');
                     } else {
                         setcookie('account_deleted_success', 'Account deleted successfully.', time() + 10, "/");
-                        session_destroy(); // End session after deletion
+                        session_destroy(); 
                         redirect('/');
                     }
                 } else {
@@ -125,7 +125,6 @@ class UserController extends BaseController
             }
         }
 
-        // Redirect back to the current profile if deletion failed
         redirect('/profile/' . urlencode($username));
     }
 
@@ -141,8 +140,8 @@ class UserController extends BaseController
 
             // Fetch the user's current username
             $user = $this->userService->getUserById($userId);
-            $username = $user->getUsername(); // Ensure this method exists in the User model
-            $currentProfilePicture = $user->getProfilePicture(); // Get the current profile picture
+            $username = $user->getUsername(); 
+            $currentProfilePicture = $user->getProfilePicture(); 
 
             $firstName = sanitize($_POST['first_name']);
             $lastName = sanitize($_POST['last_name']);
@@ -154,17 +153,19 @@ class UserController extends BaseController
 
             // Handle file upload if a new profile picture is uploaded
             $profilePicture = $currentProfilePicture;
+
             // Handle file upload if a new profile picture is uploaded
             if (!empty($_FILES['profile_picture']['name'])) {
                 $uploadedPicture = $this->uploadProfilePicture($_FILES['profile_picture']);
                 if ($uploadedPicture) {
-                    $profilePicture = $uploadedPicture; // Use the new profile picture
+                    $profilePicture = $uploadedPicture; 
                 } else {
                     $_SESSION['error'] = "Failed to upload profile picture.";
                     redirect("profile/$username");
                     return;
                 }
             }
+
             // Update social links
             foreach ($socialLinks as $platformId => $url) {
                 if (!empty($url)) {
@@ -181,10 +182,10 @@ class UserController extends BaseController
             // Call the service to update the profile
             if ($this->userService->updateUserProfile($userId, $firstName, $lastName, $bio, $profilePicture)) {
                 $_SESSION['success'] = "Profile updated successfully.";
-                redirect("profile/$username"); // Redirect to the username-based profile page
+                redirect("profile/$username"); 
             } else {
                 $_SESSION['error'] = "Failed to update profile.";
-                redirect("profile/$username"); // Redirect back to the profile
+                redirect("profile/$username"); 
             }
         }
     }
@@ -204,18 +205,15 @@ class UserController extends BaseController
             $uniqueFileName = uniqid() . '.webp';
             $targetPath = __DIR__ . '/../../public/uploads/users/' . $uniqueFileName;
 
-            $width = 400; // Set your desired width
-            $height = 400; // Set your desired height
+            $width = 400; 
+            $height = 400; 
+
             // Process and save the image
             $this->imageService->processImage($file, $width, $height, $targetPath);
             return $uniqueFileName; // Return the unique file name
         } catch (\Exception $e) {
             $_SESSION['error'] = "Failed to upload profile picture: " . $e->getMessage();
-
-            // Optional: Log the detailed error for debugging
-            // error_log("Profile picture upload error: " . $e->getMessage());
-
-            return null; // Return null if image processing fails
+            return null; 
         }
     }
 
@@ -252,28 +250,28 @@ class UserController extends BaseController
         if (!$profile) {
             // If no profile is found, you can redirect to a 404 page or show a message
             http_response_code(404);
-            include '../app/views/404.php'; // Load a 404 error page
+            include '../app/views/404.php'; 
             return;
         }
 
-        $profileUserId = $profile->getId(); // Get the profile user's ID
-        $userId = $_SESSION['user']['id']; // Get the current user's ID
+        $profileUserId = $profile->getId(); 
+        $userId = $_SESSION['user']['id']; 
         $authController = $this->authService;
+
         // Check if current user is following the profile user
         $isFollowing = $this->userService->isFollowing($userId, $profileUserId);
         $platforms = $this->userService->getAllPlatforms();
-        $formData = $this->userService->getSocialFormData($profileUserId); // Fetch social links data
+        $formData = $this->userService->getSocialFormData($profileUserId); 
         $socialLinks = $this->userService->getUserSocialLinks($profileUserId);
         $userRecipes = $this->cocktailService->getUserRecipes($profileUserId);
         $userBadges = $this->badgeService->getUserBadges($profileUserId);
         $profileStats = $this->userService->getUserStats($profileUserId);
         $userProfile = $this->userService->getUserWithFollowCounts($profileUserId);
+        
         // Fetch cocktail count and progress to next badge
         $cocktailCount = $this->cocktailService->getCocktailCountByUserId($profileUserId);
         $progressData = $this->badgeService->getUserProgressToNextBadge($profileUserId, $cocktailCount);
-        // error_log("Progress Data: " . print_r($progressData, true));
-
-        // Pass the profile data to the view
+    
         require_once __DIR__ . '/../views/user/profile.php';
     }
 
@@ -306,13 +304,11 @@ class UserController extends BaseController
         redirect("profile/$username");
     }
 
-    // Unfollow a user
     public function unfollow($followedUserId)
     {
         if (!$this->authService->isLoggedIn()) {
             redirect('login');
         }
-
         $userId = $_SESSION['user']['id'];
         
     if ($this->userService->unfollowUser($userId, $followedUserId)) {
